@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mocko — Interview Practice</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0E1116;
+    --surface: #171B22;
+    --surface-2: #1E232C;
+    --cue: #F2E9DC;
+    --cue-dim: #E4D8C4;
+    --record: #E63946;
+    --good: #3FA796;
+    --warn: #E9A23B;
+    --text: #E8EAED;
+    --text-muted: #8A93A3;
+    --line: #2A2F3A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  .display { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  .app { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .mascot { animation: bob 2.6s ease-in-out infinite; transform-origin: center bottom; }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-2px) rotate(-2deg); } }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .logo-text { font-size: 22px; font-weight: 800; letter-spacing: 0.08em; }
+  .tagline { color: var(--text-muted); font-size: 13px; }
+
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab { font-family: 'IBM Plex Mono'; font-size: 12px; letter-spacing: 0.03em; color: var(--text-muted); background: none; border: none; padding: 8px 14px; cursor: pointer; border-radius: 6px; transition: all 0.15s; }
+  .nav-tab.active { color: var(--text); background: var(--surface-2); }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+
+  .screen { display: none; animation: fadeIn 0.35s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .step-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+  .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.05; margin-bottom: 10px; }
+  .hero p { color: var(--text-muted); font-size: 15px; max-width: 500px; line-height: 1.5; margin-bottom: 28px; }
+
+  /* Condensed setup panel */
+  .select-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px; margin-bottom: 24px; }
+  .select-group { margin-bottom: 28px; }
+  .select-group:last-child { margin-bottom: 0; }
+  .select-group-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .select-group-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+  .divider { height: 1px; background: var(--line); margin-bottom: 28px; }
+
+  .toggle-row { display: flex; gap: 10px; }
+  .toggle-card { flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.15s; }
+  .toggle-card.selected { border-color: var(--good); background: rgba(63,167,150,0.08); }
+  .toggle-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .toggle-card p { font-size: 12.5px; color: var(--text-muted); }
+
+  .pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill-btn {
+    font-family: 'Inter'; font-size: 13px; font-weight: 600; padding: 10px 18px; border-radius: 100px;
+    border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); cursor: pointer; transition: all 0.15s;
+  }
+  .pill-btn.selected { background: var(--cue); color: var(--bg); border-color: var(--cue); }
+  .pill-btn:hover:not(.selected) { border-color: var(--text-muted); color: var(--text); }
+
+  .btn { font-family: 'Inter'; font-size: 14px; font-weight: 600; padding: 12px 22px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; }
+  .btn-primary { background: var(--cue); color: var(--bg); }
+  .btn-primary:hover { background: var(--cue-dim); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--line); }
+  .btn-secondary:hover { border-color: var(--text-muted); }
+  .btn-record { background: var(--record); color: white; }
+  .btn-record:hover { background: #d02836; }
+  .btn-stop { background: var(--surface-2); color: var(--text); border: 1px solid var(--line); }
+  .btn-row { display: flex; justify-content: center; gap: 10px; }
+
+  .back-btn { background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 24px; font-weight: 500; }
+  .back-btn:hover { color: var(--text); }
+
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 620px) { .modes { grid-template-columns: 1fr; } .toggle-row { flex-direction: column; } }
+
+  .mode-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 26px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+  .mode-card:hover { border-color: var(--text-muted); transform: translateY(-2px); }
+  .mode-eyebrow { font-size: 11px; letter-spacing: 0.12em; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; text-transform: uppercase; }
+  .mode-card h3 { font-size: 26px; font-weight: 700; margin-bottom: 10px; }
+  .mode-card p { color: var(--text-muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 20px; }
+  .mode-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .mode-a .mode-icon { background: rgba(230,57,70,0.15); }
+  .mode-b .mode-icon { background: rgba(63,167,150,0.15); }
+  .mode-cta { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
+  .mode-a .mode-cta { color: var(--record); }
+  .mode-b .mode-cta { color: var(--good); }
+
+  .waveform { display: flex; align-items: center; gap: 3px; height: 18px; }
+  .waveform span { width: 3px; background: currentColor; border-radius: 2px; animation: wave 1.2s ease-in-out infinite; }
+  @keyframes wave { 0%,100% { height: 4px; } 50% { height: 16px; } }
+
+  .summary-strip { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; }
+  .summary-strip span { color: var(--text-muted); }
+  .summary-strip b { color: var(--text); font-weight: 600; }
+
+  .studio-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 32px; }
+  .onair-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .onair-badge { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; }
+  .onair-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--record); animation: pulse 1.4s infinite; }
+  .timer { font-size: 13px; color: var(--text-muted); }
+
+  .cue-card { background: var(--cue); color: var(--bg); border-radius: 10px; padding: 24px; margin-bottom: 24px; position: relative; }
+  .cue-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; opacity: 0.55; margin-bottom: 10px; }
+  .cue-question { font-size: 19px; font-weight: 600; line-height: 1.4; }
+
+  .rec-stage { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 40px 24px; text-align: center; margin-bottom: 20px; position: relative; }
+  .rec-visual { color: var(--record); display: flex; justify-content: center; margin-bottom: 16px; }
+  .rec-visual .waveform span { animation-play-state: paused; height: 6px; }
+  .rec-visual.recording .waveform span { animation-play-state: running; }
+  .rec-status { font-size: 13px; color: var(--text-muted); }
+  .eye-indicator { position: absolute; top: 14px; right: 14px; font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .eye-indicator .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); }
+
+  .overall-score { text-align: center; margin-bottom: 28px; }
+  .overall-score .num { font-family: 'Barlow Condensed'; font-size: 64px; font-weight: 800; color: var(--good); line-height: 1; }
+  .overall-score .of100 { font-size: 16px; color: var(--text-muted); }
+  .overall-score .label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; }
+
+  .cat-row { margin-bottom: 14px; }
+  .cat-row-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .cat-row-name { font-size: 13.5px; font-weight: 600; }
+  .cat-row-weight { font-size: 11px; color: var(--text-muted); }
+  .cat-row-score { font-size: 13px; font-family: 'IBM Plex Mono'; color: var(--good); }
+  .cat-bar-track { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .cat-bar-fill { height: 100%; border-radius: 3px; background: var(--good); }
+
+  .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+  .metric-card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .metric-label { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+  .metric-val { font-size: 20px; font-weight: 700; font-family: 'Barlow Condensed'; }
+
+  .pointers { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 20px; margin-bottom: 12px; }
+  .pointers h4 { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .pointers.good h4 { color: var(--good); }
+  .pointers.work h4 { color: var(--warn); }
+  .pointers ul { list-style: none; }
+  .pointers li { font-size: 13.5px; line-height: 1.6; padding-left: 18px; position: relative; margin-bottom: 8px; }
+  .pointers.good li::before { content: '+'; position: absolute; left: 0; color: var(--good); font-weight: 700; }
+  .pointers.work li::before { content: '—'; position: absolute; left: 0; color: var(--warn); }
+
+  .transcript-toggle { font-size: 12px; color: var(--text-muted); cursor: pointer; text-decoration: underline; margin: 12px 0 8px; display: inline-block; }
+  .transcript { display: none; font-family: 'IBM Plex Mono'; font-size: 12.5px; color: var(--text-muted); line-height: 1.6; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+  .transcript.show { display: block; }
+
+  .voice-shell { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 40px; text-align: center; }
+  .voice-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 6px; }
+  .interviewer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--good); display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Barlow Condensed'; color: var(--bg); }
+  .interviewer-name { font-size: 15px; font-weight: 600; }
+  .interviewer-role { font-size: 12px; color: var(--text-muted); margin-bottom: 30px; }
+
+  .voice-orb { width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 24px; position: relative; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(63,167,150,0.25), transparent 70%); }
+  .voice-orb-core { width: 90px; height: 90px; border-radius: 50%; background: var(--good); opacity: 0.85; transition: transform 0.15s ease; }
+  .voice-orb.listening .voice-orb-core { animation: orb-pulse 1.4s ease-in-out infinite; }
+  .voice-orb.ai-talking .voice-orb-core { background: var(--cue); animation: orb-pulse 0.9s ease-in-out infinite; }
+  @keyframes orb-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+  .voice-caption { font-size: 15px; line-height: 1.5; max-width: 460px; margin: 0 auto 8px; min-height: 46px; color: var(--text); }
+  .voice-state-label { font-size: 12px; color: var(--text-muted); margin-bottom: 28px; letter-spacing: 0.04em; }
+  .mic-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: var(--record); color: white; font-size: 20px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .mic-btn:hover { background: #d02836; }
+  .voice-timer { font-size: 12px; color: var(--text-muted); margin-top: 16px; }
+
+  .footer-note { text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px; }
+
+  .trend-summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 32px; }
+  @media (max-width: 620px) { .trend-summary { grid-template-columns: 1fr; } }
+  .trend-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .trend-card .tlabel { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
+  .trend-card .tval { font-family: 'Barlow Condensed'; font-size: 30px; font-weight: 800; color: var(--good); }
+  .trend-card .tsub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  .theme-section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .theme-section h4 { font-size: 17px; font-weight: 700; margin-bottom: 16px; }
+  .theme-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+  .theme-item:last-child { border-bottom: none; }
+  .theme-item .tname { display: flex; align-items: center; gap: 10px; }
+  .theme-tag { font-family: 'IBM Plex Mono'; font-size: 10px; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.03em; }
+  .theme-tag.recurring { background: rgba(230,57,70,0.18); color: var(--record); }
+  .theme-tag.strength { background: rgba(63,167,150,0.18); color: var(--good); }
+  .theme-freq { font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--text-muted); }
+
+  .history-list { display: flex; flex-direction: column; gap: 10px; }
+  .history-row { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .history-left { display: flex; flex-direction: column; gap: 3px; }
+  .history-title { font-size: 14px; font-weight: 600; }
+  .history-meta { font-size: 11px; color: var(--text-muted); font-family: 'IBM Plex Mono'; }
+  .history-score { font-family: 'Barlow Condensed'; font-size: 22px; font-weight: 800; color: var(--good); }
+
+  /* Drills */
+  .drill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 10px; }
+  @media (max-width: 620px) { .drill-grid { grid-template-columns: 1fr; } }
+  .drill-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.15s; }
+  .drill-card:hover { border-color: var(--good); transform: translateY(-2px); }
+  .drill-card.soon { cursor: default; opacity: 0.5; }
+  .drill-card.soon:hover { border-color: var(--line); transform: none; }
+  .drill-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .drill-icon { font-size: 20px; }
+  .drill-badge { font-family: 'IBM Plex Mono'; font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
+  .drill-badge.live { background: rgba(63,167,150,0.18); color: var(--good); }
+  .drill-badge.soon { background: rgba(138,147,163,0.15); color: var(--text-muted); }
+  .drill-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .drill-card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+
+  .drill-session { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 36px; text-align: center; }
+  .drill-session-label { font-size: 12px; color: var(--good); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  .drill-session h2 { font-family: 'Barlow Condensed'; font-size: 32px; font-weight: 800; margin-bottom: 12px; }
+  .drill-session-instructions { color: var(--text-muted); font-size: 14px; max-width: 440px; margin: 0 auto 30px; line-height: 1.6; }
+  .drill-counter { font-family: 'Barlow Condensed'; font-size: 72px; font-weight: 800; color: var(--good); line-height: 1; margin-bottom: 6px; cursor: pointer; user-select: none; }
+  .drill-counter-label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+  .drill-tap-hint { font-size: 11px; color: var(--text-muted); font-style: italic; margin-bottom: 24px; }
+  .drill-tap-btn { width: 100px; height: 100px; border-radius: 50%; background: var(--record); color: white; border: none; font-family: 'Barlow Condensed'; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 20px; transition: transform 0.1s; }
+  .drill-tap-btn:active { transform: scale(0.94); }
+  .drill-timer { font-family: 'IBM Plex Mono'; font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+  .drill-result-num { font-family: 'Barlow Condensed'; font-size: 56px; font-weight: 800; color: var(--good); }
+  .drill-result-label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 6px; margin-bottom: 24px; }
+
+  .star-field { margin-bottom: 16px; }
+  .star-field label { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .star-field textarea { width: 100%; min-height: 60px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Inter'; font-size: 14px; resize: vertical; }
+  .star-field textarea:focus { outline: none; border-color: var(--good); }
+
+  .filler-passage { text-align: left; line-height: 2.1; font-size: 15px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+  .filler-word { cursor: pointer; padding: 1px 3px; border-radius: 3px; }
+  .filler-word:hover { background: rgba(230,57,70,0.15); }
+  .filler-word.caught { background: var(--good); color: var(--bg); font-weight: 600; }
+  .filler-word.wrong { background: var(--record); color: white; }
+  .filler-score-live { margin-top: 14px; font-size: 12.5px; color: var(--text-muted); }
+
+  .math-question { font-family: 'Barlow Condensed'; font-size: 44px; font-weight: 800; margin-bottom: 20px; }
+  .math-input { width: 180px; text-align: center; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'IBM Plex Mono'; font-size: 20px; }
+  .math-input:focus { outline: none; border-color: var(--good); }
+  .math-progress { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="logo">
+      <svg class="mascot" width="34" height="34" viewBox="0 0 34 34" fill="none">
+        <circle cx="17" cy="17" r="15.5" fill="var(--good)"/>
+        <circle cx="11.5" cy="14.5" r="2" fill="var(--bg)"/>
+        <circle cx="22.5" cy="14.5" r="2" fill="var(--bg)"/>
+        <path d="M10.5 20C12.5 24 21.5 24 23.5 20" stroke="var(--bg)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      </svg>
+      <div class="logo-text">MOCKO</div>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" id="tab-practice" onclick="switchTab('practice')">Practice</button>
+      <button class="nav-tab" id="tab-drills" onclick="switchTab('drills')">Drills</button>
+      <button class="nav-tab" id="tab-history" onclick="switchTab('history')">History &amp; Trends</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD (mode choice first) -->
+  <div class="screen active" id="screen-dashboard">
+    <div class="step-label">Finance Track</div>
+    <div class="hero">
+      <h1 class="display">Choose your format</h1>
+      <p>Record and get graded, or run a live conversation.</p>
+    </div>
+    <div class="modes">
+      <div class="mode-card mode-a" onclick="chooseMode('record')">
+        <div class="mode-icon"><div class="waveform" style="color:var(--record)"><span style="animation-delay:0s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.4s"></span></div></div>
+        <div class="mode-eyebrow">Async · Scored</div>
+        <h3>HireVue Practice</h3>
+        <p>Get a question, record your answer on camera, and get a scored breakdown with specific pointers — like a real HireVue screen.</p>
+        <div class="mode-cta">Start recording →</div>
+      </div>
+      <div class="mode-card mode-b" onclick="chooseMode('voice')">
+        <div class="mode-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3FA796" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
+        <div class="mode-eyebrow">Live · Voice</div>
+        <h3>Mock Interview</h3>
+        <p>Talk it out loud. The AI asks a question, listens, and follows up naturally — like a real conversation, no typing.</p>
+        <div class="mode-cta">Start speaking →</div>
+      </div>
+    </div>
+    <p class="footer-note">Prototype only — recording, grading, and voice are all simulated here.</p>
+  </div>
+
+  <!-- SETUP: condensed single page -->
+  <div class="screen" id="screen-setup">
+    <button class="back-btn" onclick="goTo('dashboard')">← Back</button>
+    <div class="step-label">Session Setup — Finance Track</div>
+    <div class="hero">
+      <h1 class="display">Set up your session</h1>
+      <p id="setup-sub">Choose your length and format to begin.</p>
+    </div>
+
+    <div class="select-panel">
+      <div class="select-group">
+        <div class="select-group-label">Length of Session</div>
+        <div class="select-group-sub">Quick is a single question. Full runs a proper multi-question set.</div>
+        <div class="toggle-row" id="length-row">
+          <div class="toggle-card" data-len="Quick"><h4>Quick Mode</h4><p>1 question · ~3 min</p></div>
+          <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions · ~20 min</p></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="select-group">
+        <div class="select-group-label">Format</div>
+        <div class="select-group-sub">You can combine question types within a single session.</div>
+        <div class="pill-row" id="type-row">
+          <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
+          <button class="pill-btn" data-type="Technical">Technical only</button>
+          <button class="pill-btn" data-type="Both">Both</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row" style="justify-content:flex-end">
+      <button class="btn btn-primary" id="setup-next" disabled onclick="beginSession()">Begin →</button>
+    </div>
+  </div>
+
+  <!-- RECORD STAGE -->
+  <div class="screen" id="screen-record-setup">
+    <button class="back-btn" onclick="goTo('setup')">← Back</button>
+    <div class="studio-panel">
+      <div class="onair-row">
+        <div class="onair-badge" style="color:var(--record)"><div class="dot"></div> HIREVUE PRACTICE</div>
+        <div class="timer mono" id="rec-timer">00:00</div>
+      </div>
+      <div class="cue-card">
+        <div class="cue-label" id="rec-qcount">Question 1 of 1 — Finance, Behavioral</div>
+        <div class="cue-question" id="rec-question">Tell me about a time you disagreed with a teammate. How did you handle it?</div>
+      </div>
+      <div class="rec-stage" id="rec-stage">
+        <div class="eye-indicator"><div class="dot"></div><span id="eye-live">Eye contact: —</span></div>
+        <div class="rec-visual" id="rec-visual"><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+        <div class="rec-status" id="rec-status">Camera ready. Hit record when you're set.</div>
+      </div>
+      <div class="btn-row"><button class="btn btn-record" id="rec-btn" onclick="toggleRecording()">● Start recording</button></div>
+    </div>
+  </div>
+
+  <!-- FEEDBACK -->
+  <div class="screen" id="screen-feedback">
+    <button class="back-btn" onclick="goTo('dashboard')">← Back to dashboard</button>
+    <div class="studio-panel">
+      <div class="overall-score">
+        <div class="num">78<span class="of100" style="font-size:22px">/100</span></div>
+        <div class="label">Overall Score</div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-row-top"><span class="cat-row-name">Content &amp; Structure <span class="cat-row-weight">(35%)</span></span><span class="cat-row-score">29.5 / 35</span></div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:84%"></div></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-row-top"><span class="cat-row-name">Communication Clarity <span class="cat-row-weight">(25%)</span></span><span class="cat-row-score">17.3 / 25</span></div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:69%; background:var(--warn)"></div></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-row-top"><span class="cat-row-name">Delivery &amp; Pace <span class="cat-row-weight">(15%)</span></span><span class="cat-row-score">11.9 / 15</span></div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:79%"></div></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-row-top"><span class="cat-row-name">Eye Contact <span class="cat-row-weight">(15%)</span></span><span class="cat-row-score">12.8 / 15</span></div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:85%"></div></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-row-top"><span class="cat-row-name">Confidence &amp; Tone <span class="cat-row-weight">(10%)</span></span><span class="cat-row-score">6.5 / 10</span></div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:65%; background:var(--warn)"></div></div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">Eye contact</div><div class="metric-val">85%</div></div>
+        <div class="metric-card"><div class="metric-label">Speaking pace</div><div class="metric-val">142 wpm</div></div>
+        <div class="metric-card"><div class="metric-label">Filler words</div><div class="metric-val">11</div></div>
+        <div class="metric-card"><div class="metric-label">Avg. pause length</div><div class="metric-val">0.6s</div></div>
+      </div>
+
+      <div class="pointers good">
+        <h4>What worked</h4>
+        <ul>
+          <li>Strong STAR structure — situation and task were clear in the first 15 seconds.</li>
+          <li>Consistent eye contact throughout, only dropping off near the end.</li>
+          <li>Good pacing — not rushed, gave the interviewer time to follow along.</li>
+        </ul>
+      </div>
+      <div class="pointers work">
+        <h4>Needs work</h4>
+        <ul>
+          <li>Said "um" or "like" 11 times — try a silent pause instead of filling the gap.</li>
+          <li>The resolution was rushed. Spend more time on what changed afterward, not just what you did.</li>
+          <li>Tone stayed fairly flat — vary your energy on the key moment of the story.</li>
+        </ul>
+      </div>
+
+      <span class="transcript-toggle" onclick="document.getElementById('t1').classList.toggle('show')">View transcript</span>
+      <div class="transcript" id="t1">"So, um, there was this one project where me and a teammate, like, disagreed on the approach... I felt like data was important but he wanted to just go with his gut. I asked him if we could pull the numbers before deciding, and eventually he agreed and we found out my approach was actually faster."</div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo('record-setup')">↻ Retry this round</button>
+        <button class="btn btn-primary" onclick="goTo('dashboard')">Done →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOICE MOCK INTERVIEW -->
+  <div class="screen" id="screen-voice">
+    <button class="back-btn" onclick="goTo('setup')">← End &amp; back to setup</button>
+    <div class="voice-shell">
+      <div class="voice-header"><div class="interviewer-avatar">J</div><div class="interviewer-name">Jordan · AI Interviewer</div></div>
+      <div class="interviewer-role" id="voice-role">Finance — Behavioral</div>
+
+      <div class="voice-orb" id="voice-orb"><div class="voice-orb-core"></div></div>
+      <div class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</div>
+      <div class="voice-state-label" id="voice-state">Ready</div>
+
+      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎙️</button>
+      <div class="voice-timer mono" id="voice-timer">00:00</div>
+
+      <div class="btn-row" id="voice-retry-row" style="display:none; margin-top:26px;">
+        <button class="btn btn-secondary" onclick="startVoice()">↻ Retry this session</button>
+        <button class="btn btn-primary" onclick="goTo('feedback')">View evaluation →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY & TRENDS -->
+  <div class="screen" id="screen-history">
+    <div class="step-label">Your Record</div>
+    <div class="hero">
+      <h1 class="display">History &amp; Trends</h1>
+      <p>Patterns across your past sessions — where you're consistently strong, and what keeps coming up.</p>
+    </div>
+
+    <div class="trend-summary">
+      <div class="trend-card"><div class="tlabel">Sessions completed</div><div class="tval">7</div><div class="tsub">Finance track</div></div>
+      <div class="trend-card"><div class="tlabel">Average score</div><div class="tval">74</div><div class="tsub">+9 vs. first session</div></div>
+      <div class="trend-card"><div class="tlabel">Most improved</div><div class="tval">Eye Contact</div><div class="tsub">62% → 85%</div></div>
+    </div>
+
+    <div class="theme-section">
+      <h4>Recurring Themes</h4>
+      <div class="theme-item">
+        <div class="tname"><span class="theme-tag recurring">Recurring</span> Filler words ("um," "like")</div>
+        <div class="theme-freq">6 of 7 sessions</div>
+      </div>
+      <div class="theme-item">
+        <div class="tname"><span class="theme-tag recurring">Recurring</span> Rushed conclusions / weak resolutions</div>
+        <div class="theme-freq">5 of 7 sessions</div>
+      </div>
+      <div class="theme-item">
+        <div class="tname"><span class="theme-tag recurring">Recurring</span> Flat tone on key moments</div>
+        <div class="theme-freq">4 of 7 sessions</div>
+      </div>
+      <div class="theme-item">
+        <div class="tname"><span class="theme-tag strength">Strength</span> Clear STAR structure</div>
+        <div class="theme-freq">7 of 7 sessions</div>
+      </div>
+      <div class="theme-item">
+        <div class="tname"><span class="theme-tag strength">Strength</span> Steady eye contact</div>
+        <div class="theme-freq">6 of 7 sessions</div>
+      </div>
+    </div>
+
+    <div class="history-list">
+      <div class="history-row"><div class="history-left"><div class="history-title">Full Session — Behavioral</div><div class="history-meta">Finance · Aug 18, 2026</div></div><div class="history-score">78</div></div>
+      <div class="history-row"><div class="history-left"><div class="history-title">Quick Round — Technical</div><div class="history-meta">Finance · Aug 15, 2026</div></div><div class="history-score">71</div></div>
+      <div class="history-row"><div class="history-left"><div class="history-title">Full Session — Both</div><div class="history-meta">Finance · Aug 10, 2026</div></div><div class="history-score">76</div></div>
+      <div class="history-row"><div class="history-left"><div class="history-title">Quick Round — Behavioral</div><div class="history-meta">Finance · Aug 6, 2026</div></div><div class="history-score">69</div></div>
+    </div>
+  </div>
+
+  <!-- DRILLS -->
+  <div class="screen" id="screen-drills">
+    <div class="step-label">Finance Track</div>
+    <div class="hero">
+      <h1 class="display">Drills</h1>
+      <p>Short, focused reps on one skill at a time — not a full interview, just the muscle.</p>
+    </div>
+
+    <div class="drill-grid">
+      <div class="drill-card" onclick="startDrill('star')">
+        <div class="drill-top"><span class="drill-icon">★</span><span class="drill-badge live">Live</span></div>
+        <h4>STAR Builder</h4>
+        <p>Type your answer into Situation, Task, Action, and Result boxes. Scored on completeness of each part.</p>
+      </div>
+      <div class="drill-card" onclick="startDrill('filler')">
+        <div class="drill-top"><span class="drill-icon">●</span><span class="drill-badge live">Live</span></div>
+        <h4>Spot the Filler</h4>
+        <p>A sample answer appears on screen — click every filler word or weak phrase before the clock runs out.</p>
+      </div>
+      <div class="drill-card" onclick="startDrill('math')">
+        <div class="drill-top"><span class="drill-icon">#</span><span class="drill-badge live">Live</span></div>
+        <h4>Mental Math Sprint</h4>
+        <p>Type the answer to quick arithmetic and percentage problems — the kind that show up cold in finance screens.</p>
+      </div>
+      <div class="drill-card soon">
+        <div class="drill-top"><span class="drill-icon">$</span><span class="drill-badge soon">Soon</span></div>
+        <h4>Valuation Speed Round</h4>
+        <p>Type your way through a DCF or comps framework, field by field, against the clock.</p>
+      </div>
+      <div class="drill-card soon">
+        <div class="drill-top"><span class="drill-icon">≈</span><span class="drill-badge soon">Soon</span></div>
+        <h4>Market Sizing Estimate</h4>
+        <p>Type a Fermi-style estimate and your reasoning — scored against a reasonable range, not one "right" number.</p>
+      </div>
+      <div class="drill-card soon">
+        <div class="drill-top"><span class="drill-icon">⇄</span><span class="drill-badge soon">Soon</span></div>
+        <h4>Finance Terminology Match</h4>
+        <p>Click to match each term to its definition before time runs out.</p>
+      </div>
+      <div class="drill-card soon">
+        <div class="drill-top"><span class="drill-icon">✎</span><span class="drill-badge soon">Soon</span></div>
+        <h4>Rewrite the Weak Answer</h4>
+        <p>Given a rambling sample answer, type a tightened version. Scored on structure and clarity.</p>
+      </div>
+      <div class="drill-card soon">
+        <div class="drill-top"><span class="drill-icon">?</span><span class="drill-badge soon">Soon</span></div>
+        <h4>Judgment Call Quiz</h4>
+        <p>Rapid-fire multiple choice: given a workplace scenario, click the strongest response.</p>
+      </div>
+      <div class="drill-card soon">
+        <div class="drill-top"><span class="drill-icon">≡</span><span class="drill-badge soon">Soon</span></div>
+        <h4>Order the STAR</h4>
+        <p>Four scrambled sentences from a real answer — click them into the correct STAR order.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRILL SESSION -->
+  <div class="screen" id="screen-drill-session">
+    <button class="back-btn" onclick="goTo('drills')">← Back to Drills</button>
+    <div class="drill-session">
+      <div class="drill-session-label" id="drill-label">STAR Builder</div>
+      <h2 id="drill-title">Build Your Answer</h2>
+      <p class="drill-session-instructions" id="drill-instructions"></p>
+
+      <!-- STAR Builder -->
+      <div id="drill-star-fields" style="display:none; text-align:left; margin-bottom:24px;">
+        <div class="star-field"><label>Situation</label><textarea id="star-s" placeholder="What was the context?"></textarea></div>
+        <div class="star-field"><label>Task</label><textarea id="star-t" placeholder="What were you responsible for?"></textarea></div>
+        <div class="star-field"><label>Action</label><textarea id="star-a" placeholder="What did you actually do?"></textarea></div>
+        <div class="star-field"><label>Result</label><textarea id="star-r" placeholder="What happened as a result?"></textarea></div>
+      </div>
+
+      <!-- Spot the Filler -->
+      <div id="drill-filler-panel" style="display:none; margin-bottom:24px;">
+        <div class="drill-timer mono" id="filler-timer">00:20</div>
+        <p id="filler-text" class="filler-passage"></p>
+        <div class="filler-score-live mono" id="filler-live-score">Caught: 0 · False alarms: 0</div>
+      </div>
+
+      <!-- Mental Math -->
+      <div id="drill-math-panel" style="display:none; margin-bottom:24px;">
+        <div class="math-question" id="math-question">—</div>
+        <input type="number" id="math-input" class="math-input" placeholder="Your answer" autocomplete="off">
+        <div class="math-progress mono" id="math-progress">Question 1 of 6</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="drill-action-btn" onclick="handleDrillAction()">Start →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRILL RESULT -->
+  <div class="screen" id="screen-drill-result">
+    <button class="back-btn" onclick="goTo('drills')">← Back to Drills</button>
+    <div class="drill-session">
+      <div class="drill-session-label">Drill Complete</div>
+      <div class="drill-result-num" id="drill-result-num">18s</div>
+      <div class="drill-result-label" id="drill-result-label">Longest Filler-Free Streak</div>
+      <p class="drill-session-instructions" id="drill-result-note">Solid — your previous best was 12s. Try slowing your pace slightly on transitions; that's usually where fillers creep in.</p>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="startDrill(currentDrill)">↻ Retry drill</button>
+        <button class="btn btn-primary" onclick="goTo('drills')">Done →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const state = { type: null, length: null, mode: null };
+
+  document.querySelectorAll('#length-row .toggle-card').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#length-row .toggle-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.length = el.dataset.len;
+    checkSetupReady();
+  }));
+  document.querySelectorAll('#type-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#type-row .pill-btn').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.type = el.dataset.type;
+    checkSetupReady();
+  }));
+
+  function checkSetupReady() {
+    document.getElementById('setup-next').disabled = !(state.length && state.type);
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tab-practice').classList.toggle('active', tab === 'practice');
+    document.getElementById('tab-drills').classList.toggle('active', tab === 'drills');
+    document.getElementById('tab-history').classList.toggle('active', tab === 'history');
+    if (tab === 'history') {
+      goTo('history');
+    } else if (tab === 'drills') {
+      goTo('drills');
+    } else {
+      goTo('dashboard');
+    }
+  }
+
+  function chooseMode(mode) {
+    state.mode = mode;
+    document.getElementById('setup-sub').textContent = mode === 'record'
+      ? "Choose your length and format, then step in front of the camera."
+      : "Choose your length and format, then start talking.";
+    goTo('setup');
+  }
+
+  function beginSession() {
+    if (state.mode === 'record') {
+      goTo('record-setup');
+    } else {
+      startVoice();
+    }
+  }
+
+  function goTo(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+  }
+
+  // Record & Review
+  let recording = false, recInterval, recSeconds = 0, eyeInterval;
+  function toggleRecording() {
+    const btn = document.getElementById('rec-btn');
+    const visual = document.getElementById('rec-visual');
+    const status = document.getElementById('rec-status');
+    recording = !recording;
+    if (recording) {
+      btn.textContent = '■ Stop recording';
+      btn.classList.remove('btn-record'); btn.classList.add('btn-stop');
+      visual.classList.add('recording');
+      status.textContent = 'Recording...';
+      recSeconds = 0;
+      recInterval = setInterval(() => {
+        recSeconds++;
+        const m = String(Math.floor(recSeconds/60)).padStart(2,'0');
+        const s = String(recSeconds%60).padStart(2,'0');
+        document.getElementById('rec-timer').textContent = m + ':' + s;
+      }, 1000);
+      eyeInterval = setInterval(() => {
+        document.getElementById('eye-live').textContent = 'Eye contact: ' + (78 + Math.floor(Math.random()*15)) + '%';
+      }, 800);
+    } else {
+      clearInterval(recInterval); clearInterval(eyeInterval);
+      visual.classList.remove('recording');
+      status.textContent = 'Processing — analyzing transcript, pace, and eye contact...';
+      btn.textContent = '● Start recording';
+      btn.classList.remove('btn-stop'); btn.classList.add('btn-record');
+      setTimeout(() => goTo('feedback'), 1100);
+    }
+  }
+
+  // Voice mock interview
+  const voiceLines = [
+    "Let's start — tell me about a time you had to push back on a decision you disagreed with.",
+    "Good. What was the outcome, and would you handle it differently now?",
+    "Last one — how do you usually know when it's worth pushing back versus letting it go?"
+  ];
+  let voiceStep = 0, micOn = false, voiceInterval, voiceSeconds = 0;
+
+  function startVoice() {
+    goTo('voice');
+    voiceStep = 0; micOn = false; voiceSeconds = 0;
+    document.getElementById('voice-role').textContent = 'Finance — ' + (state.type || 'Behavioral');
+    document.getElementById('mic-btn').style.display = 'inline-flex';
+    document.getElementById('mic-btn').textContent = '🎙️';
+    document.getElementById('voice-caption').textContent = "Tap the mic when you're ready to begin.";
+    document.getElementById('voice-state').textContent = 'Ready';
+    document.getElementById('voice-orb').className = 'voice-orb';
+    document.getElementById('voice-retry-row').style.display = 'none';
+    clearInterval(voiceInterval);
+    document.getElementById('voice-timer').textContent = '00:00';
+  }
+
+  function toggleMic() {
+    const orb = document.getElementById('voice-orb');
+    const caption = document.getElementById('voice-caption');
+    const stateLabel = document.getElementById('voice-state');
+    const micBtn = document.getElementById('mic-btn');
+
+    if (voiceStep === 0 && !micOn) {
+      aiSpeak(voiceLines[0]);
+      voiceStep = 1;
+      voiceSeconds = 0;
+      clearInterval(voiceInterval);
+      voiceInterval = setInterval(() => {
+        voiceSeconds++;
+        const m = String(Math.floor(voiceSeconds/60)).padStart(2,'0');
+        const s = String(voiceSeconds%60).padStart(2,'0');
+        document.getElementById('voice-timer').textContent = m + ':' + s;
+      }, 1000);
+      return;
+    }
+
+    micOn = !micOn;
+    if (micOn) {
+      micBtn.textContent = '⏹️';
+      orb.className = 'voice-orb listening';
+      caption.textContent = "Listening...";
+      stateLabel.textContent = 'Your turn — speak now';
+    } else {
+      micBtn.textContent = '🎙️';
+      orb.className = 'voice-orb';
+      caption.textContent = "Got it — thinking...";
+      stateLabel.textContent = 'Processing your answer';
+      setTimeout(() => {
+        if (voiceStep < voiceLines.length) {
+          aiSpeak(voiceLines[voiceStep]);
+          voiceStep++;
+        } else {
+          clearInterval(voiceInterval);
+          aiSpeak("That's a wrap — nice work.");
+          setTimeout(() => {
+            micBtn.style.display = 'none';
+            document.getElementById('voice-retry-row').style.display = 'flex';
+            stateLabel.textContent = 'Session complete';
+          }, 2000);
+        }
+      }, 1000);
+    }
+  }
+
+  function aiSpeak(text) {
+    const orb = document.getElementById('voice-orb');
+    const caption = document.getElementById('voice-caption');
+    const stateLabel = document.getElementById('voice-state');
+    orb.className = 'voice-orb ai-talking';
+    caption.textContent = text;
+    stateLabel.textContent = 'Jordan is speaking';
+    setTimeout(() => {
+      orb.className = 'voice-orb';
+      stateLabel.textContent = 'Tap the mic to respond';
+    }, 2600);
+  }
+
+  // Drills
+  const drillMeta = {
+    star: { label: 'STAR Builder', title: 'Build Your Answer', instructions: 'Type your answer into each box below. When you\'re done, submit to see how complete your structure is.' },
+    filler: { label: 'Spot the Filler', title: 'Catch the Weak Phrases', instructions: 'Click every filler word or weak phrase in the passage below before the clock runs out.' },
+    math: { label: 'Mental Math Sprint', title: 'Quick-Fire Arithmetic', instructions: 'Type your answer and press Enter to submit. Six questions, no calculator.' }
+  };
+  let currentDrill = 'star';
+
+  function showPanel(id) {
+    ['drill-star-fields','drill-filler-panel','drill-math-panel'].forEach(p => {
+      document.getElementById(p).style.display = (p === id) ? 'block' : 'none';
+    });
+  }
+
+  function startDrill(key) {
+    currentDrill = key;
+    const meta = drillMeta[key];
+    document.getElementById('drill-label').textContent = meta.label;
+    document.getElementById('drill-title').textContent = meta.title;
+    document.getElementById('drill-instructions').textContent = meta.instructions;
+    const actionBtn = document.getElementById('drill-action-btn');
+
+    if (key === 'star') {
+      showPanel('drill-star-fields');
+      ['star-s','star-t','star-a','star-r'].forEach(id => document.getElementById(id).value = '');
+      actionBtn.textContent = 'Score My Answer →';
+      actionBtn.onclick = scoreStarBuilder;
+    } else if (key === 'filler') {
+      showPanel('drill-filler-panel');
+      setupFillerDrill();
+      actionBtn.textContent = 'Start →';
+      actionBtn.onclick = startFillerTimer;
+    } else if (key === 'math') {
+      showPanel('drill-math-panel');
+      setupMathDrill();
+      actionBtn.textContent = 'Start →';
+      actionBtn.onclick = startMathDrill;
+    }
+    goTo('drill-session');
+  }
+
+  // --- STAR Builder ---
+  function scoreStarBuilder() {
+    const fields = ['star-s','star-t','star-a','star-r'].map(id => document.getElementById(id).value.trim());
+    const scores = fields.map(f => Math.min(25, Math.round(f.split(/\s+/).filter(Boolean).length * 2)));
+    const total = scores.reduce((a,b) => a+b, 0);
+    const weakest = ['Situation','Task','Action','Result'][scores.indexOf(Math.min(...scores))];
+    document.getElementById('drill-result-num').textContent = total + '/100';
+    document.getElementById('drill-result-label').textContent = 'Structure Completeness';
+    document.getElementById('drill-result-note').textContent = total >= 80
+      ? "Well-rounded answer — all four parts are developed."
+      : `${weakest} is the thinnest part right now — try adding one or two more concrete details there.`;
+    goTo('drill-result');
+  }
+
+  // --- Spot the Filler ---
+  const fillerSentence = "So, um, I was basically leading the project, and like, we kind of ran into some issues with the timeline, you know, so I sort of had to just figure it out on the fly and I guess it worked out okay in the end.";
+  const fillerWords = ["um","like","kind of","you know","sort of","basically","i guess"];
+  let fillerTimerInterval, fillerSeconds = 20, fillerCaught = 0, fillerWrong = 0, fillerTotal = 0;
+
+  function setupFillerDrill() {
+    const words = fillerSentence.split(' ');
+    const html = words.map((w, i) => {
+      const clean = w.replace(/[.,]/g, '').toLowerCase();
+      const isFiller = fillerWords.includes(clean);
+      return `<span class="filler-word" data-filler="${isFiller}" onclick="clickFillerWord(this)">${w}</span>`;
+    }).join(' ');
+    document.getElementById('filler-text').innerHTML = html;
+    fillerTotal = fillerWords.length;
+    fillerCaught = 0; fillerWrong = 0; fillerSeconds = 20;
+    document.getElementById('filler-timer').textContent = '00:20';
+    document.getElementById('filler-live-score').textContent = 'Caught: 0 · False alarms: 0';
+    clearInterval(fillerTimerInterval);
+  }
+
+  function clickFillerWord(el) {
+    if (el.classList.contains('caught') || el.classList.contains('wrong')) return;
+    if (el.dataset.filler === 'true') {
+      el.classList.add('caught');
+      fillerCaught++;
+    } else {
+      el.classList.add('wrong');
+      fillerWrong++;
+    }
+    document.getElementById('filler-live-score').textContent = `Caught: ${fillerCaught} · False alarms: ${fillerWrong}`;
+  }
+
+  function startFillerTimer() {
+    const actionBtn = document.getElementById('drill-action-btn');
+    actionBtn.textContent = 'Submit Now →';
+    actionBtn.onclick = finishFillerDrill;
+    fillerTimerInterval = setInterval(() => {
+      fillerSeconds--;
+      document.getElementById('filler-timer').textContent = '00:' + String(fillerSeconds).padStart(2,'0');
+      if (fillerSeconds <= 0) { clearInterval(fillerTimerInterval); finishFillerDrill(); }
+    }, 1000);
+  }
+
+  function finishFillerDrill() {
+    clearInterval(fillerTimerInterval);
+    document.getElementById('drill-result-num').textContent = fillerCaught + '/' + fillerTotal;
+    document.getElementById('drill-result-label').textContent = 'Filler Words Caught';
+    document.getElementById('drill-result-note').textContent = fillerWrong === 0
+      ? "Clean catches, no false alarms — good ear for this."
+      : `You also flagged ${fillerWrong} word${fillerWrong > 1 ? 's' : ''} that weren't fillers — worth a second look at what actually weakens a sentence.`;
+    goTo('drill-result');
+  }
+
+  // --- Mental Math Sprint ---
+  const mathQuestions = [
+    { q: '18% of 250', a: 45 },
+    { q: '340 + 275', a: 615 },
+    { q: '1,200 ÷ 15', a: 80 },
+    { q: '15% of 640', a: 96 },
+    { q: '73 × 4', a: 292 },
+    { q: '900 − 366', a: 534 }
+  ];
+  let mathIndex = 0, mathCorrect = 0, mathStartTime;
+
+  function setupMathDrill() {
+    mathIndex = 0; mathCorrect = 0;
+    document.getElementById('math-question').textContent = '—';
+    document.getElementById('math-progress').textContent = `Question 1 of ${mathQuestions.length}`;
+    document.getElementById('math-input').value = '';
+    document.getElementById('math-input').onkeydown = null;
+  }
+
+  function startMathDrill() {
+    mathStartTime = Date.now();
+    mathIndex = 0; mathCorrect = 0;
+    showMathQuestion();
+    const actionBtn = document.getElementById('drill-action-btn');
+    actionBtn.style.display = 'none';
+    const input = document.getElementById('math-input');
+    input.focus();
+    input.onkeydown = (e) => { if (e.key === 'Enter') submitMathAnswer(); };
+  }
+
+  function showMathQuestion() {
+    const item = mathQuestions[mathIndex];
+    document.getElementById('math-question').textContent = item.q;
+    document.getElementById('math-progress').textContent = `Question ${mathIndex+1} of ${mathQuestions.length}`;
+    document.getElementById('math-input').value = '';
+  }
+
+  function submitMathAnswer() {
+    const val = parseFloat(document.getElementById('math-input').value);
+    if (val === mathQuestions[mathIndex].a) mathCorrect++;
+    mathIndex++;
+    if (mathIndex < mathQuestions.length) {
+      showMathQuestion();
+    } else {
+      finishMathDrill();
+    }
+  }
+
+  function finishMathDrill() {
+    const elapsed = ((Date.now() - mathStartTime) / 1000).toFixed(1);
+    document.getElementById('drill-action-btn').style.display = 'inline-block';
+    document.getElementById('drill-result-num').textContent = mathCorrect + '/' + mathQuestions.length;
+    document.getElementById('drill-result-label').textContent = `Correct in ${elapsed}s`;
+    document.getElementById('drill-result-note').textContent = mathCorrect === mathQuestions.length
+      ? "Perfect round — solid speed too."
+      : "Missed one or two — percentages tend to be the slower ones. Worth a few extra reps.";
+    goTo('drill-result');
+  }
+</script>
+</body>
+</html>
