@@ -824,13 +824,33 @@
 
   function setupFillerDrill() {
     const words = fillerSentence.split(' ');
-    const html = words.map((w, i) => {
-      const clean = w.replace(/[.,]/g, '').toLowerCase();
-      const isFiller = fillerWords.includes(clean);
-      return `<span class="filler-word" data-filler="${isFiller}" onclick="clickFillerWord(this)">${w}</span>`;
+    const clean = w => w.replace(/[.,]/g, '').toLowerCase();
+
+    // Filler phrases can be one or two words (e.g. "um" vs. "kind of"), so
+    // match greedily left-to-right, preferring a two-word phrase when present.
+    const groups = new Array(words.length).fill(null);
+    let groupId = 0;
+    let i = 0;
+    while (i < words.length) {
+      const twoWord = i < words.length - 1 ? `${clean(words[i])} ${clean(words[i + 1])}` : null;
+      if (twoWord && fillerWords.includes(twoWord)) {
+        groups[i] = groupId; groups[i + 1] = groupId; groupId++;
+        i += 2;
+      } else if (fillerWords.includes(clean(words[i]))) {
+        groups[i] = groupId; groupId++;
+        i += 1;
+      } else {
+        i += 1;
+      }
+    }
+
+    const html = words.map((w, idx) => {
+      const isFiller = groups[idx] !== null;
+      const groupAttr = isFiller ? ` data-group="${groups[idx]}"` : '';
+      return `<span class="filler-word" data-filler="${isFiller}"${groupAttr} onclick="clickFillerWord(this)">${w}</span>`;
     }).join(' ');
     document.getElementById('filler-text').innerHTML = html;
-    fillerTotal = fillerWords.length;
+    fillerTotal = groupId;
     fillerCaught = 0; fillerWrong = 0; fillerSeconds = 20;
     document.getElementById('filler-timer').textContent = '00:20';
     document.getElementById('filler-live-score').textContent = 'Caught: 0 · False alarms: 0';
@@ -840,7 +860,7 @@
   function clickFillerWord(el) {
     if (el.classList.contains('caught') || el.classList.contains('wrong')) return;
     if (el.dataset.filler === 'true') {
-      el.classList.add('caught');
+      document.querySelectorAll(`.filler-word[data-group="${el.dataset.group}"]`).forEach(g => g.classList.add('caught'));
       fillerCaught++;
     } else {
       el.classList.add('wrong');
