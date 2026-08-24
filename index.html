@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Mocko — Interview Practice</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
   :root {
     --bg: #0E1116;
@@ -43,12 +43,44 @@
   .app { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
 
   .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .mascot { animation: bob 2.6s ease-in-out infinite; transform-origin: center bottom; }
-  @keyframes bob { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-2px) rotate(-2deg); } }
+  .logo { display: flex; align-items: center; gap: 8px; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .logo-text { font-size: 22px; font-weight: 800; letter-spacing: 0.08em; }
+  .logo-text { font-family: 'Bricolage Grotesque', sans-serif; font-size: 23px; font-weight: 800; letter-spacing: -0.01em; }
   .tagline { color: var(--text-muted); font-size: 13px; }
+
+  /* Logo mascot: leans casually against the wordmark, legs crossed,
+     hollow jointed figure matching the loading-screen sprinter's style.
+     On hover the hanging arm raises and waves. */
+  .mascot .lean-body { transform-origin: 17px 29px; transform: rotate(12deg); }
+  .mascot .leg-l, .mascot .leg-r { transform-origin: 19px 21px; }
+  .mascot .arm-l, .mascot .arm-r { transform-origin: 19px 15px; }
+  .logo:hover .mascot .arm-l { animation: wave-arm 0.5s ease-in-out infinite; }
+  .logo:hover .mascot .wave-elbow { animation: wave-elbow 0.5s ease-in-out infinite; }
+  @keyframes wave-arm { 0%,100% { transform: rotate(-185deg); } 50% { transform: rotate(-205deg); } }
+  @keyframes wave-elbow { 0%,100% { transform: rotate(10deg); } 50% { transform: rotate(-15deg); } }
+
+  /* Processing-screen sprinter: same jointed rig, running hard on a
+     treadmill whose belt scrolls backward under him, fast. */
+  .run-active .leg-l, .run-active .leg-r { transform-origin: 20px 23px; }
+  .run-active .arm-l, .run-active .arm-r { transform-origin: 20px 16px; }
+  .run-active .leg-l { animation: sprint-leg-a .55s ease-in-out infinite; }
+  .run-active .leg-r { animation: sprint-leg-b .55s ease-in-out infinite; }
+  .run-active .arm-l { animation: sprint-arm-b .55s ease-in-out infinite; }
+  .run-active .arm-r { animation: sprint-arm-a .55s ease-in-out infinite; }
+  .run-active .shin-l-pivot { transform-origin: 18px 27px; animation: sprint-knee-a .55s ease-in-out infinite; }
+  .run-active .shin-r-pivot { transform-origin: 22px 27px; animation: sprint-knee-b .55s ease-in-out infinite; }
+  .run-active .forearm-l-pivot { transform-origin: 17px 19px; animation: sprint-knee-b .55s ease-in-out infinite; }
+  .run-active .forearm-r-pivot { transform-origin: 23px 19px; animation: sprint-knee-a .55s ease-in-out infinite; }
+  .run-active .sprint-body { animation: sprint-bob .55s ease-in-out infinite; }
+  .run-active .belt { stroke: var(--record); stroke-width: 1.4; stroke-dasharray: 3 3; animation: belt-scroll-reverse .2s linear infinite; }
+  @keyframes sprint-leg-a { 0%,100% { transform: rotate(38deg); } 50% { transform: rotate(-32deg); } }
+  @keyframes sprint-leg-b { 0%,100% { transform: rotate(-32deg); } 50% { transform: rotate(38deg); } }
+  @keyframes sprint-knee-a { 0%,100% { transform: rotate(68deg); } 50% { transform: rotate(0deg); } }
+  @keyframes sprint-knee-b { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(68deg); } }
+  @keyframes sprint-arm-a { 0%,100% { transform: rotate(45deg); } 50% { transform: rotate(-40deg); } }
+  @keyframes sprint-arm-b { 0%,100% { transform: rotate(-40deg); } 50% { transform: rotate(45deg); } }
+  @keyframes sprint-bob { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-3px) rotate(-6deg); } }
+  @keyframes belt-scroll-reverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 6; } }
 
   .nav-tabs { display: flex; gap: 4px; }
   .nav-tab { font-family: 'IBM Plex Mono'; font-size: 12px; letter-spacing: 0.03em; color: var(--text-muted); background: none; border: none; padding: 8px 14px; cursor: pointer; border-radius: 6px; transition: all 0.15s; }
@@ -136,6 +168,8 @@
   .rec-video { width: 100%; max-height: 340px; object-fit: cover; border-radius: 10px; background: #000; transform: scaleX(-1); display: block; margin-bottom: 12px; }
   .rec-status { font-size: 13px; color: var(--text-muted); }
   .prep-overlay { position: absolute; inset: 16px; border-radius: 10px; background: rgba(14,17,22,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .processing-overlay { position: absolute; inset: 16px; border-radius: 10px; background: rgba(14,17,22,0.92); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+  .processing-label { font-size: 13px; color: var(--text-muted); }
   .prep-number { font-family: 'Barlow Condensed'; font-size: 72px; font-weight: 800; color: var(--good); line-height: 1; }
   .prep-label { font-size: 13px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
 
@@ -301,10 +335,14 @@
   <div class="topbar">
     <div class="logo" onclick="goToHome()" style="cursor:pointer;">
       <svg class="mascot" width="34" height="34" viewBox="0 0 34 34" fill="none">
-        <circle cx="17" cy="17" r="15.5" fill="var(--good)"/>
-        <circle cx="11.5" cy="14.5" r="2" fill="var(--bg)"/>
-        <circle cx="22.5" cy="14.5" r="2" fill="var(--bg)"/>
-        <path d="M10.5 20C12.5 24 21.5 24 23.5 20" stroke="var(--bg)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <g class="lean-body">
+          <circle cx="19" cy="8" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
+          <path d="M19,12 Q18,16 19,21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+          <g class="leg-l"><line x1="19" y1="21" x2="18" y2="25" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="18" y1="25" x2="17" y2="29" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
+          <g class="leg-r"><line x1="19" y1="21" x2="21" y2="24" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="21" y1="24" x2="24" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
+          <g class="arm-r"><line x1="19" y1="15" x2="22" y2="16" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="22" y1="16" x2="21" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
+          <g class="arm-l"><line x1="19" y1="15" x2="17" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="wave-elbow" style="transform-origin:17px 18px"><line x1="17" y1="18" x2="16" y2="21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+        </g>
       </svg>
       <div class="logo-text">MOCKO</div>
     </div>
@@ -383,7 +421,26 @@
       <h1 class="display">Your Profile</h1>
       <p>This is the start of Mocko as a platform — friends and more are coming.</p>
     </div>
-    <div class="auth-panel" style="max-width:460px;">
+    <div class="auth-error" id="profile-error" style="max-width:460px; margin:0 auto 12px;"></div>
+
+    <!-- VIEW MODE -->
+    <div class="auth-panel" id="profile-view" style="max-width:460px;">
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+        <div class="profile-avatar" id="profile-view-avatar">?</div>
+        <div>
+          <div style="font-size:18px; font-weight:700;" id="profile-view-username">—</div>
+          <div style="font-size:12px; color:var(--text-muted);" id="profile-view-joined"></div>
+        </div>
+      </div>
+      <p id="profile-view-bio" style="font-size:13.5px; color:var(--text-muted); line-height:1.5; margin-bottom:18px;"></p>
+      <div id="profile-view-links" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;"></div>
+      <div class="btn-row" style="justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="enterProfileEditMode()">Edit Profile</button>
+      </div>
+    </div>
+
+    <!-- EDIT MODE -->
+    <div class="auth-panel" id="profile-edit" style="max-width:460px; display:none;">
       <div style="display:flex; align-items:center; gap:16px; margin-bottom:24px;">
         <div class="profile-avatar" id="profile-avatar-preview">?</div>
         <label class="btn btn-secondary" style="cursor:pointer; display:inline-block;">
@@ -411,9 +468,8 @@
         <label>Instagram</label>
         <input type="text" id="profile-instagram" placeholder="https://instagram.com/...">
       </div>
-      <div class="auth-error" id="profile-error"></div>
-      <div id="profile-joined" style="font-size:13px; color:var(--text-muted); margin-bottom:16px;"></div>
-      <div class="btn-row" style="justify-content:flex-end;">
+      <div class="btn-row" style="justify-content:flex-end; gap:10px;">
+        <button class="btn btn-secondary" onclick="cancelProfileEdit()">Cancel</button>
         <button class="btn btn-primary" onclick="saveProfile()">Save</button>
       </div>
     </div>
@@ -527,6 +583,20 @@
         <div class="prep-overlay" id="prep-overlay" style="display:none;">
           <div class="prep-number" id="prep-number">10</div>
           <div class="prep-label">Get ready...</div>
+        </div>
+        <div class="processing-overlay" id="processing-overlay">
+          <svg class="run-active" width="70" height="66" viewBox="0 0 40 40" fill="none">
+            <g class="sprint-body">
+              <circle cx="20" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
+              <path d="M20,13 Q19,18 20,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+              <g class="leg-l"><line x1="20" y1="23" x2="18" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-l-pivot"><line x1="18" y1="27" x2="17" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+              <g class="leg-r"><line x1="20" y1="23" x2="22" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-r-pivot"><line x1="22" y1="27" x2="23" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+              <g class="arm-l"><line x1="20" y1="16" x2="17" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-l-pivot"><line x1="17" y1="19" x2="16" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+              <g class="arm-r"><line x1="20" y1="16" x2="23" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-r-pivot"><line x1="23" y1="19" x2="24" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+            </g>
+            <line class="belt" x1="9" y1="32" x2="31" y2="32"/><line x1="9" y1="30" x2="9" y2="34" stroke="var(--record)" stroke-width="1.4"/><line x1="31" y1="30" x2="31" y2="34" stroke="var(--record)" stroke-width="1.4"/>
+          </svg>
+          <div class="processing-label" id="processing-label">Analyzing your answer...</div>
         </div>
         <div class="rec-status" id="rec-status">Requesting camera access...</div>
       </div>
@@ -742,10 +812,10 @@
 </div>
 
 <script type="module" src="js/supabase-client.js"></script>
-<script type="module" src="js/auth.js"></script>
 <script type="module" src="js/recording.js"></script>
 <script type="module" src="js/history.js"></script>
 <script type="module" src="js/profile.js"></script>
+<script type="module" src="js/auth.js"></script>
 <script>
   const state = { type: null, length: null, mode: null };
   let pendingAuthAction = null;
@@ -753,38 +823,63 @@
   // --- Auth ---
   window.addEventListener('mocko-auth-change', (e) => {
     const user = e.detail;
-    const areaEl = document.getElementById('account-area');
-    if (user) {
-      const name = user.email.split('@')[0];
-      areaEl.innerHTML = `
-        <div class="account-menu">
-          <button class="account-trigger" onclick="toggleAccountMenu(event)">
-            <div class="account-avatar" id="account-avatar">${name[0].toUpperCase()}</div>
-            <span class="account-name">${name}</span>
-            <span class="account-caret">▾</span>
-          </button>
-          <div class="account-dropdown" id="account-dropdown" style="display:none;">
-            <button onclick="goToProfile()">Profile</button>
-            <button onclick="openStats()">Stats</button>
-            <button onclick="goToSettings()">Settings</button>
-            <button onclick="goToHelp()">Help</button>
-            <div class="account-dropdown-divider"></div>
-            <button onclick="MockoAuth.signOut(); closeAccountMenu();">Sign Out</button>
-          </div>
-        </div>`;
-    } else {
-      areaEl.innerHTML = `
-        <div class="login-prompt">
-          <span class="login-prompt-text">Log in to track your scores</span>
-          <button class="btn btn-secondary" onclick="setAuthMode('signin'); goTo('auth');">Log In</button>
-        </div>`;
-    }
+    renderAccountArea(user);
     if (user && pendingAuthAction) {
       const action = pendingAuthAction;
       pendingAuthAction = null;
       action();
     }
   });
+
+  async function renderAccountArea(user) {
+    const areaEl = document.getElementById('account-area');
+    if (!user) {
+      areaEl.innerHTML = `
+        <div class="login-prompt">
+          <span class="login-prompt-text">Log in to track your scores</span>
+          <button class="btn btn-secondary" onclick="setAuthMode('signin'); goTo('auth');">Log In</button>
+        </div>`;
+      return;
+    }
+    areaEl.innerHTML = `
+      <div class="account-menu">
+        <button class="account-trigger" onclick="toggleAccountMenu(event)">
+          <div class="account-avatar" id="account-avatar">…</div>
+          <span class="account-name" id="account-name">…</span>
+          <span class="account-caret">▾</span>
+        </button>
+        <div class="account-dropdown" id="account-dropdown" style="display:none;">
+          <button onclick="goToProfile()">Profile</button>
+          <button onclick="openStats()">Stats</button>
+          <button onclick="goToSettings()">Settings</button>
+          <button onclick="goToHelp()">Help</button>
+          <div class="account-dropdown-divider"></div>
+          <button onclick="MockoAuth.signOut(); closeAccountMenu();">Sign Out</button>
+        </div>
+      </div>`;
+    try {
+      const profile = await MockoProfile.getProfile();
+      updateAccountBadge(profile);
+    } catch (err) {
+      console.error(err);
+      document.getElementById('account-name').textContent = user.email.split('@')[0];
+      document.getElementById('account-avatar').textContent = user.email[0].toUpperCase();
+    }
+  }
+
+  function updateAccountBadge(profile) {
+    const nameEl = document.getElementById('account-name');
+    const avatarEl = document.getElementById('account-avatar');
+    if (!nameEl || !avatarEl) return;
+    nameEl.textContent = profile.username;
+    if (profile.avatar_url) {
+      avatarEl.style.backgroundImage = `url(${profile.avatar_url})`;
+      avatarEl.textContent = '';
+    } else {
+      avatarEl.style.backgroundImage = '';
+      avatarEl.textContent = profile.username[0].toUpperCase();
+    }
+  }
 
   function requireAuth(onAuthed) {
     if (window.MockoAuth && window.MockoAuth.getUser()) return true;
@@ -946,6 +1041,7 @@
 
     stopBtn.style.display = 'none';
     prepOverlay.style.display = 'none';
+    document.getElementById('processing-overlay').style.display = 'none';
     document.getElementById('rec-timer').textContent = '00:00';
     status.textContent = 'Requesting camera access...';
 
@@ -1012,7 +1108,9 @@
     }
     stopMediaStream();
     document.getElementById('rec-btn').style.display = 'none';
-    document.getElementById('rec-status').textContent = 'Processing — analyzing transcript, pace, and tone...';
+    document.getElementById('rec-status').textContent = '';
+    document.getElementById('processing-label').textContent = 'Analyzing your answer — this can take up to a minute...';
+    document.getElementById('processing-overlay').style.display = 'flex';
   }
 
   async function onRecordingStopped() {
@@ -1027,10 +1125,12 @@
         format: state.type || 'Behavioral',
         length: state.length || 'Quick',
       });
+      document.getElementById('processing-overlay').style.display = 'none';
       renderFeedback(session);
       goTo('feedback');
     } catch (err) {
       console.error(err);
+      document.getElementById('processing-overlay').style.display = 'none';
       status.textContent = 'Something went wrong grading your answer — please try again.';
       document.getElementById('rec-btn').style.display = 'none';
     }
@@ -1165,30 +1265,53 @@
   }
 
   // --- Profile ---
+  let currentProfile = null;
+
   async function loadProfile() {
     const errorEl = document.getElementById('profile-error');
     errorEl.textContent = '';
+    exitProfileEditMode();
     try {
-      const profile = await MockoProfile.getProfile();
-      document.getElementById('profile-username').value = profile.username || '';
-      document.getElementById('profile-bio').value = profile.bio || '';
-      const links = profile.social_links || {};
-      document.getElementById('profile-twitter').value = links.twitter || '';
-      document.getElementById('profile-linkedin').value = links.linkedin || '';
-      document.getElementById('profile-instagram').value = links.instagram || '';
-      renderAvatarPreview(profile);
-
-      const user = MockoAuth.getUser();
-      const joined = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-      document.getElementById('profile-joined').textContent = `Joined ${joined}`;
+      currentProfile = await MockoProfile.getProfile();
+      renderProfileView(currentProfile);
+      populateProfileEditForm(currentProfile);
     } catch (err) {
       console.error(err);
       errorEl.textContent = 'Could not load profile.';
     }
   }
 
-  function renderAvatarPreview(profile) {
-    const el = document.getElementById('profile-avatar-preview');
+  function renderProfileView(profile) {
+    renderAvatarInto('profile-view-avatar', profile);
+    document.getElementById('profile-view-username').textContent = profile.username;
+    document.getElementById('profile-view-bio').textContent = profile.bio || '';
+    document.getElementById('profile-view-bio').style.display = profile.bio ? 'block' : 'none';
+
+    const user = MockoAuth.getUser();
+    const joined = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    document.getElementById('profile-view-joined').textContent = `Joined ${joined}`;
+
+    const links = profile.social_links || {};
+    const linkMeta = [['twitter', 'Twitter / X'], ['linkedin', 'LinkedIn'], ['instagram', 'Instagram']];
+    const linksEl = document.getElementById('profile-view-links');
+    linksEl.innerHTML = linkMeta
+      .filter(([key]) => links[key])
+      .map(([key, label]) => `<a href="${links[key]}" target="_blank" rel="noopener" class="pill-btn" style="text-decoration:none;">${label}</a>`)
+      .join('');
+  }
+
+  function populateProfileEditForm(profile) {
+    document.getElementById('profile-username').value = profile.username || '';
+    document.getElementById('profile-bio').value = profile.bio || '';
+    const links = profile.social_links || {};
+    document.getElementById('profile-twitter').value = links.twitter || '';
+    document.getElementById('profile-linkedin').value = links.linkedin || '';
+    document.getElementById('profile-instagram').value = links.instagram || '';
+    renderAvatarInto('profile-avatar-preview', profile);
+  }
+
+  function renderAvatarInto(elId, profile) {
+    const el = document.getElementById(elId);
     if (profile.avatar_url) {
       el.style.backgroundImage = `url(${profile.avatar_url})`;
       el.textContent = '';
@@ -1198,11 +1321,27 @@
     }
   }
 
+  function enterProfileEditMode() {
+    document.getElementById('profile-view').style.display = 'none';
+    document.getElementById('profile-edit').style.display = 'block';
+  }
+
+  function exitProfileEditMode() {
+    document.getElementById('profile-view').style.display = 'block';
+    document.getElementById('profile-edit').style.display = 'none';
+    document.getElementById('profile-error').textContent = '';
+  }
+
+  function cancelProfileEdit() {
+    if (currentProfile) populateProfileEditForm(currentProfile);
+    exitProfileEditMode();
+  }
+
   async function saveProfile() {
     const errorEl = document.getElementById('profile-error');
     errorEl.textContent = '';
     try {
-      await MockoProfile.updateProfile({
+      currentProfile = await MockoProfile.updateProfile({
         username: document.getElementById('profile-username').value.trim(),
         bio: document.getElementById('profile-bio').value.trim(),
         social_links: {
@@ -1211,6 +1350,9 @@
           instagram: document.getElementById('profile-instagram').value.trim(),
         },
       });
+      renderProfileView(currentProfile);
+      updateAccountBadge(currentProfile);
+      exitProfileEditMode();
     } catch (err) {
       errorEl.textContent = (err.message || '').includes('duplicate')
         ? 'That username is taken.'
@@ -1224,8 +1366,10 @@
     const errorEl = document.getElementById('profile-error');
     errorEl.textContent = '';
     try {
-      const profile = await MockoProfile.uploadAvatar(file);
-      renderAvatarPreview(profile);
+      currentProfile = await MockoProfile.uploadAvatar(file);
+      renderAvatarInto('profile-avatar-preview', currentProfile);
+      renderAvatarInto('profile-view-avatar', currentProfile);
+      updateAccountBadge(currentProfile);
     } catch (err) {
       errorEl.textContent = err.message || 'Avatar upload failed.';
     }
