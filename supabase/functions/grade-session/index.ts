@@ -24,6 +24,23 @@ interface DeepgramWord {
   end: number;
 }
 
+// Retries once on network errors or 5xx responses -- upstream APIs
+// occasionally have transient hiccups, and a single retry is cheap
+// insurance against a session failing for no reason the user caused.
+async function fetchWithRetry(url: string, init: RequestInit): Promise<Response> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(url, init);
+      if (res.ok || res.status < 500) return res;
+      if (attempt === 1) return res;
+    } catch (err) {
+      if (attempt === 1) throw err;
+    }
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  throw new Error("unreachable");
+}
+
 function countFillers(transcript: string): number {
   const lower = transcript.toLowerCase();
   return FILLER_PATTERNS.reduce((count, phrase) => {
@@ -51,7 +68,7 @@ function computePaceAndPauses(words: DeepgramWord[]) {
 }
 
 async function transcribe(signedUrl: string) {
-  const res = await fetch(
+  const res = await fetchWithRetry(
     "https://api.deepgram.com/v1/listen?smart_format=true&punctuate=true&model=nova-2",
     {
       method: "POST",
@@ -95,7 +112,7 @@ Question asked: "${question}"
 
 Transcript: "${transcript}"`;
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetchWithRetry("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "x-api-key": ANTHROPIC_API_KEY,
@@ -113,8 +130,17 @@ Transcript: "${transcript}"`;
   }
   const data = await res.json();
   const text = data.content[0].text as string;
-  const jsonText = text.trim().replace(/^```json\s*|\s*```$/g, "");
-  return JSON.parse(jsonText);
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start === -1 || end === -1) {
+    throw new Error(`Claude response had no JSON object: ${text}`);
+  }
+  const jsonText = text.slice(start, end + 1);
+  try {
+    return JSON.parse(jsonText);
+  } catch {
+    throw new Error(`Could not parse Claude JSON: ${jsonText}`);
+  }
 }
 
 const corsHeaders = {
