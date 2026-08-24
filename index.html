@@ -20,6 +20,20 @@
     --line: #2A2F3A;
   }
 
+  :root[data-theme="light"] {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface-2: #EFECE5;
+    --cue: #171B22;
+    --cue-dim: #2A2F3A;
+    --record: #D6303E;
+    --good: #1F8577;
+    --warn: #C97F1E;
+    --text: #1A1D23;
+    --text-muted: #6B7280;
+    --line: #E2DFD8;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
@@ -246,9 +260,30 @@
   .math-input:focus { outline: none; border-color: var(--good); }
   .math-progress { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
 
-  .auth-status { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
-  .auth-status button { font-family: 'Inter'; font-size: 12px; color: var(--text-muted); background: none; border: none; cursor: pointer; text-decoration: underline; }
-  .auth-status button:hover { color: var(--text); }
+  .login-prompt { display: flex; align-items: center; gap: 10px; }
+  .login-prompt-text { font-size: 12px; color: var(--text-muted); display: none; }
+  @media (min-width: 560px) { .login-prompt-text { display: inline; } }
+
+  .account-menu { position: relative; }
+  .account-trigger { display: flex; align-items: center; gap: 8px; background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: 8px; }
+  .account-trigger:hover { background: var(--surface-2); }
+  .account-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--good); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; font-family: 'Barlow Condensed'; background-size: cover; background-position: center; flex-shrink: 0; }
+  .account-name { font-size: 13px; color: var(--text); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .account-caret { font-size: 10px; color: var(--text-muted); }
+  .account-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 6px; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); z-index: 10; }
+  .account-dropdown button { display: block; width: 100%; text-align: left; background: none; border: none; padding: 9px 12px; border-radius: 6px; font-family: 'Inter'; font-size: 13.5px; color: var(--text); cursor: pointer; }
+  .account-dropdown button:hover { background: var(--surface-2); }
+  .account-dropdown-divider { height: 1px; background: var(--line); margin: 6px 4px; }
+
+  .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--good); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 28px; font-family: 'Barlow Condensed'; background-size: cover; background-position: center; flex-shrink: 0; }
+
+  .faq-item { border-bottom: 1px solid var(--line); padding: 14px 0; }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-item summary { font-size: 14.5px; font-weight: 600; cursor: pointer; list-style: none; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::before { content: '+'; color: var(--good); margin-right: 10px; font-weight: 700; }
+  .faq-item[open] summary::before { content: '−'; }
+  .faq-item p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-top: 10px; padding-left: 20px; }
 
   .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px; max-width: 380px; margin: 0 auto; }
   .auth-field { margin-bottom: 16px; }
@@ -264,7 +299,7 @@
 <div class="app">
 
   <div class="topbar">
-    <div class="logo">
+    <div class="logo" onclick="goToHome()" style="cursor:pointer;">
       <svg class="mascot" width="34" height="34" viewBox="0 0 34 34" fill="none">
         <circle cx="17" cy="17" r="15.5" fill="var(--good)"/>
         <circle cx="11.5" cy="14.5" r="2" fill="var(--bg)"/>
@@ -274,11 +309,10 @@
       <div class="logo-text">MOCKO</div>
     </div>
     <div class="nav-tabs">
-      <button class="nav-tab active" id="tab-practice" onclick="switchTab('practice')">Practice</button>
+      <button class="nav-tab active" id="tab-home" onclick="switchTab('home')">Home</button>
       <button class="nav-tab" id="tab-drills" onclick="switchTab('drills')">Drills</button>
-      <button class="nav-tab" id="tab-history" onclick="switchTab('history')">History &amp; Trends</button>
     </div>
-    <div class="auth-status" id="auth-status"></div>
+    <div id="account-area"></div>
   </div>
 
   <!-- DASHBOARD (mode choice first) -->
@@ -339,6 +373,103 @@
       <div class="auth-switch" id="auth-switch">
         New here? <a onclick="setAuthMode('signup')">Create an account</a>
       </div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="screen" id="screen-profile">
+    <button class="back-btn" onclick="goToHome()">← Back</button>
+    <div class="hero">
+      <h1 class="display">Your Profile</h1>
+      <p>This is the start of Mocko as a platform — friends and more are coming.</p>
+    </div>
+    <div class="auth-panel" style="max-width:460px;">
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:24px;">
+        <div class="profile-avatar" id="profile-avatar-preview">?</div>
+        <label class="btn btn-secondary" style="cursor:pointer; display:inline-block;">
+          Change photo
+          <input type="file" accept="image/*" id="profile-avatar-input" style="display:none;" onchange="handleAvatarUpload(event)">
+        </label>
+      </div>
+      <div class="auth-field">
+        <label>Username</label>
+        <input type="text" id="profile-username">
+      </div>
+      <div class="auth-field">
+        <label>Bio</label>
+        <input type="text" id="profile-bio" placeholder="A short intro (optional)">
+      </div>
+      <div class="auth-field">
+        <label>Twitter / X</label>
+        <input type="text" id="profile-twitter" placeholder="https://x.com/...">
+      </div>
+      <div class="auth-field">
+        <label>LinkedIn</label>
+        <input type="text" id="profile-linkedin" placeholder="https://linkedin.com/in/...">
+      </div>
+      <div class="auth-field">
+        <label>Instagram</label>
+        <input type="text" id="profile-instagram" placeholder="https://instagram.com/...">
+      </div>
+      <div class="auth-error" id="profile-error"></div>
+      <div id="profile-joined" style="font-size:13px; color:var(--text-muted); margin-bottom:16px;"></div>
+      <div class="btn-row" style="justify-content:flex-end;">
+        <button class="btn btn-primary" onclick="saveProfile()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="screen" id="screen-settings">
+    <button class="back-btn" onclick="goToHome()">← Back</button>
+    <div class="hero">
+      <h1 class="display">Settings</h1>
+      <p>More settings are coming as Mocko grows.</p>
+    </div>
+    <div class="select-panel" style="max-width:460px;">
+      <div class="select-group" style="margin-bottom:0;">
+        <div class="select-group-label">Theme</div>
+        <div class="select-group-sub">Choose how Mocko looks.</div>
+        <div class="toggle-row">
+          <div class="toggle-card" id="theme-dark-card" onclick="setTheme('dark')"><h4>Dark</h4><p>Default</p></div>
+          <div class="toggle-card" id="theme-light-card" onclick="setTheme('light')"><h4>Light</h4><p>Easier in bright rooms</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HELP -->
+  <div class="screen" id="screen-help">
+    <button class="back-btn" onclick="goToHome()">← Back</button>
+    <div class="hero">
+      <h1 class="display">Help</h1>
+      <p>Common questions about how Mocko works.</p>
+    </div>
+    <div class="theme-section">
+      <details class="faq-item">
+        <summary>What is Mocko?</summary>
+        <p>A practice tool for job interviews. Record mock answers and get an AI-scored breakdown, or run quick skill drills — filler words, mental math, and structuring a STAR answer.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Is my recording stored?</summary>
+        <p>Yes — recordings are stored privately under your account so they can be transcribed and graded. Only you can access your own recordings.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How is my answer graded?</summary>
+        <p>Your recording is transcribed, then scored against a rubric — content & structure, clarity, pace, and tone — using Claude, along with pace and filler-word stats pulled directly from the transcript.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Why do I need to log in?</summary>
+        <p>So your recordings and scores are saved to your account and you can track progress over time, instead of losing everything when you close the tab.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I delete my data?</summary>
+        <p>There's no self-serve delete yet — reach out and we'll take care of it. Self-serve account deletion is on the roadmap.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What's coming next?</summary>
+        <p>Full multi-question interviews, a live voice mock interview mode, more drills, and eventually friends and shared progress.</p>
+      </details>
     </div>
   </div>
 
@@ -614,6 +745,7 @@
 <script type="module" src="js/auth.js"></script>
 <script type="module" src="js/recording.js"></script>
 <script type="module" src="js/history.js"></script>
+<script type="module" src="js/profile.js"></script>
 <script>
   const state = { type: null, length: null, mode: null };
   let pendingAuthAction = null;
@@ -621,24 +753,86 @@
   // --- Auth ---
   window.addEventListener('mocko-auth-change', (e) => {
     const user = e.detail;
-    const statusEl = document.getElementById('auth-status');
-    statusEl.innerHTML = user
-      ? `Signed in as ${user.email} <button onclick="MockoAuth.signOut()">Log out</button>`
-      : '';
+    const areaEl = document.getElementById('account-area');
+    if (user) {
+      const name = user.email.split('@')[0];
+      areaEl.innerHTML = `
+        <div class="account-menu">
+          <button class="account-trigger" onclick="toggleAccountMenu(event)">
+            <div class="account-avatar" id="account-avatar">${name[0].toUpperCase()}</div>
+            <span class="account-name">${name}</span>
+            <span class="account-caret">▾</span>
+          </button>
+          <div class="account-dropdown" id="account-dropdown" style="display:none;">
+            <button onclick="goToProfile()">Profile</button>
+            <button onclick="openStats()">Stats</button>
+            <button onclick="goToSettings()">Settings</button>
+            <button onclick="goToHelp()">Help</button>
+            <div class="account-dropdown-divider"></div>
+            <button onclick="MockoAuth.signOut(); closeAccountMenu();">Sign Out</button>
+          </div>
+        </div>`;
+    } else {
+      areaEl.innerHTML = `
+        <div class="login-prompt">
+          <span class="login-prompt-text">Log in to track your scores</span>
+          <button class="btn btn-secondary" onclick="setAuthMode('signin'); goTo('auth');">Log In</button>
+        </div>`;
+    }
     if (user && pendingAuthAction) {
       const action = pendingAuthAction;
       pendingAuthAction = null;
-      if (action === 'record') { chooseMode('record'); }
-      else if (action === 'history') { switchTab('history'); }
+      action();
     }
   });
 
-  function requireAuth(action) {
+  function requireAuth(onAuthed) {
     if (window.MockoAuth && window.MockoAuth.getUser()) return true;
-    pendingAuthAction = action;
+    pendingAuthAction = onAuthed;
     setAuthMode('signin');
     goTo('auth');
     return false;
+  }
+
+  function goToHome() {
+    closeAccountMenu();
+    switchTab('home');
+  }
+
+  function toggleAccountMenu(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('account-dropdown');
+    dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+  }
+  function closeAccountMenu() {
+    const dd = document.getElementById('account-dropdown');
+    if (dd) dd.style.display = 'none';
+  }
+  document.addEventListener('click', closeAccountMenu);
+
+  function openStats() {
+    closeAccountMenu();
+    if (!requireAuth(openStats)) return;
+    goTo('history');
+    loadHistory();
+  }
+
+  function goToProfile() {
+    closeAccountMenu();
+    if (!requireAuth(goToProfile)) return;
+    goTo('profile');
+    loadProfile();
+  }
+
+  function goToSettings() {
+    closeAccountMenu();
+    goTo('settings');
+    updateThemeCards();
+  }
+
+  function goToHelp() {
+    closeAccountMenu();
+    goTo('help');
   }
 
   function setAuthMode(mode) {
@@ -701,14 +895,9 @@
   }
 
   function switchTab(tab) {
-    if (tab === 'history' && !requireAuth('history')) return;
-    document.getElementById('tab-practice').classList.toggle('active', tab === 'practice');
+    document.getElementById('tab-home').classList.toggle('active', tab === 'home');
     document.getElementById('tab-drills').classList.toggle('active', tab === 'drills');
-    document.getElementById('tab-history').classList.toggle('active', tab === 'history');
-    if (tab === 'history') {
-      goTo('history');
-      loadHistory();
-    } else if (tab === 'drills') {
+    if (tab === 'drills') {
       goTo('drills');
     } else {
       goTo('dashboard');
@@ -716,7 +905,7 @@
   }
 
   function chooseMode(mode) {
-    if (mode === 'record' && !requireAuth('record')) return;
+    if (!requireAuth(() => chooseMode(mode))) return;
     state.mode = mode;
     document.getElementById('setup-sub').textContent = mode === 'record'
       ? "Choose your length and format, then step in front of the camera."
@@ -957,6 +1146,91 @@
     }).join('');
   }
 
+  // --- Theme ---
+  (function initTheme() {
+    const saved = localStorage.getItem('mocko-theme');
+    if (saved) document.documentElement.dataset.theme = saved;
+  })();
+
+  function setTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('mocko-theme', theme);
+    updateThemeCards();
+  }
+
+  function updateThemeCards() {
+    const theme = document.documentElement.dataset.theme || 'dark';
+    document.getElementById('theme-dark-card').classList.toggle('selected', theme === 'dark');
+    document.getElementById('theme-light-card').classList.toggle('selected', theme === 'light');
+  }
+
+  // --- Profile ---
+  async function loadProfile() {
+    const errorEl = document.getElementById('profile-error');
+    errorEl.textContent = '';
+    try {
+      const profile = await MockoProfile.getProfile();
+      document.getElementById('profile-username').value = profile.username || '';
+      document.getElementById('profile-bio').value = profile.bio || '';
+      const links = profile.social_links || {};
+      document.getElementById('profile-twitter').value = links.twitter || '';
+      document.getElementById('profile-linkedin').value = links.linkedin || '';
+      document.getElementById('profile-instagram').value = links.instagram || '';
+      renderAvatarPreview(profile);
+
+      const user = MockoAuth.getUser();
+      const joined = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      document.getElementById('profile-joined').textContent = `Joined ${joined}`;
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = 'Could not load profile.';
+    }
+  }
+
+  function renderAvatarPreview(profile) {
+    const el = document.getElementById('profile-avatar-preview');
+    if (profile.avatar_url) {
+      el.style.backgroundImage = `url(${profile.avatar_url})`;
+      el.textContent = '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = (profile.username || '?')[0].toUpperCase();
+    }
+  }
+
+  async function saveProfile() {
+    const errorEl = document.getElementById('profile-error');
+    errorEl.textContent = '';
+    try {
+      await MockoProfile.updateProfile({
+        username: document.getElementById('profile-username').value.trim(),
+        bio: document.getElementById('profile-bio').value.trim(),
+        social_links: {
+          twitter: document.getElementById('profile-twitter').value.trim(),
+          linkedin: document.getElementById('profile-linkedin').value.trim(),
+          instagram: document.getElementById('profile-instagram').value.trim(),
+        },
+      });
+    } catch (err) {
+      errorEl.textContent = (err.message || '').includes('duplicate')
+        ? 'That username is taken.'
+        : (err.message || 'Something went wrong.');
+    }
+  }
+
+  async function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const errorEl = document.getElementById('profile-error');
+    errorEl.textContent = '';
+    try {
+      const profile = await MockoProfile.uploadAvatar(file);
+      renderAvatarPreview(profile);
+    } catch (err) {
+      errorEl.textContent = err.message || 'Avatar upload failed.';
+    }
+  }
+
   function stopMediaStream() {
     if (mediaStream) {
       mediaStream.getTracks().forEach(t => t.stop());
@@ -1072,6 +1346,7 @@
   }
 
   function startDrill(key) {
+    if (!requireAuth(() => startDrill(key))) return;
     currentDrill = key;
     const meta = drillMeta[key];
     document.getElementById('drill-label').textContent = meta.label;
