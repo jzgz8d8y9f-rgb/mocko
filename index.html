@@ -118,13 +118,12 @@
   .cue-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; opacity: 0.55; margin-bottom: 10px; }
   .cue-question { font-size: 19px; font-weight: 600; line-height: 1.4; }
 
-  .rec-stage { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 40px 24px; text-align: center; margin-bottom: 20px; position: relative; }
-  .rec-visual { color: var(--record); display: flex; justify-content: center; margin-bottom: 16px; }
-  .rec-visual .waveform span { animation-play-state: paused; height: 6px; }
-  .rec-visual.recording .waveform span { animation-play-state: running; }
+  .rec-stage { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 20px; position: relative; }
+  .rec-video { width: 100%; max-height: 340px; object-fit: cover; border-radius: 10px; background: #000; transform: scaleX(-1); display: block; margin-bottom: 12px; }
   .rec-status { font-size: 13px; color: var(--text-muted); }
-  .eye-indicator { position: absolute; top: 14px; right: 14px; font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
-  .eye-indicator .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); }
+  .prep-overlay { position: absolute; inset: 16px; border-radius: 10px; background: rgba(14,17,22,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .prep-number { font-family: 'Barlow Condensed'; font-size: 72px; font-weight: 800; color: var(--good); line-height: 1; }
+  .prep-label { font-size: 13px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
 
   .overall-score { text-align: center; margin-bottom: 28px; }
   .overall-score .num { font-family: 'Barlow Condensed'; font-size: 64px; font-weight: 800; color: var(--good); line-height: 1; }
@@ -246,6 +245,19 @@
   .math-input { width: 180px; text-align: center; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'IBM Plex Mono'; font-size: 20px; }
   .math-input:focus { outline: none; border-color: var(--good); }
   .math-progress { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+
+  .auth-status { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
+  .auth-status button { font-family: 'Inter'; font-size: 12px; color: var(--text-muted); background: none; border: none; cursor: pointer; text-decoration: underline; }
+  .auth-status button:hover { color: var(--text); }
+
+  .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px; max-width: 380px; margin: 0 auto; }
+  .auth-field { margin-bottom: 16px; }
+  .auth-field label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .auth-field input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Inter'; font-size: 14px; }
+  .auth-field input:focus { outline: none; border-color: var(--good); }
+  .auth-error { color: var(--record); font-size: 13px; margin-bottom: 14px; min-height: 18px; }
+  .auth-switch { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 18px; }
+  .auth-switch a { color: var(--good); cursor: pointer; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -266,6 +278,7 @@
       <button class="nav-tab" id="tab-drills" onclick="switchTab('drills')">Drills</button>
       <button class="nav-tab" id="tab-history" onclick="switchTab('history')">History &amp; Trends</button>
     </div>
+    <div class="auth-status" id="auth-status"></div>
   </div>
 
   <!-- DASHBOARD (mode choice first) -->
@@ -292,6 +305,41 @@
       </div>
     </div>
     <p class="footer-note">Prototype only — recording, grading, and voice are all simulated here.</p>
+  </div>
+
+  <!-- AUTH -->
+  <div class="screen" id="screen-auth">
+    <button class="back-btn" onclick="goTo('dashboard')">← Back</button>
+    <div class="hero">
+      <h1 class="display" id="auth-title">Sign in</h1>
+      <p id="auth-sub">Sign in to record a session and save your progress.</p>
+    </div>
+    <div class="auth-panel">
+      <div class="btn-row" style="flex-direction:column; gap:10px; margin-bottom:20px;">
+        <button class="btn btn-secondary" style="width:100%" onclick="oauthSignIn('google')">Continue with Google</button>
+        <button class="btn btn-secondary" style="width:100%" onclick="oauthSignIn('linkedin')">Continue with LinkedIn</button>
+      </div>
+      <div class="divider" style="display:flex; align-items:center; gap:10px; background:none; height:auto; margin-bottom:20px;">
+        <div style="flex:1; height:1px; background:var(--line);"></div>
+        <span style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em;">or</span>
+        <div style="flex:1; height:1px; background:var(--line);"></div>
+      </div>
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="auth-email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <div class="auth-error" id="auth-error"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="auth-submit-btn" onclick="submitAuthForm()" style="width:100%">Sign In</button>
+      </div>
+      <div class="auth-switch" id="auth-switch">
+        New here? <a onclick="setAuthMode('signup')">Create an account</a>
+      </div>
+    </div>
   </div>
 
   <!-- SETUP: condensed single page -->
@@ -333,7 +381,7 @@
 
   <!-- RECORD STAGE -->
   <div class="screen" id="screen-record-setup">
-    <button class="back-btn" onclick="goTo('setup')">← Back</button>
+    <button class="back-btn" onclick="cancelRecordSetup()">← Back</button>
     <div class="studio-panel">
       <div class="onair-row">
         <div class="onair-badge" style="color:var(--record)"><div class="dot"></div> HIREVUE PRACTICE</div>
@@ -344,11 +392,14 @@
         <div class="cue-question" id="rec-question">Tell me about a time you disagreed with a teammate. How did you handle it?</div>
       </div>
       <div class="rec-stage" id="rec-stage">
-        <div class="eye-indicator"><div class="dot"></div><span id="eye-live">Eye contact: —</span></div>
-        <div class="rec-visual" id="rec-visual"><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
-        <div class="rec-status" id="rec-status">Camera ready. Hit record when you're set.</div>
+        <video class="rec-video" id="rec-video" autoplay muted playsinline></video>
+        <div class="prep-overlay" id="prep-overlay" style="display:none;">
+          <div class="prep-number" id="prep-number">10</div>
+          <div class="prep-label">Get ready...</div>
+        </div>
+        <div class="rec-status" id="rec-status">Requesting camera access...</div>
       </div>
-      <div class="btn-row"><button class="btn btn-record" id="rec-btn" onclick="toggleRecording()">● Start recording</button></div>
+      <div class="btn-row"><button class="btn btn-stop" id="rec-btn" onclick="stopRecording()" style="display:none;">■ Stop recording</button></div>
     </div>
   </div>
 
@@ -362,20 +413,16 @@
       </div>
 
       <div class="cat-row">
-        <div class="cat-row-top"><span class="cat-row-name">Content &amp; Structure <span class="cat-row-weight">(35%)</span></span><span class="cat-row-score">29.5 / 35</span></div>
-        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:84%"></div></div>
-      </div>
-      <div class="cat-row">
-        <div class="cat-row-top"><span class="cat-row-name">Communication Clarity <span class="cat-row-weight">(25%)</span></span><span class="cat-row-score">17.3 / 25</span></div>
-        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:69%; background:var(--warn)"></div></div>
-      </div>
-      <div class="cat-row">
-        <div class="cat-row-top"><span class="cat-row-name">Delivery &amp; Pace <span class="cat-row-weight">(15%)</span></span><span class="cat-row-score">11.9 / 15</span></div>
-        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:79%"></div></div>
-      </div>
-      <div class="cat-row">
-        <div class="cat-row-top"><span class="cat-row-name">Eye Contact <span class="cat-row-weight">(15%)</span></span><span class="cat-row-score">12.8 / 15</span></div>
+        <div class="cat-row-top"><span class="cat-row-name">Content &amp; Structure <span class="cat-row-weight">(40%)</span></span><span class="cat-row-score">34 / 40</span></div>
         <div class="cat-bar-track"><div class="cat-bar-fill" style="width:85%"></div></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-row-top"><span class="cat-row-name">Communication Clarity <span class="cat-row-weight">(30%)</span></span><span class="cat-row-score">21 / 30</span></div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:70%; background:var(--warn)"></div></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-row-top"><span class="cat-row-name">Delivery &amp; Pace <span class="cat-row-weight">(20%)</span></span><span class="cat-row-score">16 / 20</span></div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:80%"></div></div>
       </div>
       <div class="cat-row">
         <div class="cat-row-top"><span class="cat-row-name">Confidence &amp; Tone <span class="cat-row-weight">(10%)</span></span><span class="cat-row-score">6.5 / 10</span></div>
@@ -383,7 +430,6 @@
       </div>
 
       <div class="metric-grid">
-        <div class="metric-card"><div class="metric-label">Eye contact</div><div class="metric-val">85%</div></div>
         <div class="metric-card"><div class="metric-label">Speaking pace</div><div class="metric-val">142 wpm</div></div>
         <div class="metric-card"><div class="metric-label">Filler words</div><div class="metric-val">11</div></div>
         <div class="metric-card"><div class="metric-label">Avg. pause length</div><div class="metric-val">0.6s</div></div>
@@ -393,7 +439,7 @@
         <h4>What worked</h4>
         <ul>
           <li>Strong STAR structure — situation and task were clear in the first 15 seconds.</li>
-          <li>Consistent eye contact throughout, only dropping off near the end.</li>
+          <li>Clear, confident opening — got straight to the point without hedging.</li>
           <li>Good pacing — not rushed, gave the interviewer time to follow along.</li>
         </ul>
       </div>
@@ -410,7 +456,7 @@
       <div class="transcript" id="t1">"So, um, there was this one project where me and a teammate, like, disagreed on the approach... I felt like data was important but he wanted to just go with his gut. I asked him if we could pull the numbers before deciding, and eventually he agreed and we found out my approach was actually faster."</div>
 
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="goTo('record-setup')">↻ Retry this round</button>
+        <button class="btn btn-secondary" onclick="startRecordSetup()">↻ Retry this round</button>
         <button class="btn btn-primary" onclick="goTo('dashboard')">Done →</button>
       </div>
     </div>
@@ -442,7 +488,7 @@
     <div class="step-label">Your Record</div>
     <div class="hero">
       <h1 class="display">History &amp; Trends</h1>
-      <p>Patterns across your past sessions — where you're consistently strong, and what keeps coming up.</p>
+      <p>Your past sessions and how your scores are trending.</p>
     </div>
 
     <div class="trend-summary">
@@ -451,36 +497,7 @@
       <div class="trend-card"><div class="tlabel">Most improved</div><div class="tval">Eye Contact</div><div class="tsub">62% → 85%</div></div>
     </div>
 
-    <div class="theme-section">
-      <h4>Recurring Themes</h4>
-      <div class="theme-item">
-        <div class="tname"><span class="theme-tag recurring">Recurring</span> Filler words ("um," "like")</div>
-        <div class="theme-freq">6 of 7 sessions</div>
-      </div>
-      <div class="theme-item">
-        <div class="tname"><span class="theme-tag recurring">Recurring</span> Rushed conclusions / weak resolutions</div>
-        <div class="theme-freq">5 of 7 sessions</div>
-      </div>
-      <div class="theme-item">
-        <div class="tname"><span class="theme-tag recurring">Recurring</span> Flat tone on key moments</div>
-        <div class="theme-freq">4 of 7 sessions</div>
-      </div>
-      <div class="theme-item">
-        <div class="tname"><span class="theme-tag strength">Strength</span> Clear STAR structure</div>
-        <div class="theme-freq">7 of 7 sessions</div>
-      </div>
-      <div class="theme-item">
-        <div class="tname"><span class="theme-tag strength">Strength</span> Steady eye contact</div>
-        <div class="theme-freq">6 of 7 sessions</div>
-      </div>
-    </div>
-
-    <div class="history-list">
-      <div class="history-row"><div class="history-left"><div class="history-title">Full Session — Behavioral</div><div class="history-meta">Finance · Aug 18, 2026</div></div><div class="history-score">78</div></div>
-      <div class="history-row"><div class="history-left"><div class="history-title">Quick Round — Technical</div><div class="history-meta">Finance · Aug 15, 2026</div></div><div class="history-score">71</div></div>
-      <div class="history-row"><div class="history-left"><div class="history-title">Full Session — Both</div><div class="history-meta">Finance · Aug 10, 2026</div></div><div class="history-score">76</div></div>
-      <div class="history-row"><div class="history-left"><div class="history-title">Quick Round — Behavioral</div><div class="history-meta">Finance · Aug 6, 2026</div></div><div class="history-score">69</div></div>
-    </div>
+    <div class="history-list" id="history-list"></div>
   </div>
 
   <!-- DRILLS -->
@@ -593,8 +610,78 @@
 
 </div>
 
+<script type="module" src="js/supabase-client.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/recording.js"></script>
+<script type="module" src="js/history.js"></script>
 <script>
   const state = { type: null, length: null, mode: null };
+  let pendingAuthAction = null;
+
+  // --- Auth ---
+  window.addEventListener('mocko-auth-change', (e) => {
+    const user = e.detail;
+    const statusEl = document.getElementById('auth-status');
+    statusEl.innerHTML = user
+      ? `Signed in as ${user.email} <button onclick="MockoAuth.signOut()">Log out</button>`
+      : '';
+    if (user && pendingAuthAction) {
+      const action = pendingAuthAction;
+      pendingAuthAction = null;
+      if (action === 'record') { chooseMode('record'); }
+      else if (action === 'history') { switchTab('history'); }
+    }
+  });
+
+  function requireAuth(action) {
+    if (window.MockoAuth && window.MockoAuth.getUser()) return true;
+    pendingAuthAction = action;
+    setAuthMode('signin');
+    goTo('auth');
+    return false;
+  }
+
+  function setAuthMode(mode) {
+    const isSignup = mode === 'signup';
+    document.getElementById('auth-title').textContent = isSignup ? 'Create your account' : 'Sign in';
+    document.getElementById('auth-sub').textContent = isSignup
+      ? 'Save your sessions and track progress over time.'
+      : 'Sign in to record a session and save your progress.';
+    document.getElementById('auth-submit-btn').textContent = isSignup ? 'Create Account' : 'Sign In';
+    document.getElementById('auth-submit-btn').dataset.mode = mode;
+    document.getElementById('auth-switch').innerHTML = isSignup
+      ? `Already have an account? <a onclick="setAuthMode('signin')">Sign in</a>`
+      : `New here? <a onclick="setAuthMode('signup')">Create an account</a>`;
+    document.getElementById('auth-error').textContent = '';
+  }
+
+  async function oauthSignIn(provider) {
+    const errorEl = document.getElementById('auth-error');
+    errorEl.textContent = '';
+    try {
+      if (provider === 'google') await MockoAuth.signInWithGoogle();
+      else if (provider === 'linkedin') await MockoAuth.signInWithLinkedIn();
+    } catch (err) {
+      errorEl.textContent = err.message || 'Something went wrong.';
+    }
+  }
+
+  async function submitAuthForm() {
+    const mode = document.getElementById('auth-submit-btn').dataset.mode || 'signin';
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const errorEl = document.getElementById('auth-error');
+    errorEl.textContent = '';
+    try {
+      if (mode === 'signup') {
+        await MockoAuth.signUp(email, password);
+      } else {
+        await MockoAuth.signIn(email, password);
+      }
+    } catch (err) {
+      errorEl.textContent = err.message || 'Something went wrong.';
+    }
+  }
 
   document.querySelectorAll('#length-row .toggle-card').forEach(el => el.addEventListener('click', () => {
     document.querySelectorAll('#length-row .toggle-card').forEach(c => c.classList.remove('selected'));
@@ -614,11 +701,13 @@
   }
 
   function switchTab(tab) {
+    if (tab === 'history' && !requireAuth('history')) return;
     document.getElementById('tab-practice').classList.toggle('active', tab === 'practice');
     document.getElementById('tab-drills').classList.toggle('active', tab === 'drills');
     document.getElementById('tab-history').classList.toggle('active', tab === 'history');
     if (tab === 'history') {
       goTo('history');
+      loadHistory();
     } else if (tab === 'drills') {
       goTo('drills');
     } else {
@@ -627,6 +716,7 @@
   }
 
   function chooseMode(mode) {
+    if (mode === 'record' && !requireAuth('record')) return;
     state.mode = mode;
     document.getElementById('setup-sub').textContent = mode === 'record'
       ? "Choose your length and format, then step in front of the camera."
@@ -636,7 +726,7 @@
 
   function beginSession() {
     if (state.mode === 'record') {
-      goTo('record-setup');
+      startRecordSetup();
     } else {
       startVoice();
     }
@@ -647,36 +737,241 @@
     document.getElementById('screen-' + name).classList.add('active');
   }
 
-  // Record & Review
-  let recording = false, recInterval, recSeconds = 0, eyeInterval;
-  function toggleRecording() {
-    const btn = document.getElementById('rec-btn');
-    const visual = document.getElementById('rec-visual');
+  // Record & Review — live camera preview, 10s prep countdown, then a
+  // 120s answer countdown that auto-stops (matches a real HireVue screen).
+  // Grading is still simulated below; the recording itself is real —
+  // wiring the captured blob up to transcription/grading is a follow-up
+  // once the Supabase/Deepgram/Anthropic backend is connected.
+  const PREP_SECONDS = 10, ANSWER_SECONDS = 120;
+  let mediaStream = null, mediaRecorder = null, recordedChunks = [];
+  let prepInterval, prepSecondsLeft = PREP_SECONDS;
+  let answerInterval, answerSecondsLeft = ANSWER_SECONDS;
+
+  async function startRecordSetup() {
+    goTo('record-setup');
     const status = document.getElementById('rec-status');
-    recording = !recording;
-    if (recording) {
-      btn.textContent = '■ Stop recording';
-      btn.classList.remove('btn-record'); btn.classList.add('btn-stop');
-      visual.classList.add('recording');
-      status.textContent = 'Recording...';
-      recSeconds = 0;
-      recInterval = setInterval(() => {
-        recSeconds++;
-        const m = String(Math.floor(recSeconds/60)).padStart(2,'0');
-        const s = String(recSeconds%60).padStart(2,'0');
-        document.getElementById('rec-timer').textContent = m + ':' + s;
-      }, 1000);
-      eyeInterval = setInterval(() => {
-        document.getElementById('eye-live').textContent = 'Eye contact: ' + (78 + Math.floor(Math.random()*15)) + '%';
-      }, 800);
-    } else {
-      clearInterval(recInterval); clearInterval(eyeInterval);
-      visual.classList.remove('recording');
-      status.textContent = 'Processing — analyzing transcript, pace, and eye contact...';
-      btn.textContent = '● Start recording';
-      btn.classList.remove('btn-stop'); btn.classList.add('btn-record');
-      setTimeout(() => goTo('feedback'), 1100);
+    const video = document.getElementById('rec-video');
+    const prepOverlay = document.getElementById('prep-overlay');
+    const prepNumber = document.getElementById('prep-number');
+    const stopBtn = document.getElementById('rec-btn');
+
+    stopBtn.style.display = 'none';
+    prepOverlay.style.display = 'none';
+    document.getElementById('rec-timer').textContent = '00:00';
+    status.textContent = 'Requesting camera access...';
+
+    try {
+      mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    } catch (err) {
+      status.textContent = 'Camera/mic access denied — allow access in your browser settings to try again.';
+      return;
     }
+    video.srcObject = mediaStream;
+    status.textContent = 'Get ready — recording starts automatically.';
+
+    prepSecondsLeft = PREP_SECONDS;
+    prepNumber.textContent = prepSecondsLeft;
+    prepOverlay.style.display = 'flex';
+    clearInterval(prepInterval);
+    prepInterval = setInterval(() => {
+      prepSecondsLeft--;
+      prepNumber.textContent = prepSecondsLeft;
+      if (prepSecondsLeft <= 0) {
+        clearInterval(prepInterval);
+        prepOverlay.style.display = 'none';
+        beginRecording();
+      }
+    }, 1000);
+  }
+
+  function beginRecording() {
+    const status = document.getElementById('rec-status');
+    const stopBtn = document.getElementById('rec-btn');
+
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(mediaStream, { mimeType: 'video/webm' });
+    mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = onRecordingStopped;
+    mediaRecorder.start();
+
+    status.textContent = 'Recording...';
+    stopBtn.style.display = 'inline-flex';
+
+    answerSecondsLeft = ANSWER_SECONDS;
+    updateAnswerTimer();
+    clearInterval(answerInterval);
+    answerInterval = setInterval(() => {
+      answerSecondsLeft--;
+      updateAnswerTimer();
+      if (answerSecondsLeft <= 0) {
+        clearInterval(answerInterval);
+        stopRecording();
+      }
+    }, 1000);
+  }
+
+  function updateAnswerTimer() {
+    const m = String(Math.floor(answerSecondsLeft / 60)).padStart(2, '0');
+    const s = String(answerSecondsLeft % 60).padStart(2, '0');
+    document.getElementById('rec-timer').textContent = m + ':' + s;
+  }
+
+  function stopRecording() {
+    clearInterval(answerInterval);
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+    stopMediaStream();
+    document.getElementById('rec-btn').style.display = 'none';
+    document.getElementById('rec-status').textContent = 'Processing — analyzing transcript, pace, and tone...';
+  }
+
+  async function onRecordingStopped() {
+    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+    const status = document.getElementById('rec-status');
+    const question = document.getElementById('rec-question').textContent;
+    try {
+      const session = await MockoRecording.uploadAndGrade({
+        blob,
+        question,
+        track: 'Finance',
+        format: state.type || 'Behavioral',
+        length: state.length || 'Quick',
+      });
+      renderFeedback(session);
+      goTo('feedback');
+    } catch (err) {
+      console.error(err);
+      status.textContent = 'Something went wrong grading your answer — please try again.';
+      document.getElementById('rec-btn').style.display = 'none';
+    }
+  }
+
+  function renderFeedback(session) {
+    const cats = session.category_scores;
+    const catDefs = [
+      ['content_structure', 'Content & Structure'],
+      ['communication_clarity', 'Communication Clarity'],
+      ['delivery_pace', 'Delivery & Pace'],
+      ['confidence_tone', 'Confidence & Tone'],
+    ];
+    document.querySelector('#screen-feedback .overall-score .num').innerHTML =
+      Math.round(session.overall_score) + '<span class="of100" style="font-size:22px">/100</span>';
+
+    const catRows = document.querySelectorAll('#screen-feedback .cat-row');
+    catDefs.forEach(([key, label], i) => {
+      const c = cats[key];
+      const pct = Math.round((c.score / c.max) * 100);
+      const row = catRows[i];
+      row.querySelector('.cat-row-name').innerHTML = `${label} <span class="cat-row-weight">(${c.max}%)</span>`;
+      row.querySelector('.cat-row-score').textContent = `${c.score} / ${c.max}`;
+      const fill = row.querySelector('.cat-bar-fill');
+      fill.style.width = pct + '%';
+      fill.style.background = pct < 70 ? 'var(--warn)' : '';
+    });
+
+    const metricVals = document.querySelectorAll('#screen-feedback .metric-val');
+    metricVals[0].textContent = `${session.wpm} wpm`;
+    metricVals[1].textContent = session.filler_count;
+    metricVals[2].textContent = `${session.avg_pause_length}s`;
+
+    const goodList = document.querySelector('#screen-feedback .pointers.good ul');
+    goodList.innerHTML = (session.pointers_good || []).map(p => `<li>${p}</li>`).join('');
+    const workList = document.querySelector('#screen-feedback .pointers.work ul');
+    workList.innerHTML = (session.pointers_work || []).map(p => `<li>${p}</li>`).join('');
+
+    document.getElementById('t1').textContent = session.transcript || '';
+  }
+
+  // --- History & Trends ---
+  const HISTORY_CATEGORIES = [
+    ['content_structure', 'Content & Structure'],
+    ['communication_clarity', 'Communication Clarity'],
+    ['delivery_pace', 'Delivery & Pace'],
+    ['confidence_tone', 'Confidence & Tone'],
+  ];
+
+  async function loadHistory() {
+    const listEl = document.getElementById('history-list');
+    const trendCards = document.querySelectorAll('#screen-history .trend-card');
+    listEl.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Loading...</p>';
+
+    let sessions;
+    try {
+      sessions = await MockoHistory.fetchSessions();
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Could not load history.</p>';
+      return;
+    }
+
+    if (sessions.length === 0) {
+      trendCards[0].querySelector('.tval').textContent = '0';
+      trendCards[0].querySelector('.tsub').textContent = 'No sessions yet';
+      trendCards[1].style.display = 'none';
+      trendCards[2].style.display = 'none';
+      listEl.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Record your first session to see it here.</p>';
+      return;
+    }
+
+    const avgScore = Math.round(sessions.reduce((a, s) => a + s.overall_score, 0) / sessions.length);
+    const first = sessions[sessions.length - 1];
+    const latest = sessions[0];
+
+    trendCards[0].style.display = '';
+    trendCards[0].querySelector('.tval').textContent = sessions.length;
+    trendCards[0].querySelector('.tsub').textContent = 'Finance track';
+
+    trendCards[1].style.display = '';
+    trendCards[1].querySelector('.tval').textContent = avgScore;
+    const delta = avgScore - Math.round(first.overall_score);
+    trendCards[1].querySelector('.tsub').textContent = sessions.length > 1
+      ? `${delta >= 0 ? '+' : ''}${delta} vs. first session`
+      : 'First session';
+
+    if (sessions.length > 1) {
+      let best = null;
+      HISTORY_CATEGORIES.forEach(([key, label]) => {
+        const firstPct = Math.round((first.category_scores[key].score / first.category_scores[key].max) * 100);
+        const latestPct = Math.round((latest.category_scores[key].score / latest.category_scores[key].max) * 100);
+        const delta = latestPct - firstPct;
+        if (!best || delta > best.delta) best = { label, firstPct, latestPct, delta };
+      });
+      trendCards[2].style.display = '';
+      trendCards[2].querySelector('.tval').textContent = best.label;
+      trendCards[2].querySelector('.tsub').textContent = `${best.firstPct}% → ${best.latestPct}%`;
+    } else {
+      trendCards[2].style.display = 'none';
+    }
+
+    listEl.innerHTML = sessions.map(s => {
+      const date = new Date(s.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const title = `${s.length} ${s.length === 'Quick' ? 'Round' : 'Session'} — ${s.format}`;
+      return `<div class="history-row">
+        <div class="history-left">
+          <div class="history-title">${title}</div>
+          <div class="history-meta">${s.track} · ${date}</div>
+        </div>
+        <div class="history-score">${Math.round(s.overall_score)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function stopMediaStream() {
+    if (mediaStream) {
+      mediaStream.getTracks().forEach(t => t.stop());
+      mediaStream = null;
+    }
+  }
+
+  function cancelRecordSetup() {
+    clearInterval(prepInterval);
+    clearInterval(answerInterval);
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+    stopMediaStream();
+    goTo('setup');
   }
 
   // Voice mock interview
