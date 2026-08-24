@@ -242,6 +242,14 @@
   .theme-freq { font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--text-muted); }
 
   .history-list { display: flex; flex-direction: column; gap: 10px; }
+  .resume-row { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+  .resume-row:last-child { margin-bottom: 0; }
+  .resume-label { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+  .resume-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .resume-primary-badge { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--good); border: 1px solid var(--good); border-radius: 20px; padding: 2px 8px; flex-shrink: 0; }
+  .resume-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .resume-actions button { background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; text-decoration: underline; padding: 0; }
+  .resume-actions button:hover { color: var(--text); }
   .history-row { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
   .history-left { display: flex; flex-direction: column; gap: 3px; }
   .history-title { font-size: 14px; font-weight: 600; }
@@ -364,8 +372,8 @@
       <div class="mode-card mode-a" onclick="chooseMode('record')">
         <div class="mode-icon"><div class="waveform" style="color:var(--record)"><span style="animation-delay:0s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.4s"></span></div></div>
         <div class="mode-eyebrow">Async · Scored</div>
-        <h3>HireVue Practice</h3>
-        <p>Get a question, record your answer on camera, and get a scored breakdown with specific pointers — like a real HireVue screen.</p>
+        <h3>On-Air Practice</h3>
+        <p>Mostly <b>behavioral</b>. Get a question, record your answer on camera, and get a scored breakdown — built for HireVue, Sonru, Spark Hire, and similar async video interview screens.</p>
         <div class="mode-cta">Start recording →</div>
       </div>
       <div class="mode-card mode-b" onclick="chooseMode('voice')">
@@ -473,6 +481,20 @@
         <button class="btn btn-primary" onclick="saveProfile()">Save</button>
       </div>
     </div>
+
+    <!-- RESUMES -->
+    <div class="auth-panel" style="max-width:460px; margin-top:16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <div style="font-size:15px; font-weight:700;">Resumes</div>
+        <label class="btn btn-secondary" style="cursor:pointer; font-size:13px; padding:8px 14px;">
+          Upload
+          <input type="file" accept=".pdf" id="resume-upload-input" style="display:none;" onchange="handleResumeUpload(event)">
+        </label>
+      </div>
+      <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:14px;">Your primary resume can be used to tailor On-Air Practice questions to your actual experience. PDF only, for now.</p>
+      <div id="resume-error" class="auth-error" style="min-height:0; margin-bottom:8px;"></div>
+      <div id="resume-list"></div>
+    </div>
   </div>
 
   <!-- SETTINGS -->
@@ -532,31 +554,90 @@
   <!-- SETUP: condensed single page -->
   <div class="screen" id="screen-setup">
     <button class="back-btn" onclick="goTo('dashboard')">← Back</button>
-    <div class="step-label">Session Setup — Finance Track</div>
+    <div class="step-label">Session Setup</div>
     <div class="hero">
       <h1 class="display">Set up your session</h1>
-      <p id="setup-sub">Choose your length and format to begin.</p>
+      <p id="setup-sub">Choose your format and difficulty to begin.</p>
     </div>
 
     <div class="select-panel">
       <div class="select-group">
-        <div class="select-group-label">Length of Session</div>
-        <div class="select-group-sub">Quick is a single question. Full runs a proper multi-question set.</div>
-        <div class="toggle-row" id="length-row">
-          <div class="toggle-card" data-len="Quick"><h4>Quick Mode</h4><p>1 question · ~3 min</p></div>
-          <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions · ~20 min</p></div>
+        <div class="select-group-label">Industry</div>
+        <div class="select-group-sub">Saved to your profile so it's remembered next time.</div>
+        <div class="pill-row" id="industry-row">
+          <button class="pill-btn" data-industry="ib">Investment Banking</button>
+          <button class="pill-btn" data-industry="consulting">Consulting</button>
+          <button class="pill-btn" data-industry="tech">Tech</button>
+          <button class="pill-btn" data-industry="quant">Quant</button>
+          <button class="pill-btn" data-industry="pe">Private Equity</button>
+          <button class="pill-btn" data-industry="general">General</button>
         </div>
       </div>
 
       <div class="divider"></div>
 
-      <div class="select-group">
-        <div class="select-group-label">Format</div>
-        <div class="select-group-sub">You can combine question types within a single session.</div>
-        <div class="pill-row" id="type-row">
-          <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
-          <button class="pill-btn" data-type="Technical">Technical only</button>
-          <button class="pill-btn" data-type="Both">Both</button>
+      <!-- ON-AIR PRACTICE controls -->
+      <div id="setup-record-block">
+        <div class="select-group">
+          <div class="select-group-label">Format</div>
+          <div class="select-group-sub">Speed Round is one question. Full Interview runs several.</div>
+          <div class="toggle-row" id="length-row">
+            <div class="toggle-card" data-len="Quick"><h4>Speed Round</h4><p>1 question</p></div>
+            <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>Multiple questions</p></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="select-group">
+          <div class="select-group-label">Difficulty</div>
+          <div class="select-group-sub">This mode is mostly behavioral — pick how tough.</div>
+          <div class="pill-row" id="difficulty-row">
+            <button class="pill-btn" data-difficulty="easy">Easy</button>
+            <button class="pill-btn" data-difficulty="medium">Medium</button>
+            <button class="pill-btn" data-difficulty="hard">Hard</button>
+          </div>
+        </div>
+
+        <div class="divider" id="count-divider" style="display:none;"></div>
+        <div class="select-group" id="count-group" style="display:none;">
+          <div class="select-group-label">Number of Questions</div>
+          <div class="pill-row" id="count-row">
+            <button class="pill-btn" data-count="3">3</button>
+            <button class="pill-btn" data-count="5">5</button>
+            <button class="pill-btn" data-count="8">8</button>
+          </div>
+        </div>
+
+        <div id="resume-toggle-group" style="display:none; margin-top:24px;">
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:13.5px;">
+            <input type="checkbox" id="resume-tailor-checkbox" onchange="checkSetupReady()">
+            Tailor questions to my resume
+          </label>
+        </div>
+      </div>
+
+      <!-- MOCK INTERVIEW controls -->
+      <div id="setup-voice-block" style="display:none;">
+        <div class="select-group">
+          <div class="select-group-label">Length of Session</div>
+          <div class="select-group-sub">Quick is a single question. Full runs a proper multi-question set.</div>
+          <div class="toggle-row" id="voice-length-row">
+            <div class="toggle-card" data-len="Quick"><h4>Quick Mode</h4><p>1 question · ~3 min</p></div>
+            <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions · ~20 min</p></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="select-group" style="margin-bottom:0;">
+          <div class="select-group-label">Format</div>
+          <div class="select-group-sub">You can combine question types within a single session.</div>
+          <div class="pill-row" id="type-row">
+            <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
+            <button class="pill-btn" data-type="Technical">Technical only</button>
+            <button class="pill-btn" data-type="Both">Both</button>
+          </div>
         </div>
       </div>
     </div>
@@ -571,11 +652,11 @@
     <button class="back-btn" onclick="cancelRecordSetup()">← Back</button>
     <div class="studio-panel">
       <div class="onair-row">
-        <div class="onair-badge" style="color:var(--record)"><div class="dot"></div> HIREVUE PRACTICE</div>
+        <div class="onair-badge" style="color:var(--record)"><div class="dot"></div> ON AIR · BEHAVIORAL</div>
         <div class="timer mono" id="rec-timer">00:00</div>
       </div>
       <div class="cue-card">
-        <div class="cue-label" id="rec-qcount">Question 1 of 1 — Finance, Behavioral</div>
+        <div class="cue-label" id="rec-qcount">Question 1 of 1</div>
         <div class="cue-question" id="rec-question">Tell me about a time you disagreed with a teammate. How did you handle it?</div>
       </div>
       <div class="rec-stage" id="rec-stage">
@@ -657,7 +738,7 @@
       <div class="transcript" id="t1">"So, um, there was this one project where me and a teammate, like, disagreed on the approach... I felt like data was important but he wanted to just go with his gut. I asked him if we could pull the numbers before deciding, and eventually he agreed and we found out my approach was actually faster."</div>
 
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="startRecordSetup()">↻ Retry this round</button>
+        <button class="btn btn-secondary" onclick="retryRecordSession()">↻ Retry this round</button>
         <button class="btn btn-primary" onclick="goTo('dashboard')">Done →</button>
       </div>
     </div>
@@ -815,10 +896,13 @@
 <script type="module" src="js/recording.js"></script>
 <script type="module" src="js/history.js"></script>
 <script type="module" src="js/profile.js"></script>
+<script type="module" src="js/questions.js"></script>
+<script type="module" src="js/resume.js"></script>
 <script type="module" src="js/auth.js"></script>
 <script>
-  const state = { type: null, length: null, mode: null };
+  const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null };
   let pendingAuthAction = null;
+  let currentUserProfile = null;
 
   // --- Auth ---
   window.addEventListener('mocko-auth-change', (e) => {
@@ -859,6 +943,7 @@
       </div>`;
     try {
       const profile = await MockoProfile.getProfile();
+      currentUserProfile = profile;
       updateAccountBadge(profile);
     } catch (err) {
       console.error(err);
@@ -976,6 +1061,15 @@
     document.querySelectorAll('#length-row .toggle-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     state.length = el.dataset.len;
+    const isFull = state.length === 'Full';
+    document.getElementById('count-divider').style.display = isFull ? '' : 'none';
+    document.getElementById('count-group').style.display = isFull ? '' : 'none';
+    checkSetupReady();
+  }));
+  document.querySelectorAll('#voice-length-row .toggle-card').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#voice-length-row .toggle-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.length = el.dataset.len;
     checkSetupReady();
   }));
   document.querySelectorAll('#type-row .pill-btn').forEach(el => el.addEventListener('click', () => {
@@ -984,9 +1078,41 @@
     state.type = el.dataset.type;
     checkSetupReady();
   }));
+  document.querySelectorAll('#difficulty-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#difficulty-row .pill-btn').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.difficulty = el.dataset.difficulty;
+    checkSetupReady();
+  }));
+  document.querySelectorAll('#count-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#count-row .pill-btn').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.questionCount = parseInt(el.dataset.count, 10);
+    checkSetupReady();
+  }));
+  document.querySelectorAll('#industry-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#industry-row .pill-btn').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.industry = el.dataset.industry;
+    if (window.MockoProfile && window.MockoAuth.getUser()) {
+      MockoProfile.updateProfile({
+        username: currentUserProfile ? currentUserProfile.username : undefined,
+        bio: currentUserProfile ? currentUserProfile.bio : undefined,
+        social_links: currentUserProfile ? currentUserProfile.social_links : undefined,
+        industry: state.industry,
+      }).then(p => { currentUserProfile = p; }).catch(err => console.error(err));
+    }
+    checkSetupReady();
+  }));
 
   function checkSetupReady() {
-    document.getElementById('setup-next').disabled = !(state.length && state.type);
+    let ready;
+    if (state.mode === 'record') {
+      ready = !!state.length && !!state.difficulty && (state.length !== 'Full' || !!state.questionCount);
+    } else {
+      ready = !!state.length && !!state.type;
+    }
+    document.getElementById('setup-next').disabled = !ready;
   }
 
   function switchTab(tab) {
@@ -999,20 +1125,63 @@
     }
   }
 
-  function chooseMode(mode) {
+  async function chooseMode(mode) {
     if (!requireAuth(() => chooseMode(mode))) return;
     state.mode = mode;
+    document.getElementById('setup-record-block').style.display = mode === 'record' ? 'block' : 'none';
+    document.getElementById('setup-voice-block').style.display = mode === 'voice' ? 'block' : 'none';
     document.getElementById('setup-sub').textContent = mode === 'record'
-      ? "Choose your length and format, then step in front of the camera."
+      ? "Choose your format and difficulty, then step in front of the camera."
       : "Choose your length and format, then start talking.";
+
+    if (mode === 'record') {
+      const resumeGroup = document.getElementById('resume-toggle-group');
+      const checkbox = document.getElementById('resume-tailor-checkbox');
+      checkbox.checked = false;
+      resumeGroup.style.display = 'none';
+      try {
+        const primary = await MockoResume.getPrimaryResume();
+        if (primary && primary.extracted_text) resumeGroup.style.display = 'block';
+      } catch (err) { console.error(err); }
+    }
+
+    if (currentUserProfile && currentUserProfile.industry) {
+      state.industry = currentUserProfile.industry;
+      document.querySelectorAll('#industry-row .pill-btn').forEach(c =>
+        c.classList.toggle('selected', c.dataset.industry === state.industry));
+    }
+
+    checkSetupReady();
     goTo('setup');
   }
 
-  function beginSession() {
+  async function beginSession() {
     if (state.mode === 'record') {
-      startRecordSetup();
+      const btn = document.getElementById('setup-next');
+      btn.disabled = true;
+      btn.textContent = 'Loading questions...';
+      try {
+        await prepareRecordQuestions();
+        startRecordSetup();
+      } catch (err) {
+        console.error(err);
+        alert('Could not load questions — please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Begin →';
+      }
     } else {
       startVoice();
+    }
+  }
+
+  async function retryRecordSession() {
+    try {
+      await prepareRecordQuestions();
+      startRecordSetup();
+    } catch (err) {
+      console.error(err);
+      alert('Could not load questions — please try again.');
     }
   }
 
@@ -1031,8 +1200,58 @@
   let prepInterval, prepSecondsLeft = PREP_SECONDS;
   let answerInterval, answerSecondsLeft = ANSWER_SECONDS;
 
+  let sessionQuestions = [];
+  let sessionQuestionIndex = 0;
+  let sessionResults = [];
+
+  async function prepareRecordQuestions() {
+    const count = state.length === 'Full' ? (state.questionCount || 3) : 1;
+    const useResume = document.getElementById('resume-tailor-checkbox').checked;
+    if (useResume) {
+      const primary = await MockoResume.getPrimaryResume();
+      if (!primary || !primary.extracted_text) throw new Error('No resume text available.');
+      const { data, error } = await supabase.functions.invoke('generate-questions', {
+        body: { resumeText: primary.extracted_text, industry: state.industry, difficulty: state.difficulty, count },
+      });
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+      sessionQuestions = data.questions;
+    } else {
+      const qs = await MockoQuestions.fetchQuestions({ difficulty: state.difficulty, industry: state.industry, count });
+      if (qs.length === 0) throw new Error('No questions available for that difficulty/industry.');
+      sessionQuestions = qs.map(q => q.text);
+    }
+    sessionQuestionIndex = 0;
+    sessionResults = [];
+  }
+
+  function aggregateResults(results) {
+    if (results.length === 1) return results[0];
+    const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+    const category_scores = {};
+    Object.keys(results[0].category_scores).forEach((k) => {
+      category_scores[k] = {
+        score: Math.round(avg(results.map((r) => r.category_scores[k].score)) * 10) / 10,
+        max: results[0].category_scores[k].max,
+      };
+    });
+    return {
+      overall_score: avg(results.map((r) => r.overall_score)),
+      category_scores,
+      wpm: Math.round(avg(results.map((r) => r.wpm))),
+      filler_count: results.reduce((a, r) => a + r.filler_count, 0),
+      avg_pause_length: Math.round(avg(results.map((r) => r.avg_pause_length)) * 10) / 10,
+      pointers_good: results.flatMap((r) => r.pointers_good || []).slice(0, 5),
+      pointers_work: results.flatMap((r) => r.pointers_work || []).slice(0, 5),
+      transcript: results.map((r, i) => `Q${i + 1}: ${r.transcript}`).join('\n\n'),
+    };
+  }
+
   async function startRecordSetup() {
     goTo('record-setup');
+    document.getElementById('rec-question').textContent = sessionQuestions[sessionQuestionIndex];
+    document.getElementById('rec-qcount').textContent =
+      `Question ${sessionQuestionIndex + 1} of ${sessionQuestions.length}`;
     const status = document.getElementById('rec-status');
     const video = document.getElementById('rec-video');
     const prepOverlay = document.getElementById('prep-overlay');
@@ -1125,9 +1344,15 @@
         format: state.type || 'Behavioral',
         length: state.length || 'Quick',
       });
+      sessionResults.push(session);
+      sessionQuestionIndex++;
       document.getElementById('processing-overlay').style.display = 'none';
-      renderFeedback(session);
-      goTo('feedback');
+      if (sessionQuestionIndex < sessionQuestions.length) {
+        startRecordSetup();
+      } else {
+        renderFeedback(aggregateResults(sessionResults));
+        goTo('feedback');
+      }
     } catch (err) {
       console.error(err);
       document.getElementById('processing-overlay').style.display = 'none';
@@ -1278,6 +1503,78 @@
     } catch (err) {
       console.error(err);
       errorEl.textContent = 'Could not load profile.';
+    }
+    loadResumes();
+  }
+
+  // --- Resumes ---
+  async function loadResumes() {
+    const listEl = document.getElementById('resume-list');
+    const errorEl = document.getElementById('resume-error');
+    errorEl.textContent = '';
+    listEl.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Loading...</p>';
+    try {
+      const resumes = await MockoResume.listResumes();
+      if (resumes.length === 0) {
+        listEl.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">No resumes uploaded yet.</p>';
+        return;
+      }
+      listEl.innerHTML = resumes.map((r) => `
+        <div class="resume-row">
+          <div class="resume-label">
+            <span class="resume-name">${r.label}</span>
+            ${r.is_primary ? '<span class="resume-primary-badge">Primary</span>' : ''}
+          </div>
+          <div class="resume-actions">
+            ${r.is_primary ? '' : `<button onclick="setPrimaryResumeUI('${r.id}')">Set primary</button>`}
+            <button onclick="deleteResumeUI('${r.id}', '${r.storage_path}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '';
+      errorEl.textContent = 'Could not load resumes.';
+    }
+  }
+
+  async function handleResumeUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const errorEl = document.getElementById('resume-error');
+    errorEl.textContent = '';
+    if (file.type !== 'application/pdf') {
+      errorEl.textContent = 'Please upload a PDF for now.';
+      event.target.value = '';
+      return;
+    }
+    try {
+      await MockoResume.uploadResume(file, file.name);
+      event.target.value = '';
+      loadResumes();
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = err.message || 'Upload failed.';
+    }
+  }
+
+  async function setPrimaryResumeUI(id) {
+    try {
+      await MockoResume.setPrimaryResume(id);
+      loadResumes();
+    } catch (err) {
+      console.error(err);
+      document.getElementById('resume-error').textContent = 'Could not set primary resume.';
+    }
+  }
+
+  async function deleteResumeUI(id, storagePath) {
+    try {
+      await MockoResume.deleteResume(id, storagePath);
+      loadResumes();
+    } catch (err) {
+      console.error(err);
+      document.getElementById('resume-error').textContent = 'Could not delete resume.';
     }
   }
 

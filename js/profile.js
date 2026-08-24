@@ -12,12 +12,12 @@ async function getProfile() {
   return data;
 }
 
-async function updateProfile({ username, bio, social_links }) {
+async function updateProfile({ username, bio, social_links, industry }) {
   const user = window.MockoAuth.getUser();
   if (!user) throw new Error('Not signed in');
   const { data, error } = await supabase
     .from('profiles')
-    .update({ username, bio, social_links })
+    .update({ username, bio, social_links, industry })
     .eq('user_id', user.id)
     .select()
     .single();
