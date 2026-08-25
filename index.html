@@ -170,9 +170,13 @@
     border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); cursor: pointer; transition: all 0.15s;
   }
   .pill-btn.selected { background: var(--cue); color: var(--bg); border-color: var(--cue); }
-  #difficulty-row .pill-btn[data-difficulty="easy"].selected { background: var(--good); border-color: var(--good); color: var(--bg); }
-  #difficulty-row .pill-btn[data-difficulty="medium"].selected { background: var(--warn); border-color: var(--warn); color: var(--bg); }
-  #difficulty-row .pill-btn[data-difficulty="hard"].selected { background: var(--record); border-color: var(--record); color: white; }
+  .difficulty-pill-row .pill-btn[data-difficulty="easy"].selected { background: var(--good); border-color: var(--good); color: var(--bg); }
+  .difficulty-pill-row .pill-btn[data-difficulty="medium"].selected { background: var(--warn); border-color: var(--warn); color: var(--bg); }
+  .difficulty-pill-row .pill-btn[data-difficulty="hard"].selected { background: var(--record); border-color: var(--record); color: white; }
+  .difficulty-tag { font-family: 'IBM Plex Mono'; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; display: inline-block; }
+  .difficulty-tag[data-difficulty="easy"] { background: rgba(63,167,150,0.16); color: var(--good); }
+  .difficulty-tag[data-difficulty="medium"] { background: rgba(233,162,59,0.18); color: var(--warn); }
+  .difficulty-tag[data-difficulty="hard"] { background: rgba(230,57,70,0.16); color: var(--record); }
   .count-select { font-family: 'Inter'; font-size: 14px; font-weight: 600; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer; }
   .count-select:focus { outline: none; border-color: var(--text-muted); }
   .count-estimate { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
@@ -282,6 +286,15 @@
   .pointers li { font-size: 13.5px; line-height: 1.6; padding-left: 18px; position: relative; margin-bottom: 8px; }
   .pointers.good li::before { content: '+'; position: absolute; left: 0; color: var(--good); font-weight: 700; }
   .pointers.work li::before { content: '—'; position: absolute; left: 0; color: var(--warn); }
+
+  .qresult-card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 20px; margin-bottom: 14px; text-align: left; }
+  .qresult-card.toughest { border-color: var(--warn); }
+  .qresult-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+  .qresult-question { font-size: 14.5px; font-weight: 600; margin-bottom: 10px; }
+  .qresult-score { font-family: 'IBM Plex Mono'; font-size: 13px; color: var(--good); }
+  .qresult-note { font-size: 12.5px; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
+  .qresult-transcript { font-size: 13px; color: var(--text-muted); line-height: 1.6; background: var(--surface-2); border-radius: 8px; padding: 12px 14px; }
+  .toughest-tag { font-family: 'IBM Plex Mono'; font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; background: rgba(233,162,59,0.18); color: var(--warn); }
 
   .transcript-toggle { font-size: 12px; color: var(--text-muted); cursor: pointer; text-decoration: underline; margin: 12px 0 8px; display: inline-block; }
   .transcript { display: none; font-family: 'IBM Plex Mono'; font-size: 12.5px; color: var(--text-muted); line-height: 1.6; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
@@ -826,7 +839,7 @@
         <div class="select-group">
           <div class="select-group-label">Difficulty</div>
           <div class="select-group-sub">This mode is mostly behavioral — pick how tough.</div>
-          <div class="pill-row" id="difficulty-row">
+          <div class="pill-row difficulty-pill-row" id="difficulty-row">
             <button class="pill-btn" data-difficulty="easy">Easy</button>
             <button class="pill-btn" data-difficulty="medium">Medium</button>
             <button class="pill-btn" data-difficulty="hard">Hard</button>
@@ -855,22 +868,51 @@
       <div id="setup-voice-block" style="display:none;">
         <div class="select-group">
           <div class="select-group-label">Length of Session</div>
-          <div class="select-group-sub">Quick is a single question. Full runs a proper multi-question set.</div>
+          <div class="select-group-sub">Quick Round is three fast questions. Full Interview runs a proper five-question set.</div>
           <div class="toggle-row" id="voice-length-row">
-            <div class="toggle-card" data-len="Quick"><h4>Quick Mode</h4><p>1 question · ~3 min</p></div>
+            <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>3 questions · ~5 min</p></div>
             <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions · ~20 min</p></div>
           </div>
         </div>
 
         <div class="divider"></div>
 
-        <div class="select-group" style="margin-bottom:0;">
+        <div class="select-group">
           <div class="select-group-label">Format</div>
           <div class="select-group-sub">You can combine question types within a single session.</div>
           <div class="pill-row" id="type-row">
             <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
             <button class="pill-btn" data-type="Technical">Technical only</button>
             <button class="pill-btn" data-type="Both">Both</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="select-group">
+          <div class="select-group-label">Difficulty</div>
+          <div class="select-group-sub">Easy is broader and forgiving. Hard is high-specificity and less room for a generic answer.</div>
+          <div class="pill-row difficulty-pill-row" id="voice-difficulty-row">
+            <button class="pill-btn" data-difficulty="easy">Easy</button>
+            <button class="pill-btn" data-difficulty="medium">Medium</button>
+            <button class="pill-btn" data-difficulty="hard">Hard</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="select-group" style="margin-bottom:0;">
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:13.5px;">
+            <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
+            Tailor a question or two to my resume
+          </label>
+          <div id="voice-resume-panel" style="display:none; margin-top:14px;">
+            <textarea id="voice-resume-textarea" placeholder="Paste your resume text here..." style="width:100%; min-height:90px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Inter'; font-size:13.5px; resize:vertical;"></textarea>
+            <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:12.5px; padding:8px 14px;">
+              or upload a PDF
+              <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
+            </label>
+            <div id="voice-resume-status" style="font-size:12px; color:var(--text-muted); margin-top:8px;"></div>
           </div>
         </div>
       </div>
@@ -989,12 +1031,41 @@
       <div class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</div>
       <div class="voice-state-label" id="voice-state">Ready</div>
 
+      <div class="onair-badge" id="voice-rec-indicator" style="display:none; justify-content:center; margin-bottom:14px; color:var(--record);"><div class="dot"></div> Listening</div>
+
       <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎙️</button>
       <div class="voice-timer mono" id="voice-timer">00:00</div>
 
+      <div id="voice-text-fallback" style="display:none; margin-top:20px; text-align:left;">
+        <textarea id="voice-text-input" placeholder="Type your answer here..." style="width:100%; min-height:90px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Inter'; font-size:13.5px; resize:vertical;"></textarea>
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn btn-primary" onclick="submitTextAnswer()">Done →</button>
+        </div>
+      </div>
+
+      <details class="pointers" id="voice-notes-card" style="display:none; text-align:left; margin-top:24px;">
+        <summary style="cursor:pointer; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);">Interviewer notes</summary>
+        <ul id="voice-notes-list" style="list-style:none; margin-top:12px;"></ul>
+      </details>
+
       <div class="btn-row" id="voice-retry-row" style="display:none; margin-top:26px;">
         <button class="btn btn-secondary" onclick="startVoice()">↻ Retry this session</button>
-        <button class="btn btn-primary" onclick="goTo('feedback')">View evaluation →</button>
+        <button class="btn btn-primary" onclick="goTo('voice-results')">View evaluation →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOCK INTERVIEW RESULTS -->
+  <div class="screen" id="screen-voice-results">
+    <button class="back-btn" onclick="switchTab('interview')">← Back to Interview Practice</button>
+    <div class="studio-panel">
+      <div class="overall-score">
+        <span class="num" id="voice-result-score">—</span><span class="of100">/100</span>
+        <div class="label">Overall Score</div>
+      </div>
+      <div id="voice-result-questions"></div>
+      <div class="btn-row" style="margin-top:24px;">
+        <button class="btn btn-primary" onclick="switchTab('interview')">Done →</button>
       </div>
     </div>
   </div>
@@ -1198,7 +1269,7 @@
 <script type="module" src="js/drills.js"></script>
 <script type="module" src="js/auth.js"></script>
 <script>
-  const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null };
+  const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null, voiceResumeText: null };
   let pendingAuthAction = null;
   let currentUserProfile = null;
 
@@ -1445,6 +1516,12 @@
     state.difficulty = el.dataset.difficulty;
     checkSetupReady();
   }));
+  document.querySelectorAll('#voice-difficulty-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#voice-difficulty-row .pill-btn').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.difficulty = el.dataset.difficulty;
+    checkSetupReady();
+  }));
   document.getElementById('count-select').addEventListener('change', (e) => {
     const n = parseInt(e.target.value, 10);
     state.questionCount = n || null;
@@ -1472,7 +1549,7 @@
     if (state.mode === 'record') {
       ready = !!state.length && !!state.difficulty && (state.length !== 'Full' || !!state.questionCount);
     } else {
-      ready = !!state.length && !!state.type;
+      ready = !!state.length && !!state.type && !!state.difficulty;
     }
     document.getElementById('setup-next').disabled = !ready;
   }
@@ -1509,6 +1586,12 @@
         const resumes = await MockoResume.listResumes();
         if (resumes.some((r) => r.extracted_text)) resumeGroup.style.display = 'block';
       } catch (err) { console.error(err); }
+    } else if (mode === 'voice') {
+      document.getElementById('voice-resume-toggle').checked = false;
+      document.getElementById('voice-resume-panel').style.display = 'none';
+      document.getElementById('voice-resume-textarea').value = '';
+      document.getElementById('voice-resume-status').textContent = '';
+      state.voiceResumeText = null;
     }
 
     if (currentUserProfile && currentUserProfile.industry) {
@@ -1519,6 +1602,36 @@
 
     checkSetupReady();
     goTo('setup');
+  }
+
+  function toggleVoiceResumePanel() {
+    const checked = document.getElementById('voice-resume-toggle').checked;
+    document.getElementById('voice-resume-panel').style.display = checked ? 'block' : 'none';
+  }
+
+  async function handleVoiceResumeUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const statusEl = document.getElementById('voice-resume-status');
+    if (file.type !== 'application/pdf') {
+      statusEl.textContent = 'Please upload a PDF.';
+      event.target.value = '';
+      return;
+    }
+    statusEl.textContent = 'Reading resume...';
+    try {
+      const text = await MockoResume.extractPdfText(file);
+      if (text) {
+        document.getElementById('voice-resume-textarea').value = text;
+        statusEl.textContent = `Loaded ${file.name}.`;
+      } else {
+        statusEl.textContent = 'Could not read text from that PDF — try pasting instead.';
+      }
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = 'Could not read that PDF — try pasting instead.';
+    }
+    event.target.value = '';
   }
 
   async function toggleResumePicker() {
