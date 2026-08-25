@@ -78,6 +78,11 @@ async function updateSessionQuestion(id, fields) {
   return data;
 }
 
+async function deleteSessionQuestion(id) {
+  const { error } = await supabase.from('session_questions').delete().eq('id', id);
+  if (error) throw error;
+}
+
 async function fetchSessionQuestions(sessionId) {
   const { data, error } = await supabase
     .from('session_questions')
@@ -115,6 +120,6 @@ async function tailorResumeQuestions({ resumeText, difficulty, industry }) {
 }
 
 window.MockoVoiceSession = {
-  insertSession, updateSession, gradeAnswer, updateSessionQuestion,
+  insertSession, updateSession, gradeAnswer, updateSessionQuestion, deleteSessionQuestion,
   fetchSessionQuestions, analyzeAnswer, tailorResumeQuestions,
 };

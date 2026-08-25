@@ -2642,28 +2642,43 @@
       ? voiceSession.mainTranscript + ' [Follow-up] ' + voiceSession.followUpTranscript
       : voiceSession.mainTranscript;
     const combinedDuration = voiceSession.mainDuration + (voiceSession.followUpDuration || 0);
+    let newRow;
     try {
-      const row = await MockoVoiceSession.gradeAnswer({
+      newRow = await MockoVoiceSession.gradeAnswer({
         sessionId: voiceSession.id, questionIndex: voiceSession.currentIndex, questionId: q.id || null,
         questionText: q.text, questionType: q.category || 'behavioral', difficulty: q.difficulty || voiceSession.difficulty,
         source: q.source || 'guide', transcript: combinedTranscript, durationSec: combinedDuration,
         note: voiceSession.pendingNote, followUpAsked: !!voiceSession.followUpTranscript, followUpTranscript: voiceSession.followUpTranscript,
       });
-      voiceSession.results.push(row);
-      if (row.note) appendNote(q.text, row.note);
     } catch (err) {
       console.error('Grading failed for this question:', err);
-      voiceSession.results.push({
+      newRow = {
         id: null, question_index: voiceSession.currentIndex, question_text: q.text,
         difficulty: q.difficulty || voiceSession.difficulty, transcript: combinedTranscript,
         mini_score: 0, category_scores: null, note: 'Could not be graded.', pointers_good: [], pointers_work: [],
-      });
+      };
     }
 
     voiceSession.followUpCountThisQuestion = 0;
     voiceSession.followUpTranscript = null;
     voiceSession.followUpDuration = 0;
     voiceSession.mainTranscript = null;
+
+    if (voiceSession.isRetry) {
+      const oldId = voiceSession.retryOldRowId;
+      voiceSession.results = voiceSession.results.map(r => (r.id === oldId ? newRow : r));
+      if (oldId && newRow.id && oldId !== newRow.id) {
+        try { await MockoVoiceSession.deleteSessionQuestion(oldId); } catch (err) { console.error(err); }
+      }
+      voiceSession.isRetry = false;
+      voiceSession.phase = 'done';
+      await computeAndPersistAggregate();
+      goToVoiceResults();
+      return;
+    }
+
+    voiceSession.results.push(newRow);
+    if (newRow.note) appendNote(q.text, newRow.note);
     voiceSession.currentIndex++;
 
     if (voiceSession.currentIndex < voiceSession.questions.length) {
@@ -2673,15 +2688,7 @@
     }
   }
 
-  async function finishVoiceSession() {
-    voiceSession.phase = 'done';
-    document.getElementById('voice-orb').className = 'voice-orb';
-    document.getElementById('voice-caption').textContent = "That's a wrap — nice work.";
-    document.getElementById('voice-state').textContent = 'Session complete';
-    document.getElementById('mic-btn').style.display = 'none';
-    document.getElementById('voice-text-fallback').style.display = 'none';
-    clearInterval(voiceTimerInterval);
-
+  async function computeAndPersistAggregate() {
     const results = voiceSession.results;
     const n = results.length || 1;
     const avg = (key) => results.reduce((a, r) => a + ((r.category_scores && r.category_scores[key] && r.category_scores[key].score) || 0), 0) / n;
@@ -2700,9 +2707,14 @@
     if (results.length > 1) {
       const toughest = results.reduce((min, r) => (r.mini_score < min.mini_score ? r : min), results[0]);
       toughestId = toughest.id;
-      if (toughestId) {
-        try { await MockoVoiceSession.updateSessionQuestion(toughestId, { is_toughest: true }); } catch (err) { console.error(err); }
+    }
+    for (const r of results) {
+      if (r.id && r.id !== toughestId) {
+        try { await MockoVoiceSession.updateSessionQuestion(r.id, { is_toughest: false }); } catch (err) { console.error(err); }
       }
+    }
+    if (toughestId) {
+      try { await MockoVoiceSession.updateSessionQuestion(toughestId, { is_toughest: true }); } catch (err) { console.error(err); }
     }
 
     try {
@@ -2711,12 +2723,71 @@
 
     voiceSession.finalOverallScore = overallScore;
     voiceSession.toughestId = toughestId;
+  }
+
+  async function finishVoiceSession() {
+    voiceSession.phase = 'done';
+    document.getElementById('voice-orb').className = 'voice-orb';
+    document.getElementById('voice-caption').textContent = "That's a wrap — nice work.";
+    document.getElementById('voice-state').textContent = 'Session complete';
+    document.getElementById('mic-btn').style.display = 'none';
+    document.getElementById('voice-text-fallback').style.display = 'none';
+    clearInterval(voiceTimerInterval);
+    await computeAndPersistAggregate();
     document.getElementById('voice-retry-row').style.display = 'flex';
   }
 
   function goToVoiceResults() {
-    document.getElementById('voice-result-score').textContent = Math.round(voiceSession ? voiceSession.finalOverallScore : 0);
+    renderVoiceResults();
     goTo('voice-results');
+  }
+
+  function renderVoiceResults() {
+    document.getElementById('voice-result-score').textContent = Math.round(voiceSession ? voiceSession.finalOverallScore : 0);
+    const container = document.getElementById('voice-result-questions');
+    if (!voiceSession || !voiceSession.results.length) {
+      container.innerHTML = '';
+      return;
+    }
+    container.innerHTML = voiceSession.results
+      .slice()
+      .sort((a, b) => a.question_index - b.question_index)
+      .map(r => {
+        const isToughest = voiceSession.toughestId && r.id === voiceSession.toughestId;
+        const score = r.category_scores
+          ? Object.values(r.category_scores).reduce((a, c) => a + c.score, 0)
+          : (r.mini_score || 0);
+        return `<div class="qresult-card${isToughest ? ' toughest' : ''}">
+          <div class="qresult-top">
+            <span class="difficulty-tag" data-difficulty="${r.difficulty}">${r.difficulty}</span>
+            ${isToughest ? '<span class="toughest-tag">Toughest question this round</span>' : ''}
+            <span class="qresult-score">${Math.round(score)}/100</span>
+          </div>
+          <div class="qresult-question">${r.question_text}</div>
+          ${r.note ? `<div class="qresult-note">${r.note}</div>` : ''}
+          <div class="qresult-transcript">${r.transcript}</div>
+          ${isToughest ? '<div class="btn-row" style="margin-top:12px;"><button class="btn btn-secondary" onclick="retryToughestQuestion()">↻ Retry this question</button></div>' : ''}
+        </div>`;
+      }).join('');
+  }
+
+  function retryToughestQuestion() {
+    if (!voiceSession || !voiceSession.toughestId) return;
+    const idx = voiceSession.results.findIndex(r => r.id === voiceSession.toughestId);
+    if (idx === -1) return;
+
+    voiceSession.retryOldRowId = voiceSession.toughestId;
+    voiceSession.isRetry = true;
+    voiceSession.currentIndex = voiceSession.results[idx].question_index;
+    voiceSession.phase = 'idle';
+    voiceSession.mainTranscript = null;
+    voiceSession.followUpTranscript = null;
+    voiceSession.followUpCountThisQuestion = 0;
+
+    goTo('voice');
+    resetVoiceUI();
+    document.getElementById('voice-role').textContent = 'Finance — ' + (voiceSession.format || 'Behavioral');
+    document.getElementById('voice-caption').textContent = "Tap the mic to retry this question.";
   }
 
   // Drills
