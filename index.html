@@ -1050,7 +1050,7 @@
 
       <div class="btn-row" id="voice-retry-row" style="display:none; margin-top:26px;">
         <button class="btn btn-secondary" onclick="startVoice()">↻ Retry this session</button>
-        <button class="btn btn-primary" onclick="goTo('voice-results')">View evaluation →</button>
+        <button class="btn btn-primary" onclick="goToVoiceResults()">View evaluation →</button>
       </div>
     </div>
   </div>
@@ -2340,87 +2340,383 @@
     goTo('setup');
   }
 
-  // Voice mock interview
-  const voiceLines = [
-    "Let's start — tell me about a time you had to push back on a decision you disagreed with.",
-    "Good. What was the outcome, and would you handle it differently now?",
-    "Last one — how do you usually know when it's worth pushing back versus letting it go?"
-  ];
-  let voiceStep = 0, micOn = false, voiceInterval, voiceSeconds = 0;
+  // Mock Interview: real conversation engine.
+  // States: idle -> asking -> listening -> thinking -> [asking(followup) -> listening] -> thinking -> (loop) -> done
+  let voiceSession = null;
+  let voiceRecognizer = null;
+  let voiceTimerInterval = null;
+  let cachedVoice;
 
-  function startVoice() {
-    goTo('voice');
-    voiceStep = 0; micOn = false; voiceSeconds = 0;
-    document.getElementById('voice-role').textContent = 'Finance — ' + (state.type || 'Behavioral');
+  function resetVoiceUI() {
     document.getElementById('mic-btn').style.display = 'inline-flex';
     document.getElementById('mic-btn').textContent = '🎙️';
-    document.getElementById('voice-caption').textContent = "Tap the mic when you're ready to begin.";
+    document.getElementById('mic-btn').disabled = false;
     document.getElementById('voice-state').textContent = 'Ready';
     document.getElementById('voice-orb').className = 'voice-orb';
     document.getElementById('voice-retry-row').style.display = 'none';
-    clearInterval(voiceInterval);
+    document.getElementById('voice-rec-indicator').style.display = 'none';
+    document.getElementById('voice-text-fallback').style.display = 'none';
+    document.getElementById('voice-notes-card').style.display = 'none';
+    document.getElementById('voice-notes-list').innerHTML = '';
     document.getElementById('voice-timer').textContent = '00:00';
+    clearInterval(voiceTimerInterval);
+    if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} voiceRecognizer = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+
+  async function startVoice() {
+    goTo('voice');
+    resetVoiceUI();
+    document.getElementById('voice-caption').textContent = 'Setting up your interview...';
+    document.getElementById('mic-btn').disabled = true;
+    try {
+      await setupVoiceSession();
+      document.getElementById('voice-caption').textContent = "Tap the mic when you're ready to begin.";
+      document.getElementById('mic-btn').disabled = false;
+    } catch (err) {
+      console.error(err);
+      document.getElementById('voice-caption').textContent = 'Could not set up the interview — please go back and try again.';
+    }
+  }
+
+  async function setupVoiceSession() {
+    const category = state.type === 'Technical' ? 'technical' : 'behavioral';
+    const isFull = state.length === 'Full';
+    let resumeQuestions = [];
+    if (isFull && state.voiceResumeText) {
+      const resumeText = state.voiceResumeText.trim();
+      const wordCount = resumeText.split(/\s+/).filter(Boolean).length;
+      if (wordCount >= 50) {
+        try {
+          const tailored = await MockoVoiceSession.tailorResumeQuestions({ resumeText, difficulty: state.difficulty, industry: state.industry });
+          resumeQuestions = tailored.questions || [];
+        } catch (err) {
+          console.error('Resume tailoring failed, falling back to guide questions:', err);
+        }
+      }
+    }
+
+    const questions = isFull
+      ? await MockoQuestions.buildFullInterviewSet({ difficulty: state.difficulty, category, industry: state.industry, resumeQuestions })
+      : await MockoQuestions.buildQuickRoundSet({ difficulty: state.difficulty, category, industry: state.industry });
+
+    const session = await MockoVoiceSession.insertSession({
+      difficulty: state.difficulty, format: state.type, length: state.length, firstQuestionText: questions[0].text,
+    });
+
+    voiceSession = {
+      id: session.id, difficulty: state.difficulty, format: state.type, length: state.length,
+      questions, currentIndex: 0, priorSummaries: [], sttAvailable: true, manualStop: false,
+      transcriptBuffer: '', questionStartTs: 0, phase: 'idle',
+      followUpCountThisQuestion: 0, followUpCountSession: 0, inFollowUp: false,
+      mainTranscript: null, mainDuration: 0, followUpTranscript: null, followUpDuration: 0,
+      pendingNote: null, pendingTransitionLine: null, results: [], finalOverallScore: 0, toughestId: null,
+    };
+    document.getElementById('voice-role').textContent = 'Finance — ' + (state.type || 'Behavioral');
   }
 
   function toggleMic() {
-    const orb = document.getElementById('voice-orb');
-    const caption = document.getElementById('voice-caption');
-    const stateLabel = document.getElementById('voice-state');
-    const micBtn = document.getElementById('mic-btn');
-
-    if (voiceStep === 0 && !micOn) {
-      aiSpeak(voiceLines[0]);
-      voiceStep = 1;
-      voiceSeconds = 0;
-      clearInterval(voiceInterval);
-      voiceInterval = setInterval(() => {
-        voiceSeconds++;
-        const m = String(Math.floor(voiceSeconds/60)).padStart(2,'0');
-        const s = String(voiceSeconds%60).padStart(2,'0');
-        document.getElementById('voice-timer').textContent = m + ':' + s;
-      }, 1000);
-      return;
-    }
-
-    micOn = !micOn;
-    if (micOn) {
-      micBtn.textContent = '⏹️';
-      orb.className = 'voice-orb listening';
-      caption.textContent = "Listening...";
-      stateLabel.textContent = 'Your turn — speak now';
-    } else {
-      micBtn.textContent = '🎙️';
-      orb.className = 'voice-orb';
-      caption.textContent = "Got it — thinking...";
-      stateLabel.textContent = 'Processing your answer';
-      setTimeout(() => {
-        if (voiceStep < voiceLines.length) {
-          aiSpeak(voiceLines[voiceStep]);
-          voiceStep++;
-        } else {
-          clearInterval(voiceInterval);
-          aiSpeak("That's a wrap — nice work.");
-          setTimeout(() => {
-            micBtn.style.display = 'none';
-            document.getElementById('voice-retry-row').style.display = 'flex';
-            stateLabel.textContent = 'Session complete';
-          }, 2000);
-        }
-      }, 1000);
+    if (!voiceSession) return;
+    if (voiceSession.phase === 'idle') {
+      document.getElementById('mic-btn').style.display = 'none';
+      askCurrentQuestion();
+    } else if (voiceSession.phase === 'listening') {
+      finalizeAnswer();
     }
   }
 
-  function aiSpeak(text) {
-    const orb = document.getElementById('voice-orb');
-    const caption = document.getElementById('voice-caption');
-    const stateLabel = document.getElementById('voice-state');
-    orb.className = 'voice-orb ai-talking';
-    caption.textContent = text;
-    stateLabel.textContent = 'Jordan is speaking';
-    setTimeout(() => {
-      orb.className = 'voice-orb';
-      stateLabel.textContent = 'Tap the mic to respond';
-    }, 2600);
+  function pickVoice() {
+    if (cachedVoice !== undefined) return cachedVoice;
+    if (!window.speechSynthesis) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) return null;
+    cachedVoice = voices.find(v => v.lang && v.lang.startsWith('en')) || voices[0];
+    return cachedVoice;
+  }
+
+  function splitForBreath(text) {
+    const mid = Math.floor(text.length / 2);
+    let splitAt = text.indexOf('. ', mid);
+    if (splitAt === -1) splitAt = text.indexOf(', ', mid);
+    if (splitAt === -1) return [text];
+    return [text.slice(0, splitAt + 1), text.slice(splitAt + 2)];
+  }
+
+  function speakText(text, onDone) {
+    document.getElementById('voice-caption').textContent = text;
+    document.getElementById('voice-orb').className = 'voice-orb ai-talking';
+    document.getElementById('voice-state').textContent = 'Jordan is speaking';
+    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+      document.getElementById('voice-orb').className = 'voice-orb';
+      onDone();
+      return;
+    }
+    const voice = pickVoice();
+    const parts = text.length > 180 ? splitForBreath(text) : [text];
+    let i = 0;
+    function speakNext() {
+      if (i >= parts.length) {
+        document.getElementById('voice-orb').className = 'voice-orb';
+        onDone();
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(parts[i]);
+      if (voice) utter.voice = voice;
+      utter.rate = 0.97;
+      utter.pitch = 1.0;
+      utter.onend = () => { i++; setTimeout(speakNext, i < parts.length ? 250 : 0); };
+      utter.onerror = () => { i++; speakNext(); };
+      window.speechSynthesis.speak(utter);
+    }
+    speakNext();
+  }
+
+  function askCurrentQuestion() {
+    voiceSession.phase = 'asking';
+    const q = voiceSession.questions[voiceSession.currentIndex];
+    const prefix = voiceSession.pendingTransitionLine ? voiceSession.pendingTransitionLine + ' ' : '';
+    voiceSession.pendingTransitionLine = null;
+    speakText(prefix + q.text, enterListenState);
+  }
+
+  function enterListenState() {
+    voiceSession.phase = 'listening';
+    voiceSession.transcriptBuffer = '';
+    voiceSession.manualStop = false;
+    voiceSession.questionStartTs = Date.now();
+    document.getElementById('voice-state').textContent = 'Your turn — speak now';
+    document.getElementById('voice-timer').textContent = '00:00';
+    clearInterval(voiceTimerInterval);
+    let seconds = 0;
+    voiceTimerInterval = setInterval(() => {
+      seconds++;
+      document.getElementById('voice-timer').textContent = String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+    }, 1000);
+
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (voiceSession.sttAvailable && SR) {
+      document.getElementById('voice-caption').textContent = 'Listening...';
+      document.getElementById('voice-rec-indicator').style.display = 'flex';
+      document.getElementById('voice-text-fallback').style.display = 'none';
+      document.getElementById('mic-btn').style.display = 'inline-flex';
+      document.getElementById('mic-btn').textContent = '⏹️';
+      startRecognition(SR);
+    } else {
+      document.getElementById('voice-caption').textContent = 'Type your answer below.';
+      document.getElementById('voice-rec-indicator').style.display = 'none';
+      document.getElementById('mic-btn').style.display = 'none';
+      document.getElementById('voice-text-fallback').style.display = 'block';
+      document.getElementById('voice-text-input').value = '';
+    }
+  }
+
+  function startRecognition(SR) {
+    const recognizer = new SR();
+    recognizer.continuous = true;
+    recognizer.interimResults = true;
+    recognizer.lang = 'en-US';
+    recognizer.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (r.isFinal) {
+          voiceSession.transcriptBuffer += (voiceSession.transcriptBuffer ? ' ' : '') + r[0].transcript.trim();
+        } else {
+          interim += r[0].transcript;
+        }
+      }
+      document.getElementById('voice-caption').textContent = (voiceSession.transcriptBuffer + ' ' + interim).trim() || 'Listening...';
+    };
+    recognizer.onerror = (e) => {
+      // A stale/delayed event from a recognizer that's no longer the
+      // active one (e.g. firing after the session already completed)
+      // must not resurrect listening state.
+      if (voiceRecognizer !== recognizer || !voiceSession || voiceSession.phase !== 'listening') return;
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        voiceSession.sttAvailable = false;
+        voiceSession.manualStop = true;
+        clearInterval(voiceTimerInterval);
+        enterListenState();
+      }
+    };
+    recognizer.onend = () => {
+      if (voiceRecognizer !== recognizer || !voiceSession) return;
+      if (!voiceSession.manualStop && voiceSession.phase === 'listening') {
+        try { recognizer.start(); } catch (e) {}
+      }
+    };
+    voiceRecognizer = recognizer;
+    try { recognizer.start(); } catch (e) { console.error(e); }
+  }
+
+  function finalizeAnswer() {
+    if (!voiceSession || voiceSession.phase !== 'listening') return;
+    voiceSession.manualStop = true;
+    if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} }
+    clearInterval(voiceTimerInterval);
+    document.getElementById('voice-rec-indicator').style.display = 'none';
+    document.getElementById('mic-btn').style.display = 'none';
+    const durationSec = Math.max(1, Math.round((Date.now() - voiceSession.questionStartTs) / 1000));
+    processAnswer(voiceSession.transcriptBuffer.trim(), durationSec);
+  }
+
+  function submitTextAnswer() {
+    if (!voiceSession || voiceSession.phase !== 'listening') return;
+    const text = document.getElementById('voice-text-input').value.trim();
+    clearInterval(voiceTimerInterval);
+    document.getElementById('voice-text-fallback').style.display = 'none';
+    const durationSec = Math.max(1, Math.round((Date.now() - voiceSession.questionStartTs) / 1000));
+    processAnswer(text, durationSec);
+  }
+
+  function appendNote(questionText, note) {
+    const card = document.getElementById('voice-notes-card');
+    card.style.display = 'block';
+    const li = document.createElement('li');
+    li.style.marginBottom = '10px';
+    li.innerHTML = `<div style="font-size:12px; color:var(--text-muted); margin-bottom:2px;">${questionText}</div><div style="font-size:13px;">${note}</div>`;
+    document.getElementById('voice-notes-list').appendChild(li);
+  }
+
+  async function processAnswer(transcript, durationSec) {
+    if (!transcript) transcript = '(No answer given.)';
+    voiceSession.phase = 'thinking';
+    document.getElementById('voice-state').textContent = 'Processing your answer';
+    document.getElementById('voice-caption').textContent = 'Thinking...';
+
+    if (voiceSession.inFollowUp) {
+      voiceSession.followUpTranscript = transcript;
+      voiceSession.followUpDuration = durationSec;
+      voiceSession.inFollowUp = false;
+      await finishQuestionAndAdvance();
+      return;
+    }
+
+    voiceSession.mainTranscript = transcript;
+    voiceSession.mainDuration = durationSec;
+
+    const q = voiceSession.questions[voiceSession.currentIndex];
+    const isFull = voiceSession.length === 'Full';
+    let analysis = { needsFollowUp: false, note: '', summarySentence: '', transitionLine: null };
+    try {
+      const nextQ = isFull ? voiceSession.questions[voiceSession.currentIndex + 1] : null;
+      analysis = await MockoVoiceSession.analyzeAnswer({
+        questionText: q.text, questionType: q.category || 'behavioral', difficulty: q.difficulty || voiceSession.difficulty,
+        transcript, priorSummaries: voiceSession.priorSummaries, nextQuestionText: nextQ ? nextQ.text : null,
+      });
+    } catch (err) {
+      console.error('analyze-answer failed, continuing without it:', err);
+    }
+
+    voiceSession.pendingNote = analysis.note || null;
+    if (analysis.summarySentence) voiceSession.priorSummaries.push(analysis.summarySentence);
+    if (isFull && analysis.transitionLine) voiceSession.pendingTransitionLine = analysis.transitionLine;
+
+    const wordCount = transcript.split(/\s+/).filter(Boolean).length;
+    const wordTrigger = voiceSession.difficulty === 'hard' ? wordCount < 60 : wordCount < 40;
+    const wantsFollowUp = (analysis.needsFollowUp || wordTrigger)
+      && isFull && (q.follow_up_bank || []).length > 0
+      && voiceSession.followUpCountThisQuestion < 1 && voiceSession.followUpCountSession < 2;
+
+    if (wantsFollowUp) {
+      askFollowUp(q);
+    } else {
+      await finishQuestionAndAdvance();
+    }
+  }
+
+  function askFollowUp(q) {
+    voiceSession.inFollowUp = true;
+    voiceSession.followUpCountThisQuestion++;
+    voiceSession.followUpCountSession++;
+    const bank = q.follow_up_bank || [];
+    const line = bank[Math.floor(Math.random() * bank.length)];
+    voiceSession.phase = 'asking';
+    speakText(line, enterListenState);
+  }
+
+  async function finishQuestionAndAdvance() {
+    const q = voiceSession.questions[voiceSession.currentIndex];
+    document.getElementById('voice-state').textContent = 'Scoring your answer';
+    const combinedTranscript = voiceSession.followUpTranscript
+      ? voiceSession.mainTranscript + ' [Follow-up] ' + voiceSession.followUpTranscript
+      : voiceSession.mainTranscript;
+    const combinedDuration = voiceSession.mainDuration + (voiceSession.followUpDuration || 0);
+    try {
+      const row = await MockoVoiceSession.gradeAnswer({
+        sessionId: voiceSession.id, questionIndex: voiceSession.currentIndex, questionId: q.id || null,
+        questionText: q.text, questionType: q.category || 'behavioral', difficulty: q.difficulty || voiceSession.difficulty,
+        source: q.source || 'guide', transcript: combinedTranscript, durationSec: combinedDuration,
+        note: voiceSession.pendingNote, followUpAsked: !!voiceSession.followUpTranscript, followUpTranscript: voiceSession.followUpTranscript,
+      });
+      voiceSession.results.push(row);
+      if (row.note) appendNote(q.text, row.note);
+    } catch (err) {
+      console.error('Grading failed for this question:', err);
+      voiceSession.results.push({
+        id: null, question_index: voiceSession.currentIndex, question_text: q.text,
+        difficulty: q.difficulty || voiceSession.difficulty, transcript: combinedTranscript,
+        mini_score: 0, category_scores: null, note: 'Could not be graded.', pointers_good: [], pointers_work: [],
+      });
+    }
+
+    voiceSession.followUpCountThisQuestion = 0;
+    voiceSession.followUpTranscript = null;
+    voiceSession.followUpDuration = 0;
+    voiceSession.mainTranscript = null;
+    voiceSession.currentIndex++;
+
+    if (voiceSession.currentIndex < voiceSession.questions.length) {
+      askCurrentQuestion();
+    } else {
+      await finishVoiceSession();
+    }
+  }
+
+  async function finishVoiceSession() {
+    voiceSession.phase = 'done';
+    document.getElementById('voice-orb').className = 'voice-orb';
+    document.getElementById('voice-caption').textContent = "That's a wrap — nice work.";
+    document.getElementById('voice-state').textContent = 'Session complete';
+    document.getElementById('mic-btn').style.display = 'none';
+    document.getElementById('voice-text-fallback').style.display = 'none';
+    clearInterval(voiceTimerInterval);
+
+    const results = voiceSession.results;
+    const n = results.length || 1;
+    const avg = (key) => results.reduce((a, r) => a + ((r.category_scores && r.category_scores[key] && r.category_scores[key].score) || 0), 0) / n;
+    const categoryScores = {
+      content_structure: { score: Math.round(avg('content_structure')), max: 40 },
+      communication_clarity: { score: Math.round(avg('communication_clarity')), max: 30 },
+      delivery_pace: { score: Math.round(avg('delivery_pace')), max: 20 },
+      confidence_tone: { score: Math.round(avg('confidence_tone')), max: 10 },
+    };
+    const overallScore = categoryScores.content_structure.score + categoryScores.communication_clarity.score + categoryScores.delivery_pace.score + categoryScores.confidence_tone.score;
+    const pointersGood = [...new Set(results.flatMap(r => r.pointers_good || []))].slice(0, 4);
+    const pointersWork = [...new Set(results.flatMap(r => r.pointers_work || []))].slice(0, 4);
+    const transcript = results.map(r => r.transcript).join('\n\n');
+
+    let toughestId = null;
+    if (results.length > 1) {
+      const toughest = results.reduce((min, r) => (r.mini_score < min.mini_score ? r : min), results[0]);
+      toughestId = toughest.id;
+      if (toughestId) {
+        try { await MockoVoiceSession.updateSessionQuestion(toughestId, { is_toughest: true }); } catch (err) { console.error(err); }
+      }
+    }
+
+    try {
+      await MockoVoiceSession.updateSession(voiceSession.id, { overallScore, categoryScores, pointersGood, pointersWork, transcript });
+    } catch (err) { console.error(err); }
+
+    voiceSession.finalOverallScore = overallScore;
+    voiceSession.toughestId = toughestId;
+    document.getElementById('voice-retry-row').style.display = 'flex';
+  }
+
+  function goToVoiceResults() {
+    document.getElementById('voice-result-score').textContent = Math.round(voiceSession ? voiceSession.finalOverallScore : 0);
+    goTo('voice-results');
   }
 
   // Drills

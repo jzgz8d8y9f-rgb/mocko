@@ -269,6 +269,8 @@ Deno.serve(async (req) => {
           note: note ?? null,
           category_scores: categoryScores,
           mini_score: overallScore,
+          pointers_good: grades.pointers_good,
+          pointers_work: grades.pointers_work,
         })
         .select()
         .single();
