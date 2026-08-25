@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Mocko — Interview Practice</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
   :root {
     --bg: #0E1116;
@@ -18,6 +18,28 @@
     --text: #E8EAED;
     --text-muted: #8A93A3;
     --line: #2A2F3A;
+    --tag-structure: #7C9EF2;
+    --tag-communication: #C77DE0;
+    --tag-quantitative: #45B98C;
+    --tag-risk: #E8814A;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface-2: #EFECE5;
+    --cue: #171B22;
+    --cue-dim: #2A2F3A;
+    --record: #D6303E;
+    --good: #1F8577;
+    --warn: #C97F1E;
+    --text: #1A1D23;
+    --text-muted: #6B7280;
+    --line: #E2DFD8;
+    --tag-structure: #3E63C9;
+    --tag-communication: #9A4CB8;
+    --tag-quantitative: #23886A;
+    --tag-risk: #BD5C25;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,12 +51,86 @@
   .app { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
 
   .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .mascot { animation: bob 2.6s ease-in-out infinite; transform-origin: center bottom; }
-  @keyframes bob { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-2px) rotate(-2deg); } }
+  .logo { display: flex; align-items: center; gap: 1px; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .logo-text { font-size: 22px; font-weight: 800; letter-spacing: 0.08em; }
+  .logo-text { font-family: 'Bricolage Grotesque', sans-serif; font-size: 23px; font-weight: 800; letter-spacing: -0.01em; }
   .tagline { color: var(--text-muted); font-size: 13px; }
+
+  /* Logo mascot: leans casually against the wordmark, legs crossed,
+     hollow jointed figure matching the loading-screen sprinter's style.
+     On hover the hanging arm raises and waves. */
+  .mascot .lean-body { transform-origin: 22px 29px; transform: rotate(14deg); }
+  .mascot .leg-l, .mascot .leg-r { transform-origin: 24px 21px; }
+  .mascot .arm-l, .mascot .arm-r { transform-origin: 24px 15px; }
+  .logo:hover .mascot .arm-l { animation: wave-arm 0.5s ease-in-out infinite; }
+  .logo:hover .mascot .wave-elbow { animation: wave-elbow 0.5s ease-in-out infinite; }
+  @keyframes wave-arm { 0%,100% { transform: rotate(80deg); } 50% { transform: rotate(105deg); } }
+  @keyframes wave-elbow { 0%,100% { transform: rotate(10deg); } 50% { transform: rotate(-15deg); } }
+
+  /* Processing-screen sprinter: same jointed rig, running hard on a
+     treadmill whose belt scrolls backward under him, fast. */
+  .run-active .leg-l, .run-active .leg-r { transform-origin: 20px 23px; }
+  .run-active .arm-l, .run-active .arm-r { transform-origin: 20px 16px; }
+  .run-active .leg-l { animation: sprint-leg-a .55s ease-in-out infinite; }
+  .run-active .leg-r { animation: sprint-leg-b .55s ease-in-out infinite; }
+  .run-active .arm-l { animation: sprint-arm-b .55s ease-in-out infinite; }
+  .run-active .arm-r { animation: sprint-arm-a .55s ease-in-out infinite; }
+  .run-active .shin-l-pivot { transform-origin: 18px 27px; animation: sprint-knee-a .55s ease-in-out infinite; }
+  .run-active .shin-r-pivot { transform-origin: 22px 27px; animation: sprint-knee-b .55s ease-in-out infinite; }
+  .run-active .forearm-l-pivot { transform-origin: 17px 19px; animation: sprint-knee-b .55s ease-in-out infinite; }
+  .run-active .forearm-r-pivot { transform-origin: 23px 19px; animation: sprint-knee-a .55s ease-in-out infinite; }
+  .run-active .sprint-body { animation: sprint-bob .55s ease-in-out infinite; }
+  .run-active .belt { stroke: var(--record); stroke-width: 1.4; stroke-dasharray: 3 3; animation: belt-scroll-reverse .2s linear infinite; }
+  @keyframes sprint-leg-a { 0%,100% { transform: rotate(38deg); } 50% { transform: rotate(-32deg); } }
+  @keyframes sprint-leg-b { 0%,100% { transform: rotate(-32deg); } 50% { transform: rotate(38deg); } }
+  @keyframes sprint-knee-a { 0%,100% { transform: rotate(68deg); } 50% { transform: rotate(0deg); } }
+  @keyframes sprint-knee-b { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(68deg); } }
+  @keyframes sprint-arm-a { 0%,100% { transform: rotate(45deg); } 50% { transform: rotate(-40deg); } }
+  @keyframes sprint-arm-b { 0%,100% { transform: rotate(-40deg); } 50% { transform: rotate(45deg); } }
+  @keyframes sprint-bob { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-3px) rotate(-6deg); } }
+  @keyframes belt-scroll-reverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 6; } }
+
+  /* Toggle-card mascots: static by default, animate on hover. */
+  .mascot-toggle-card { display: flex; align-items: center; gap: 16px; }
+  .mascot-toggle-card .card-mascot { flex-shrink: 0; }
+  .mascot-toggle-card > div { flex: 1; }
+
+  [data-len="Quick"] .speed-mascot .leg-l, [data-len="Quick"] .speed-mascot .leg-r { transform-origin: 20px 23px; }
+  [data-len="Quick"] .speed-mascot .arm-l, [data-len="Quick"] .speed-mascot .arm-r { transform-origin: 20px 16px; }
+  [data-len="Quick"] .speed-mascot .shin-l-pivot { transform-origin: 18px 27px; }
+  [data-len="Quick"] .speed-mascot .shin-r-pivot { transform-origin: 22px 27px; }
+  [data-len="Quick"] .speed-mascot .forearm-l-pivot { transform-origin: 17px 19px; }
+  [data-len="Quick"] .speed-mascot .forearm-r-pivot { transform-origin: 23px 19px; }
+
+  /* Frozen pose at the apex of the stride -- both legs extended and
+     spread to their widest, scissor-like, rather than mid-recovery. */
+  .speed-mascot .sprint-body { transform: rotate(-10deg); }
+  .speed-mascot .leg-l { transform: rotate(-48deg); }
+  .speed-mascot .leg-r { transform: rotate(48deg); }
+  .speed-mascot .shin-l-pivot { transform: rotate(0deg); }
+  .speed-mascot .shin-r-pivot { transform: rotate(10deg); }
+  .speed-mascot .arm-l { transform: rotate(48deg); }
+  .speed-mascot .arm-r { transform: rotate(-48deg); }
+  .speed-mascot .forearm-l-pivot { transform: rotate(15deg); }
+  .speed-mascot .forearm-r-pivot { transform: rotate(15deg); }
+  .speed-mascot .belt { stroke: var(--text-muted); stroke-width: 1.1; stroke-dasharray: 2 3; opacity: 0.6; }
+
+  [data-len="Quick"]:hover .speed-mascot .leg-l { animation: sprint-leg-a .55s ease-in-out infinite; }
+  [data-len="Quick"]:hover .speed-mascot .leg-r { animation: sprint-leg-b .55s ease-in-out infinite; }
+  [data-len="Quick"]:hover .speed-mascot .arm-l { animation: sprint-arm-b .55s ease-in-out infinite; }
+  [data-len="Quick"]:hover .speed-mascot .arm-r { animation: sprint-arm-a .55s ease-in-out infinite; }
+  [data-len="Quick"]:hover .speed-mascot .shin-l-pivot { animation: sprint-knee-a .55s ease-in-out infinite; }
+  [data-len="Quick"]:hover .speed-mascot .shin-r-pivot { animation: sprint-knee-b .55s ease-in-out infinite; }
+  [data-len="Quick"]:hover .speed-mascot .forearm-l-pivot { animation: sprint-knee-b .55s ease-in-out infinite; }
+  [data-len="Quick"]:hover .speed-mascot .forearm-r-pivot { animation: sprint-knee-a .55s ease-in-out infinite; }
+  [data-len="Quick"]:hover .speed-mascot .sprint-body { animation: sprint-bob .55s ease-in-out infinite; }
+
+  /* Full Interview mascot: figure in front of a monitor, hands gesture on hover. */
+  .full-mascot .full-arm-l, .full-mascot .full-arm-r { transform-origin: 10px 14px; }
+  [data-len="Full"]:hover .full-mascot .full-arm-l { animation: talk-hand-a .5s ease-in-out infinite; }
+  [data-len="Full"]:hover .full-mascot .full-arm-r { animation: talk-hand-b .5s ease-in-out infinite; }
+  @keyframes talk-hand-a { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-22deg); } }
+  @keyframes talk-hand-b { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(22deg); } }
 
   .nav-tabs { display: flex; gap: 4px; }
   .nav-tab { font-family: 'IBM Plex Mono'; font-size: 12px; letter-spacing: 0.03em; color: var(--text-muted); background: none; border: none; padding: 8px 14px; cursor: pointer; border-radius: 6px; transition: all 0.15s; }
@@ -69,7 +165,35 @@
     border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); cursor: pointer; transition: all 0.15s;
   }
   .pill-btn.selected { background: var(--cue); color: var(--bg); border-color: var(--cue); }
+  #difficulty-row .pill-btn[data-difficulty="easy"].selected { background: var(--good); border-color: var(--good); color: var(--bg); }
+  #difficulty-row .pill-btn[data-difficulty="medium"].selected { background: var(--warn); border-color: var(--warn); color: var(--bg); }
+  #difficulty-row .pill-btn[data-difficulty="hard"].selected { background: var(--record); border-color: var(--record); color: white; }
+  .count-select { font-family: 'Inter'; font-size: 14px; font-weight: 600; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer; }
+  .count-select:focus { outline: none; border-color: var(--text-muted); }
+  .count-estimate { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
   .pill-btn:hover:not(.selected) { border-color: var(--text-muted); color: var(--text); }
+
+  .filter-dropdowns { display: flex; gap: 10px; margin-bottom: 20px; }
+  .filter-dropdown { position: relative; }
+  .filter-dropdown-btn {
+    font-family: 'Inter'; font-size: 13px; font-weight: 600; padding: 10px 16px; border-radius: 100px;
+    border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer;
+    display: flex; align-items: center; gap: 8px; transition: border-color 0.15s;
+  }
+  .filter-dropdown-btn:hover { border-color: var(--text-muted); }
+  .filter-dropdown.open .filter-dropdown-btn { border-color: var(--good); }
+  .filter-dropdown-caret { font-size: 10px; color: var(--text-muted); }
+  .filter-dropdown-panel {
+    display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; min-width: 190px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .filter-dropdown.open .filter-dropdown-panel { display: block; }
+  .filter-dropdown-panel label {
+    display: flex; align-items: center; gap: 9px; font-size: 13.5px; padding: 8px 8px; border-radius: 6px; cursor: pointer;
+  }
+  .filter-dropdown-panel label:hover { background: var(--surface-2); }
+  .filter-dropdown-panel input[type="checkbox"] { accent-color: var(--good); width: 15px; height: 15px; cursor: pointer; }
 
   .btn { font-family: 'Inter'; font-size: 14px; font-weight: 600; padding: 12px 22px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; }
   .btn-primary { background: var(--cue); color: var(--bg); }
@@ -122,6 +246,8 @@
   .rec-video { width: 100%; max-height: 340px; object-fit: cover; border-radius: 10px; background: #000; transform: scaleX(-1); display: block; margin-bottom: 12px; }
   .rec-status { font-size: 13px; color: var(--text-muted); }
   .prep-overlay { position: absolute; inset: 16px; border-radius: 10px; background: rgba(14,17,22,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .processing-overlay { position: absolute; inset: 16px; border-radius: 10px; background: rgba(14,17,22,0.92); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+  .processing-label { font-size: 13px; color: var(--text-muted); }
   .prep-number { font-family: 'Barlow Condensed'; font-size: 72px; font-weight: 800; color: var(--good); line-height: 1; }
   .prep-label { font-size: 13px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
 
@@ -194,6 +320,14 @@
   .theme-freq { font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--text-muted); }
 
   .history-list { display: flex; flex-direction: column; gap: 10px; }
+  .resume-row { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+  .resume-row:last-child { margin-bottom: 0; }
+  .resume-label { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+  .resume-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .resume-primary-badge { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--good); border: 1px solid var(--good); border-radius: 20px; padding: 2px 8px; flex-shrink: 0; }
+  .resume-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .resume-actions button { background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; text-decoration: underline; padding: 0; }
+  .resume-actions button:hover { color: var(--text); }
   .history-row { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
   .history-left { display: flex; flex-direction: column; gap: 3px; }
   .history-title { font-size: 14px; font-weight: 600; }
@@ -213,7 +347,25 @@
   .drill-badge.live { background: rgba(63,167,150,0.18); color: var(--good); }
   .drill-badge.soon { background: rgba(138,147,163,0.15); color: var(--text-muted); }
   .drill-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-  .drill-card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+  .drill-card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
+  .drill-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .drill-tag { font-family: 'IBM Plex Mono'; font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
+  .drill-tag.tag-structure { background: rgba(124,158,242,0.16); color: var(--tag-structure); }
+  .drill-tag.tag-communication { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
+  .drill-tag.tag-quantitative { background: rgba(69,185,140,0.16); color: var(--tag-quantitative); }
+  .drill-tag.tag-risk { background: rgba(232,129,74,0.16); color: var(--tag-risk); }
+  .drill-tag.tag-industry { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--line); }
+
+  .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
+  .leaderboard-row { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; cursor: pointer; transition: border-color 0.15s; }
+  .leaderboard-row:hover { border-color: var(--text-muted); }
+  .leaderboard-rank { font-family: 'Barlow Condensed'; font-size: 20px; font-weight: 800; color: var(--text-muted); width: 28px; text-align: center; flex-shrink: 0; }
+  .leaderboard-row:nth-child(1) .leaderboard-rank { color: var(--warn); }
+  .leaderboard-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--text-muted); overflow: hidden; flex-shrink: 0; }
+  .leaderboard-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .leaderboard-name { flex: 1; font-size: 14px; font-weight: 600; }
+  .leaderboard-score { font-family: 'IBM Plex Mono'; font-size: 14px; font-weight: 600; color: var(--good); }
+  .leaderboard-empty { color: var(--text-muted); font-size: 13.5px; text-align: center; padding: 30px 0; }
 
   .drill-session { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 36px; text-align: center; }
   .drill-session-label { font-size: 12px; color: var(--good); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
@@ -229,56 +381,93 @@
   .drill-result-num { font-family: 'Barlow Condensed'; font-size: 56px; font-weight: 800; color: var(--good); }
   .drill-result-label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 6px; margin-bottom: 24px; }
 
-  .star-field { margin-bottom: 16px; }
-  .star-field label { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
-  .star-field textarea { width: 100%; min-height: 60px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Inter'; font-size: 14px; resize: vertical; }
-  .star-field textarea:focus { outline: none; border-color: var(--good); }
-
-  .filler-passage { text-align: left; line-height: 2.1; font-size: 15px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
-  .filler-word { cursor: pointer; padding: 1px 3px; border-radius: 3px; }
-  .filler-word:hover { background: rgba(230,57,70,0.15); }
-  .filler-word.caught { background: var(--good); color: var(--bg); font-weight: 600; }
-  .filler-word.wrong { background: var(--record); color: white; }
-  .filler-score-live { margin-top: 14px; font-size: 12.5px; color: var(--text-muted); }
 
   .math-question { font-family: 'Barlow Condensed'; font-size: 44px; font-weight: 800; margin-bottom: 20px; }
   .math-input { width: 180px; text-align: center; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'IBM Plex Mono'; font-size: 20px; }
   .math-input:focus { outline: none; border-color: var(--good); }
   .math-progress { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
 
-  .auth-status { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
-  .auth-status button { font-family: 'Inter'; font-size: 12px; color: var(--text-muted); background: none; border: none; cursor: pointer; text-decoration: underline; }
-  .auth-status button:hover { color: var(--text); }
+  .risk-balloon { width: 90px; height: 110px; border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%; margin: 10px auto 4px; transition: width 0.12s ease, height 0.12s ease, background-color 0.3s; position: relative; }
+  .risk-balloon::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid inherit; }
+  .risk-balloon.green { background: var(--good); }
+  .risk-balloon.yellow { background: var(--warn); }
+  .risk-balloon.red { background: var(--record); }
+  .risk-balloon.popped { background: var(--surface-2) !important; opacity: 0.4; }
+  .risk-live { font-family: 'Barlow Condensed'; font-size: 40px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+
+  .login-prompt { display: flex; align-items: center; gap: 10px; }
+  .login-prompt-text { font-size: 12px; color: var(--text-muted); display: none; }
+  @media (min-width: 560px) { .login-prompt-text { display: inline; } }
+
+  .account-menu { position: relative; }
+  .account-trigger { display: flex; align-items: center; gap: 8px; background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: 8px; }
+  .account-trigger:hover { background: var(--surface-2); }
+  .account-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--good); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; font-family: 'Barlow Condensed'; background-size: cover; background-position: center; flex-shrink: 0; }
+  .account-name { font-size: 13px; color: var(--text); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .account-caret { font-size: 10px; color: var(--text-muted); }
+  .account-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 6px; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); z-index: 10; }
+  .account-dropdown button { display: block; width: 100%; text-align: left; background: none; border: none; padding: 9px 12px; border-radius: 6px; font-family: 'Inter'; font-size: 13.5px; color: var(--text); cursor: pointer; }
+  .account-dropdown button:hover { background: var(--surface-2); }
+  .account-dropdown-divider { height: 1px; background: var(--line); margin: 6px 4px; }
+
+  .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--good); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 28px; font-family: 'Barlow Condensed'; background-size: cover; background-position: center; flex-shrink: 0; }
+
+  .faq-item { border-bottom: 1px solid var(--line); padding: 14px 0; }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-item summary { font-size: 14.5px; font-weight: 600; cursor: pointer; list-style: none; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::before { content: '+'; color: var(--good); margin-right: 10px; font-weight: 700; }
+  .faq-item[open] summary::before { content: '−'; }
+  .faq-item p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-top: 10px; padding-left: 20px; }
 
   .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px; max-width: 380px; margin: 0 auto; }
   .auth-field { margin-bottom: 16px; }
   .auth-field label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
   .auth-field input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Inter'; font-size: 14px; }
   .auth-field input:focus { outline: none; border-color: var(--good); }
+  .auth-field input.field-invalid { border-color: var(--record); }
   .auth-error { color: var(--record); font-size: 13px; margin-bottom: 14px; min-height: 18px; }
   .auth-switch { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 18px; }
   .auth-switch a { color: var(--good); cursor: pointer; text-decoration: underline; }
+
+  .oauth-row { display: flex; gap: 10px; }
+  .oauth-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; height: 46px;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .oauth-btn:hover { border-color: var(--text-muted); }
+  .oauth-btn svg { display: block; }
+
+  .pw-strength { margin-top: 8px; display: none; }
+  .pw-strength.active { display: block; }
+  .pw-strength-track { display: flex; gap: 4px; height: 4px; margin-bottom: 6px; }
+  .pw-strength-seg { flex: 1; border-radius: 2px; background: var(--line); transition: background-color 0.15s; }
+  .pw-strength-label { font-size: 11.5px; color: var(--text-muted); }
+  .pw-strength-label b { font-weight: 700; }
 </style>
 </head>
 <body>
 <div class="app">
 
   <div class="topbar">
-    <div class="logo">
+    <div class="logo" onclick="goToHome()" style="cursor:pointer;">
       <svg class="mascot" width="34" height="34" viewBox="0 0 34 34" fill="none">
-        <circle cx="17" cy="17" r="15.5" fill="var(--good)"/>
-        <circle cx="11.5" cy="14.5" r="2" fill="var(--bg)"/>
-        <circle cx="22.5" cy="14.5" r="2" fill="var(--bg)"/>
-        <path d="M10.5 20C12.5 24 21.5 24 23.5 20" stroke="var(--bg)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <g class="lean-body">
+          <circle cx="24" cy="8" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
+          <path d="M24,12 Q23,16 24,21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+          <g class="leg-l"><line x1="24" y1="21" x2="23" y2="25" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="23" y1="25" x2="22" y2="29" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
+          <g class="leg-r"><line x1="24" y1="21" x2="26" y2="24" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="26" y1="24" x2="29" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
+          <g class="arm-r"><line x1="24" y1="15" x2="27" y2="16" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="27" y1="16" x2="26" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
+          <g class="arm-l"><line x1="24" y1="15" x2="22" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="wave-elbow" style="transform-origin:22px 18px"><line x1="22" y1="18" x2="21" y2="21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+        </g>
       </svg>
       <div class="logo-text">MOCKO</div>
     </div>
     <div class="nav-tabs">
-      <button class="nav-tab active" id="tab-practice" onclick="switchTab('practice')">Practice</button>
+      <button class="nav-tab active" id="tab-home" onclick="switchTab('home')">Home</button>
       <button class="nav-tab" id="tab-drills" onclick="switchTab('drills')">Drills</button>
-      <button class="nav-tab" id="tab-history" onclick="switchTab('history')">History &amp; Trends</button>
     </div>
-    <div class="auth-status" id="auth-status"></div>
+    <div id="account-area"></div>
   </div>
 
   <!-- DASHBOARD (mode choice first) -->
@@ -292,8 +481,8 @@
       <div class="mode-card mode-a" onclick="chooseMode('record')">
         <div class="mode-icon"><div class="waveform" style="color:var(--record)"><span style="animation-delay:0s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.4s"></span></div></div>
         <div class="mode-eyebrow">Async · Scored</div>
-        <h3>HireVue Practice</h3>
-        <p>Get a question, record your answer on camera, and get a scored breakdown with specific pointers — like a real HireVue screen.</p>
+        <h3>On-Air Practice</h3>
+        <p>Mostly <b>behavioral</b>. Get a question, record your answer on camera, and get a scored breakdown — built for HireVue, Sonru, Spark Hire, and similar async video interview screens.</p>
         <div class="mode-cta">Start recording →</div>
       </div>
       <div class="mode-card mode-b" onclick="chooseMode('voice')">
@@ -315,9 +504,21 @@
       <p id="auth-sub">Sign in to record a session and save your progress.</p>
     </div>
     <div class="auth-panel">
-      <div class="btn-row" style="flex-direction:column; gap:10px; margin-bottom:20px;">
-        <button class="btn btn-secondary" style="width:100%" onclick="oauthSignIn('google')">Continue with Google</button>
-        <button class="btn btn-secondary" style="width:100%" onclick="oauthSignIn('linkedin')">Continue with LinkedIn</button>
+      <div class="oauth-row" style="margin-bottom:20px;">
+        <button class="oauth-btn" onclick="oauthSignIn('google')" aria-label="Continue with Google" title="Continue with Google">
+          <svg width="20" height="20" viewBox="0 0 18 18">
+            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+            <path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/>
+            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+          </svg>
+        </button>
+        <button class="oauth-btn" onclick="oauthSignIn('linkedin')" aria-label="Continue with LinkedIn" title="Continue with LinkedIn">
+          <svg width="20" height="20" viewBox="0 0 18 18">
+            <rect width="18" height="18" rx="3" fill="#0A66C2"/>
+            <path fill="#fff" d="M5.68 6.87H3.32v7.6h2.36v-7.6zM4.5 5.83c.8 0 1.3-.53 1.3-1.2-.01-.68-.5-1.2-1.29-1.2-.78 0-1.3.52-1.3 1.2 0 .67.5 1.2 1.28 1.2h.01zM6.79 14.47h2.36v-4.24c0-.23.02-.45.08-.61.19-.45.6-.93 1.31-.93.92 0 1.29.7 1.29 1.73v4.05h2.36v-4.34c0-2.18-1.16-3.2-2.72-3.2-1.25 0-1.8.7-2.11 1.19h.02v-1.02H6.79c.03.66 0 7.37 0 7.37z"/>
+          </svg>
+        </button>
       </div>
       <div class="divider" style="display:flex; align-items:center; gap:10px; background:none; height:auto; margin-bottom:20px;">
         <div style="flex:1; height:1px; background:var(--line);"></div>
@@ -330,7 +531,19 @@
       </div>
       <div class="auth-field">
         <label>Password</label>
-        <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••">
+        <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••" oninput="onAuthPasswordInput()">
+        <div class="pw-strength" id="pw-strength">
+          <div class="pw-strength-track">
+            <div class="pw-strength-seg" id="pw-seg-0"></div>
+            <div class="pw-strength-seg" id="pw-seg-1"></div>
+            <div class="pw-strength-seg" id="pw-seg-2"></div>
+          </div>
+          <div class="pw-strength-label" id="pw-strength-label"></div>
+        </div>
+      </div>
+      <div class="auth-field" id="auth-confirm-field" style="display:none;">
+        <label>Confirm Password</label>
+        <input type="password" id="auth-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onAuthConfirmInput()">
       </div>
       <div class="auth-error" id="auth-error"></div>
       <div class="btn-row">
@@ -342,34 +555,266 @@
     </div>
   </div>
 
+  <!-- PROFILE -->
+  <div class="screen" id="screen-profile">
+    <button class="back-btn" onclick="goToHome()">← Back</button>
+    <div class="hero">
+      <h1 class="display">Your Profile</h1>
+      <p>This is the start of Mocko as a platform — friends and more are coming.</p>
+    </div>
+    <div class="auth-error" id="profile-error" style="max-width:460px; margin:0 auto 12px;"></div>
+
+    <!-- VIEW MODE -->
+    <div class="auth-panel" id="profile-view" style="max-width:460px;">
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+        <div class="profile-avatar" id="profile-view-avatar">?</div>
+        <div>
+          <div style="font-size:18px; font-weight:700;" id="profile-view-username">—</div>
+          <div style="font-size:12px; color:var(--text-muted);" id="profile-view-joined"></div>
+        </div>
+      </div>
+      <p id="profile-view-bio" style="font-size:13.5px; color:var(--text-muted); line-height:1.5; margin-bottom:18px;"></p>
+      <div id="profile-view-links" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;"></div>
+      <div class="btn-row" id="profile-view-actions" style="justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="enterProfileEditMode()">Edit Profile</button>
+      </div>
+    </div>
+
+    <!-- EDIT MODE -->
+    <div class="auth-panel" id="profile-edit" style="max-width:460px; display:none;">
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:24px;">
+        <div class="profile-avatar" id="profile-avatar-preview">?</div>
+        <label class="btn btn-secondary" style="cursor:pointer; display:inline-block;">
+          Change photo
+          <input type="file" accept="image/*" id="profile-avatar-input" style="display:none;" onchange="handleAvatarUpload(event)">
+        </label>
+      </div>
+      <div class="auth-field">
+        <label>Username</label>
+        <input type="text" id="profile-username">
+      </div>
+      <div class="auth-field">
+        <label>Bio</label>
+        <input type="text" id="profile-bio" placeholder="A short intro (optional)">
+      </div>
+      <div class="auth-field">
+        <label>Twitter / X</label>
+        <input type="text" id="profile-twitter" placeholder="https://x.com/...">
+      </div>
+      <div class="auth-field">
+        <label>LinkedIn</label>
+        <input type="text" id="profile-linkedin" placeholder="https://linkedin.com/in/...">
+      </div>
+      <div class="auth-field">
+        <label>Instagram</label>
+        <input type="text" id="profile-instagram" placeholder="https://instagram.com/...">
+      </div>
+      <div class="btn-row" style="justify-content:flex-end; gap:10px;">
+        <button class="btn btn-secondary" onclick="cancelProfileEdit()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveProfile()">Save</button>
+      </div>
+    </div>
+
+    <!-- RESUMES -->
+    <div class="auth-panel" id="profile-resumes-section" style="max-width:460px; margin-top:16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <div style="font-size:15px; font-weight:700;">Resumes</div>
+        <label class="btn btn-secondary" style="cursor:pointer; font-size:13px; padding:8px 14px;">
+          Upload
+          <input type="file" accept=".pdf" id="resume-upload-input" style="display:none;" onchange="handleResumeUpload(event)">
+        </label>
+      </div>
+      <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:14px;">Your primary resume can be used to tailor On-Air Practice questions to your actual experience. PDF only, for now.</p>
+      <div id="resume-error" class="auth-error" style="min-height:0; margin-bottom:8px;"></div>
+      <div id="resume-list"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="screen" id="screen-settings">
+    <button class="back-btn" onclick="goToHome()">← Back</button>
+    <div class="hero">
+      <h1 class="display">Settings</h1>
+      <p>More settings are coming as Mocko grows.</p>
+    </div>
+    <div class="select-panel" style="max-width:460px;">
+      <div class="select-group" style="margin-bottom:0;">
+        <div class="select-group-label">Theme</div>
+        <div class="select-group-sub">Choose how Mocko looks.</div>
+        <div class="toggle-row">
+          <div class="toggle-card" id="theme-dark-card" onclick="setTheme('dark')"><h4>Dark</h4><p>Default</p></div>
+          <div class="toggle-card" id="theme-light-card" onclick="setTheme('light')"><h4>Light</h4><p>Easier in bright rooms</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HELP -->
+  <div class="screen" id="screen-help">
+    <button class="back-btn" onclick="goToHome()">← Back</button>
+    <div class="hero">
+      <h1 class="display">Help</h1>
+      <p>Common questions about how Mocko works.</p>
+    </div>
+    <div class="theme-section">
+      <details class="faq-item">
+        <summary>What is Mocko?</summary>
+        <p>A practice tool for job interviews. Record mock answers and get an AI-scored breakdown, or run quick skill drills — arithmetic, sequences, and risk-based decision making.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Is my recording stored?</summary>
+        <p>Yes — recordings are stored privately under your account so they can be transcribed and graded. Only you can access your own recordings.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How is my answer graded?</summary>
+        <p>Your recording is transcribed, then scored against a rubric — content & structure, clarity, pace, and tone — using Claude, along with pace and filler-word stats pulled directly from the transcript.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Why do I need to log in?</summary>
+        <p>So your recordings and scores are saved to your account and you can track progress over time, instead of losing everything when you close the tab.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I delete my data?</summary>
+        <p>There's no self-serve delete yet — reach out and we'll take care of it. Self-serve account deletion is on the roadmap.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What's coming next?</summary>
+        <p>Full multi-question interviews, a live voice mock interview mode, more drills, and eventually friends and shared progress.</p>
+      </details>
+    </div>
+  </div>
+
   <!-- SETUP: condensed single page -->
   <div class="screen" id="screen-setup">
     <button class="back-btn" onclick="goTo('dashboard')">← Back</button>
-    <div class="step-label">Session Setup — Finance Track</div>
+    <div class="step-label">Session Setup</div>
     <div class="hero">
       <h1 class="display">Set up your session</h1>
-      <p id="setup-sub">Choose your length and format to begin.</p>
+      <p id="setup-sub">Choose your format and difficulty to begin.</p>
     </div>
 
     <div class="select-panel">
       <div class="select-group">
-        <div class="select-group-label">Length of Session</div>
-        <div class="select-group-sub">Quick is a single question. Full runs a proper multi-question set.</div>
-        <div class="toggle-row" id="length-row">
-          <div class="toggle-card" data-len="Quick"><h4>Quick Mode</h4><p>1 question · ~3 min</p></div>
-          <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions · ~20 min</p></div>
+        <div class="select-group-label">Industry</div>
+        <div class="select-group-sub">Saved to your profile so it's remembered next time.</div>
+        <div class="pill-row" id="industry-row">
+          <button class="pill-btn" data-industry="ib">Investment Banking</button>
+          <button class="pill-btn" data-industry="consulting">Consulting</button>
+          <button class="pill-btn" data-industry="tech">Tech</button>
+          <button class="pill-btn" data-industry="quant">Quant</button>
+          <button class="pill-btn" data-industry="pe">Private Equity</button>
+          <button class="pill-btn" data-industry="general">General</button>
         </div>
       </div>
 
       <div class="divider"></div>
 
-      <div class="select-group">
-        <div class="select-group-label">Format</div>
-        <div class="select-group-sub">You can combine question types within a single session.</div>
-        <div class="pill-row" id="type-row">
-          <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
-          <button class="pill-btn" data-type="Technical">Technical only</button>
-          <button class="pill-btn" data-type="Both">Both</button>
+      <!-- ON-AIR PRACTICE controls -->
+      <div id="setup-record-block">
+        <div id="resume-toggle-group" style="display:none;">
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:13.5px;">
+            <input type="checkbox" id="resume-tailor-checkbox" onchange="toggleResumePicker()">
+            Tailor questions to my resume
+          </label>
+          <div id="resume-picker-panel" style="display:none; margin-top:12px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:10px 12px;">
+            <div id="resume-picker-list"></div>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:var(--good); padding-top:9px; margin-top:5px; border-top:1px solid var(--line);">
+              + Upload new resume
+              <input type="file" accept=".pdf" id="resume-picker-upload-input" style="display:none;" onchange="handleSetupResumeUpload(event)">
+            </label>
+          </div>
+        </div>
+
+        <div class="divider" id="resume-divider" style="display:none;"></div>
+
+        <div class="select-group">
+          <div class="select-group-label">Format</div>
+          <div class="select-group-sub">Speed Round is one question. Full Interview runs several.</div>
+          <div class="toggle-row" id="length-row">
+            <div class="toggle-card mascot-toggle-card" data-len="Quick">
+              <svg class="card-mascot speed-mascot" width="52" height="52" viewBox="0 0 40 40" fill="none">
+                <g class="sprint-body">
+                  <circle cx="20" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
+                  <path d="M20,13 Q19,18 20,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+                  <g class="leg-l"><line x1="20" y1="23" x2="18" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-l-pivot"><line x1="18" y1="27" x2="17" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+                  <g class="leg-r"><line x1="20" y1="23" x2="22" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-r-pivot"><line x1="22" y1="27" x2="23" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+                  <g class="arm-l"><line x1="20" y1="16" x2="17" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-l-pivot"><line x1="17" y1="19" x2="16" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+                  <g class="arm-r"><line x1="20" y1="16" x2="23" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-r-pivot"><line x1="23" y1="19" x2="24" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+                </g>
+                <line class="belt" x1="12" y1="32" x2="28" y2="32"/>
+              </svg>
+              <div><h4>Speed Round</h4><p>1 question</p></div>
+            </div>
+            <div class="toggle-card mascot-toggle-card" data-len="Full">
+              <svg class="card-mascot full-mascot" width="52" height="52" viewBox="0 0 40 40" fill="none">
+                <rect x="20" y="9" width="15" height="11" rx="1.5" fill="none" stroke="var(--text-muted)" stroke-width="1.3"/>
+                <line x1="27.5" y1="20" x2="27.5" y2="23" stroke="var(--text-muted)" stroke-width="1.3"/>
+                <line x1="23" y1="23" x2="32" y2="23" stroke="var(--text-muted)" stroke-width="1.3"/>
+                <g class="full-body">
+                  <circle cx="10" cy="9" r="3.5" fill="none" stroke="var(--text)" stroke-width="1.8"/>
+                  <path d="M10,12.5 Q9,17 10,21" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+                  <line x1="10" y1="21" x2="8" y2="26" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/>
+                  <line x1="10" y1="21" x2="12" y2="26" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/>
+                  <g class="full-arm-l"><line x1="10" y1="14" x2="6" y2="17" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/></g>
+                  <g class="full-arm-r"><line x1="10" y1="14" x2="14" y2="17" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/></g>
+                </g>
+              </svg>
+              <div><h4>Full Interview</h4><p>Multiple questions</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="select-group">
+          <div class="select-group-label">Difficulty</div>
+          <div class="select-group-sub">This mode is mostly behavioral — pick how tough.</div>
+          <div class="pill-row" id="difficulty-row">
+            <button class="pill-btn" data-difficulty="easy">Easy</button>
+            <button class="pill-btn" data-difficulty="medium">Medium</button>
+            <button class="pill-btn" data-difficulty="hard">Hard</button>
+          </div>
+        </div>
+
+        <div class="divider" id="count-divider" style="display:none;"></div>
+        <div class="select-group" id="count-group" style="display:none; margin-bottom:0;">
+          <div class="select-group-label">Number of Questions</div>
+          <select class="count-select" id="count-select">
+            <option value="">Choose a count...</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+          <div class="count-estimate" id="count-estimate"></div>
+        </div>
+      </div>
+
+      <!-- MOCK INTERVIEW controls -->
+      <div id="setup-voice-block" style="display:none;">
+        <div class="select-group">
+          <div class="select-group-label">Length of Session</div>
+          <div class="select-group-sub">Quick is a single question. Full runs a proper multi-question set.</div>
+          <div class="toggle-row" id="voice-length-row">
+            <div class="toggle-card" data-len="Quick"><h4>Quick Mode</h4><p>1 question · ~3 min</p></div>
+            <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions · ~20 min</p></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="select-group" style="margin-bottom:0;">
+          <div class="select-group-label">Format</div>
+          <div class="select-group-sub">You can combine question types within a single session.</div>
+          <div class="pill-row" id="type-row">
+            <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
+            <button class="pill-btn" data-type="Technical">Technical only</button>
+            <button class="pill-btn" data-type="Both">Both</button>
+          </div>
         </div>
       </div>
     </div>
@@ -384,11 +829,11 @@
     <button class="back-btn" onclick="cancelRecordSetup()">← Back</button>
     <div class="studio-panel">
       <div class="onair-row">
-        <div class="onair-badge" style="color:var(--record)"><div class="dot"></div> HIREVUE PRACTICE</div>
+        <div class="onair-badge" style="color:var(--record)"><div class="dot"></div> ON AIR · BEHAVIORAL</div>
         <div class="timer mono" id="rec-timer">00:00</div>
       </div>
       <div class="cue-card">
-        <div class="cue-label" id="rec-qcount">Question 1 of 1 — Finance, Behavioral</div>
+        <div class="cue-label" id="rec-qcount">Question 1 of 1</div>
         <div class="cue-question" id="rec-question">Tell me about a time you disagreed with a teammate. How did you handle it?</div>
       </div>
       <div class="rec-stage" id="rec-stage">
@@ -396,6 +841,20 @@
         <div class="prep-overlay" id="prep-overlay" style="display:none;">
           <div class="prep-number" id="prep-number">10</div>
           <div class="prep-label">Get ready...</div>
+        </div>
+        <div class="processing-overlay" id="processing-overlay">
+          <svg class="run-active" width="70" height="66" viewBox="0 0 40 40" fill="none">
+            <g class="sprint-body">
+              <circle cx="20" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
+              <path d="M20,13 Q19,18 20,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+              <g class="leg-l"><line x1="20" y1="23" x2="18" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-l-pivot"><line x1="18" y1="27" x2="17" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+              <g class="leg-r"><line x1="20" y1="23" x2="22" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-r-pivot"><line x1="22" y1="27" x2="23" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+              <g class="arm-l"><line x1="20" y1="16" x2="17" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-l-pivot"><line x1="17" y1="19" x2="16" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+              <g class="arm-r"><line x1="20" y1="16" x2="23" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-r-pivot"><line x1="23" y1="19" x2="24" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+            </g>
+            <line class="belt" x1="9" y1="32" x2="31" y2="32"/><line x1="9" y1="30" x2="9" y2="34" stroke="var(--record)" stroke-width="1.4"/><line x1="31" y1="30" x2="31" y2="34" stroke="var(--record)" stroke-width="1.4"/>
+          </svg>
+          <div class="processing-label" id="processing-label">Analyzing your answer...</div>
         </div>
         <div class="rec-status" id="rec-status">Requesting camera access...</div>
       </div>
@@ -456,7 +915,7 @@
       <div class="transcript" id="t1">"So, um, there was this one project where me and a teammate, like, disagreed on the approach... I felt like data was important but he wanted to just go with his gut. I asked him if we could pull the numbers before deciding, and eventually he agreed and we found out my approach was actually faster."</div>
 
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="startRecordSetup()">↻ Retry this round</button>
+        <button class="btn btn-secondary" onclick="retryRecordSession()">↻ Retry this round</button>
         <button class="btn btn-primary" onclick="goTo('dashboard')">Done →</button>
       </div>
     </div>
@@ -508,21 +967,57 @@
       <p>Short, focused reps on one skill at a time — not a full interview, just the muscle.</p>
     </div>
 
+    <div class="filter-dropdowns">
+      <div class="filter-dropdown" id="type-filter-dropdown">
+        <button class="filter-dropdown-btn" onclick="toggleFilterDropdown('type', event)">
+          <span id="type-filter-label">All Types</span> <span class="filter-dropdown-caret">▾</span>
+        </button>
+        <div class="filter-dropdown-panel" id="type-filter-panel">
+          <label><input type="checkbox" value="structure" onchange="applyDrillFilters()"> Structure</label>
+          <label><input type="checkbox" value="communication" onchange="applyDrillFilters()"> Communication</label>
+          <label><input type="checkbox" value="quantitative" onchange="applyDrillFilters()"> Quantitative</label>
+          <label><input type="checkbox" value="risk" onchange="applyDrillFilters()"> Risk/Probability</label>
+        </div>
+      </div>
+      <div class="filter-dropdown" id="industry-filter-dropdown">
+        <button class="filter-dropdown-btn" onclick="toggleFilterDropdown('industry', event)">
+          <span id="industry-filter-label">All Industries</span> <span class="filter-dropdown-caret">▾</span>
+        </button>
+        <div class="filter-dropdown-panel" id="industry-filter-panel">
+          <label><input type="checkbox" value="ib" onchange="applyDrillFilters()"> IB</label>
+          <label><input type="checkbox" value="consulting" onchange="applyDrillFilters()"> Consulting</label>
+          <label><input type="checkbox" value="tech" onchange="applyDrillFilters()"> Tech</label>
+          <label><input type="checkbox" value="quant" onchange="applyDrillFilters()"> Quant</label>
+          <label><input type="checkbox" value="pe" onchange="applyDrillFilters()"> PE</label>
+          <label><input type="checkbox" value="general" onchange="applyDrillFilters()"> General</label>
+        </div>
+      </div>
+    </div>
+
     <div class="drill-grid">
-      <div class="drill-card" onclick="startDrill('star')">
-        <div class="drill-top"><span class="drill-icon">★</span><span class="drill-badge live">Live</span></div>
-        <h4>STAR Builder</h4>
-        <p>Type your answer into Situation, Task, Action, and Result boxes. Scored on completeness of each part.</p>
+      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting" onclick="startDrill('arithmetic')">
+        <div class="drill-top"><span class="drill-icon">+</span><span class="drill-badge live">Live</span></div>
+        <h4>Arithmetic</h4>
+        <p>60 seconds, addition, subtraction, multiplication, division — answer as many as you can before time runs out.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
       </div>
-      <div class="drill-card" onclick="startDrill('filler')">
-        <div class="drill-top"><span class="drill-icon">●</span><span class="drill-badge live">Live</span></div>
-        <h4>Spot the Filler</h4>
-        <p>A sample answer appears on screen — click every filler word or weak phrase before the clock runs out.</p>
+      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant" onclick="startDrill('arithmetic_hard')">
+        <div class="drill-top"><span class="drill-icon">±</span><span class="drill-badge live">Live</span></div>
+        <h4>Arithmetic Hard</h4>
+        <p>Same four operations, uglier numbers and multi-step expressions. Still 60 seconds — see how far speed holds up.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
       </div>
-      <div class="drill-card" onclick="startDrill('math')">
-        <div class="drill-top"><span class="drill-icon">#</span><span class="drill-badge live">Live</span></div>
-        <h4>Mental Math Sprint</h4>
-        <p>Type the answer to quick arithmetic and percentage problems — the kind that show up cold in finance screens.</p>
+      <div class="drill-card" data-type="risk" data-industries="ib,pe,quant" onclick="startDrill('risk')">
+        <div class="drill-top"><span class="drill-icon">◉</span><span class="drill-badge live">Live</span></div>
+        <h4>Risk</h4>
+        <p>Pump the balloon for +1 point a pop, or collect and bank your earnings. Pop it and you lose the round — how far do you push it?</p>
+        <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
+      </div>
+      <div class="drill-card" data-type="quantitative" data-industries="quant,tech" onclick="startDrill('sequence')">
+        <div class="drill-top"><span class="drill-icon">…</span><span class="drill-badge live">Live</span></div>
+        <h4>Sequence</h4>
+        <p>A pattern of numbers appears — type the next one in the sequence before the clock runs out.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Quant</span><span class="drill-tag tag-industry">Tech</span></div>
       </div>
       <div class="drill-card soon">
         <div class="drill-top"><span class="drill-icon">$</span><span class="drill-badge soon">Soon</span></div>
@@ -561,30 +1056,28 @@
   <div class="screen" id="screen-drill-session">
     <button class="back-btn" onclick="goTo('drills')">← Back to Drills</button>
     <div class="drill-session">
-      <div class="drill-session-label" id="drill-label">STAR Builder</div>
-      <h2 id="drill-title">Build Your Answer</h2>
+      <div class="drill-session-label" id="drill-label">Drill</div>
+      <h2 id="drill-title"></h2>
       <p class="drill-session-instructions" id="drill-instructions"></p>
 
-      <!-- STAR Builder -->
-      <div id="drill-star-fields" style="display:none; text-align:left; margin-bottom:24px;">
-        <div class="star-field"><label>Situation</label><textarea id="star-s" placeholder="What was the context?"></textarea></div>
-        <div class="star-field"><label>Task</label><textarea id="star-t" placeholder="What were you responsible for?"></textarea></div>
-        <div class="star-field"><label>Action</label><textarea id="star-a" placeholder="What did you actually do?"></textarea></div>
-        <div class="star-field"><label>Result</label><textarea id="star-r" placeholder="What happened as a result?"></textarea></div>
+      <!-- Arithmetic / Arithmetic Hard / Sequence (shared 60s sprint panel) -->
+      <div id="drill-sprint-panel" style="display:none; margin-bottom:24px;">
+        <div class="drill-timer mono" id="sprint-timer">00:60</div>
+        <div class="math-question" id="sprint-question">—</div>
+        <input type="text" inputmode="numeric" id="sprint-input" class="math-input" placeholder="Your answer" autocomplete="off">
+        <div class="math-progress mono" id="sprint-progress">Correct: 0</div>
       </div>
 
-      <!-- Spot the Filler -->
-      <div id="drill-filler-panel" style="display:none; margin-bottom:24px;">
-        <div class="drill-timer mono" id="filler-timer">00:20</div>
-        <p id="filler-text" class="filler-passage"></p>
-        <div class="filler-score-live mono" id="filler-live-score">Caught: 0 · False alarms: 0</div>
-      </div>
-
-      <!-- Mental Math -->
-      <div id="drill-math-panel" style="display:none; margin-bottom:24px;">
-        <div class="math-question" id="math-question">—</div>
-        <input type="number" id="math-input" class="math-input" placeholder="Your answer" autocomplete="off">
-        <div class="math-progress mono" id="math-progress">Question 1 of 6</div>
+      <!-- Risk -->
+      <div id="drill-risk-panel" style="display:none; margin-bottom:24px;">
+        <div class="math-progress mono" id="risk-progress">Balloon 1 of 8</div>
+        <div class="risk-balloon" id="risk-balloon"></div>
+        <div class="risk-live" id="risk-live">0</div>
+        <div class="math-progress mono" id="risk-banked">Banked: 0</div>
+        <div class="btn-row" id="risk-actions" style="display:none; margin-top:18px;">
+          <button class="btn btn-record" id="risk-pump-btn" onclick="riskPump()">Pump (+1)</button>
+          <button class="btn btn-secondary" id="risk-collect-btn" onclick="riskCollect()">Collect</button>
+        </div>
       </div>
 
       <div class="btn-row">
@@ -599,46 +1092,154 @@
     <div class="drill-session">
       <div class="drill-session-label">Drill Complete</div>
       <div class="drill-result-num" id="drill-result-num">18s</div>
-      <div class="drill-result-label" id="drill-result-label">Longest Filler-Free Streak</div>
-      <p class="drill-session-instructions" id="drill-result-note">Solid — your previous best was 12s. Try slowing your pace slightly on transitions; that's usually where fillers creep in.</p>
+      <div class="drill-result-label" id="drill-result-label">Score</div>
+      <p class="drill-session-instructions" id="drill-result-note"></p>
+      <p class="drill-session-instructions" id="drill-result-percentile" style="display:none;"></p>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="startDrill(currentDrill)">↻ Retry drill</button>
+        <button class="btn btn-secondary" id="drill-result-leaderboard-btn" onclick="goToLeaderboard(currentDrill)" style="display:none;">🏆 Leaderboard</button>
         <button class="btn btn-primary" onclick="goTo('drills')">Done →</button>
       </div>
     </div>
   </div>
 
+  <!-- DRILL LEADERBOARD -->
+  <div class="screen" id="screen-drill-leaderboard">
+    <button class="back-btn" onclick="goTo('drill-result')">← Back</button>
+    <div class="hero">
+      <h1 class="display" id="leaderboard-drill-title">Leaderboard</h1>
+    </div>
+    <div class="pill-row" id="leaderboard-period-row" style="margin-bottom:20px;">
+      <button class="pill-btn selected" data-period="daily">Today</button>
+      <button class="pill-btn" data-period="alltime">All-Time</button>
+    </div>
+    <div class="leaderboard-list" id="leaderboard-list"></div>
+  </div>
+
 </div>
 
 <script type="module" src="js/supabase-client.js"></script>
-<script type="module" src="js/auth.js"></script>
 <script type="module" src="js/recording.js"></script>
 <script type="module" src="js/history.js"></script>
+<script type="module" src="js/profile.js"></script>
+<script type="module" src="js/questions.js"></script>
+<script type="module" src="js/resume.js"></script>
+<script type="module" src="js/drills.js"></script>
+<script type="module" src="js/auth.js"></script>
 <script>
-  const state = { type: null, length: null, mode: null };
+  const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null };
   let pendingAuthAction = null;
+  let currentUserProfile = null;
 
   // --- Auth ---
   window.addEventListener('mocko-auth-change', (e) => {
     const user = e.detail;
-    const statusEl = document.getElementById('auth-status');
-    statusEl.innerHTML = user
-      ? `Signed in as ${user.email} <button onclick="MockoAuth.signOut()">Log out</button>`
-      : '';
+    renderAccountArea(user);
     if (user && pendingAuthAction) {
       const action = pendingAuthAction;
       pendingAuthAction = null;
-      if (action === 'record') { chooseMode('record'); }
-      else if (action === 'history') { switchTab('history'); }
+      action();
     }
   });
 
-  function requireAuth(action) {
+  async function renderAccountArea(user) {
+    const areaEl = document.getElementById('account-area');
+    if (!user) {
+      areaEl.innerHTML = `
+        <div class="login-prompt">
+          <span class="login-prompt-text">Log in to track your scores</span>
+          <button class="btn btn-secondary" onclick="setAuthMode('signin'); goTo('auth');">Log In</button>
+        </div>`;
+      return;
+    }
+    areaEl.innerHTML = `
+      <div class="account-menu">
+        <button class="account-trigger" onclick="toggleAccountMenu(event)">
+          <div class="account-avatar" id="account-avatar">…</div>
+          <span class="account-name" id="account-name">…</span>
+          <span class="account-caret">▾</span>
+        </button>
+        <div class="account-dropdown" id="account-dropdown" style="display:none;">
+          <button onclick="goToProfile()">Profile</button>
+          <button onclick="openStats()">Stats</button>
+          <button onclick="goToSettings()">Settings</button>
+          <button onclick="goToHelp()">Help</button>
+          <div class="account-dropdown-divider"></div>
+          <button onclick="MockoAuth.signOut(); closeAccountMenu();">Sign Out</button>
+        </div>
+      </div>`;
+    try {
+      const profile = await MockoProfile.getProfile();
+      currentUserProfile = profile;
+      updateAccountBadge(profile);
+    } catch (err) {
+      console.error(err);
+      document.getElementById('account-name').textContent = user.email.split('@')[0];
+      document.getElementById('account-avatar').textContent = user.email[0].toUpperCase();
+    }
+  }
+
+  function updateAccountBadge(profile) {
+    const nameEl = document.getElementById('account-name');
+    const avatarEl = document.getElementById('account-avatar');
+    if (!nameEl || !avatarEl) return;
+    nameEl.textContent = profile.username;
+    if (profile.avatar_url) {
+      avatarEl.style.backgroundImage = `url(${profile.avatar_url})`;
+      avatarEl.textContent = '';
+    } else {
+      avatarEl.style.backgroundImage = '';
+      avatarEl.textContent = profile.username[0].toUpperCase();
+    }
+  }
+
+  function requireAuth(onAuthed) {
     if (window.MockoAuth && window.MockoAuth.getUser()) return true;
-    pendingAuthAction = action;
+    pendingAuthAction = onAuthed;
     setAuthMode('signin');
     goTo('auth');
     return false;
+  }
+
+  function goToHome() {
+    closeAccountMenu();
+    switchTab('home');
+  }
+
+  function toggleAccountMenu(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('account-dropdown');
+    dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+  }
+  function closeAccountMenu() {
+    const dd = document.getElementById('account-dropdown');
+    if (dd) dd.style.display = 'none';
+  }
+  document.addEventListener('click', closeAccountMenu);
+
+  function openStats() {
+    closeAccountMenu();
+    if (!requireAuth(openStats)) return;
+    goTo('history');
+    loadHistory();
+  }
+
+  function goToProfile() {
+    closeAccountMenu();
+    if (!requireAuth(goToProfile)) return;
+    goTo('profile');
+    loadProfile();
+  }
+
+  function goToSettings() {
+    closeAccountMenu();
+    goTo('settings');
+    updateThemeCards();
+  }
+
+  function goToHelp() {
+    closeAccountMenu();
+    goTo('help');
   }
 
   function setAuthMode(mode) {
@@ -653,6 +1254,61 @@
       ? `Already have an account? <a onclick="setAuthMode('signin')">Sign in</a>`
       : `New here? <a onclick="setAuthMode('signup')">Create an account</a>`;
     document.getElementById('auth-error').textContent = '';
+    document.getElementById('auth-confirm-field').style.display = isSignup ? '' : 'none';
+    document.getElementById('pw-strength').classList.remove('active');
+    const confirmInput = document.getElementById('auth-password-confirm');
+    confirmInput.value = '';
+    confirmInput.classList.remove('field-invalid');
+    document.getElementById('auth-password').classList.remove('field-invalid');
+  }
+
+  function scorePasswordStrength(pw) {
+    if (!pw) return 0;
+    let classes = 0;
+    if (/[a-z]/.test(pw)) classes++;
+    if (/[A-Z]/.test(pw)) classes++;
+    if (/[0-9]/.test(pw)) classes++;
+    if (/[^A-Za-z0-9]/.test(pw)) classes++;
+    if (pw.length >= 10 && classes >= 3) return 3;
+    if (pw.length >= 8 && classes >= 2) return 3;
+    if (pw.length >= 6 && classes >= 2) return 2;
+    if (pw.length >= 6) return 2;
+    return 1;
+  }
+
+  const PW_STRENGTH_TIERS = {
+    1: { label: 'Weak', color: 'var(--record)' },
+    2: { label: 'Medium', color: 'var(--warn)' },
+    3: { label: 'Strong', color: 'var(--good)' },
+  };
+
+  function onAuthPasswordInput() {
+    const isSignup = (document.getElementById('auth-submit-btn').dataset.mode || 'signin') === 'signup';
+    const meter = document.getElementById('pw-strength');
+    const pw = document.getElementById('auth-password').value;
+    if (!isSignup || !pw) {
+      meter.classList.remove('active');
+    } else {
+      meter.classList.add('active');
+      const score = scorePasswordStrength(pw);
+      const tier = PW_STRENGTH_TIERS[score] || { label: '', color: 'var(--line)' };
+      for (let i = 0; i < 3; i++) {
+        document.getElementById('pw-seg-' + i).style.background = i < score ? tier.color : 'var(--line)';
+      }
+      document.getElementById('pw-strength-label').innerHTML = pw.length
+        ? `Password strength: <b style="color:${tier.color}">${tier.label}</b>` : '';
+    }
+    onAuthConfirmInput();
+  }
+
+  function onAuthConfirmInput() {
+    const confirmInput = document.getElementById('auth-password-confirm');
+    const password = document.getElementById('auth-password').value;
+    if (!confirmInput.value) {
+      confirmInput.classList.remove('field-invalid');
+      return;
+    }
+    confirmInput.classList.toggle('field-invalid', confirmInput.value !== password);
   }
 
   async function oauthSignIn(provider) {
@@ -672,6 +1328,14 @@
     const password = document.getElementById('auth-password').value;
     const errorEl = document.getElementById('auth-error');
     errorEl.textContent = '';
+    if (mode === 'signup') {
+      const confirmPassword = document.getElementById('auth-password-confirm').value;
+      if (password !== confirmPassword) {
+        document.getElementById('auth-password-confirm').classList.add('field-invalid');
+        errorEl.textContent = 'Passwords do not match.';
+        return;
+      }
+    }
     try {
       if (mode === 'signup') {
         await MockoAuth.signUp(email, password);
@@ -687,6 +1351,15 @@
     document.querySelectorAll('#length-row .toggle-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     state.length = el.dataset.len;
+    const isFull = state.length === 'Full';
+    document.getElementById('count-divider').style.display = isFull ? '' : 'none';
+    document.getElementById('count-group').style.display = isFull ? '' : 'none';
+    checkSetupReady();
+  }));
+  document.querySelectorAll('#voice-length-row .toggle-card').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#voice-length-row .toggle-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.length = el.dataset.len;
     checkSetupReady();
   }));
   document.querySelectorAll('#type-row .pill-btn').forEach(el => el.addEventListener('click', () => {
@@ -695,40 +1368,168 @@
     state.type = el.dataset.type;
     checkSetupReady();
   }));
+  document.querySelectorAll('#difficulty-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#difficulty-row .pill-btn').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.difficulty = el.dataset.difficulty;
+    checkSetupReady();
+  }));
+  document.getElementById('count-select').addEventListener('change', (e) => {
+    const n = parseInt(e.target.value, 10);
+    state.questionCount = n || null;
+    const estimateEl = document.getElementById('count-estimate');
+    estimateEl.textContent = n ? `Takes about ${Math.round(n * 2.5)} minutes.` : '';
+    checkSetupReady();
+  });
+  document.querySelectorAll('#industry-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#industry-row .pill-btn').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.industry = el.dataset.industry;
+    if (window.MockoProfile && window.MockoAuth.getUser()) {
+      MockoProfile.updateProfile({
+        username: currentUserProfile ? currentUserProfile.username : undefined,
+        bio: currentUserProfile ? currentUserProfile.bio : undefined,
+        social_links: currentUserProfile ? currentUserProfile.social_links : undefined,
+        industry: state.industry,
+      }).then(p => { currentUserProfile = p; }).catch(err => console.error(err));
+    }
+    checkSetupReady();
+  }));
 
   function checkSetupReady() {
-    document.getElementById('setup-next').disabled = !(state.length && state.type);
+    let ready;
+    if (state.mode === 'record') {
+      ready = !!state.length && !!state.difficulty && (state.length !== 'Full' || !!state.questionCount);
+    } else {
+      ready = !!state.length && !!state.type;
+    }
+    document.getElementById('setup-next').disabled = !ready;
   }
 
   function switchTab(tab) {
-    if (tab === 'history' && !requireAuth('history')) return;
-    document.getElementById('tab-practice').classList.toggle('active', tab === 'practice');
+    document.getElementById('tab-home').classList.toggle('active', tab === 'home');
     document.getElementById('tab-drills').classList.toggle('active', tab === 'drills');
-    document.getElementById('tab-history').classList.toggle('active', tab === 'history');
-    if (tab === 'history') {
-      goTo('history');
-      loadHistory();
-    } else if (tab === 'drills') {
+    if (tab === 'drills') {
       goTo('drills');
     } else {
       goTo('dashboard');
     }
   }
 
-  function chooseMode(mode) {
-    if (mode === 'record' && !requireAuth('record')) return;
+  async function chooseMode(mode) {
+    if (!requireAuth(() => chooseMode(mode))) return;
     state.mode = mode;
+    document.getElementById('setup-record-block').style.display = mode === 'record' ? 'block' : 'none';
+    document.getElementById('setup-voice-block').style.display = mode === 'voice' ? 'block' : 'none';
     document.getElementById('setup-sub').textContent = mode === 'record'
-      ? "Choose your length and format, then step in front of the camera."
+      ? "Choose your format and difficulty, then step in front of the camera."
       : "Choose your length and format, then start talking.";
+
+    if (mode === 'record') {
+      const resumeGroup = document.getElementById('resume-toggle-group');
+      const checkbox = document.getElementById('resume-tailor-checkbox');
+      checkbox.checked = false;
+      resumeGroup.style.display = 'none';
+      document.getElementById('resume-picker-panel').style.display = 'none';
+      try {
+        const resumes = await MockoResume.listResumes();
+        if (resumes.some((r) => r.extracted_text)) resumeGroup.style.display = 'block';
+      } catch (err) { console.error(err); }
+    }
+
+    if (currentUserProfile && currentUserProfile.industry) {
+      state.industry = currentUserProfile.industry;
+      document.querySelectorAll('#industry-row .pill-btn').forEach(c =>
+        c.classList.toggle('selected', c.dataset.industry === state.industry));
+    }
+
+    checkSetupReady();
     goTo('setup');
   }
 
-  function beginSession() {
+  async function toggleResumePicker() {
+    const checked = document.getElementById('resume-tailor-checkbox').checked;
+    const panel = document.getElementById('resume-picker-panel');
+    if (checked) {
+      panel.style.display = 'block';
+      await loadResumePicker();
+    } else {
+      panel.style.display = 'none';
+    }
+    checkSetupReady();
+  }
+
+  async function loadResumePicker() {
+    const listEl = document.getElementById('resume-picker-list');
+    try {
+      const resumes = (await MockoResume.listResumes()).filter((r) => r.extracted_text);
+      listEl.innerHTML = resumes.map((r) => `
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 0; font-size:12.5px;">
+          <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:200px;">${r.label}</span>
+          <button onclick="setPrimaryFromPicker('${r.id}')" title="${r.is_primary ? 'Primary resume' : 'Set as primary'}"
+            style="background:none; border:none; cursor:pointer; font-size:16px; color:${r.is_primary ? 'var(--warn)' : 'var(--text-muted)'};">${r.is_primary ? '★' : '☆'}</button>
+        </div>
+      `).join('') || '<p style="font-size:12px; color:var(--text-muted); padding:4px 0;">No resumes with readable text yet.</p>';
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '<p style="font-size:12px; color:var(--record);">Could not load resumes.</p>';
+    }
+  }
+
+  async function setPrimaryFromPicker(id) {
+    try {
+      await MockoResume.setPrimaryResume(id);
+      await loadResumePicker();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function handleSetupResumeUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      alert('Please upload a PDF for now.');
+      event.target.value = '';
+      return;
+    }
+    try {
+      await MockoResume.uploadResume(file, file.name);
+      event.target.value = '';
+      await loadResumePicker();
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'Upload failed.');
+    }
+  }
+
+  async function beginSession() {
     if (state.mode === 'record') {
-      startRecordSetup();
+      const btn = document.getElementById('setup-next');
+      btn.disabled = true;
+      btn.textContent = 'Loading questions...';
+      try {
+        await prepareRecordQuestions();
+        startRecordSetup();
+      } catch (err) {
+        console.error(err);
+        alert('Could not load questions — please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Begin →';
+      }
     } else {
       startVoice();
+    }
+  }
+
+  async function retryRecordSession() {
+    try {
+      await prepareRecordQuestions();
+      startRecordSetup();
+    } catch (err) {
+      console.error(err);
+      alert('Could not load questions — please try again.');
     }
   }
 
@@ -747,8 +1548,58 @@
   let prepInterval, prepSecondsLeft = PREP_SECONDS;
   let answerInterval, answerSecondsLeft = ANSWER_SECONDS;
 
+  let sessionQuestions = [];
+  let sessionQuestionIndex = 0;
+  let sessionResults = [];
+
+  async function prepareRecordQuestions() {
+    const count = state.length === 'Full' ? (state.questionCount || 3) : 1;
+    const useResume = document.getElementById('resume-tailor-checkbox').checked;
+    if (useResume) {
+      const primary = await MockoResume.getPrimaryResume();
+      if (!primary || !primary.extracted_text) throw new Error('No resume text available.');
+      const { data, error } = await supabase.functions.invoke('generate-questions', {
+        body: { resumeText: primary.extracted_text, industry: state.industry, difficulty: state.difficulty, count },
+      });
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+      sessionQuestions = data.questions;
+    } else {
+      const qs = await MockoQuestions.fetchQuestions({ difficulty: state.difficulty, industry: state.industry, count });
+      if (qs.length === 0) throw new Error('No questions available for that difficulty/industry.');
+      sessionQuestions = qs.map(q => q.text);
+    }
+    sessionQuestionIndex = 0;
+    sessionResults = [];
+  }
+
+  function aggregateResults(results) {
+    if (results.length === 1) return results[0];
+    const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+    const category_scores = {};
+    Object.keys(results[0].category_scores).forEach((k) => {
+      category_scores[k] = {
+        score: Math.round(avg(results.map((r) => r.category_scores[k].score)) * 10) / 10,
+        max: results[0].category_scores[k].max,
+      };
+    });
+    return {
+      overall_score: avg(results.map((r) => r.overall_score)),
+      category_scores,
+      wpm: Math.round(avg(results.map((r) => r.wpm))),
+      filler_count: results.reduce((a, r) => a + r.filler_count, 0),
+      avg_pause_length: Math.round(avg(results.map((r) => r.avg_pause_length)) * 10) / 10,
+      pointers_good: results.flatMap((r) => r.pointers_good || []).slice(0, 5),
+      pointers_work: results.flatMap((r) => r.pointers_work || []).slice(0, 5),
+      transcript: results.map((r, i) => `Q${i + 1}: ${r.transcript}`).join('\n\n'),
+    };
+  }
+
   async function startRecordSetup() {
     goTo('record-setup');
+    document.getElementById('rec-question').textContent = sessionQuestions[sessionQuestionIndex];
+    document.getElementById('rec-qcount').textContent =
+      `Question ${sessionQuestionIndex + 1} of ${sessionQuestions.length}`;
     const status = document.getElementById('rec-status');
     const video = document.getElementById('rec-video');
     const prepOverlay = document.getElementById('prep-overlay');
@@ -757,6 +1608,7 @@
 
     stopBtn.style.display = 'none';
     prepOverlay.style.display = 'none';
+    document.getElementById('processing-overlay').style.display = 'none';
     document.getElementById('rec-timer').textContent = '00:00';
     status.textContent = 'Requesting camera access...';
 
@@ -823,7 +1675,9 @@
     }
     stopMediaStream();
     document.getElementById('rec-btn').style.display = 'none';
-    document.getElementById('rec-status').textContent = 'Processing — analyzing transcript, pace, and tone...';
+    document.getElementById('rec-status').textContent = '';
+    document.getElementById('processing-label').textContent = 'Analyzing your answer — this can take up to a minute...';
+    document.getElementById('processing-overlay').style.display = 'flex';
   }
 
   async function onRecordingStopped() {
@@ -838,10 +1692,18 @@
         format: state.type || 'Behavioral',
         length: state.length || 'Quick',
       });
-      renderFeedback(session);
-      goTo('feedback');
+      sessionResults.push(session);
+      sessionQuestionIndex++;
+      document.getElementById('processing-overlay').style.display = 'none';
+      if (sessionQuestionIndex < sessionQuestions.length) {
+        startRecordSetup();
+      } else {
+        renderFeedback(aggregateResults(sessionResults));
+        goTo('feedback');
+      }
     } catch (err) {
       console.error(err);
+      document.getElementById('processing-overlay').style.display = 'none';
       status.textContent = 'Something went wrong grading your answer — please try again.';
       document.getElementById('rec-btn').style.display = 'none';
     }
@@ -957,6 +1819,224 @@
     }).join('');
   }
 
+  // --- Theme ---
+  (function initTheme() {
+    const saved = localStorage.getItem('mocko-theme');
+    if (saved) document.documentElement.dataset.theme = saved;
+  })();
+
+  function setTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('mocko-theme', theme);
+    updateThemeCards();
+  }
+
+  function updateThemeCards() {
+    const theme = document.documentElement.dataset.theme || 'dark';
+    document.getElementById('theme-dark-card').classList.toggle('selected', theme === 'dark');
+    document.getElementById('theme-light-card').classList.toggle('selected', theme === 'light');
+  }
+
+  // --- Profile ---
+  let currentProfile = null;
+
+  async function loadProfile() {
+    const errorEl = document.getElementById('profile-error');
+    errorEl.textContent = '';
+    exitProfileEditMode();
+    try {
+      currentProfile = await MockoProfile.getProfile();
+      renderProfileView(currentProfile, /*readOnly*/ false);
+      populateProfileEditForm(currentProfile);
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = 'Could not load profile.';
+    }
+    loadResumes();
+  }
+
+  async function goToProfileById(userId) {
+    const me = MockoAuth.getUser();
+    if (me && userId === me.id) { goToProfile(); return; }
+    closeAccountMenu();
+    goTo('profile');
+    document.getElementById('profile-error').textContent = '';
+    try {
+      const profile = await MockoProfile.getProfileById(userId);
+      renderProfileView(profile, /*readOnly*/ true);
+    } catch (err) {
+      console.error(err);
+      document.getElementById('profile-error').textContent = 'Could not load profile.';
+    }
+  }
+
+  // --- Resumes ---
+  async function loadResumes() {
+    const listEl = document.getElementById('resume-list');
+    const errorEl = document.getElementById('resume-error');
+    errorEl.textContent = '';
+    listEl.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Loading...</p>';
+    try {
+      const resumes = await MockoResume.listResumes();
+      if (resumes.length === 0) {
+        listEl.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">No resumes uploaded yet.</p>';
+        return;
+      }
+      listEl.innerHTML = resumes.map((r) => `
+        <div class="resume-row">
+          <div class="resume-label">
+            <span class="resume-name">${r.label}</span>
+            ${r.is_primary ? '<span class="resume-primary-badge">Primary</span>' : ''}
+          </div>
+          <div class="resume-actions">
+            ${r.is_primary ? '' : `<button onclick="setPrimaryResumeUI('${r.id}')">Set primary</button>`}
+            <button onclick="deleteResumeUI('${r.id}', '${r.storage_path}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '';
+      errorEl.textContent = 'Could not load resumes.';
+    }
+  }
+
+  async function handleResumeUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const errorEl = document.getElementById('resume-error');
+    errorEl.textContent = '';
+    if (file.type !== 'application/pdf') {
+      errorEl.textContent = 'Please upload a PDF for now.';
+      event.target.value = '';
+      return;
+    }
+    try {
+      await MockoResume.uploadResume(file, file.name);
+      event.target.value = '';
+      loadResumes();
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = err.message || 'Upload failed.';
+    }
+  }
+
+  async function setPrimaryResumeUI(id) {
+    try {
+      await MockoResume.setPrimaryResume(id);
+      loadResumes();
+    } catch (err) {
+      console.error(err);
+      document.getElementById('resume-error').textContent = 'Could not set primary resume.';
+    }
+  }
+
+  async function deleteResumeUI(id, storagePath) {
+    try {
+      await MockoResume.deleteResume(id, storagePath);
+      loadResumes();
+    } catch (err) {
+      console.error(err);
+      document.getElementById('resume-error').textContent = 'Could not delete resume.';
+    }
+  }
+
+  function renderProfileView(profile, readOnly) {
+    renderAvatarInto('profile-view-avatar', profile);
+    document.getElementById('profile-view-username').textContent = profile.username;
+    document.getElementById('profile-view-bio').textContent = profile.bio || '';
+    document.getElementById('profile-view-bio').style.display = profile.bio ? 'block' : 'none';
+
+    const joined = new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    document.getElementById('profile-view-joined').textContent = `Joined ${joined}`;
+
+    document.getElementById('profile-view-actions').style.display = readOnly ? 'none' : 'flex';
+    document.getElementById('profile-resumes-section').style.display = readOnly ? 'none' : 'block';
+
+    const links = profile.social_links || {};
+    const linkMeta = [['twitter', 'Twitter / X'], ['linkedin', 'LinkedIn'], ['instagram', 'Instagram']];
+    const linksEl = document.getElementById('profile-view-links');
+    linksEl.innerHTML = linkMeta
+      .filter(([key]) => links[key])
+      .map(([key, label]) => `<a href="${links[key]}" target="_blank" rel="noopener" class="pill-btn" style="text-decoration:none;">${label}</a>`)
+      .join('');
+  }
+
+  function populateProfileEditForm(profile) {
+    document.getElementById('profile-username').value = profile.username || '';
+    document.getElementById('profile-bio').value = profile.bio || '';
+    const links = profile.social_links || {};
+    document.getElementById('profile-twitter').value = links.twitter || '';
+    document.getElementById('profile-linkedin').value = links.linkedin || '';
+    document.getElementById('profile-instagram').value = links.instagram || '';
+    renderAvatarInto('profile-avatar-preview', profile);
+  }
+
+  function renderAvatarInto(elId, profile) {
+    const el = document.getElementById(elId);
+    if (profile.avatar_url) {
+      el.style.backgroundImage = `url(${profile.avatar_url})`;
+      el.textContent = '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = (profile.username || '?')[0].toUpperCase();
+    }
+  }
+
+  function enterProfileEditMode() {
+    document.getElementById('profile-view').style.display = 'none';
+    document.getElementById('profile-edit').style.display = 'block';
+  }
+
+  function exitProfileEditMode() {
+    document.getElementById('profile-view').style.display = 'block';
+    document.getElementById('profile-edit').style.display = 'none';
+    document.getElementById('profile-error').textContent = '';
+  }
+
+  function cancelProfileEdit() {
+    if (currentProfile) populateProfileEditForm(currentProfile);
+    exitProfileEditMode();
+  }
+
+  async function saveProfile() {
+    const errorEl = document.getElementById('profile-error');
+    errorEl.textContent = '';
+    try {
+      currentProfile = await MockoProfile.updateProfile({
+        username: document.getElementById('profile-username').value.trim(),
+        bio: document.getElementById('profile-bio').value.trim(),
+        social_links: {
+          twitter: document.getElementById('profile-twitter').value.trim(),
+          linkedin: document.getElementById('profile-linkedin').value.trim(),
+          instagram: document.getElementById('profile-instagram').value.trim(),
+        },
+      });
+      renderProfileView(currentProfile);
+      updateAccountBadge(currentProfile);
+      exitProfileEditMode();
+    } catch (err) {
+      errorEl.textContent = (err.message || '').includes('duplicate')
+        ? 'That username is taken.'
+        : (err.message || 'Something went wrong.');
+    }
+  }
+
+  async function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const errorEl = document.getElementById('profile-error');
+    errorEl.textContent = '';
+    try {
+      currentProfile = await MockoProfile.uploadAvatar(file);
+      renderAvatarInto('profile-avatar-preview', currentProfile);
+      renderAvatarInto('profile-view-avatar', currentProfile);
+      updateAccountBadge(currentProfile);
+    } catch (err) {
+      errorEl.textContent = err.message || 'Avatar upload failed.';
+    }
+  }
+
   function stopMediaStream() {
     if (mediaStream) {
       mediaStream.getTracks().forEach(t => t.stop());
@@ -1059,14 +2139,15 @@
 
   // Drills
   const drillMeta = {
-    star: { label: 'STAR Builder', title: 'Build Your Answer', instructions: 'Type your answer into each box below. When you\'re done, submit to see how complete your structure is.' },
-    filler: { label: 'Spot the Filler', title: 'Catch the Weak Phrases', instructions: 'Click every filler word or weak phrase in the passage below before the clock runs out.' },
-    math: { label: 'Mental Math Sprint', title: 'Quick-Fire Arithmetic', instructions: 'Type your answer and press Enter to submit. Six questions, no calculator.' }
+    arithmetic: { label: 'Arithmetic', title: 'Answer as Many as You Can', instructions: 'Addition, subtraction, multiplication, division. Type your answer and press Enter. You have 60 seconds.' },
+    arithmetic_hard: { label: 'Arithmetic Hard', title: 'Answer as Many as You Can', instructions: 'Same four operations, uglier numbers and multi-step expressions. Type your answer and press Enter. You have 60 seconds.' },
+    sequence: { label: 'Sequence', title: 'Complete the Pattern', instructions: 'A sequence of numbers appears — type the next number to fit the pattern and press Enter. You have 60 seconds.' },
+    risk: { label: 'Risk', title: 'Pump or Collect', instructions: 'Each pump earns +1 point but risks popping the balloon. Collect to bank what you\'ve earned this round, or keep pumping. 8 balloons per session.' }
   };
-  let currentDrill = 'star';
+  let currentDrill = 'arithmetic';
 
   function showPanel(id) {
-    ['drill-star-fields','drill-filler-panel','drill-math-panel'].forEach(p => {
+    ['drill-sprint-panel','drill-risk-panel'].forEach(p => {
       document.getElementById(p).style.display = (p === id) ? 'block' : 'none';
     });
   }
@@ -1077,171 +2158,322 @@
     document.getElementById('drill-label').textContent = meta.label;
     document.getElementById('drill-title').textContent = meta.title;
     document.getElementById('drill-instructions').textContent = meta.instructions;
+    document.getElementById('drill-result-percentile').style.display = 'none';
+    document.getElementById('drill-result-leaderboard-btn').style.display = 'none';
     const actionBtn = document.getElementById('drill-action-btn');
+    actionBtn.style.display = 'inline-block';
 
-    if (key === 'star') {
-      showPanel('drill-star-fields');
-      ['star-s','star-t','star-a','star-r'].forEach(id => document.getElementById(id).value = '');
-      actionBtn.textContent = 'Score My Answer →';
-      actionBtn.onclick = scoreStarBuilder;
-    } else if (key === 'filler') {
-      showPanel('drill-filler-panel');
-      setupFillerDrill();
+    if (key === 'arithmetic' || key === 'arithmetic_hard' || key === 'sequence') {
+      showPanel('drill-sprint-panel');
+      setupSprintDrill(key);
       actionBtn.textContent = 'Start →';
-      actionBtn.onclick = startFillerTimer;
-    } else if (key === 'math') {
-      showPanel('drill-math-panel');
-      setupMathDrill();
-      actionBtn.textContent = 'Start →';
-      actionBtn.onclick = startMathDrill;
+      actionBtn.onclick = startSprintDrill;
+    } else if (key === 'risk') {
+      showPanel('drill-risk-panel');
+      setupRiskDrill();
+      actionBtn.textContent = 'Start Session →';
+      actionBtn.onclick = startRiskDrill;
     }
     goTo('drill-session');
   }
 
-  // --- STAR Builder ---
-  function scoreStarBuilder() {
-    const fields = ['star-s','star-t','star-a','star-r'].map(id => document.getElementById(id).value.trim());
-    const scores = fields.map(f => Math.min(25, Math.round(f.split(/\s+/).filter(Boolean).length * 2)));
-    const total = scores.reduce((a,b) => a+b, 0);
-    const weakest = ['Situation','Task','Action','Result'][scores.indexOf(Math.min(...scores))];
-    document.getElementById('drill-result-num').textContent = total + '/100';
-    document.getElementById('drill-result-label').textContent = 'Structure Completeness';
-    document.getElementById('drill-result-note').textContent = total >= 80
-      ? "Well-rounded answer — all four parts are developed."
-      : `${weakest} is the thinnest part right now — try adding one or two more concrete details there.`;
+  async function finishDrillWithScore(drillKey, score, resultNum, resultLabel, resultNote) {
+    document.getElementById('drill-result-num').textContent = resultNum;
+    document.getElementById('drill-result-label').textContent = resultLabel;
+    document.getElementById('drill-result-note').textContent = resultNote;
+    const pctEl = document.getElementById('drill-result-percentile');
+    const lbBtn = document.getElementById('drill-result-leaderboard-btn');
+    pctEl.style.display = 'none';
+    lbBtn.style.display = 'inline-block';
     goTo('drill-result');
+    const user = window.MockoAuth && window.MockoAuth.getUser();
+    if (!user) {
+      pctEl.textContent = 'Sign in to save this score and see your percentile.';
+      pctEl.style.display = 'block';
+      return;
+    }
+    try {
+      await MockoDrills.submitScore({ drillKey, score });
+      const pct = await MockoDrills.fetchPercentile({ drillKey, score });
+      pctEl.textContent = `You beat ${pct}% of players on this drill.`;
+      pctEl.style.display = 'block';
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  // --- Spot the Filler ---
-  const fillerSentence = "So, um, I was basically leading the project, and like, we kind of ran into some issues with the timeline, you know, so I sort of had to just figure it out on the fly and I guess it worked out okay in the end.";
-  const fillerWords = ["um","like","kind of","you know","sort of","basically","i guess"];
-  let fillerTimerInterval, fillerSeconds = 20, fillerCaught = 0, fillerWrong = 0, fillerTotal = 0;
+  function goToLeaderboard(drillKey) {
+    currentDrill = drillKey;
+    document.getElementById('leaderboard-drill-title').textContent = (drillMeta[drillKey] || {}).label || 'Leaderboard';
+    document.querySelectorAll('#leaderboard-period-row .pill-btn').forEach(b => b.classList.toggle('selected', b.dataset.period === 'daily'));
+    goTo('drill-leaderboard');
+    loadLeaderboard(drillKey, 'daily');
+  }
 
-  function setupFillerDrill() {
-    const words = fillerSentence.split(' ');
-    const clean = w => w.replace(/[.,]/g, '').toLowerCase();
+  async function loadLeaderboard(drillKey, period) {
+    const listEl = document.getElementById('leaderboard-list');
+    listEl.innerHTML = '<div class="leaderboard-empty">Loading…</div>';
+    try {
+      const rows = await MockoDrills.fetchLeaderboard({ drillKey, period });
+      if (!rows.length) {
+        listEl.innerHTML = '<div class="leaderboard-empty">No scores yet — be the first.</div>';
+        return;
+      }
+      listEl.innerHTML = rows.map(r => {
+        const username = (r.profile && r.profile.username) || 'Unknown';
+        const avatarUrl = r.profile && r.profile.avatar_url;
+        const avatar = avatarUrl
+          ? `<img src="${avatarUrl}" alt="">`
+          : username.charAt(0).toUpperCase();
+        return `<div class="leaderboard-row" onclick="goToProfileById('${r.user_id}')">
+          <div class="leaderboard-rank">${r.rank}</div>
+          <div class="leaderboard-avatar">${avatar}</div>
+          <div class="leaderboard-name">${username}</div>
+          <div class="leaderboard-score">${r.score}</div>
+        </div>`;
+      }).join('');
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '<div class="leaderboard-empty">Could not load the leaderboard.</div>';
+    }
+  }
 
-    // Filler phrases can be one or two words (e.g. "um" vs. "kind of"), so
-    // match greedily left-to-right, preferring a two-word phrase when present.
-    const groups = new Array(words.length).fill(null);
-    let groupId = 0;
-    let i = 0;
-    while (i < words.length) {
-      const twoWord = i < words.length - 1 ? `${clean(words[i])} ${clean(words[i + 1])}` : null;
-      if (twoWord && fillerWords.includes(twoWord)) {
-        groups[i] = groupId; groups[i + 1] = groupId; groupId++;
-        i += 2;
-      } else if (fillerWords.includes(clean(words[i]))) {
-        groups[i] = groupId; groupId++;
-        i += 1;
+  document.querySelectorAll('#leaderboard-period-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#leaderboard-period-row .pill-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    loadLeaderboard(currentDrill, el.dataset.period);
+  }));
+
+  // --- Drills filter bar (multi-select dropdowns) ---
+  const TYPE_LABELS = { structure: 'Structure', communication: 'Communication', quantitative: 'Quantitative', risk: 'Risk/Probability' };
+  const INDUSTRY_LABELS = { ib: 'IB', consulting: 'Consulting', tech: 'Tech', quant: 'Quant', pe: 'PE', general: 'General' };
+
+  function toggleFilterDropdown(which, event) {
+    event.stopPropagation();
+    const target = document.getElementById(which + '-filter-dropdown');
+    const isOpen = target.classList.contains('open');
+    document.querySelectorAll('.filter-dropdown.open').forEach(d => d.classList.remove('open'));
+    if (!isOpen) target.classList.add('open');
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.filter-dropdown')) {
+      document.querySelectorAll('.filter-dropdown.open').forEach(d => d.classList.remove('open'));
+    }
+  });
+
+  function getCheckedValues(panelId) {
+    return Array.from(document.querySelectorAll(`#${panelId} input[type="checkbox"]:checked`)).map(cb => cb.value);
+  }
+
+  function applyDrillFilters() {
+    const types = getCheckedValues('type-filter-panel');
+    const industries = getCheckedValues('industry-filter-panel');
+
+    document.getElementById('type-filter-label').textContent = types.length
+      ? (types.length === 1 ? TYPE_LABELS[types[0]] : `${types.length} Types`) : 'All Types';
+    document.getElementById('industry-filter-label').textContent = industries.length
+      ? (industries.length === 1 ? INDUSTRY_LABELS[industries[0]] : `${industries.length} Industries`) : 'All Industries';
+
+    document.querySelectorAll('.drill-card[data-type]').forEach(card => {
+      const cardType = card.dataset.type;
+      const cardIndustries = (card.dataset.industries || '').split(',');
+      const typeOk = types.length === 0 || types.includes(cardType);
+      const industryOk = industries.length === 0 || cardIndustries.some(i => industries.includes(i));
+      card.style.display = (typeOk && industryOk) ? '' : 'none';
+    });
+  }
+
+  // --- Shared 60s Sprint Engine (Arithmetic / Arithmetic Hard / Sequence) ---
+  function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+  function generateArithmeticQuestion() {
+    const op = ['+','-','×','÷'][randInt(0,3)];
+    if (op === '+') {
+      const a = randInt(10,999), b = randInt(10,999);
+      return { q: `${a} + ${b}`, a: a + b };
+    } else if (op === '-') {
+      let a = randInt(10,999), b = randInt(10,999);
+      if (b > a) { const t = a; a = b; b = t; }
+      return { q: `${a} − ${b}`, a: a - b };
+    } else if (op === '×') {
+      const a = randInt(2,25), b = randInt(2,12);
+      return { q: `${a} × ${b}`, a: a * b };
+    } else {
+      const b = randInt(2,12), qn = randInt(2,50);
+      return { q: `${b*qn} ÷ ${b}`, a: qn };
+    }
+  }
+
+  function generateArithmeticHardQuestion() {
+    if (Math.random() < 0.5) {
+      if (Math.random() < 0.5) {
+        const a = randInt(12,99), b = randInt(12,99);
+        return { q: `${a} × ${b}`, a: a * b };
       } else {
-        i += 1;
+        const b = randInt(3,19), qn = randInt(11,80);
+        return { q: `${b*qn} ÷ ${b}`, a: qn };
       }
     }
-
-    const html = words.map((w, idx) => {
-      const isFiller = groups[idx] !== null;
-      const groupAttr = isFiller ? ` data-group="${groups[idx]}"` : '';
-      return `<span class="filler-word" data-filler="${isFiller}"${groupAttr} onclick="clickFillerWord(this)">${w}</span>`;
-    }).join(' ');
-    document.getElementById('filler-text').innerHTML = html;
-    fillerTotal = groupId;
-    fillerCaught = 0; fillerWrong = 0; fillerSeconds = 20;
-    document.getElementById('filler-timer').textContent = '00:20';
-    document.getElementById('filler-live-score').textContent = 'Caught: 0 · False alarms: 0';
-    clearInterval(fillerTimerInterval);
-  }
-
-  function clickFillerWord(el) {
-    if (el.classList.contains('caught') || el.classList.contains('wrong')) return;
-    if (el.dataset.filler === 'true') {
-      document.querySelectorAll(`.filler-word[data-group="${el.dataset.group}"]`).forEach(g => g.classList.add('caught'));
-      fillerCaught++;
+    const template = randInt(0,2);
+    if (template === 0) {
+      const a = randInt(2,20), b = randInt(2,20), c = randInt(1,100);
+      return { q: `(${a} × ${b}) + ${c}`, a: a*b + c };
+    } else if (template === 1) {
+      const a = randInt(2,50), b = randInt(2,50), c = randInt(2,12);
+      return { q: `(${a} + ${b}) × ${c}`, a: (a+b) * c };
     } else {
-      el.classList.add('wrong');
-      fillerWrong++;
+      const a = randInt(2,20), b = randInt(2,20);
+      const c = randInt(1, Math.max(1, a*b));
+      return { q: `(${a} × ${b}) − ${c}`, a: a*b - c };
     }
-    document.getElementById('filler-live-score').textContent = `Caught: ${fillerCaught} · False alarms: ${fillerWrong}`;
   }
 
-  function startFillerTimer() {
-    const actionBtn = document.getElementById('drill-action-btn');
-    actionBtn.textContent = 'Submit Now →';
-    actionBtn.onclick = finishFillerDrill;
-    fillerTimerInterval = setInterval(() => {
-      fillerSeconds--;
-      document.getElementById('filler-timer').textContent = '00:' + String(fillerSeconds).padStart(2,'0');
-      if (fillerSeconds <= 0) { clearInterval(fillerTimerInterval); finishFillerDrill(); }
+  function generateSequenceQuestion() {
+    const kind = randInt(0,2);
+    if (kind === 0) {
+      const a = randInt(1,20);
+      let d = randInt(-9,9); if (d === 0) d = 1;
+      const terms = [0,1,2,3,4].map(n => a + n*d);
+      return { q: terms.join(', ') + ', ?', a: a + 5*d };
+    } else if (kind === 1) {
+      const a = randInt(1,5), r = [2,3][randInt(0,1)];
+      const terms = [0,1,2,3,4].map(n => a * Math.pow(r,n));
+      return { q: terms.join(', ') + ', ?', a: a * Math.pow(r,5) };
+    } else {
+      const a = randInt(0,5), b = randInt(1,5);
+      const f = n => a + b*n + n*(n-1);
+      const terms = [0,1,2,3,4].map(f);
+      return { q: terms.join(', ') + ', ?', a: f(5) };
+    }
+  }
+
+  const SPRINT_GENERATORS = { arithmetic: generateArithmeticQuestion, arithmetic_hard: generateArithmeticHardQuestion, sequence: generateSequenceQuestion };
+  let sprintKey, sprintSeconds, sprintInterval, sprintCorrect, sprintCurrent;
+
+  function setupSprintDrill(key) {
+    sprintKey = key;
+    sprintSeconds = 60;
+    sprintCorrect = 0;
+    clearInterval(sprintInterval);
+    document.getElementById('sprint-timer').textContent = '00:60';
+    document.getElementById('sprint-question').textContent = '—';
+    document.getElementById('sprint-progress').textContent = 'Correct: 0';
+    document.getElementById('sprint-input').value = '';
+    document.getElementById('sprint-input').onkeydown = null;
+  }
+
+  function startSprintDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    showSprintQuestion();
+    const input = document.getElementById('sprint-input');
+    input.focus();
+    input.onkeydown = (e) => { if (e.key === 'Enter') submitSprintAnswer(); };
+    sprintInterval = setInterval(() => {
+      sprintSeconds--;
+      document.getElementById('sprint-timer').textContent = '00:' + String(sprintSeconds).padStart(2,'0');
+      if (sprintSeconds <= 0) { clearInterval(sprintInterval); finishSprintDrill(); }
     }, 1000);
   }
 
-  function finishFillerDrill() {
-    clearInterval(fillerTimerInterval);
-    document.getElementById('drill-result-num').textContent = fillerCaught + '/' + fillerTotal;
-    document.getElementById('drill-result-label').textContent = 'Filler Words Caught';
-    document.getElementById('drill-result-note').textContent = fillerWrong === 0
-      ? "Clean catches, no false alarms — good ear for this."
-      : `You also flagged ${fillerWrong} word${fillerWrong > 1 ? 's' : ''} that weren't fillers — worth a second look at what actually weakens a sentence.`;
-    goTo('drill-result');
+  function showSprintQuestion() {
+    sprintCurrent = SPRINT_GENERATORS[sprintKey]();
+    document.getElementById('sprint-question').textContent = sprintCurrent.q;
+    document.getElementById('sprint-input').value = '';
   }
 
-  // --- Mental Math Sprint ---
-  const mathQuestions = [
-    { q: '18% of 250', a: 45 },
-    { q: '340 + 275', a: 615 },
-    { q: '1,200 ÷ 15', a: 80 },
-    { q: '15% of 640', a: 96 },
-    { q: '73 × 4', a: 292 },
-    { q: '900 − 366', a: 534 }
+  function submitSprintAnswer() {
+    const val = parseFloat(document.getElementById('sprint-input').value);
+    if (val === sprintCurrent.a) {
+      sprintCorrect++;
+      document.getElementById('sprint-progress').textContent = `Correct: ${sprintCorrect}`;
+    }
+    showSprintQuestion();
+  }
+
+  function finishSprintDrill() {
+    document.getElementById('sprint-input').onkeydown = null;
+    const label = drillMeta[sprintKey].label;
+    finishDrillWithScore(sprintKey, sprintCorrect, sprintCorrect, `${label} — Correct in 60s`,
+      sprintCorrect >= 15 ? "Fast round — that's a strong pace." : "Solid start — speed comes with reps.");
+  }
+
+  // --- Risk (balloon pump-or-collect) ---
+  const RISK_COLORS = [
+    { name: 'green', pop: 0.05 },
+    { name: 'yellow', pop: 0.12 },
+    { name: 'red', pop: 0.20 }
   ];
-  let mathIndex = 0, mathCorrect = 0, mathStartTime;
+  const RISK_TOTAL_BALLOONS = 8;
+  let riskIndex, riskColor, riskLive, riskBanked, riskPopped;
 
-  function setupMathDrill() {
-    mathIndex = 0; mathCorrect = 0;
-    document.getElementById('math-question').textContent = '—';
-    document.getElementById('math-progress').textContent = `Question 1 of ${mathQuestions.length}`;
-    document.getElementById('math-input').value = '';
-    document.getElementById('math-input').onkeydown = null;
+  function setupRiskDrill() {
+    riskIndex = 0; riskBanked = 0;
+    document.getElementById('risk-progress').textContent = `Balloon 1 of ${RISK_TOTAL_BALLOONS}`;
+    document.getElementById('risk-balloon').className = 'risk-balloon';
+    document.getElementById('risk-balloon').style.width = '';
+    document.getElementById('risk-balloon').style.height = '';
+    document.getElementById('risk-live').textContent = '0';
+    document.getElementById('risk-banked').textContent = 'Banked: 0';
+    document.getElementById('risk-actions').style.display = 'none';
   }
 
-  function startMathDrill() {
-    mathStartTime = Date.now();
-    mathIndex = 0; mathCorrect = 0;
-    showMathQuestion();
-    const actionBtn = document.getElementById('drill-action-btn');
-    actionBtn.style.display = 'none';
-    const input = document.getElementById('math-input');
-    input.focus();
-    input.onkeydown = (e) => { if (e.key === 'Enter') submitMathAnswer(); };
+  function startRiskDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    document.getElementById('risk-actions').style.display = 'flex';
+    nextRiskBalloon();
   }
 
-  function showMathQuestion() {
-    const item = mathQuestions[mathIndex];
-    document.getElementById('math-question').textContent = item.q;
-    document.getElementById('math-progress').textContent = `Question ${mathIndex+1} of ${mathQuestions.length}`;
-    document.getElementById('math-input').value = '';
+  function nextRiskBalloon() {
+    riskColor = RISK_COLORS[randInt(0, RISK_COLORS.length - 1)];
+    riskLive = 0;
+    riskPopped = false;
+    document.getElementById('risk-progress').textContent = `Balloon ${riskIndex + 1} of ${RISK_TOTAL_BALLOONS}`;
+    document.getElementById('risk-live').textContent = '0';
+    const balloonEl = document.getElementById('risk-balloon');
+    balloonEl.className = 'risk-balloon ' + riskColor.name;
+    balloonEl.style.width = '90px';
+    balloonEl.style.height = '110px';
+    document.getElementById('risk-pump-btn').disabled = false;
+    document.getElementById('risk-collect-btn').disabled = false;
   }
 
-  function submitMathAnswer() {
-    const val = parseFloat(document.getElementById('math-input').value);
-    if (val === mathQuestions[mathIndex].a) mathCorrect++;
-    mathIndex++;
-    if (mathIndex < mathQuestions.length) {
-      showMathQuestion();
-    } else {
-      finishMathDrill();
+  function riskPump() {
+    if (riskPopped) return;
+    riskLive++;
+    document.getElementById('risk-live').textContent = riskLive;
+    const balloonEl = document.getElementById('risk-balloon');
+    balloonEl.style.width = (90 + riskLive * 4) + 'px';
+    balloonEl.style.height = (110 + riskLive * 4) + 'px';
+    if (Math.random() < riskColor.pop) {
+      riskPopped = true;
+      balloonEl.classList.add('popped');
+      document.getElementById('risk-pump-btn').disabled = true;
+      document.getElementById('risk-collect-btn').disabled = true;
+      setTimeout(advanceRiskBalloon, 700);
     }
   }
 
-  function finishMathDrill() {
-    const elapsed = ((Date.now() - mathStartTime) / 1000).toFixed(1);
-    document.getElementById('drill-action-btn').style.display = 'inline-block';
-    document.getElementById('drill-result-num').textContent = mathCorrect + '/' + mathQuestions.length;
-    document.getElementById('drill-result-label').textContent = `Correct in ${elapsed}s`;
-    document.getElementById('drill-result-note').textContent = mathCorrect === mathQuestions.length
-      ? "Perfect round — solid speed too."
-      : "Missed one or two — percentages tend to be the slower ones. Worth a few extra reps.";
-    goTo('drill-result');
+  function riskCollect() {
+    if (riskPopped) return;
+    riskBanked += riskLive;
+    document.getElementById('risk-banked').textContent = 'Banked: ' + riskBanked;
+    advanceRiskBalloon();
+  }
+
+  function advanceRiskBalloon() {
+    riskIndex++;
+    if (riskIndex >= RISK_TOTAL_BALLOONS) {
+      finishRiskDrill();
+    } else {
+      nextRiskBalloon();
+    }
+  }
+
+  function finishRiskDrill() {
+    document.getElementById('risk-actions').style.display = 'none';
+    finishDrillWithScore('risk', riskBanked, riskBanked, 'Points Banked',
+      riskBanked >= 30 ? "Strong session — you found a good edge between greed and caution." : "Solid run — a bit more patience on the risky colors could push the total higher.");
   }
 </script>
 </body>
