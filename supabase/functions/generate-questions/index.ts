@@ -67,7 +67,11 @@ ${resumeText.slice(0, 12000)}
       throw new Error(`Anthropic error ${res.status}: ${await res.text()}`);
     }
     const data = await res.json();
-    const text = data.content[0].text as string;
+    const block = Array.isArray(data.content) ? data.content.find((b: { type: string }) => b.type === "text") : null;
+    if (!block || typeof block.text !== "string") {
+      throw new Error(`Claude response had no text block: ${JSON.stringify(data)}`);
+    }
+    const text = block.text as string;
     const start = text.indexOf("[");
     const end = text.lastIndexOf("]");
     if (start === -1 || end === -1) {

@@ -34,4 +34,12 @@ async function fetchPercentile({ drillKey, score }) {
   return data;
 }
 
-window.MockoDrills = { submitScore, fetchLeaderboard, fetchPercentile };
+async function fetchRank({ drillKey, period = 'alltime' }) {
+  const user = window.MockoAuth.getUser();
+  if (!user) return null;
+  const { data, error } = await supabase.rpc('drill_rank', { p_drill_key: drillKey, p_period: period, p_user_id: user.id });
+  if (error) throw error;
+  return data;
+}
+
+window.MockoDrills = { submitScore, fetchLeaderboard, fetchPercentile, fetchRank };

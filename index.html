@@ -48,9 +48,14 @@
   .display { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; }
   .mono { font-family: 'IBM Plex Mono', monospace; }
 
-  .app { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+  .app { max-width: 900px; margin: 0 auto; padding: 40px 24px 90px; }
 
-  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 38px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+  @media (max-width: 520px) {
+    .topbar { flex-wrap: wrap; gap: 10px; padding-bottom: 14px; }
+    .nav-tabs { order: 3; width: 100%; justify-content: center; }
+    .nav-tab { padding: 6px 10px; font-size: 11px; }
+  }
   .logo { display: flex; align-items: center; gap: 1px; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
   .logo-text { font-family: 'Bricolage Grotesque', sans-serif; font-size: 23px; font-weight: 800; letter-spacing: -0.01em; }
@@ -142,12 +147,12 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
   .step-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
-  .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.05; margin-bottom: 10px; }
-  .hero p { color: var(--text-muted); font-size: 15px; max-width: 500px; line-height: 1.5; margin-bottom: 28px; }
+  .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.05; margin-bottom: 12px; }
+  .hero p { color: var(--text-muted); font-size: 15px; max-width: 500px; line-height: 1.6; margin-bottom: 36px; }
 
   /* Condensed setup panel */
-  .select-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px; margin-bottom: 24px; }
-  .select-group { margin-bottom: 28px; }
+  .select-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 36px; margin-bottom: 28px; }
+  .select-group { margin-bottom: 34px; }
   .select-group:last-child { margin-bottom: 0; }
   .select-group-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
   .select-group-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
@@ -165,9 +170,13 @@
     border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); cursor: pointer; transition: all 0.15s;
   }
   .pill-btn.selected { background: var(--cue); color: var(--bg); border-color: var(--cue); }
-  #difficulty-row .pill-btn[data-difficulty="easy"].selected { background: var(--good); border-color: var(--good); color: var(--bg); }
-  #difficulty-row .pill-btn[data-difficulty="medium"].selected { background: var(--warn); border-color: var(--warn); color: var(--bg); }
-  #difficulty-row .pill-btn[data-difficulty="hard"].selected { background: var(--record); border-color: var(--record); color: white; }
+  .difficulty-pill-row .pill-btn[data-difficulty="easy"].selected { background: var(--good); border-color: var(--good); color: var(--bg); }
+  .difficulty-pill-row .pill-btn[data-difficulty="medium"].selected { background: var(--warn); border-color: var(--warn); color: var(--bg); }
+  .difficulty-pill-row .pill-btn[data-difficulty="hard"].selected { background: var(--record); border-color: var(--record); color: white; }
+  .difficulty-tag { font-family: 'IBM Plex Mono'; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; display: inline-block; }
+  .difficulty-tag[data-difficulty="easy"] { background: rgba(63,167,150,0.16); color: var(--good); }
+  .difficulty-tag[data-difficulty="medium"] { background: rgba(233,162,59,0.18); color: var(--warn); }
+  .difficulty-tag[data-difficulty="hard"] { background: rgba(230,57,70,0.16); color: var(--record); }
   .count-select { font-family: 'Inter'; font-size: 14px; font-weight: 600; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer; }
   .count-select:focus { outline: none; border-color: var(--text-muted); }
   .count-estimate { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
@@ -209,10 +218,10 @@
   .back-btn { background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 24px; font-weight: 500; }
   .back-btn:hover { color: var(--text); }
 
-  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media (max-width: 620px) { .modes { grid-template-columns: 1fr; } .toggle-row { flex-direction: column; } }
 
-  .mode-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 26px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+  .mode-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 32px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
   .mode-card:hover { border-color: var(--text-muted); transform: translateY(-2px); }
   .mode-eyebrow { font-size: 11px; letter-spacing: 0.12em; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; text-transform: uppercase; }
   .mode-card h3 { font-size: 26px; font-weight: 700; margin-bottom: 10px; }
@@ -232,7 +241,7 @@
   .summary-strip span { color: var(--text-muted); }
   .summary-strip b { color: var(--text); font-weight: 600; }
 
-  .studio-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 32px; }
+  .studio-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 38px; }
   .onair-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
   .onair-badge { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; }
   .onair-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--record); animation: pulse 1.4s infinite; }
@@ -278,6 +287,15 @@
   .pointers.good li::before { content: '+'; position: absolute; left: 0; color: var(--good); font-weight: 700; }
   .pointers.work li::before { content: '—'; position: absolute; left: 0; color: var(--warn); }
 
+  .qresult-card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 20px; margin-bottom: 14px; text-align: left; }
+  .qresult-card.toughest { border-color: var(--warn); }
+  .qresult-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+  .qresult-question { font-size: 14.5px; font-weight: 600; margin-bottom: 10px; }
+  .qresult-score { font-family: 'IBM Plex Mono'; font-size: 13px; color: var(--good); }
+  .qresult-note { font-size: 12.5px; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
+  .qresult-transcript { font-size: 13px; color: var(--text-muted); line-height: 1.6; background: var(--surface-2); border-radius: 8px; padding: 12px 14px; }
+  .toughest-tag { font-family: 'IBM Plex Mono'; font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; background: rgba(233,162,59,0.18); color: var(--warn); }
+
   .transcript-toggle { font-size: 12px; color: var(--text-muted); cursor: pointer; text-decoration: underline; margin: 12px 0 8px; display: inline-block; }
   .transcript { display: none; font-family: 'IBM Plex Mono'; font-size: 12.5px; color: var(--text-muted); line-height: 1.6; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
   .transcript.show { display: block; }
@@ -302,9 +320,9 @@
 
   .footer-note { text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px; }
 
-  .trend-summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 32px; }
+  .trend-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; margin-bottom: 36px; }
   @media (max-width: 620px) { .trend-summary { grid-template-columns: 1fr; } }
-  .trend-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .trend-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
   .trend-card .tlabel { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
   .trend-card .tval { font-family: 'Barlow Condensed'; font-size: 30px; font-weight: 800; color: var(--good); }
   .trend-card .tsub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
@@ -335,9 +353,12 @@
   .history-score { font-family: 'Barlow Condensed'; font-size: 22px; font-weight: 800; color: var(--good); }
 
   /* Drills */
-  .drill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 10px; }
+  .drill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
   @media (max-width: 620px) { .drill-grid { grid-template-columns: 1fr; } }
-  .drill-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.15s; }
+  .hub-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 14px; }
+  @media (max-width: 720px) { .hub-grid { grid-template-columns: 1fr; } }
+  .hub-card h4 { font-size: 17px; }
+  .drill-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 25px; cursor: pointer; transition: all 0.15s; }
   .drill-card:hover { border-color: var(--good); transform: translateY(-2px); }
   .drill-card.soon { cursor: default; opacity: 0.5; }
   .drill-card.soon:hover { border-color: var(--line); transform: none; }
@@ -367,7 +388,7 @@
   .leaderboard-score { font-family: 'IBM Plex Mono'; font-size: 14px; font-weight: 600; color: var(--good); }
   .leaderboard-empty { color: var(--text-muted); font-size: 13.5px; text-align: center; padding: 30px 0; }
 
-  .drill-session { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 36px; text-align: center; }
+  .drill-session { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 44px; text-align: center; }
   .drill-session-label { font-size: 12px; color: var(--good); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
   .drill-session h2 { font-family: 'Barlow Condensed'; font-size: 32px; font-weight: 800; margin-bottom: 12px; }
   .drill-session-instructions { color: var(--text-muted); font-size: 14px; max-width: 440px; margin: 0 auto 30px; line-height: 1.6; }
@@ -420,7 +441,7 @@
   .faq-item[open] summary::before { content: '−'; }
   .faq-item p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-top: 10px; padding-left: 20px; }
 
-  .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px; max-width: 380px; margin: 0 auto; }
+  .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 36px; max-width: 380px; margin: 0 auto; }
   .auth-field { margin-bottom: 16px; }
   .auth-field label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
   .auth-field input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Inter'; font-size: 14px; }
@@ -465,13 +486,62 @@
     </div>
     <div class="nav-tabs">
       <button class="nav-tab active" id="tab-home" onclick="switchTab('home')">Home</button>
+      <button class="nav-tab" id="tab-interview" onclick="switchTab('interview')">Interview Practice</button>
       <button class="nav-tab" id="tab-drills" onclick="switchTab('drills')">Drills</button>
     </div>
     <div id="account-area"></div>
   </div>
 
-  <!-- DASHBOARD (mode choice first) -->
-  <div class="screen active" id="screen-dashboard">
+  <!-- HOME (hub) -->
+  <div class="screen active" id="screen-home">
+    <div class="step-label">Finance Track</div>
+    <div class="hero">
+      <h1 class="display">Welcome back</h1>
+      <p>Jump into a practice session, run a quick drill, or check your progress.</p>
+    </div>
+    <div class="hub-grid">
+      <div class="drill-card hub-card" onclick="switchTab('interview')">
+        <div class="drill-top"><span class="drill-icon">🎙</span></div>
+        <h4>Interview Practice</h4>
+        <p>Record a scored async session, or run a live voice mock interview.</p>
+      </div>
+      <div class="drill-card hub-card" onclick="switchTab('drills')">
+        <div class="drill-top"><span class="drill-icon">⚡</span></div>
+        <h4>Drills</h4>
+        <p>Short, focused reps: arithmetic sprints, risk calls, pattern recognition.</p>
+      </div>
+      <div class="drill-card hub-card" onclick="openStats()">
+        <div class="drill-top"><span class="drill-icon">📈</span></div>
+        <h4>History &amp; Stats</h4>
+        <p>Your trends, personal bests, and practice streak.</p>
+      </div>
+    </div>
+
+    <div class="step-label" style="margin-top:32px;">Quick Drills</div>
+    <div class="drill-grid">
+      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting" onclick="startDrill('arithmetic')">
+        <div class="drill-top"><span class="drill-icon">+</span><span class="drill-badge live">Live</span></div>
+        <h4>Arithmetic</h4>
+        <p>60 seconds — answer as many as you can before time runs out.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span></div>
+      </div>
+      <div class="drill-card" data-type="risk" data-industries="ib,pe,quant" onclick="startDrill('risk')">
+        <div class="drill-top"><span class="drill-icon">◉</span><span class="drill-badge live">Live</span></div>
+        <h4>Risk</h4>
+        <p>Pump for points or collect and bank — how far do you push it?</p>
+        <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span></div>
+      </div>
+      <div class="drill-card" data-type="quantitative" data-industries="quant,tech" onclick="startDrill('sequence')">
+        <div class="drill-top"><span class="drill-icon">…</span><span class="drill-badge live">Live</span></div>
+        <h4>Sequence</h4>
+        <p>Spot the pattern, type the next number before the clock runs out.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERVIEW PRACTICE (mode choice) -->
+  <div class="screen" id="screen-interview">
     <div class="step-label">Finance Track</div>
     <div class="hero">
       <h1 class="display">Choose your format</h1>
@@ -498,7 +568,7 @@
 
   <!-- AUTH -->
   <div class="screen" id="screen-auth">
-    <button class="back-btn" onclick="goTo('dashboard')">← Back</button>
+    <button class="back-btn" onclick="goTo('interview')">← Back</button>
     <div class="hero">
       <h1 class="display" id="auth-title">Sign in</h1>
       <p id="auth-sub">Sign in to record a session and save your progress.</p>
@@ -591,7 +661,7 @@
       </div>
       <div class="auth-field">
         <label>Username</label>
-        <input type="text" id="profile-username">
+        <input type="text" id="profile-username" maxlength="20">
       </div>
       <div class="auth-field">
         <label>Bio</label>
@@ -686,7 +756,7 @@
 
   <!-- SETUP: condensed single page -->
   <div class="screen" id="screen-setup">
-    <button class="back-btn" onclick="goTo('dashboard')">← Back</button>
+    <button class="back-btn" onclick="goTo('interview')">← Back</button>
     <div class="step-label">Session Setup</div>
     <div class="hero">
       <h1 class="display">Set up your session</h1>
@@ -769,7 +839,7 @@
         <div class="select-group">
           <div class="select-group-label">Difficulty</div>
           <div class="select-group-sub">This mode is mostly behavioral — pick how tough.</div>
-          <div class="pill-row" id="difficulty-row">
+          <div class="pill-row difficulty-pill-row" id="difficulty-row">
             <button class="pill-btn" data-difficulty="easy">Easy</button>
             <button class="pill-btn" data-difficulty="medium">Medium</button>
             <button class="pill-btn" data-difficulty="hard">Hard</button>
@@ -798,22 +868,51 @@
       <div id="setup-voice-block" style="display:none;">
         <div class="select-group">
           <div class="select-group-label">Length of Session</div>
-          <div class="select-group-sub">Quick is a single question. Full runs a proper multi-question set.</div>
+          <div class="select-group-sub">Quick Round is three fast questions. Full Interview runs a proper five-question set.</div>
           <div class="toggle-row" id="voice-length-row">
-            <div class="toggle-card" data-len="Quick"><h4>Quick Mode</h4><p>1 question · ~3 min</p></div>
+            <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>3 questions · ~5 min</p></div>
             <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions · ~20 min</p></div>
           </div>
         </div>
 
         <div class="divider"></div>
 
-        <div class="select-group" style="margin-bottom:0;">
+        <div class="select-group">
           <div class="select-group-label">Format</div>
           <div class="select-group-sub">You can combine question types within a single session.</div>
           <div class="pill-row" id="type-row">
             <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
             <button class="pill-btn" data-type="Technical">Technical only</button>
             <button class="pill-btn" data-type="Both">Both</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="select-group">
+          <div class="select-group-label">Difficulty</div>
+          <div class="select-group-sub">Easy is broader and forgiving. Hard is high-specificity and less room for a generic answer.</div>
+          <div class="pill-row difficulty-pill-row" id="voice-difficulty-row">
+            <button class="pill-btn" data-difficulty="easy">Easy</button>
+            <button class="pill-btn" data-difficulty="medium">Medium</button>
+            <button class="pill-btn" data-difficulty="hard">Hard</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="select-group" style="margin-bottom:0;">
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:13.5px;">
+            <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
+            Tailor a question or two to my resume
+          </label>
+          <div id="voice-resume-panel" style="display:none; margin-top:14px;">
+            <textarea id="voice-resume-textarea" placeholder="Paste your resume text here..." style="width:100%; min-height:90px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Inter'; font-size:13.5px; resize:vertical;"></textarea>
+            <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:12.5px; padding:8px 14px;">
+              or upload a PDF
+              <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
+            </label>
+            <div id="voice-resume-status" style="font-size:12px; color:var(--text-muted); margin-top:8px;"></div>
           </div>
         </div>
       </div>
@@ -864,7 +963,7 @@
 
   <!-- FEEDBACK -->
   <div class="screen" id="screen-feedback">
-    <button class="back-btn" onclick="goTo('dashboard')">← Back to dashboard</button>
+    <button class="back-btn" onclick="goTo('interview')">← Back to Interview Practice</button>
     <div class="studio-panel">
       <div class="overall-score">
         <div class="num">78<span class="of100" style="font-size:22px">/100</span></div>
@@ -916,7 +1015,7 @@
 
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="retryRecordSession()">↻ Retry this round</button>
-        <button class="btn btn-primary" onclick="goTo('dashboard')">Done →</button>
+        <button class="btn btn-primary" onclick="goTo('interview')">Done →</button>
       </div>
     </div>
   </div>
@@ -932,12 +1031,41 @@
       <div class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</div>
       <div class="voice-state-label" id="voice-state">Ready</div>
 
+      <div class="onair-badge" id="voice-rec-indicator" style="display:none; justify-content:center; margin-bottom:14px; color:var(--record);"><div class="dot"></div> Listening</div>
+
       <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎙️</button>
       <div class="voice-timer mono" id="voice-timer">00:00</div>
 
+      <div id="voice-text-fallback" style="display:none; margin-top:20px; text-align:left;">
+        <textarea id="voice-text-input" placeholder="Type your answer here..." style="width:100%; min-height:90px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Inter'; font-size:13.5px; resize:vertical;"></textarea>
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn btn-primary" onclick="submitTextAnswer()">Done →</button>
+        </div>
+      </div>
+
+      <details class="pointers" id="voice-notes-card" style="display:none; text-align:left; margin-top:24px;">
+        <summary style="cursor:pointer; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);">Interviewer notes</summary>
+        <ul id="voice-notes-list" style="list-style:none; margin-top:12px;"></ul>
+      </details>
+
       <div class="btn-row" id="voice-retry-row" style="display:none; margin-top:26px;">
         <button class="btn btn-secondary" onclick="startVoice()">↻ Retry this session</button>
-        <button class="btn btn-primary" onclick="goTo('feedback')">View evaluation →</button>
+        <button class="btn btn-primary" onclick="goToVoiceResults()">View evaluation →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOCK INTERVIEW RESULTS -->
+  <div class="screen" id="screen-voice-results">
+    <button class="back-btn" onclick="switchTab('interview')">← Back to Interview Practice</button>
+    <div class="studio-panel">
+      <div class="overall-score">
+        <span class="num" id="voice-result-score">—</span><span class="of100">/100</span>
+        <div class="label">Overall Score</div>
+      </div>
+      <div id="voice-result-questions"></div>
+      <div class="btn-row" style="margin-top:24px;">
+        <button class="btn btn-primary" onclick="switchTab('interview')">Done →</button>
       </div>
     </div>
   </div>
@@ -954,9 +1082,14 @@
       <div class="trend-card"><div class="tlabel">Sessions completed</div><div class="tval">7</div><div class="tsub">Finance track</div></div>
       <div class="trend-card"><div class="tlabel">Average score</div><div class="tval">74</div><div class="tsub">+9 vs. first session</div></div>
       <div class="trend-card"><div class="tlabel">Most improved</div><div class="tval">Eye Contact</div><div class="tsub">62% → 85%</div></div>
+      <div class="trend-card" id="trend-pace"><div class="tlabel">Avg. Pace</div><div class="tval">—</div><div class="tsub">words/min</div></div>
+      <div class="trend-card" id="trend-streak"><div class="tlabel">Practice Streak</div><div class="tval">—</div><div class="tsub">days</div></div>
     </div>
 
     <div class="history-list" id="history-list"></div>
+
+    <div class="step-label" style="margin-top:32px;">Drill Personal Bests</div>
+    <div class="history-list" id="drill-stats-list"></div>
   </div>
 
   <!-- DRILLS -->
@@ -1095,6 +1228,15 @@
       <div class="drill-result-label" id="drill-result-label">Score</div>
       <p class="drill-session-instructions" id="drill-result-note"></p>
       <p class="drill-session-instructions" id="drill-result-percentile" style="display:none;"></p>
+
+      <div id="drill-result-mini-lb" style="display:none; margin:20px 0; text-align:left;">
+        <div class="pill-row" id="result-lb-period-row" style="justify-content:center; margin-bottom:12px;">
+          <button class="pill-btn selected" data-period="daily">Today</button>
+          <button class="pill-btn" data-period="alltime">All-Time</button>
+        </div>
+        <div class="leaderboard-list" id="drill-result-mini-lb-list"></div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="startDrill(currentDrill)">↻ Retry drill</button>
         <button class="btn btn-secondary" id="drill-result-leaderboard-btn" onclick="goToLeaderboard(currentDrill)" style="display:none;">🏆 Leaderboard</button>
@@ -1125,9 +1267,10 @@
 <script type="module" src="js/questions.js"></script>
 <script type="module" src="js/resume.js"></script>
 <script type="module" src="js/drills.js"></script>
+<script type="module" src="js/voice.js"></script>
 <script type="module" src="js/auth.js"></script>
 <script>
-  const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null };
+  const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null, voiceResumeText: null };
   let pendingAuthAction = null;
   let currentUserProfile = null;
 
@@ -1374,6 +1517,12 @@
     state.difficulty = el.dataset.difficulty;
     checkSetupReady();
   }));
+  document.querySelectorAll('#voice-difficulty-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#voice-difficulty-row .pill-btn').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.difficulty = el.dataset.difficulty;
+    checkSetupReady();
+  }));
   document.getElementById('count-select').addEventListener('change', (e) => {
     const n = parseInt(e.target.value, 10);
     state.questionCount = n || null;
@@ -1401,18 +1550,21 @@
     if (state.mode === 'record') {
       ready = !!state.length && !!state.difficulty && (state.length !== 'Full' || !!state.questionCount);
     } else {
-      ready = !!state.length && !!state.type;
+      ready = !!state.length && !!state.type && !!state.difficulty;
     }
     document.getElementById('setup-next').disabled = !ready;
   }
 
   function switchTab(tab) {
     document.getElementById('tab-home').classList.toggle('active', tab === 'home');
+    document.getElementById('tab-interview').classList.toggle('active', tab === 'interview');
     document.getElementById('tab-drills').classList.toggle('active', tab === 'drills');
     if (tab === 'drills') {
       goTo('drills');
+    } else if (tab === 'interview') {
+      goTo('interview');
     } else {
-      goTo('dashboard');
+      goTo('home');
     }
   }
 
@@ -1435,6 +1587,12 @@
         const resumes = await MockoResume.listResumes();
         if (resumes.some((r) => r.extracted_text)) resumeGroup.style.display = 'block';
       } catch (err) { console.error(err); }
+    } else if (mode === 'voice') {
+      document.getElementById('voice-resume-toggle').checked = false;
+      document.getElementById('voice-resume-panel').style.display = 'none';
+      document.getElementById('voice-resume-textarea').value = '';
+      document.getElementById('voice-resume-status').textContent = '';
+      state.voiceResumeText = null;
     }
 
     if (currentUserProfile && currentUserProfile.industry) {
@@ -1445,6 +1603,36 @@
 
     checkSetupReady();
     goTo('setup');
+  }
+
+  function toggleVoiceResumePanel() {
+    const checked = document.getElementById('voice-resume-toggle').checked;
+    document.getElementById('voice-resume-panel').style.display = checked ? 'block' : 'none';
+  }
+
+  async function handleVoiceResumeUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const statusEl = document.getElementById('voice-resume-status');
+    if (file.type !== 'application/pdf') {
+      statusEl.textContent = 'Please upload a PDF.';
+      event.target.value = '';
+      return;
+    }
+    statusEl.textContent = 'Reading resume...';
+    try {
+      const text = await MockoResume.extractPdfText(file);
+      if (text) {
+        document.getElementById('voice-resume-textarea').value = text;
+        statusEl.textContent = `Loaded ${file.name}.`;
+      } else {
+        statusEl.textContent = 'Could not read text from that PDF — try pasting instead.';
+      }
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = 'Could not read that PDF — try pasting instead.';
+    }
+    event.target.value = '';
   }
 
   async function toggleResumePicker() {
@@ -1773,50 +1961,108 @@
       trendCards[1].style.display = 'none';
       trendCards[2].style.display = 'none';
       listEl.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Record your first session to see it here.</p>';
-      return;
-    }
-
-    const avgScore = Math.round(sessions.reduce((a, s) => a + s.overall_score, 0) / sessions.length);
-    const first = sessions[sessions.length - 1];
-    const latest = sessions[0];
-
-    trendCards[0].style.display = '';
-    trendCards[0].querySelector('.tval').textContent = sessions.length;
-    trendCards[0].querySelector('.tsub').textContent = 'Finance track';
-
-    trendCards[1].style.display = '';
-    trendCards[1].querySelector('.tval').textContent = avgScore;
-    const delta = avgScore - Math.round(first.overall_score);
-    trendCards[1].querySelector('.tsub').textContent = sessions.length > 1
-      ? `${delta >= 0 ? '+' : ''}${delta} vs. first session`
-      : 'First session';
-
-    if (sessions.length > 1) {
-      let best = null;
-      HISTORY_CATEGORIES.forEach(([key, label]) => {
-        const firstPct = Math.round((first.category_scores[key].score / first.category_scores[key].max) * 100);
-        const latestPct = Math.round((latest.category_scores[key].score / latest.category_scores[key].max) * 100);
-        const delta = latestPct - firstPct;
-        if (!best || delta > best.delta) best = { label, firstPct, latestPct, delta };
-      });
-      trendCards[2].style.display = '';
-      trendCards[2].querySelector('.tval').textContent = best.label;
-      trendCards[2].querySelector('.tsub').textContent = `${best.firstPct}% → ${best.latestPct}%`;
     } else {
-      trendCards[2].style.display = 'none';
+      const avgScore = Math.round(sessions.reduce((a, s) => a + s.overall_score, 0) / sessions.length);
+      const first = sessions[sessions.length - 1];
+      const latest = sessions[0];
+
+      trendCards[0].style.display = '';
+      trendCards[0].querySelector('.tval').textContent = sessions.length;
+      trendCards[0].querySelector('.tsub').textContent = 'Finance track';
+
+      trendCards[1].style.display = '';
+      trendCards[1].querySelector('.tval').textContent = avgScore;
+      const delta = avgScore - Math.round(first.overall_score);
+      trendCards[1].querySelector('.tsub').textContent = sessions.length > 1
+        ? `${delta >= 0 ? '+' : ''}${delta} vs. first session`
+        : 'First session';
+
+      if (sessions.length > 1) {
+        let best = null;
+        HISTORY_CATEGORIES.forEach(([key, label]) => {
+          const firstPct = Math.round((first.category_scores[key].score / first.category_scores[key].max) * 100);
+          const latestPct = Math.round((latest.category_scores[key].score / latest.category_scores[key].max) * 100);
+          const delta = latestPct - firstPct;
+          if (!best || delta > best.delta) best = { label, firstPct, latestPct, delta };
+        });
+        trendCards[2].style.display = '';
+        trendCards[2].querySelector('.tval').textContent = best.label;
+        trendCards[2].querySelector('.tsub').textContent = `${best.firstPct}% → ${best.latestPct}%`;
+      } else {
+        trendCards[2].style.display = 'none';
+      }
+
+      listEl.innerHTML = sessions.map(s => {
+        const date = new Date(s.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const title = `${s.length} ${s.length === 'Quick' ? 'Round' : 'Session'} — ${s.format}`;
+        return `<div class="history-row">
+          <div class="history-left">
+            <div class="history-title">${title}</div>
+            <div class="history-meta">${s.track} · ${date}</div>
+          </div>
+          <div class="history-score">${Math.round(s.overall_score)}</div>
+        </div>`;
+      }).join('');
     }
 
-    listEl.innerHTML = sessions.map(s => {
-      const date = new Date(s.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      const title = `${s.length} ${s.length === 'Quick' ? 'Round' : 'Session'} — ${s.format}`;
-      return `<div class="history-row">
-        <div class="history-left">
-          <div class="history-title">${title}</div>
-          <div class="history-meta">${s.track} · ${date}</div>
-        </div>
-        <div class="history-score">${Math.round(s.overall_score)}</div>
-      </div>`;
-    }).join('');
+    // --- Pace / filler rate, from sessions.wpm / filler_count ---
+    const paceEl = document.getElementById('trend-pace');
+    const withWpm = sessions.filter(s => s.wpm != null);
+    if (withWpm.length) {
+      const avgWpm = Math.round(withWpm.reduce((a, s) => a + s.wpm, 0) / withWpm.length);
+      paceEl.style.display = '';
+      paceEl.querySelector('.tval').textContent = avgWpm;
+      const withFillers = sessions.filter(s => s.filler_count != null);
+      const avgFillers = withFillers.length
+        ? Math.round((withFillers.reduce((a, s) => a + s.filler_count, 0) / withFillers.length) * 10) / 10
+        : null;
+      paceEl.querySelector('.tsub').textContent = avgFillers != null ? `${avgFillers} filler words/session` : 'words/min';
+    } else {
+      paceEl.style.display = 'none';
+    }
+
+    // --- Drill personal bests ---
+    const drillListEl = document.getElementById('drill-stats-list');
+    let drillScores = [];
+    try {
+      drillScores = await MockoHistory.fetchDrillStats();
+    } catch (err) {
+      console.error(err);
+    }
+    const byDrill = {};
+    drillScores.forEach(r => {
+      if (!byDrill[r.drill_key]) byDrill[r.drill_key] = { best: r.score, attempts: 0 };
+      byDrill[r.drill_key].best = Math.max(byDrill[r.drill_key].best, r.score);
+      byDrill[r.drill_key].attempts++;
+    });
+    const drillKeys = Object.keys(byDrill);
+    drillListEl.innerHTML = drillKeys.length
+      ? drillKeys.map(k => `<div class="history-row">
+          <div class="history-left">
+            <div class="history-title">${(drillMeta[k] && drillMeta[k].label) || k}</div>
+            <div class="history-meta">${byDrill[k].attempts} attempt${byDrill[k].attempts === 1 ? '' : 's'}</div>
+          </div>
+          <div class="history-score">${byDrill[k].best}</div>
+        </div>`).join('')
+      : '<p style="color:var(--text-muted);font-size:13px;">No drills played yet.</p>';
+
+    // --- Practice streak, from combined session + drill_scores dates ---
+    const allDates = [...sessions.map(s => s.created_at), ...drillScores.map(s => s.created_at)]
+      .map(d => new Date(d).toISOString().slice(0, 10));
+    document.getElementById('trend-streak').querySelector('.tval').textContent = computeStreak(allDates);
+  }
+
+  function computeStreak(isoDateStrings) {
+    const daySet = new Set(isoDateStrings);
+    let streak = 0;
+    let cursor = new Date();
+    while (true) {
+      const key = cursor.toISOString().slice(0, 10);
+      if (!daySet.has(key)) break;
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return streak;
   }
 
   // --- Theme ---
@@ -1999,12 +2245,48 @@
     exitProfileEditMode();
   }
 
+  // Mirrors supabase/migrations/20260825140000_username_validation.sql --
+  // terms are pre-collapsed (e.g. 'asshole' -> 'ashole') so a legit
+  // spelling and a repeated-letter evasion both normalize the same way.
+  const USERNAME_BLOCKLIST = [
+    'fuck','shit','bitch','ashole','cunt','dick','pusy','whore','slut',
+    'niger','niga','fagot','fag','retard',
+    'nazi','hitler','kike','chink','spic','trany',
+  ];
+
+  function normalizeUsernameForCheck(raw) {
+    let s = raw.toLowerCase();
+    s = s.replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e')
+         .replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't')
+         .replace(/\$/g, 's').replace(/@/g, 'a');
+    s = s.replace(/(.)\1+/g, '$1');
+    return s;
+  }
+
+  function validateUsername(raw) {
+    const v = raw.trim();
+    if (!/^[A-Za-z0-9_]{3,20}$/.test(v)) {
+      return 'Usernames must be 3-20 characters: letters, numbers, and underscores only.';
+    }
+    const normalized = normalizeUsernameForCheck(v);
+    if (USERNAME_BLOCKLIST.some(term => normalized.includes(term))) {
+      return "That username isn't allowed. Please choose another.";
+    }
+    return null;
+  }
+
   async function saveProfile() {
     const errorEl = document.getElementById('profile-error');
     errorEl.textContent = '';
+    const username = document.getElementById('profile-username').value.trim();
+    const usernameError = validateUsername(username);
+    if (usernameError) {
+      errorEl.textContent = usernameError;
+      return;
+    }
     try {
       currentProfile = await MockoProfile.updateProfile({
-        username: document.getElementById('profile-username').value.trim(),
+        username,
         bio: document.getElementById('profile-bio').value.trim(),
         social_links: {
           twitter: document.getElementById('profile-twitter').value.trim(),
@@ -2016,9 +2298,13 @@
       updateAccountBadge(currentProfile);
       exitProfileEditMode();
     } catch (err) {
-      errorEl.textContent = (err.message || '').includes('duplicate')
-        ? 'That username is taken.'
-        : (err.message || 'Something went wrong.');
+      if (err.code === '23505') {
+        errorEl.textContent = 'That username is taken.';
+      } else if (err.code === '23514') {
+        errorEl.textContent = "That username isn't allowed — check length, characters, or content.";
+      } else {
+        errorEl.textContent = err.message || 'Something went wrong.';
+      }
     }
   }
 
@@ -2054,87 +2340,454 @@
     goTo('setup');
   }
 
-  // Voice mock interview
-  const voiceLines = [
-    "Let's start — tell me about a time you had to push back on a decision you disagreed with.",
-    "Good. What was the outcome, and would you handle it differently now?",
-    "Last one — how do you usually know when it's worth pushing back versus letting it go?"
-  ];
-  let voiceStep = 0, micOn = false, voiceInterval, voiceSeconds = 0;
+  // Mock Interview: real conversation engine.
+  // States: idle -> asking -> listening -> thinking -> [asking(followup) -> listening] -> thinking -> (loop) -> done
+  let voiceSession = null;
+  let voiceRecognizer = null;
+  let voiceTimerInterval = null;
+  let cachedVoice;
 
-  function startVoice() {
-    goTo('voice');
-    voiceStep = 0; micOn = false; voiceSeconds = 0;
-    document.getElementById('voice-role').textContent = 'Finance — ' + (state.type || 'Behavioral');
+  function resetVoiceUI() {
     document.getElementById('mic-btn').style.display = 'inline-flex';
     document.getElementById('mic-btn').textContent = '🎙️';
-    document.getElementById('voice-caption').textContent = "Tap the mic when you're ready to begin.";
+    document.getElementById('mic-btn').disabled = false;
     document.getElementById('voice-state').textContent = 'Ready';
     document.getElementById('voice-orb').className = 'voice-orb';
     document.getElementById('voice-retry-row').style.display = 'none';
-    clearInterval(voiceInterval);
+    document.getElementById('voice-rec-indicator').style.display = 'none';
+    document.getElementById('voice-text-fallback').style.display = 'none';
+    document.getElementById('voice-notes-card').style.display = 'none';
+    document.getElementById('voice-notes-list').innerHTML = '';
     document.getElementById('voice-timer').textContent = '00:00';
+    clearInterval(voiceTimerInterval);
+    if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} voiceRecognizer = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+
+  async function startVoice() {
+    goTo('voice');
+    resetVoiceUI();
+    document.getElementById('voice-caption').textContent = 'Setting up your interview...';
+    document.getElementById('mic-btn').disabled = true;
+    try {
+      await setupVoiceSession();
+      document.getElementById('voice-caption').textContent = "Tap the mic when you're ready to begin.";
+      document.getElementById('mic-btn').disabled = false;
+    } catch (err) {
+      console.error(err);
+      document.getElementById('voice-caption').textContent = 'Could not set up the interview — please go back and try again.';
+    }
+  }
+
+  async function setupVoiceSession() {
+    const category = state.type === 'Technical' ? 'technical' : 'behavioral';
+    const isFull = state.length === 'Full';
+    let resumeQuestions = [];
+    if (isFull && state.voiceResumeText) {
+      const resumeText = state.voiceResumeText.trim();
+      const wordCount = resumeText.split(/\s+/).filter(Boolean).length;
+      if (wordCount >= 50) {
+        try {
+          const tailored = await MockoVoiceSession.tailorResumeQuestions({ resumeText, difficulty: state.difficulty, industry: state.industry });
+          resumeQuestions = tailored.questions || [];
+        } catch (err) {
+          console.error('Resume tailoring failed, falling back to guide questions:', err);
+        }
+      }
+    }
+
+    const questions = isFull
+      ? await MockoQuestions.buildFullInterviewSet({ difficulty: state.difficulty, category, industry: state.industry, resumeQuestions })
+      : await MockoQuestions.buildQuickRoundSet({ difficulty: state.difficulty, category, industry: state.industry });
+
+    const session = await MockoVoiceSession.insertSession({
+      difficulty: state.difficulty, format: state.type, length: state.length, firstQuestionText: questions[0].text,
+    });
+
+    voiceSession = {
+      id: session.id, difficulty: state.difficulty, format: state.type, length: state.length,
+      questions, currentIndex: 0, priorSummaries: [], sttAvailable: true, manualStop: false,
+      transcriptBuffer: '', questionStartTs: 0, phase: 'idle',
+      followUpCountThisQuestion: 0, followUpCountSession: 0, inFollowUp: false,
+      mainTranscript: null, mainDuration: 0, followUpTranscript: null, followUpDuration: 0,
+      pendingNote: null, pendingTransitionLine: null, results: [], finalOverallScore: 0, toughestId: null,
+    };
+    document.getElementById('voice-role').textContent = 'Finance — ' + (state.type || 'Behavioral');
   }
 
   function toggleMic() {
-    const orb = document.getElementById('voice-orb');
-    const caption = document.getElementById('voice-caption');
-    const stateLabel = document.getElementById('voice-state');
-    const micBtn = document.getElementById('mic-btn');
-
-    if (voiceStep === 0 && !micOn) {
-      aiSpeak(voiceLines[0]);
-      voiceStep = 1;
-      voiceSeconds = 0;
-      clearInterval(voiceInterval);
-      voiceInterval = setInterval(() => {
-        voiceSeconds++;
-        const m = String(Math.floor(voiceSeconds/60)).padStart(2,'0');
-        const s = String(voiceSeconds%60).padStart(2,'0');
-        document.getElementById('voice-timer').textContent = m + ':' + s;
-      }, 1000);
-      return;
-    }
-
-    micOn = !micOn;
-    if (micOn) {
-      micBtn.textContent = '⏹️';
-      orb.className = 'voice-orb listening';
-      caption.textContent = "Listening...";
-      stateLabel.textContent = 'Your turn — speak now';
-    } else {
-      micBtn.textContent = '🎙️';
-      orb.className = 'voice-orb';
-      caption.textContent = "Got it — thinking...";
-      stateLabel.textContent = 'Processing your answer';
-      setTimeout(() => {
-        if (voiceStep < voiceLines.length) {
-          aiSpeak(voiceLines[voiceStep]);
-          voiceStep++;
-        } else {
-          clearInterval(voiceInterval);
-          aiSpeak("That's a wrap — nice work.");
-          setTimeout(() => {
-            micBtn.style.display = 'none';
-            document.getElementById('voice-retry-row').style.display = 'flex';
-            stateLabel.textContent = 'Session complete';
-          }, 2000);
-        }
-      }, 1000);
+    if (!voiceSession) return;
+    if (voiceSession.phase === 'idle') {
+      document.getElementById('mic-btn').style.display = 'none';
+      askCurrentQuestion();
+    } else if (voiceSession.phase === 'listening') {
+      finalizeAnswer();
     }
   }
 
-  function aiSpeak(text) {
-    const orb = document.getElementById('voice-orb');
-    const caption = document.getElementById('voice-caption');
-    const stateLabel = document.getElementById('voice-state');
-    orb.className = 'voice-orb ai-talking';
-    caption.textContent = text;
-    stateLabel.textContent = 'Jordan is speaking';
-    setTimeout(() => {
-      orb.className = 'voice-orb';
-      stateLabel.textContent = 'Tap the mic to respond';
-    }, 2600);
+  function pickVoice() {
+    if (cachedVoice !== undefined) return cachedVoice;
+    if (!window.speechSynthesis) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) return null;
+    cachedVoice = voices.find(v => v.lang && v.lang.startsWith('en')) || voices[0];
+    return cachedVoice;
+  }
+
+  function splitForBreath(text) {
+    const mid = Math.floor(text.length / 2);
+    let splitAt = text.indexOf('. ', mid);
+    if (splitAt === -1) splitAt = text.indexOf(', ', mid);
+    if (splitAt === -1) return [text];
+    return [text.slice(0, splitAt + 1), text.slice(splitAt + 2)];
+  }
+
+  function speakText(text, onDone) {
+    document.getElementById('voice-caption').textContent = text;
+    document.getElementById('voice-orb').className = 'voice-orb ai-talking';
+    document.getElementById('voice-state').textContent = 'Jordan is speaking';
+    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+      document.getElementById('voice-orb').className = 'voice-orb';
+      onDone();
+      return;
+    }
+    const voice = pickVoice();
+    const parts = text.length > 180 ? splitForBreath(text) : [text];
+    let i = 0;
+    function speakNext() {
+      if (i >= parts.length) {
+        document.getElementById('voice-orb').className = 'voice-orb';
+        onDone();
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(parts[i]);
+      if (voice) utter.voice = voice;
+      utter.rate = 0.97;
+      utter.pitch = 1.0;
+      utter.onend = () => { i++; setTimeout(speakNext, i < parts.length ? 250 : 0); };
+      utter.onerror = () => { i++; speakNext(); };
+      window.speechSynthesis.speak(utter);
+    }
+    speakNext();
+  }
+
+  function askCurrentQuestion() {
+    voiceSession.phase = 'asking';
+    const q = voiceSession.questions[voiceSession.currentIndex];
+    const prefix = voiceSession.pendingTransitionLine ? voiceSession.pendingTransitionLine + ' ' : '';
+    voiceSession.pendingTransitionLine = null;
+    speakText(prefix + q.text, enterListenState);
+  }
+
+  function enterListenState() {
+    voiceSession.phase = 'listening';
+    voiceSession.transcriptBuffer = '';
+    voiceSession.manualStop = false;
+    voiceSession.questionStartTs = Date.now();
+    document.getElementById('voice-state').textContent = 'Your turn — speak now';
+    document.getElementById('voice-timer').textContent = '00:00';
+    clearInterval(voiceTimerInterval);
+    let seconds = 0;
+    voiceTimerInterval = setInterval(() => {
+      seconds++;
+      document.getElementById('voice-timer').textContent = String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+    }, 1000);
+
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (voiceSession.sttAvailable && SR) {
+      document.getElementById('voice-caption').textContent = 'Listening...';
+      document.getElementById('voice-rec-indicator').style.display = 'flex';
+      document.getElementById('voice-text-fallback').style.display = 'none';
+      document.getElementById('mic-btn').style.display = 'inline-flex';
+      document.getElementById('mic-btn').textContent = '⏹️';
+      startRecognition(SR);
+    } else {
+      document.getElementById('voice-caption').textContent = 'Type your answer below.';
+      document.getElementById('voice-rec-indicator').style.display = 'none';
+      document.getElementById('mic-btn').style.display = 'none';
+      document.getElementById('voice-text-fallback').style.display = 'block';
+      document.getElementById('voice-text-input').value = '';
+    }
+  }
+
+  function startRecognition(SR) {
+    const recognizer = new SR();
+    recognizer.continuous = true;
+    recognizer.interimResults = true;
+    recognizer.lang = 'en-US';
+    recognizer.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (r.isFinal) {
+          voiceSession.transcriptBuffer += (voiceSession.transcriptBuffer ? ' ' : '') + r[0].transcript.trim();
+        } else {
+          interim += r[0].transcript;
+        }
+      }
+      document.getElementById('voice-caption').textContent = (voiceSession.transcriptBuffer + ' ' + interim).trim() || 'Listening...';
+    };
+    recognizer.onerror = (e) => {
+      // A stale/delayed event from a recognizer that's no longer the
+      // active one (e.g. firing after the session already completed)
+      // must not resurrect listening state.
+      if (voiceRecognizer !== recognizer || !voiceSession || voiceSession.phase !== 'listening') return;
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        voiceSession.sttAvailable = false;
+        voiceSession.manualStop = true;
+        clearInterval(voiceTimerInterval);
+        enterListenState();
+      }
+    };
+    recognizer.onend = () => {
+      if (voiceRecognizer !== recognizer || !voiceSession) return;
+      if (!voiceSession.manualStop && voiceSession.phase === 'listening') {
+        try { recognizer.start(); } catch (e) {}
+      }
+    };
+    voiceRecognizer = recognizer;
+    try { recognizer.start(); } catch (e) { console.error(e); }
+  }
+
+  function finalizeAnswer() {
+    if (!voiceSession || voiceSession.phase !== 'listening') return;
+    voiceSession.manualStop = true;
+    if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} }
+    clearInterval(voiceTimerInterval);
+    document.getElementById('voice-rec-indicator').style.display = 'none';
+    document.getElementById('mic-btn').style.display = 'none';
+    const durationSec = Math.max(1, Math.round((Date.now() - voiceSession.questionStartTs) / 1000));
+    processAnswer(voiceSession.transcriptBuffer.trim(), durationSec);
+  }
+
+  function submitTextAnswer() {
+    if (!voiceSession || voiceSession.phase !== 'listening') return;
+    const text = document.getElementById('voice-text-input').value.trim();
+    clearInterval(voiceTimerInterval);
+    document.getElementById('voice-text-fallback').style.display = 'none';
+    const durationSec = Math.max(1, Math.round((Date.now() - voiceSession.questionStartTs) / 1000));
+    processAnswer(text, durationSec);
+  }
+
+  function appendNote(questionText, note) {
+    const card = document.getElementById('voice-notes-card');
+    card.style.display = 'block';
+    const li = document.createElement('li');
+    li.style.marginBottom = '10px';
+    li.innerHTML = `<div style="font-size:12px; color:var(--text-muted); margin-bottom:2px;">${questionText}</div><div style="font-size:13px;">${note}</div>`;
+    document.getElementById('voice-notes-list').appendChild(li);
+  }
+
+  async function processAnswer(transcript, durationSec) {
+    if (!transcript) transcript = '(No answer given.)';
+    voiceSession.phase = 'thinking';
+    document.getElementById('voice-state').textContent = 'Processing your answer';
+    document.getElementById('voice-caption').textContent = 'Thinking...';
+
+    if (voiceSession.inFollowUp) {
+      voiceSession.followUpTranscript = transcript;
+      voiceSession.followUpDuration = durationSec;
+      voiceSession.inFollowUp = false;
+      await finishQuestionAndAdvance();
+      return;
+    }
+
+    voiceSession.mainTranscript = transcript;
+    voiceSession.mainDuration = durationSec;
+
+    const q = voiceSession.questions[voiceSession.currentIndex];
+    const isFull = voiceSession.length === 'Full';
+    let analysis = { needsFollowUp: false, note: '', summarySentence: '', transitionLine: null };
+    try {
+      const nextQ = isFull ? voiceSession.questions[voiceSession.currentIndex + 1] : null;
+      analysis = await MockoVoiceSession.analyzeAnswer({
+        questionText: q.text, questionType: q.category || 'behavioral', difficulty: q.difficulty || voiceSession.difficulty,
+        transcript, priorSummaries: voiceSession.priorSummaries, nextQuestionText: nextQ ? nextQ.text : null,
+      });
+    } catch (err) {
+      console.error('analyze-answer failed, continuing without it:', err);
+    }
+
+    voiceSession.pendingNote = analysis.note || null;
+    if (analysis.summarySentence) voiceSession.priorSummaries.push(analysis.summarySentence);
+    if (isFull && analysis.transitionLine) voiceSession.pendingTransitionLine = analysis.transitionLine;
+
+    const wordCount = transcript.split(/\s+/).filter(Boolean).length;
+    const wordTrigger = voiceSession.difficulty === 'hard' ? wordCount < 60 : wordCount < 40;
+    const wantsFollowUp = (analysis.needsFollowUp || wordTrigger)
+      && isFull && (q.follow_up_bank || []).length > 0
+      && voiceSession.followUpCountThisQuestion < 1 && voiceSession.followUpCountSession < 2;
+
+    if (wantsFollowUp) {
+      askFollowUp(q);
+    } else {
+      await finishQuestionAndAdvance();
+    }
+  }
+
+  function askFollowUp(q) {
+    voiceSession.inFollowUp = true;
+    voiceSession.followUpCountThisQuestion++;
+    voiceSession.followUpCountSession++;
+    const bank = q.follow_up_bank || [];
+    const line = bank[Math.floor(Math.random() * bank.length)];
+    voiceSession.phase = 'asking';
+    speakText(line, enterListenState);
+  }
+
+  async function finishQuestionAndAdvance() {
+    const q = voiceSession.questions[voiceSession.currentIndex];
+    document.getElementById('voice-state').textContent = 'Scoring your answer';
+    const combinedTranscript = voiceSession.followUpTranscript
+      ? voiceSession.mainTranscript + ' [Follow-up] ' + voiceSession.followUpTranscript
+      : voiceSession.mainTranscript;
+    const combinedDuration = voiceSession.mainDuration + (voiceSession.followUpDuration || 0);
+    let newRow;
+    try {
+      newRow = await MockoVoiceSession.gradeAnswer({
+        sessionId: voiceSession.id, questionIndex: voiceSession.currentIndex, questionId: q.id || null,
+        questionText: q.text, questionType: q.category || 'behavioral', difficulty: q.difficulty || voiceSession.difficulty,
+        source: q.source || 'guide', transcript: combinedTranscript, durationSec: combinedDuration,
+        note: voiceSession.pendingNote, followUpAsked: !!voiceSession.followUpTranscript, followUpTranscript: voiceSession.followUpTranscript,
+      });
+    } catch (err) {
+      console.error('Grading failed for this question:', err);
+      newRow = {
+        id: null, question_index: voiceSession.currentIndex, question_text: q.text,
+        difficulty: q.difficulty || voiceSession.difficulty, transcript: combinedTranscript,
+        mini_score: 0, category_scores: null, note: 'Could not be graded.', pointers_good: [], pointers_work: [],
+      };
+    }
+
+    voiceSession.followUpCountThisQuestion = 0;
+    voiceSession.followUpTranscript = null;
+    voiceSession.followUpDuration = 0;
+    voiceSession.mainTranscript = null;
+
+    if (voiceSession.isRetry) {
+      const oldId = voiceSession.retryOldRowId;
+      voiceSession.results = voiceSession.results.map(r => (r.id === oldId ? newRow : r));
+      if (oldId && newRow.id && oldId !== newRow.id) {
+        try { await MockoVoiceSession.deleteSessionQuestion(oldId); } catch (err) { console.error(err); }
+      }
+      voiceSession.isRetry = false;
+      voiceSession.phase = 'done';
+      await computeAndPersistAggregate();
+      goToVoiceResults();
+      return;
+    }
+
+    voiceSession.results.push(newRow);
+    if (newRow.note) appendNote(q.text, newRow.note);
+    voiceSession.currentIndex++;
+
+    if (voiceSession.currentIndex < voiceSession.questions.length) {
+      askCurrentQuestion();
+    } else {
+      await finishVoiceSession();
+    }
+  }
+
+  async function computeAndPersistAggregate() {
+    const results = voiceSession.results;
+    const n = results.length || 1;
+    const avg = (key) => results.reduce((a, r) => a + ((r.category_scores && r.category_scores[key] && r.category_scores[key].score) || 0), 0) / n;
+    const categoryScores = {
+      content_structure: { score: Math.round(avg('content_structure')), max: 40 },
+      communication_clarity: { score: Math.round(avg('communication_clarity')), max: 30 },
+      delivery_pace: { score: Math.round(avg('delivery_pace')), max: 20 },
+      confidence_tone: { score: Math.round(avg('confidence_tone')), max: 10 },
+    };
+    const overallScore = categoryScores.content_structure.score + categoryScores.communication_clarity.score + categoryScores.delivery_pace.score + categoryScores.confidence_tone.score;
+    const pointersGood = [...new Set(results.flatMap(r => r.pointers_good || []))].slice(0, 4);
+    const pointersWork = [...new Set(results.flatMap(r => r.pointers_work || []))].slice(0, 4);
+    const transcript = results.map(r => r.transcript).join('\n\n');
+
+    let toughestId = null;
+    if (results.length > 1) {
+      const toughest = results.reduce((min, r) => (r.mini_score < min.mini_score ? r : min), results[0]);
+      toughestId = toughest.id;
+    }
+    for (const r of results) {
+      if (r.id && r.id !== toughestId) {
+        try { await MockoVoiceSession.updateSessionQuestion(r.id, { is_toughest: false }); } catch (err) { console.error(err); }
+      }
+    }
+    if (toughestId) {
+      try { await MockoVoiceSession.updateSessionQuestion(toughestId, { is_toughest: true }); } catch (err) { console.error(err); }
+    }
+
+    try {
+      await MockoVoiceSession.updateSession(voiceSession.id, { overallScore, categoryScores, pointersGood, pointersWork, transcript });
+    } catch (err) { console.error(err); }
+
+    voiceSession.finalOverallScore = overallScore;
+    voiceSession.toughestId = toughestId;
+  }
+
+  async function finishVoiceSession() {
+    voiceSession.phase = 'done';
+    document.getElementById('voice-orb').className = 'voice-orb';
+    document.getElementById('voice-caption').textContent = "That's a wrap — nice work.";
+    document.getElementById('voice-state').textContent = 'Session complete';
+    document.getElementById('mic-btn').style.display = 'none';
+    document.getElementById('voice-text-fallback').style.display = 'none';
+    clearInterval(voiceTimerInterval);
+    await computeAndPersistAggregate();
+    document.getElementById('voice-retry-row').style.display = 'flex';
+  }
+
+  function goToVoiceResults() {
+    renderVoiceResults();
+    goTo('voice-results');
+  }
+
+  function renderVoiceResults() {
+    document.getElementById('voice-result-score').textContent = Math.round(voiceSession ? voiceSession.finalOverallScore : 0);
+    const container = document.getElementById('voice-result-questions');
+    if (!voiceSession || !voiceSession.results.length) {
+      container.innerHTML = '';
+      return;
+    }
+    container.innerHTML = voiceSession.results
+      .slice()
+      .sort((a, b) => a.question_index - b.question_index)
+      .map(r => {
+        const isToughest = voiceSession.toughestId && r.id === voiceSession.toughestId;
+        const score = r.category_scores
+          ? Object.values(r.category_scores).reduce((a, c) => a + c.score, 0)
+          : (r.mini_score || 0);
+        return `<div class="qresult-card${isToughest ? ' toughest' : ''}">
+          <div class="qresult-top">
+            <span class="difficulty-tag" data-difficulty="${r.difficulty}">${r.difficulty}</span>
+            ${isToughest ? '<span class="toughest-tag">Toughest question this round</span>' : ''}
+            <span class="qresult-score">${Math.round(score)}/100</span>
+          </div>
+          <div class="qresult-question">${r.question_text}</div>
+          ${r.note ? `<div class="qresult-note">${r.note}</div>` : ''}
+          <div class="qresult-transcript">${r.transcript}</div>
+          ${isToughest ? '<div class="btn-row" style="margin-top:12px;"><button class="btn btn-secondary" onclick="retryToughestQuestion()">↻ Retry this question</button></div>' : ''}
+        </div>`;
+      }).join('');
+  }
+
+  function retryToughestQuestion() {
+    if (!voiceSession || !voiceSession.toughestId) return;
+    const idx = voiceSession.results.findIndex(r => r.id === voiceSession.toughestId);
+    if (idx === -1) return;
+
+    voiceSession.retryOldRowId = voiceSession.toughestId;
+    voiceSession.isRetry = true;
+    voiceSession.currentIndex = voiceSession.results[idx].question_index;
+    voiceSession.phase = 'idle';
+    voiceSession.mainTranscript = null;
+    voiceSession.followUpTranscript = null;
+    voiceSession.followUpCountThisQuestion = 0;
+
+    goTo('voice');
+    resetVoiceUI();
+    document.getElementById('voice-role').textContent = 'Finance — ' + (voiceSession.format || 'Behavioral');
+    document.getElementById('voice-caption').textContent = "Tap the mic to retry this question.";
   }
 
   // Drills
@@ -2160,6 +2813,7 @@
     document.getElementById('drill-instructions').textContent = meta.instructions;
     document.getElementById('drill-result-percentile').style.display = 'none';
     document.getElementById('drill-result-leaderboard-btn').style.display = 'none';
+    document.getElementById('drill-result-mini-lb').style.display = 'none';
     const actionBtn = document.getElementById('drill-action-btn');
     actionBtn.style.display = 'inline-block';
 
@@ -2183,7 +2837,9 @@
     document.getElementById('drill-result-note').textContent = resultNote;
     const pctEl = document.getElementById('drill-result-percentile');
     const lbBtn = document.getElementById('drill-result-leaderboard-btn');
+    const miniLb = document.getElementById('drill-result-mini-lb');
     pctEl.style.display = 'none';
+    miniLb.style.display = 'none';
     lbBtn.style.display = 'inline-block';
     goTo('drill-result');
     const user = window.MockoAuth && window.MockoAuth.getUser();
@@ -2197,10 +2853,54 @@
       const pct = await MockoDrills.fetchPercentile({ drillKey, score });
       pctEl.textContent = `You beat ${pct}% of players on this drill.`;
       pctEl.style.display = 'block';
+      document.querySelectorAll('#result-lb-period-row .pill-btn').forEach(b => b.classList.toggle('selected', b.dataset.period === 'daily'));
+      miniLb.style.display = 'block';
+      await renderMiniLeaderboard(drillKey, 'daily');
     } catch (err) {
       console.error(err);
     }
   }
+
+  async function renderMiniLeaderboard(drillKey, period) {
+    const listEl = document.getElementById('drill-result-mini-lb-list');
+    listEl.innerHTML = '<div class="leaderboard-empty">Loading…</div>';
+    try {
+      const [top3, myRank] = await Promise.all([
+        MockoDrills.fetchLeaderboard({ drillKey, period, limit: 3 }),
+        MockoDrills.fetchRank({ drillKey, period }),
+      ]);
+      let rowsHtml = top3.map(r => {
+        const username = (r.profile && r.profile.username) || 'Unknown';
+        const avatarUrl = r.profile && r.profile.avatar_url;
+        const avatar = avatarUrl ? `<img src="${avatarUrl}" alt="">` : username.charAt(0).toUpperCase();
+        return `<div class="leaderboard-row" onclick="goToProfileById('${r.user_id}')">
+          <div class="leaderboard-rank">${r.rank}</div>
+          <div class="leaderboard-avatar">${avatar}</div>
+          <div class="leaderboard-name">${username}</div>
+          <div class="leaderboard-score">${r.score}</div>
+        </div>`;
+      }).join('');
+      if (myRank != null && myRank > 3) {
+        const myName = (currentUserProfile && currentUserProfile.username) || 'You';
+        rowsHtml += `<div class="leaderboard-row" style="opacity:0.85; cursor:default;">
+          <div class="leaderboard-rank">${myRank}</div>
+          <div class="leaderboard-avatar">${myName.charAt(0).toUpperCase()}</div>
+          <div class="leaderboard-name">You</div>
+          <div class="leaderboard-score">—</div>
+        </div>`;
+      }
+      listEl.innerHTML = rowsHtml || '<div class="leaderboard-empty">No scores yet — be the first.</div>';
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '<div class="leaderboard-empty">Could not load the leaderboard.</div>';
+    }
+  }
+
+  document.querySelectorAll('#result-lb-period-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#result-lb-period-row .pill-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    renderMiniLeaderboard(currentDrill, el.dataset.period);
+  }));
 
   function goToLeaderboard(drillKey) {
     currentDrill = drillKey;

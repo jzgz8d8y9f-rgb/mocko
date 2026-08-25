@@ -434,3 +434,15 @@ entrypoint = "./functions/generate-questions/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/generate-questions/*.html" ]
+
+[functions.analyze-answer]
+enabled = true
+verify_jwt = false
+import_map = "./functions/analyze-answer/deno.json"
+entrypoint = "./functions/analyze-answer/index.ts"
+
+[functions.tailor-resume-questions]
+enabled = true
+verify_jwt = false
+import_map = "./functions/tailor-resume-questions/deno.json"
+entrypoint = "./functions/tailor-resume-questions/index.ts"

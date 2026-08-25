@@ -77,4 +77,4 @@ async function deleteResume(id, storagePath) {
   if (error) throw error;
 }
 
-window.MockoResume = { uploadResume, listResumes, getPrimaryResume, setPrimaryResume, deleteResume };
+window.MockoResume = { uploadResume, listResumes, getPrimaryResume, setPrimaryResume, deleteResume, extractPdfText };

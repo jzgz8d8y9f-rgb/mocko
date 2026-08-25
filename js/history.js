@@ -9,4 +9,15 @@ async function fetchSessions() {
   return data;
 }
 
-window.MockoHistory = { fetchSessions };
+async function fetchDrillStats() {
+  const user = window.MockoAuth.getUser();
+  if (!user) return [];
+  const { data, error } = await supabase
+    .from('drill_scores')
+    .select('drill_key, score, created_at')
+    .eq('user_id', user.id);
+  if (error) throw error;
+  return data;
+}
+
+window.MockoHistory = { fetchSessions, fetchDrillStats };
