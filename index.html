@@ -94,16 +94,17 @@
   [data-len="Quick"] .speed-mascot .forearm-l-pivot { transform-origin: 17px 19px; }
   [data-len="Quick"] .speed-mascot .forearm-r-pivot { transform-origin: 23px 19px; }
 
-  /* Frozen full-stride pose by default; eases into the full run on hover. */
+  /* Frozen pose at the apex of the stride -- both legs extended and
+     spread to their widest, scissor-like, rather than mid-recovery. */
   .speed-mascot .sprint-body { transform: rotate(-10deg); }
-  .speed-mascot .leg-l { transform: rotate(-50deg); }
-  .speed-mascot .leg-r { transform: rotate(55deg); }
+  .speed-mascot .leg-l { transform: rotate(-48deg); }
+  .speed-mascot .leg-r { transform: rotate(48deg); }
   .speed-mascot .shin-l-pivot { transform: rotate(0deg); }
-  .speed-mascot .shin-r-pivot { transform: rotate(100deg); }
-  .speed-mascot .arm-l { transform: rotate(60deg); }
-  .speed-mascot .arm-r { transform: rotate(-55deg); }
-  .speed-mascot .forearm-l-pivot { transform: rotate(95deg); }
-  .speed-mascot .forearm-r-pivot { transform: rotate(-10deg); }
+  .speed-mascot .shin-r-pivot { transform: rotate(10deg); }
+  .speed-mascot .arm-l { transform: rotate(48deg); }
+  .speed-mascot .arm-r { transform: rotate(-48deg); }
+  .speed-mascot .forearm-l-pivot { transform: rotate(15deg); }
+  .speed-mascot .forearm-r-pivot { transform: rotate(15deg); }
   .speed-mascot .belt { stroke: var(--text-muted); stroke-width: 1.1; stroke-dasharray: 2 3; opacity: 0.6; }
 
   [data-len="Quick"]:hover .speed-mascot .leg-l { animation: sprint-leg-a .55s ease-in-out infinite; }
