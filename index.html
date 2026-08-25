@@ -173,6 +173,28 @@
   .count-estimate { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
   .pill-btn:hover:not(.selected) { border-color: var(--text-muted); color: var(--text); }
 
+  .filter-dropdowns { display: flex; gap: 10px; margin-bottom: 20px; }
+  .filter-dropdown { position: relative; }
+  .filter-dropdown-btn {
+    font-family: 'Inter'; font-size: 13px; font-weight: 600; padding: 10px 16px; border-radius: 100px;
+    border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer;
+    display: flex; align-items: center; gap: 8px; transition: border-color 0.15s;
+  }
+  .filter-dropdown-btn:hover { border-color: var(--text-muted); }
+  .filter-dropdown.open .filter-dropdown-btn { border-color: var(--good); }
+  .filter-dropdown-caret { font-size: 10px; color: var(--text-muted); }
+  .filter-dropdown-panel {
+    display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; min-width: 190px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .filter-dropdown.open .filter-dropdown-panel { display: block; }
+  .filter-dropdown-panel label {
+    display: flex; align-items: center; gap: 9px; font-size: 13.5px; padding: 8px 8px; border-radius: 6px; cursor: pointer;
+  }
+  .filter-dropdown-panel label:hover { background: var(--surface-2); }
+  .filter-dropdown-panel input[type="checkbox"] { accent-color: var(--good); width: 15px; height: 15px; cursor: pointer; }
+
   .btn { font-family: 'Inter'; font-size: 14px; font-weight: 600; padding: 12px 22px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; }
   .btn-primary { background: var(--cue); color: var(--bg); }
   .btn-primary:hover { background: var(--cue-dim); }
@@ -956,21 +978,31 @@
       <p>Short, focused reps on one skill at a time — not a full interview, just the muscle.</p>
     </div>
 
-    <div class="pill-row" id="drill-type-row" style="margin-bottom:10px;">
-      <button class="pill-btn selected" data-type="all">All Types</button>
-      <button class="pill-btn" data-type="structure">Structure</button>
-      <button class="pill-btn" data-type="communication">Communication</button>
-      <button class="pill-btn" data-type="quantitative">Quantitative</button>
-      <button class="pill-btn" data-type="risk">Risk/Probability</button>
-    </div>
-    <div class="pill-row" id="drill-industry-row" style="margin-bottom:20px;">
-      <button class="pill-btn selected" data-industry="all">All Industries</button>
-      <button class="pill-btn" data-industry="ib">IB</button>
-      <button class="pill-btn" data-industry="consulting">Consulting</button>
-      <button class="pill-btn" data-industry="tech">Tech</button>
-      <button class="pill-btn" data-industry="quant">Quant</button>
-      <button class="pill-btn" data-industry="pe">PE</button>
-      <button class="pill-btn" data-industry="general">General</button>
+    <div class="filter-dropdowns">
+      <div class="filter-dropdown" id="type-filter-dropdown">
+        <button class="filter-dropdown-btn" onclick="toggleFilterDropdown('type', event)">
+          <span id="type-filter-label">All Types</span> <span class="filter-dropdown-caret">▾</span>
+        </button>
+        <div class="filter-dropdown-panel" id="type-filter-panel">
+          <label><input type="checkbox" value="structure" onchange="applyDrillFilters()"> Structure</label>
+          <label><input type="checkbox" value="communication" onchange="applyDrillFilters()"> Communication</label>
+          <label><input type="checkbox" value="quantitative" onchange="applyDrillFilters()"> Quantitative</label>
+          <label><input type="checkbox" value="risk" onchange="applyDrillFilters()"> Risk/Probability</label>
+        </div>
+      </div>
+      <div class="filter-dropdown" id="industry-filter-dropdown">
+        <button class="filter-dropdown-btn" onclick="toggleFilterDropdown('industry', event)">
+          <span id="industry-filter-label">All Industries</span> <span class="filter-dropdown-caret">▾</span>
+        </button>
+        <div class="filter-dropdown-panel" id="industry-filter-panel">
+          <label><input type="checkbox" value="ib" onchange="applyDrillFilters()"> IB</label>
+          <label><input type="checkbox" value="consulting" onchange="applyDrillFilters()"> Consulting</label>
+          <label><input type="checkbox" value="tech" onchange="applyDrillFilters()"> Tech</label>
+          <label><input type="checkbox" value="quant" onchange="applyDrillFilters()"> Quant</label>
+          <label><input type="checkbox" value="pe" onchange="applyDrillFilters()"> PE</label>
+          <label><input type="checkbox" value="general" onchange="applyDrillFilters()"> General</label>
+        </div>
+      </div>
     </div>
 
     <div class="drill-grid">
@@ -2172,7 +2204,6 @@
   }
 
   function startDrill(key) {
-    if (!requireAuth(() => startDrill(key))) return;
     currentDrill = key;
     const meta = drillMeta[key];
     document.getElementById('drill-label').textContent = meta.label;
@@ -2219,14 +2250,19 @@
     const pctEl = document.getElementById('drill-result-percentile');
     const lbBtn = document.getElementById('drill-result-leaderboard-btn');
     pctEl.style.display = 'none';
-    lbBtn.style.display = 'none';
+    lbBtn.style.display = 'inline-block';
     goTo('drill-result');
+    const user = window.MockoAuth && window.MockoAuth.getUser();
+    if (!user) {
+      pctEl.textContent = 'Sign in to save this score and see your percentile.';
+      pctEl.style.display = 'block';
+      return;
+    }
     try {
       await MockoDrills.submitScore({ drillKey, score });
       const pct = await MockoDrills.fetchPercentile({ drillKey, score });
       pctEl.textContent = `You beat ${pct}% of players on this drill.`;
       pctEl.style.display = 'block';
-      lbBtn.style.display = 'inline-block';
     } catch (err) {
       console.error(err);
     }
@@ -2274,29 +2310,45 @@
     loadLeaderboard(currentDrill, el.dataset.period);
   }));
 
-  // --- Drills filter bar ---
+  // --- Drills filter bar (multi-select dropdowns) ---
+  const TYPE_LABELS = { structure: 'Structure', communication: 'Communication', quantitative: 'Quantitative', risk: 'Risk/Probability' };
+  const INDUSTRY_LABELS = { ib: 'IB', consulting: 'Consulting', tech: 'Tech', quant: 'Quant', pe: 'PE', general: 'General' };
+
+  function toggleFilterDropdown(which, event) {
+    event.stopPropagation();
+    const target = document.getElementById(which + '-filter-dropdown');
+    const isOpen = target.classList.contains('open');
+    document.querySelectorAll('.filter-dropdown.open').forEach(d => d.classList.remove('open'));
+    if (!isOpen) target.classList.add('open');
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.filter-dropdown')) {
+      document.querySelectorAll('.filter-dropdown.open').forEach(d => d.classList.remove('open'));
+    }
+  });
+
+  function getCheckedValues(panelId) {
+    return Array.from(document.querySelectorAll(`#${panelId} input[type="checkbox"]:checked`)).map(cb => cb.value);
+  }
+
   function applyDrillFilters() {
-    const type = document.querySelector('#drill-type-row .pill-btn.selected').dataset.type;
-    const industry = document.querySelector('#drill-industry-row .pill-btn.selected').dataset.industry;
+    const types = getCheckedValues('type-filter-panel');
+    const industries = getCheckedValues('industry-filter-panel');
+
+    document.getElementById('type-filter-label').textContent = types.length
+      ? (types.length === 1 ? TYPE_LABELS[types[0]] : `${types.length} Types`) : 'All Types';
+    document.getElementById('industry-filter-label').textContent = industries.length
+      ? (industries.length === 1 ? INDUSTRY_LABELS[industries[0]] : `${industries.length} Industries`) : 'All Industries';
+
     document.querySelectorAll('.drill-card[data-type]').forEach(card => {
       const cardType = card.dataset.type;
       const cardIndustries = (card.dataset.industries || '').split(',');
-      const typeOk = type === 'all' || cardType === type;
-      const industryOk = industry === 'all' || cardIndustries.includes(industry);
+      const typeOk = types.length === 0 || types.includes(cardType);
+      const industryOk = industries.length === 0 || cardIndustries.some(i => industries.includes(i));
       card.style.display = (typeOk && industryOk) ? '' : 'none';
     });
   }
-
-  document.querySelectorAll('#drill-type-row .pill-btn').forEach(el => el.addEventListener('click', () => {
-    document.querySelectorAll('#drill-type-row .pill-btn').forEach(b => b.classList.remove('selected'));
-    el.classList.add('selected');
-    applyDrillFilters();
-  }));
-  document.querySelectorAll('#drill-industry-row .pill-btn').forEach(el => el.addEventListener('click', () => {
-    document.querySelectorAll('#drill-industry-row .pill-btn').forEach(b => b.classList.remove('selected'));
-    el.classList.add('selected');
-    applyDrillFilters();
-  }));
 
   // --- STAR Builder ---
   function scoreStarBuilder() {
