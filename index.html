@@ -380,9 +380,25 @@
   .auth-field label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
   .auth-field input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Inter'; font-size: 14px; }
   .auth-field input:focus { outline: none; border-color: var(--good); }
+  .auth-field input.field-invalid { border-color: var(--record); }
   .auth-error { color: var(--record); font-size: 13px; margin-bottom: 14px; min-height: 18px; }
   .auth-switch { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 18px; }
   .auth-switch a { color: var(--good); cursor: pointer; text-decoration: underline; }
+
+  .oauth-row { display: flex; gap: 10px; }
+  .oauth-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; height: 46px;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .oauth-btn:hover { border-color: var(--text-muted); }
+  .oauth-btn svg { display: block; }
+
+  .pw-strength { margin-top: 8px; display: none; }
+  .pw-strength.active { display: block; }
+  .pw-strength-track { display: flex; gap: 4px; height: 4px; margin-bottom: 6px; }
+  .pw-strength-seg { flex: 1; border-radius: 2px; background: var(--line); transition: background-color 0.15s; }
+  .pw-strength-label { font-size: 11.5px; color: var(--text-muted); }
+  .pw-strength-label b { font-weight: 700; }
 </style>
 </head>
 <body>
@@ -443,9 +459,21 @@
       <p id="auth-sub">Sign in to record a session and save your progress.</p>
     </div>
     <div class="auth-panel">
-      <div class="btn-row" style="flex-direction:column; gap:10px; margin-bottom:20px;">
-        <button class="btn btn-secondary" style="width:100%" onclick="oauthSignIn('google')">Continue with Google</button>
-        <button class="btn btn-secondary" style="width:100%" onclick="oauthSignIn('linkedin')">Continue with LinkedIn</button>
+      <div class="oauth-row" style="margin-bottom:20px;">
+        <button class="oauth-btn" onclick="oauthSignIn('google')" aria-label="Continue with Google" title="Continue with Google">
+          <svg width="20" height="20" viewBox="0 0 18 18">
+            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+            <path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/>
+            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+          </svg>
+        </button>
+        <button class="oauth-btn" onclick="oauthSignIn('linkedin')" aria-label="Continue with LinkedIn" title="Continue with LinkedIn">
+          <svg width="20" height="20" viewBox="0 0 18 18">
+            <rect width="18" height="18" rx="3" fill="#0A66C2"/>
+            <path fill="#fff" d="M5.68 6.87H3.32v7.6h2.36v-7.6zM4.5 5.83c.8 0 1.3-.53 1.3-1.2-.01-.68-.5-1.2-1.29-1.2-.78 0-1.3.52-1.3 1.2 0 .67.5 1.2 1.28 1.2h.01zM6.79 14.47h2.36v-4.24c0-.23.02-.45.08-.61.19-.45.6-.93 1.31-.93.92 0 1.29.7 1.29 1.73v4.05h2.36v-4.34c0-2.18-1.16-3.2-2.72-3.2-1.25 0-1.8.7-2.11 1.19h.02v-1.02H6.79c.03.66 0 7.37 0 7.37z"/>
+          </svg>
+        </button>
       </div>
       <div class="divider" style="display:flex; align-items:center; gap:10px; background:none; height:auto; margin-bottom:20px;">
         <div style="flex:1; height:1px; background:var(--line);"></div>
@@ -458,7 +486,19 @@
       </div>
       <div class="auth-field">
         <label>Password</label>
-        <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••">
+        <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••" oninput="onAuthPasswordInput()">
+        <div class="pw-strength" id="pw-strength">
+          <div class="pw-strength-track">
+            <div class="pw-strength-seg" id="pw-seg-0"></div>
+            <div class="pw-strength-seg" id="pw-seg-1"></div>
+            <div class="pw-strength-seg" id="pw-seg-2"></div>
+          </div>
+          <div class="pw-strength-label" id="pw-strength-label"></div>
+        </div>
+      </div>
+      <div class="auth-field" id="auth-confirm-field" style="display:none;">
+        <label>Confirm Password</label>
+        <input type="password" id="auth-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onAuthConfirmInput()">
       </div>
       <div class="auth-error" id="auth-error"></div>
       <div class="btn-row">
@@ -1119,6 +1159,61 @@
       ? `Already have an account? <a onclick="setAuthMode('signin')">Sign in</a>`
       : `New here? <a onclick="setAuthMode('signup')">Create an account</a>`;
     document.getElementById('auth-error').textContent = '';
+    document.getElementById('auth-confirm-field').style.display = isSignup ? '' : 'none';
+    document.getElementById('pw-strength').classList.remove('active');
+    const confirmInput = document.getElementById('auth-password-confirm');
+    confirmInput.value = '';
+    confirmInput.classList.remove('field-invalid');
+    document.getElementById('auth-password').classList.remove('field-invalid');
+  }
+
+  function scorePasswordStrength(pw) {
+    if (!pw) return 0;
+    let classes = 0;
+    if (/[a-z]/.test(pw)) classes++;
+    if (/[A-Z]/.test(pw)) classes++;
+    if (/[0-9]/.test(pw)) classes++;
+    if (/[^A-Za-z0-9]/.test(pw)) classes++;
+    if (pw.length >= 10 && classes >= 3) return 3;
+    if (pw.length >= 8 && classes >= 2) return 3;
+    if (pw.length >= 6 && classes >= 2) return 2;
+    if (pw.length >= 6) return 2;
+    return 1;
+  }
+
+  const PW_STRENGTH_TIERS = {
+    1: { label: 'Weak', color: 'var(--record)' },
+    2: { label: 'Medium', color: 'var(--warn)' },
+    3: { label: 'Strong', color: 'var(--good)' },
+  };
+
+  function onAuthPasswordInput() {
+    const isSignup = (document.getElementById('auth-submit-btn').dataset.mode || 'signin') === 'signup';
+    const meter = document.getElementById('pw-strength');
+    const pw = document.getElementById('auth-password').value;
+    if (!isSignup || !pw) {
+      meter.classList.remove('active');
+    } else {
+      meter.classList.add('active');
+      const score = scorePasswordStrength(pw);
+      const tier = PW_STRENGTH_TIERS[score] || { label: '', color: 'var(--line)' };
+      for (let i = 0; i < 3; i++) {
+        document.getElementById('pw-seg-' + i).style.background = i < score ? tier.color : 'var(--line)';
+      }
+      document.getElementById('pw-strength-label').innerHTML = pw.length
+        ? `Password strength: <b style="color:${tier.color}">${tier.label}</b>` : '';
+    }
+    onAuthConfirmInput();
+  }
+
+  function onAuthConfirmInput() {
+    const confirmInput = document.getElementById('auth-password-confirm');
+    const password = document.getElementById('auth-password').value;
+    if (!confirmInput.value) {
+      confirmInput.classList.remove('field-invalid');
+      return;
+    }
+    confirmInput.classList.toggle('field-invalid', confirmInput.value !== password);
   }
 
   async function oauthSignIn(provider) {
@@ -1138,6 +1233,14 @@
     const password = document.getElementById('auth-password').value;
     const errorEl = document.getElementById('auth-error');
     errorEl.textContent = '';
+    if (mode === 'signup') {
+      const confirmPassword = document.getElementById('auth-password-confirm').value;
+      if (password !== confirmPassword) {
+        document.getElementById('auth-password-confirm').classList.add('field-invalid');
+        errorEl.textContent = 'Passwords do not match.';
+        return;
+      }
+    }
     try {
       if (mode === 'signup') {
         await MockoAuth.signUp(email, password);
