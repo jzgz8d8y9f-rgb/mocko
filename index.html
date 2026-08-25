@@ -18,6 +18,10 @@
     --text: #E8EAED;
     --text-muted: #8A93A3;
     --line: #2A2F3A;
+    --tag-structure: #7C9EF2;
+    --tag-communication: #C77DE0;
+    --tag-quantitative: #45B98C;
+    --tag-risk: #E8814A;
   }
 
   :root[data-theme="light"] {
@@ -32,6 +36,10 @@
     --text: #1A1D23;
     --text-muted: #6B7280;
     --line: #E2DFD8;
+    --tag-structure: #3E63C9;
+    --tag-communication: #9A4CB8;
+    --tag-quantitative: #23886A;
+    --tag-risk: #BD5C25;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -317,7 +325,25 @@
   .drill-badge.live { background: rgba(63,167,150,0.18); color: var(--good); }
   .drill-badge.soon { background: rgba(138,147,163,0.15); color: var(--text-muted); }
   .drill-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-  .drill-card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+  .drill-card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
+  .drill-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .drill-tag { font-family: 'IBM Plex Mono'; font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
+  .drill-tag.tag-structure { background: rgba(124,158,242,0.16); color: var(--tag-structure); }
+  .drill-tag.tag-communication { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
+  .drill-tag.tag-quantitative { background: rgba(69,185,140,0.16); color: var(--tag-quantitative); }
+  .drill-tag.tag-risk { background: rgba(232,129,74,0.16); color: var(--tag-risk); }
+  .drill-tag.tag-industry { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--line); }
+
+  .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
+  .leaderboard-row { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; cursor: pointer; transition: border-color 0.15s; }
+  .leaderboard-row:hover { border-color: var(--text-muted); }
+  .leaderboard-rank { font-family: 'Barlow Condensed'; font-size: 20px; font-weight: 800; color: var(--text-muted); width: 28px; text-align: center; flex-shrink: 0; }
+  .leaderboard-row:nth-child(1) .leaderboard-rank { color: var(--warn); }
+  .leaderboard-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--text-muted); overflow: hidden; flex-shrink: 0; }
+  .leaderboard-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .leaderboard-name { flex: 1; font-size: 14px; font-weight: 600; }
+  .leaderboard-score { font-family: 'IBM Plex Mono'; font-size: 14px; font-weight: 600; color: var(--good); }
+  .leaderboard-empty { color: var(--text-muted); font-size: 13.5px; text-align: center; padding: 30px 0; }
 
   .drill-session { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 36px; text-align: center; }
   .drill-session-label { font-size: 12px; color: var(--good); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
@@ -349,6 +375,14 @@
   .math-input { width: 180px; text-align: center; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'IBM Plex Mono'; font-size: 20px; }
   .math-input:focus { outline: none; border-color: var(--good); }
   .math-progress { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+
+  .risk-balloon { width: 90px; height: 110px; border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%; margin: 10px auto 4px; transition: width 0.12s ease, height 0.12s ease, background-color 0.3s; position: relative; }
+  .risk-balloon::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid inherit; }
+  .risk-balloon.green { background: var(--good); }
+  .risk-balloon.yellow { background: var(--warn); }
+  .risk-balloon.red { background: var(--record); }
+  .risk-balloon.popped { background: var(--surface-2) !important; opacity: 0.4; }
+  .risk-live { font-family: 'Barlow Condensed'; font-size: 40px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
 
   .login-prompt { display: flex; align-items: center; gap: 10px; }
   .login-prompt-text { font-size: 12px; color: var(--text-muted); display: none; }
@@ -530,7 +564,7 @@
       </div>
       <p id="profile-view-bio" style="font-size:13.5px; color:var(--text-muted); line-height:1.5; margin-bottom:18px;"></p>
       <div id="profile-view-links" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;"></div>
-      <div class="btn-row" style="justify-content:flex-end;">
+      <div class="btn-row" id="profile-view-actions" style="justify-content:flex-end;">
         <button class="btn btn-secondary" onclick="enterProfileEditMode()">Edit Profile</button>
       </div>
     </div>
@@ -571,7 +605,7 @@
     </div>
 
     <!-- RESUMES -->
-    <div class="auth-panel" style="max-width:460px; margin-top:16px;">
+    <div class="auth-panel" id="profile-resumes-section" style="max-width:460px; margin-top:16px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
         <div style="font-size:15px; font-weight:700;">Resumes</div>
         <label class="btn btn-secondary" style="cursor:pointer; font-size:13px; padding:8px 14px;">
@@ -922,6 +956,23 @@
       <p>Short, focused reps on one skill at a time — not a full interview, just the muscle.</p>
     </div>
 
+    <div class="pill-row" id="drill-type-row" style="margin-bottom:10px;">
+      <button class="pill-btn selected" data-type="all">All Types</button>
+      <button class="pill-btn" data-type="structure">Structure</button>
+      <button class="pill-btn" data-type="communication">Communication</button>
+      <button class="pill-btn" data-type="quantitative">Quantitative</button>
+      <button class="pill-btn" data-type="risk">Risk/Probability</button>
+    </div>
+    <div class="pill-row" id="drill-industry-row" style="margin-bottom:20px;">
+      <button class="pill-btn selected" data-industry="all">All Industries</button>
+      <button class="pill-btn" data-industry="ib">IB</button>
+      <button class="pill-btn" data-industry="consulting">Consulting</button>
+      <button class="pill-btn" data-industry="tech">Tech</button>
+      <button class="pill-btn" data-industry="quant">Quant</button>
+      <button class="pill-btn" data-industry="pe">PE</button>
+      <button class="pill-btn" data-industry="general">General</button>
+    </div>
+
     <div class="drill-grid">
       <div class="drill-card" onclick="startDrill('star')">
         <div class="drill-top"><span class="drill-icon">★</span><span class="drill-badge live">Live</span></div>
@@ -937,6 +988,30 @@
         <div class="drill-top"><span class="drill-icon">#</span><span class="drill-badge live">Live</span></div>
         <h4>Mental Math Sprint</h4>
         <p>Type the answer to quick arithmetic and percentage problems — the kind that show up cold in finance screens.</p>
+      </div>
+      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting" onclick="startDrill('arithmetic')">
+        <div class="drill-top"><span class="drill-icon">+</span><span class="drill-badge live">Live</span></div>
+        <h4>Arithmetic</h4>
+        <p>60 seconds, addition, subtraction, multiplication, division — answer as many as you can before time runs out.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
+      </div>
+      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant" onclick="startDrill('arithmetic_hard')">
+        <div class="drill-top"><span class="drill-icon">±</span><span class="drill-badge live">Live</span></div>
+        <h4>Arithmetic Hard</h4>
+        <p>Same four operations, uglier numbers and multi-step expressions. Still 60 seconds — see how far speed holds up.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
+      </div>
+      <div class="drill-card" data-type="risk" data-industries="ib,pe,quant" onclick="startDrill('risk')">
+        <div class="drill-top"><span class="drill-icon">◉</span><span class="drill-badge live">Live</span></div>
+        <h4>Risk</h4>
+        <p>Pump the balloon for +1 point a pop, or collect and bank your earnings. Pop it and you lose the round — how far do you push it?</p>
+        <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
+      </div>
+      <div class="drill-card" data-type="quantitative" data-industries="quant,tech" onclick="startDrill('sequence')">
+        <div class="drill-top"><span class="drill-icon">…</span><span class="drill-badge live">Live</span></div>
+        <h4>Sequence</h4>
+        <p>A pattern of numbers appears — type the next one in the sequence before the clock runs out.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Quant</span><span class="drill-tag tag-industry">Tech</span></div>
       </div>
       <div class="drill-card soon">
         <div class="drill-top"><span class="drill-icon">$</span><span class="drill-badge soon">Soon</span></div>
@@ -1001,6 +1076,26 @@
         <div class="math-progress mono" id="math-progress">Question 1 of 6</div>
       </div>
 
+      <!-- Arithmetic / Arithmetic Hard / Sequence (shared 60s sprint panel) -->
+      <div id="drill-sprint-panel" style="display:none; margin-bottom:24px;">
+        <div class="drill-timer mono" id="sprint-timer">00:60</div>
+        <div class="math-question" id="sprint-question">—</div>
+        <input type="text" inputmode="numeric" id="sprint-input" class="math-input" placeholder="Your answer" autocomplete="off">
+        <div class="math-progress mono" id="sprint-progress">Correct: 0</div>
+      </div>
+
+      <!-- Risk -->
+      <div id="drill-risk-panel" style="display:none; margin-bottom:24px;">
+        <div class="math-progress mono" id="risk-progress">Balloon 1 of 8</div>
+        <div class="risk-balloon" id="risk-balloon"></div>
+        <div class="risk-live" id="risk-live">0</div>
+        <div class="math-progress mono" id="risk-banked">Banked: 0</div>
+        <div class="btn-row" id="risk-actions" style="display:none; margin-top:18px;">
+          <button class="btn btn-record" id="risk-pump-btn" onclick="riskPump()">Pump (+1)</button>
+          <button class="btn btn-secondary" id="risk-collect-btn" onclick="riskCollect()">Collect</button>
+        </div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-primary" id="drill-action-btn" onclick="handleDrillAction()">Start →</button>
       </div>
@@ -1015,11 +1110,26 @@
       <div class="drill-result-num" id="drill-result-num">18s</div>
       <div class="drill-result-label" id="drill-result-label">Longest Filler-Free Streak</div>
       <p class="drill-session-instructions" id="drill-result-note">Solid — your previous best was 12s. Try slowing your pace slightly on transitions; that's usually where fillers creep in.</p>
+      <p class="drill-session-instructions" id="drill-result-percentile" style="display:none;"></p>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="startDrill(currentDrill)">↻ Retry drill</button>
+        <button class="btn btn-secondary" id="drill-result-leaderboard-btn" onclick="goToLeaderboard(currentDrill)" style="display:none;">🏆 Leaderboard</button>
         <button class="btn btn-primary" onclick="goTo('drills')">Done →</button>
       </div>
     </div>
+  </div>
+
+  <!-- DRILL LEADERBOARD -->
+  <div class="screen" id="screen-drill-leaderboard">
+    <button class="back-btn" onclick="goTo('drill-result')">← Back</button>
+    <div class="hero">
+      <h1 class="display" id="leaderboard-drill-title">Leaderboard</h1>
+    </div>
+    <div class="pill-row" id="leaderboard-period-row" style="margin-bottom:20px;">
+      <button class="pill-btn selected" data-period="daily">Today</button>
+      <button class="pill-btn" data-period="alltime">All-Time</button>
+    </div>
+    <div class="leaderboard-list" id="leaderboard-list"></div>
   </div>
 
 </div>
@@ -1030,6 +1140,7 @@
 <script type="module" src="js/profile.js"></script>
 <script type="module" src="js/questions.js"></script>
 <script type="module" src="js/resume.js"></script>
+<script type="module" src="js/drills.js"></script>
 <script type="module" src="js/auth.js"></script>
 <script>
   const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null };
@@ -1751,13 +1862,28 @@
     exitProfileEditMode();
     try {
       currentProfile = await MockoProfile.getProfile();
-      renderProfileView(currentProfile);
+      renderProfileView(currentProfile, /*readOnly*/ false);
       populateProfileEditForm(currentProfile);
     } catch (err) {
       console.error(err);
       errorEl.textContent = 'Could not load profile.';
     }
     loadResumes();
+  }
+
+  async function goToProfileById(userId) {
+    const me = MockoAuth.getUser();
+    if (me && userId === me.id) { goToProfile(); return; }
+    closeAccountMenu();
+    goTo('profile');
+    document.getElementById('profile-error').textContent = '';
+    try {
+      const profile = await MockoProfile.getProfileById(userId);
+      renderProfileView(profile, /*readOnly*/ true);
+    } catch (err) {
+      console.error(err);
+      document.getElementById('profile-error').textContent = 'Could not load profile.';
+    }
   }
 
   // --- Resumes ---
@@ -1831,15 +1957,17 @@
     }
   }
 
-  function renderProfileView(profile) {
+  function renderProfileView(profile, readOnly) {
     renderAvatarInto('profile-view-avatar', profile);
     document.getElementById('profile-view-username').textContent = profile.username;
     document.getElementById('profile-view-bio').textContent = profile.bio || '';
     document.getElementById('profile-view-bio').style.display = profile.bio ? 'block' : 'none';
 
-    const user = MockoAuth.getUser();
-    const joined = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const joined = new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     document.getElementById('profile-view-joined').textContent = `Joined ${joined}`;
+
+    document.getElementById('profile-view-actions').style.display = readOnly ? 'none' : 'flex';
+    document.getElementById('profile-resumes-section').style.display = readOnly ? 'none' : 'block';
 
     const links = profile.social_links || {};
     const linkMeta = [['twitter', 'Twitter / X'], ['linkedin', 'LinkedIn'], ['instagram', 'Instagram']];
@@ -2029,12 +2157,16 @@
   const drillMeta = {
     star: { label: 'STAR Builder', title: 'Build Your Answer', instructions: 'Type your answer into each box below. When you\'re done, submit to see how complete your structure is.' },
     filler: { label: 'Spot the Filler', title: 'Catch the Weak Phrases', instructions: 'Click every filler word or weak phrase in the passage below before the clock runs out.' },
-    math: { label: 'Mental Math Sprint', title: 'Quick-Fire Arithmetic', instructions: 'Type your answer and press Enter to submit. Six questions, no calculator.' }
+    math: { label: 'Mental Math Sprint', title: 'Quick-Fire Arithmetic', instructions: 'Type your answer and press Enter to submit. Six questions, no calculator.' },
+    arithmetic: { label: 'Arithmetic', title: 'Answer as Many as You Can', instructions: 'Addition, subtraction, multiplication, division. Type your answer and press Enter. You have 60 seconds.' },
+    arithmetic_hard: { label: 'Arithmetic Hard', title: 'Answer as Many as You Can', instructions: 'Same four operations, uglier numbers and multi-step expressions. Type your answer and press Enter. You have 60 seconds.' },
+    sequence: { label: 'Sequence', title: 'Complete the Pattern', instructions: 'A sequence of numbers appears — type the next number to fit the pattern and press Enter. You have 60 seconds.' },
+    risk: { label: 'Risk', title: 'Pump or Collect', instructions: 'Each pump earns +1 point but risks popping the balloon. Collect to bank what you\'ve earned this round, or keep pumping. 8 balloons per session.' }
   };
   let currentDrill = 'star';
 
   function showPanel(id) {
-    ['drill-star-fields','drill-filler-panel','drill-math-panel'].forEach(p => {
+    ['drill-star-fields','drill-filler-panel','drill-math-panel','drill-sprint-panel','drill-risk-panel'].forEach(p => {
       document.getElementById(p).style.display = (p === id) ? 'block' : 'none';
     });
   }
@@ -2046,7 +2178,10 @@
     document.getElementById('drill-label').textContent = meta.label;
     document.getElementById('drill-title').textContent = meta.title;
     document.getElementById('drill-instructions').textContent = meta.instructions;
+    document.getElementById('drill-result-percentile').style.display = 'none';
+    document.getElementById('drill-result-leaderboard-btn').style.display = 'none';
     const actionBtn = document.getElementById('drill-action-btn');
+    actionBtn.style.display = 'inline-block';
 
     if (key === 'star') {
       showPanel('drill-star-fields');
@@ -2063,9 +2198,105 @@
       setupMathDrill();
       actionBtn.textContent = 'Start →';
       actionBtn.onclick = startMathDrill;
+    } else if (key === 'arithmetic' || key === 'arithmetic_hard' || key === 'sequence') {
+      showPanel('drill-sprint-panel');
+      setupSprintDrill(key);
+      actionBtn.textContent = 'Start →';
+      actionBtn.onclick = startSprintDrill;
+    } else if (key === 'risk') {
+      showPanel('drill-risk-panel');
+      setupRiskDrill();
+      actionBtn.textContent = 'Start Session →';
+      actionBtn.onclick = startRiskDrill;
     }
     goTo('drill-session');
   }
+
+  async function finishDrillWithScore(drillKey, score, resultNum, resultLabel, resultNote) {
+    document.getElementById('drill-result-num').textContent = resultNum;
+    document.getElementById('drill-result-label').textContent = resultLabel;
+    document.getElementById('drill-result-note').textContent = resultNote;
+    const pctEl = document.getElementById('drill-result-percentile');
+    const lbBtn = document.getElementById('drill-result-leaderboard-btn');
+    pctEl.style.display = 'none';
+    lbBtn.style.display = 'none';
+    goTo('drill-result');
+    try {
+      await MockoDrills.submitScore({ drillKey, score });
+      const pct = await MockoDrills.fetchPercentile({ drillKey, score });
+      pctEl.textContent = `You beat ${pct}% of players on this drill.`;
+      pctEl.style.display = 'block';
+      lbBtn.style.display = 'inline-block';
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function goToLeaderboard(drillKey) {
+    currentDrill = drillKey;
+    document.getElementById('leaderboard-drill-title').textContent = (drillMeta[drillKey] || {}).label || 'Leaderboard';
+    document.querySelectorAll('#leaderboard-period-row .pill-btn').forEach(b => b.classList.toggle('selected', b.dataset.period === 'daily'));
+    goTo('drill-leaderboard');
+    loadLeaderboard(drillKey, 'daily');
+  }
+
+  async function loadLeaderboard(drillKey, period) {
+    const listEl = document.getElementById('leaderboard-list');
+    listEl.innerHTML = '<div class="leaderboard-empty">Loading…</div>';
+    try {
+      const rows = await MockoDrills.fetchLeaderboard({ drillKey, period });
+      if (!rows.length) {
+        listEl.innerHTML = '<div class="leaderboard-empty">No scores yet — be the first.</div>';
+        return;
+      }
+      listEl.innerHTML = rows.map(r => {
+        const username = (r.profile && r.profile.username) || 'Unknown';
+        const avatarUrl = r.profile && r.profile.avatar_url;
+        const avatar = avatarUrl
+          ? `<img src="${avatarUrl}" alt="">`
+          : username.charAt(0).toUpperCase();
+        return `<div class="leaderboard-row" onclick="goToProfileById('${r.user_id}')">
+          <div class="leaderboard-rank">${r.rank}</div>
+          <div class="leaderboard-avatar">${avatar}</div>
+          <div class="leaderboard-name">${username}</div>
+          <div class="leaderboard-score">${r.score}</div>
+        </div>`;
+      }).join('');
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '<div class="leaderboard-empty">Could not load the leaderboard.</div>';
+    }
+  }
+
+  document.querySelectorAll('#leaderboard-period-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#leaderboard-period-row .pill-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    loadLeaderboard(currentDrill, el.dataset.period);
+  }));
+
+  // --- Drills filter bar ---
+  function applyDrillFilters() {
+    const type = document.querySelector('#drill-type-row .pill-btn.selected').dataset.type;
+    const industry = document.querySelector('#drill-industry-row .pill-btn.selected').dataset.industry;
+    document.querySelectorAll('.drill-card[data-type]').forEach(card => {
+      const cardType = card.dataset.type;
+      const cardIndustries = (card.dataset.industries || '').split(',');
+      const typeOk = type === 'all' || cardType === type;
+      const industryOk = industry === 'all' || cardIndustries.includes(industry);
+      card.style.display = (typeOk && industryOk) ? '' : 'none';
+    });
+  }
+
+  document.querySelectorAll('#drill-type-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#drill-type-row .pill-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    applyDrillFilters();
+  }));
+  document.querySelectorAll('#drill-industry-row .pill-btn').forEach(el => el.addEventListener('click', () => {
+    document.querySelectorAll('#drill-industry-row .pill-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    applyDrillFilters();
+  }));
 
   // --- STAR Builder ---
   function scoreStarBuilder() {
@@ -2211,6 +2442,198 @@
       ? "Perfect round — solid speed too."
       : "Missed one or two — percentages tend to be the slower ones. Worth a few extra reps.";
     goTo('drill-result');
+  }
+
+  // --- Shared 60s Sprint Engine (Arithmetic / Arithmetic Hard / Sequence) ---
+  function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+  function generateArithmeticQuestion() {
+    const op = ['+','-','×','÷'][randInt(0,3)];
+    if (op === '+') {
+      const a = randInt(10,999), b = randInt(10,999);
+      return { q: `${a} + ${b}`, a: a + b };
+    } else if (op === '-') {
+      let a = randInt(10,999), b = randInt(10,999);
+      if (b > a) { const t = a; a = b; b = t; }
+      return { q: `${a} − ${b}`, a: a - b };
+    } else if (op === '×') {
+      const a = randInt(2,25), b = randInt(2,12);
+      return { q: `${a} × ${b}`, a: a * b };
+    } else {
+      const b = randInt(2,12), qn = randInt(2,50);
+      return { q: `${b*qn} ÷ ${b}`, a: qn };
+    }
+  }
+
+  function generateArithmeticHardQuestion() {
+    if (Math.random() < 0.5) {
+      if (Math.random() < 0.5) {
+        const a = randInt(12,99), b = randInt(12,99);
+        return { q: `${a} × ${b}`, a: a * b };
+      } else {
+        const b = randInt(3,19), qn = randInt(11,80);
+        return { q: `${b*qn} ÷ ${b}`, a: qn };
+      }
+    }
+    const template = randInt(0,2);
+    if (template === 0) {
+      const a = randInt(2,20), b = randInt(2,20), c = randInt(1,100);
+      return { q: `(${a} × ${b}) + ${c}`, a: a*b + c };
+    } else if (template === 1) {
+      const a = randInt(2,50), b = randInt(2,50), c = randInt(2,12);
+      return { q: `(${a} + ${b}) × ${c}`, a: (a+b) * c };
+    } else {
+      const a = randInt(2,20), b = randInt(2,20);
+      const c = randInt(1, Math.max(1, a*b));
+      return { q: `(${a} × ${b}) − ${c}`, a: a*b - c };
+    }
+  }
+
+  function generateSequenceQuestion() {
+    const kind = randInt(0,2);
+    if (kind === 0) {
+      const a = randInt(1,20);
+      let d = randInt(-9,9); if (d === 0) d = 1;
+      const terms = [0,1,2,3,4].map(n => a + n*d);
+      return { q: terms.join(', ') + ', ?', a: a + 5*d };
+    } else if (kind === 1) {
+      const a = randInt(1,5), r = [2,3][randInt(0,1)];
+      const terms = [0,1,2,3,4].map(n => a * Math.pow(r,n));
+      return { q: terms.join(', ') + ', ?', a: a * Math.pow(r,5) };
+    } else {
+      const a = randInt(0,5), b = randInt(1,5);
+      const f = n => a + b*n + n*(n-1);
+      const terms = [0,1,2,3,4].map(f);
+      return { q: terms.join(', ') + ', ?', a: f(5) };
+    }
+  }
+
+  const SPRINT_GENERATORS = { arithmetic: generateArithmeticQuestion, arithmetic_hard: generateArithmeticHardQuestion, sequence: generateSequenceQuestion };
+  let sprintKey, sprintSeconds, sprintInterval, sprintCorrect, sprintCurrent;
+
+  function setupSprintDrill(key) {
+    sprintKey = key;
+    sprintSeconds = 60;
+    sprintCorrect = 0;
+    clearInterval(sprintInterval);
+    document.getElementById('sprint-timer').textContent = '00:60';
+    document.getElementById('sprint-question').textContent = '—';
+    document.getElementById('sprint-progress').textContent = 'Correct: 0';
+    document.getElementById('sprint-input').value = '';
+    document.getElementById('sprint-input').onkeydown = null;
+  }
+
+  function startSprintDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    showSprintQuestion();
+    const input = document.getElementById('sprint-input');
+    input.focus();
+    input.onkeydown = (e) => { if (e.key === 'Enter') submitSprintAnswer(); };
+    sprintInterval = setInterval(() => {
+      sprintSeconds--;
+      document.getElementById('sprint-timer').textContent = '00:' + String(sprintSeconds).padStart(2,'0');
+      if (sprintSeconds <= 0) { clearInterval(sprintInterval); finishSprintDrill(); }
+    }, 1000);
+  }
+
+  function showSprintQuestion() {
+    sprintCurrent = SPRINT_GENERATORS[sprintKey]();
+    document.getElementById('sprint-question').textContent = sprintCurrent.q;
+    document.getElementById('sprint-input').value = '';
+  }
+
+  function submitSprintAnswer() {
+    const val = parseFloat(document.getElementById('sprint-input').value);
+    if (val === sprintCurrent.a) {
+      sprintCorrect++;
+      document.getElementById('sprint-progress').textContent = `Correct: ${sprintCorrect}`;
+    }
+    showSprintQuestion();
+  }
+
+  function finishSprintDrill() {
+    document.getElementById('sprint-input').onkeydown = null;
+    const label = drillMeta[sprintKey].label;
+    finishDrillWithScore(sprintKey, sprintCorrect, sprintCorrect, `${label} — Correct in 60s`,
+      sprintCorrect >= 15 ? "Fast round — that's a strong pace." : "Solid start — speed comes with reps.");
+  }
+
+  // --- Risk (balloon pump-or-collect) ---
+  const RISK_COLORS = [
+    { name: 'green', pop: 0.05 },
+    { name: 'yellow', pop: 0.12 },
+    { name: 'red', pop: 0.20 }
+  ];
+  const RISK_TOTAL_BALLOONS = 8;
+  let riskIndex, riskColor, riskLive, riskBanked, riskPopped;
+
+  function setupRiskDrill() {
+    riskIndex = 0; riskBanked = 0;
+    document.getElementById('risk-progress').textContent = `Balloon 1 of ${RISK_TOTAL_BALLOONS}`;
+    document.getElementById('risk-balloon').className = 'risk-balloon';
+    document.getElementById('risk-balloon').style.width = '';
+    document.getElementById('risk-balloon').style.height = '';
+    document.getElementById('risk-live').textContent = '0';
+    document.getElementById('risk-banked').textContent = 'Banked: 0';
+    document.getElementById('risk-actions').style.display = 'none';
+  }
+
+  function startRiskDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    document.getElementById('risk-actions').style.display = 'flex';
+    nextRiskBalloon();
+  }
+
+  function nextRiskBalloon() {
+    riskColor = RISK_COLORS[randInt(0, RISK_COLORS.length - 1)];
+    riskLive = 0;
+    riskPopped = false;
+    document.getElementById('risk-progress').textContent = `Balloon ${riskIndex + 1} of ${RISK_TOTAL_BALLOONS}`;
+    document.getElementById('risk-live').textContent = '0';
+    const balloonEl = document.getElementById('risk-balloon');
+    balloonEl.className = 'risk-balloon ' + riskColor.name;
+    balloonEl.style.width = '90px';
+    balloonEl.style.height = '110px';
+    document.getElementById('risk-pump-btn').disabled = false;
+    document.getElementById('risk-collect-btn').disabled = false;
+  }
+
+  function riskPump() {
+    if (riskPopped) return;
+    riskLive++;
+    document.getElementById('risk-live').textContent = riskLive;
+    const balloonEl = document.getElementById('risk-balloon');
+    balloonEl.style.width = (90 + riskLive * 4) + 'px';
+    balloonEl.style.height = (110 + riskLive * 4) + 'px';
+    if (Math.random() < riskColor.pop) {
+      riskPopped = true;
+      balloonEl.classList.add('popped');
+      document.getElementById('risk-pump-btn').disabled = true;
+      document.getElementById('risk-collect-btn').disabled = true;
+      setTimeout(advanceRiskBalloon, 700);
+    }
+  }
+
+  function riskCollect() {
+    if (riskPopped) return;
+    riskBanked += riskLive;
+    document.getElementById('risk-banked').textContent = 'Banked: ' + riskBanked;
+    advanceRiskBalloon();
+  }
+
+  function advanceRiskBalloon() {
+    riskIndex++;
+    if (riskIndex >= RISK_TOTAL_BALLOONS) {
+      finishRiskDrill();
+    } else {
+      nextRiskBalloon();
+    }
+  }
+
+  function finishRiskDrill() {
+    document.getElementById('risk-actions').style.display = 'none';
+    finishDrillWithScore('risk', riskBanked, riskBanked, 'Points Banked',
+      riskBanked >= 30 ? "Strong session — you found a good edge between greed and caution." : "Solid run — a bit more patience on the risky colors could push the total higher.");
   }
 </script>
 </body>

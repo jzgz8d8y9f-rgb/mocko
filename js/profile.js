@@ -45,4 +45,23 @@ async function uploadAvatar(file) {
   return data;
 }
 
-window.MockoProfile = { getProfile, updateProfile, uploadAvatar };
+async function getProfileById(userId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function getProfilesByIds(userIds) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('user_id, username, avatar_url')
+    .in('user_id', userIds);
+  if (error) throw error;
+  return data;
+}
+
+window.MockoProfile = { getProfile, updateProfile, uploadAvatar, getProfileById, getProfilesByIds };
