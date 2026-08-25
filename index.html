@@ -381,17 +381,6 @@
   .drill-result-num { font-family: 'Barlow Condensed'; font-size: 56px; font-weight: 800; color: var(--good); }
   .drill-result-label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 6px; margin-bottom: 24px; }
 
-  .star-field { margin-bottom: 16px; }
-  .star-field label { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
-  .star-field textarea { width: 100%; min-height: 60px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Inter'; font-size: 14px; resize: vertical; }
-  .star-field textarea:focus { outline: none; border-color: var(--good); }
-
-  .filler-passage { text-align: left; line-height: 2.1; font-size: 15px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
-  .filler-word { cursor: pointer; padding: 1px 3px; border-radius: 3px; }
-  .filler-word:hover { background: rgba(230,57,70,0.15); }
-  .filler-word.caught { background: var(--good); color: var(--bg); font-weight: 600; }
-  .filler-word.wrong { background: var(--record); color: white; }
-  .filler-score-live { margin-top: 14px; font-size: 12.5px; color: var(--text-muted); }
 
   .math-question { font-family: 'Barlow Condensed'; font-size: 44px; font-weight: 800; margin-bottom: 20px; }
   .math-input { width: 180px; text-align: center; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'IBM Plex Mono'; font-size: 20px; }
@@ -670,7 +659,7 @@
     <div class="theme-section">
       <details class="faq-item">
         <summary>What is Mocko?</summary>
-        <p>A practice tool for job interviews. Record mock answers and get an AI-scored breakdown, or run quick skill drills — filler words, mental math, and structuring a STAR answer.</p>
+        <p>A practice tool for job interviews. Record mock answers and get an AI-scored breakdown, or run quick skill drills — arithmetic, sequences, and risk-based decision making.</p>
       </details>
       <details class="faq-item">
         <summary>Is my recording stored?</summary>
@@ -1006,21 +995,6 @@
     </div>
 
     <div class="drill-grid">
-      <div class="drill-card" onclick="startDrill('star')">
-        <div class="drill-top"><span class="drill-icon">★</span><span class="drill-badge live">Live</span></div>
-        <h4>STAR Builder</h4>
-        <p>Type your answer into Situation, Task, Action, and Result boxes. Scored on completeness of each part.</p>
-      </div>
-      <div class="drill-card" onclick="startDrill('filler')">
-        <div class="drill-top"><span class="drill-icon">●</span><span class="drill-badge live">Live</span></div>
-        <h4>Spot the Filler</h4>
-        <p>A sample answer appears on screen — click every filler word or weak phrase before the clock runs out.</p>
-      </div>
-      <div class="drill-card" onclick="startDrill('math')">
-        <div class="drill-top"><span class="drill-icon">#</span><span class="drill-badge live">Live</span></div>
-        <h4>Mental Math Sprint</h4>
-        <p>Type the answer to quick arithmetic and percentage problems — the kind that show up cold in finance screens.</p>
-      </div>
       <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting" onclick="startDrill('arithmetic')">
         <div class="drill-top"><span class="drill-icon">+</span><span class="drill-badge live">Live</span></div>
         <h4>Arithmetic</h4>
@@ -1082,31 +1056,9 @@
   <div class="screen" id="screen-drill-session">
     <button class="back-btn" onclick="goTo('drills')">← Back to Drills</button>
     <div class="drill-session">
-      <div class="drill-session-label" id="drill-label">STAR Builder</div>
-      <h2 id="drill-title">Build Your Answer</h2>
+      <div class="drill-session-label" id="drill-label">Drill</div>
+      <h2 id="drill-title"></h2>
       <p class="drill-session-instructions" id="drill-instructions"></p>
-
-      <!-- STAR Builder -->
-      <div id="drill-star-fields" style="display:none; text-align:left; margin-bottom:24px;">
-        <div class="star-field"><label>Situation</label><textarea id="star-s" placeholder="What was the context?"></textarea></div>
-        <div class="star-field"><label>Task</label><textarea id="star-t" placeholder="What were you responsible for?"></textarea></div>
-        <div class="star-field"><label>Action</label><textarea id="star-a" placeholder="What did you actually do?"></textarea></div>
-        <div class="star-field"><label>Result</label><textarea id="star-r" placeholder="What happened as a result?"></textarea></div>
-      </div>
-
-      <!-- Spot the Filler -->
-      <div id="drill-filler-panel" style="display:none; margin-bottom:24px;">
-        <div class="drill-timer mono" id="filler-timer">00:20</div>
-        <p id="filler-text" class="filler-passage"></p>
-        <div class="filler-score-live mono" id="filler-live-score">Caught: 0 · False alarms: 0</div>
-      </div>
-
-      <!-- Mental Math -->
-      <div id="drill-math-panel" style="display:none; margin-bottom:24px;">
-        <div class="math-question" id="math-question">—</div>
-        <input type="number" id="math-input" class="math-input" placeholder="Your answer" autocomplete="off">
-        <div class="math-progress mono" id="math-progress">Question 1 of 6</div>
-      </div>
 
       <!-- Arithmetic / Arithmetic Hard / Sequence (shared 60s sprint panel) -->
       <div id="drill-sprint-panel" style="display:none; margin-bottom:24px;">
@@ -1140,8 +1092,8 @@
     <div class="drill-session">
       <div class="drill-session-label">Drill Complete</div>
       <div class="drill-result-num" id="drill-result-num">18s</div>
-      <div class="drill-result-label" id="drill-result-label">Longest Filler-Free Streak</div>
-      <p class="drill-session-instructions" id="drill-result-note">Solid — your previous best was 12s. Try slowing your pace slightly on transitions; that's usually where fillers creep in.</p>
+      <div class="drill-result-label" id="drill-result-label">Score</div>
+      <p class="drill-session-instructions" id="drill-result-note"></p>
       <p class="drill-session-instructions" id="drill-result-percentile" style="display:none;"></p>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="startDrill(currentDrill)">↻ Retry drill</button>
@@ -2187,18 +2139,15 @@
 
   // Drills
   const drillMeta = {
-    star: { label: 'STAR Builder', title: 'Build Your Answer', instructions: 'Type your answer into each box below. When you\'re done, submit to see how complete your structure is.' },
-    filler: { label: 'Spot the Filler', title: 'Catch the Weak Phrases', instructions: 'Click every filler word or weak phrase in the passage below before the clock runs out.' },
-    math: { label: 'Mental Math Sprint', title: 'Quick-Fire Arithmetic', instructions: 'Type your answer and press Enter to submit. Six questions, no calculator.' },
     arithmetic: { label: 'Arithmetic', title: 'Answer as Many as You Can', instructions: 'Addition, subtraction, multiplication, division. Type your answer and press Enter. You have 60 seconds.' },
     arithmetic_hard: { label: 'Arithmetic Hard', title: 'Answer as Many as You Can', instructions: 'Same four operations, uglier numbers and multi-step expressions. Type your answer and press Enter. You have 60 seconds.' },
     sequence: { label: 'Sequence', title: 'Complete the Pattern', instructions: 'A sequence of numbers appears — type the next number to fit the pattern and press Enter. You have 60 seconds.' },
     risk: { label: 'Risk', title: 'Pump or Collect', instructions: 'Each pump earns +1 point but risks popping the balloon. Collect to bank what you\'ve earned this round, or keep pumping. 8 balloons per session.' }
   };
-  let currentDrill = 'star';
+  let currentDrill = 'arithmetic';
 
   function showPanel(id) {
-    ['drill-star-fields','drill-filler-panel','drill-math-panel','drill-sprint-panel','drill-risk-panel'].forEach(p => {
+    ['drill-sprint-panel','drill-risk-panel'].forEach(p => {
       document.getElementById(p).style.display = (p === id) ? 'block' : 'none';
     });
   }
@@ -2214,22 +2163,7 @@
     const actionBtn = document.getElementById('drill-action-btn');
     actionBtn.style.display = 'inline-block';
 
-    if (key === 'star') {
-      showPanel('drill-star-fields');
-      ['star-s','star-t','star-a','star-r'].forEach(id => document.getElementById(id).value = '');
-      actionBtn.textContent = 'Score My Answer →';
-      actionBtn.onclick = scoreStarBuilder;
-    } else if (key === 'filler') {
-      showPanel('drill-filler-panel');
-      setupFillerDrill();
-      actionBtn.textContent = 'Start →';
-      actionBtn.onclick = startFillerTimer;
-    } else if (key === 'math') {
-      showPanel('drill-math-panel');
-      setupMathDrill();
-      actionBtn.textContent = 'Start →';
-      actionBtn.onclick = startMathDrill;
-    } else if (key === 'arithmetic' || key === 'arithmetic_hard' || key === 'sequence') {
+    if (key === 'arithmetic' || key === 'arithmetic_hard' || key === 'sequence') {
       showPanel('drill-sprint-panel');
       setupSprintDrill(key);
       actionBtn.textContent = 'Start →';
@@ -2348,152 +2282,6 @@
       const industryOk = industries.length === 0 || cardIndustries.some(i => industries.includes(i));
       card.style.display = (typeOk && industryOk) ? '' : 'none';
     });
-  }
-
-  // --- STAR Builder ---
-  function scoreStarBuilder() {
-    const fields = ['star-s','star-t','star-a','star-r'].map(id => document.getElementById(id).value.trim());
-    const scores = fields.map(f => Math.min(25, Math.round(f.split(/\s+/).filter(Boolean).length * 2)));
-    const total = scores.reduce((a,b) => a+b, 0);
-    const weakest = ['Situation','Task','Action','Result'][scores.indexOf(Math.min(...scores))];
-    document.getElementById('drill-result-num').textContent = total + '/100';
-    document.getElementById('drill-result-label').textContent = 'Structure Completeness';
-    document.getElementById('drill-result-note').textContent = total >= 80
-      ? "Well-rounded answer — all four parts are developed."
-      : `${weakest} is the thinnest part right now — try adding one or two more concrete details there.`;
-    goTo('drill-result');
-  }
-
-  // --- Spot the Filler ---
-  const fillerSentence = "So, um, I was basically leading the project, and like, we kind of ran into some issues with the timeline, you know, so I sort of had to just figure it out on the fly and I guess it worked out okay in the end.";
-  const fillerWords = ["um","like","kind of","you know","sort of","basically","i guess"];
-  let fillerTimerInterval, fillerSeconds = 20, fillerCaught = 0, fillerWrong = 0, fillerTotal = 0;
-
-  function setupFillerDrill() {
-    const words = fillerSentence.split(' ');
-    const clean = w => w.replace(/[.,]/g, '').toLowerCase();
-
-    // Filler phrases can be one or two words (e.g. "um" vs. "kind of"), so
-    // match greedily left-to-right, preferring a two-word phrase when present.
-    const groups = new Array(words.length).fill(null);
-    let groupId = 0;
-    let i = 0;
-    while (i < words.length) {
-      const twoWord = i < words.length - 1 ? `${clean(words[i])} ${clean(words[i + 1])}` : null;
-      if (twoWord && fillerWords.includes(twoWord)) {
-        groups[i] = groupId; groups[i + 1] = groupId; groupId++;
-        i += 2;
-      } else if (fillerWords.includes(clean(words[i]))) {
-        groups[i] = groupId; groupId++;
-        i += 1;
-      } else {
-        i += 1;
-      }
-    }
-
-    const html = words.map((w, idx) => {
-      const isFiller = groups[idx] !== null;
-      const groupAttr = isFiller ? ` data-group="${groups[idx]}"` : '';
-      return `<span class="filler-word" data-filler="${isFiller}"${groupAttr} onclick="clickFillerWord(this)">${w}</span>`;
-    }).join(' ');
-    document.getElementById('filler-text').innerHTML = html;
-    fillerTotal = groupId;
-    fillerCaught = 0; fillerWrong = 0; fillerSeconds = 20;
-    document.getElementById('filler-timer').textContent = '00:20';
-    document.getElementById('filler-live-score').textContent = 'Caught: 0 · False alarms: 0';
-    clearInterval(fillerTimerInterval);
-  }
-
-  function clickFillerWord(el) {
-    if (el.classList.contains('caught') || el.classList.contains('wrong')) return;
-    if (el.dataset.filler === 'true') {
-      document.querySelectorAll(`.filler-word[data-group="${el.dataset.group}"]`).forEach(g => g.classList.add('caught'));
-      fillerCaught++;
-    } else {
-      el.classList.add('wrong');
-      fillerWrong++;
-    }
-    document.getElementById('filler-live-score').textContent = `Caught: ${fillerCaught} · False alarms: ${fillerWrong}`;
-  }
-
-  function startFillerTimer() {
-    const actionBtn = document.getElementById('drill-action-btn');
-    actionBtn.textContent = 'Submit Now →';
-    actionBtn.onclick = finishFillerDrill;
-    fillerTimerInterval = setInterval(() => {
-      fillerSeconds--;
-      document.getElementById('filler-timer').textContent = '00:' + String(fillerSeconds).padStart(2,'0');
-      if (fillerSeconds <= 0) { clearInterval(fillerTimerInterval); finishFillerDrill(); }
-    }, 1000);
-  }
-
-  function finishFillerDrill() {
-    clearInterval(fillerTimerInterval);
-    document.getElementById('drill-result-num').textContent = fillerCaught + '/' + fillerTotal;
-    document.getElementById('drill-result-label').textContent = 'Filler Words Caught';
-    document.getElementById('drill-result-note').textContent = fillerWrong === 0
-      ? "Clean catches, no false alarms — good ear for this."
-      : `You also flagged ${fillerWrong} word${fillerWrong > 1 ? 's' : ''} that weren't fillers — worth a second look at what actually weakens a sentence.`;
-    goTo('drill-result');
-  }
-
-  // --- Mental Math Sprint ---
-  const mathQuestions = [
-    { q: '18% of 250', a: 45 },
-    { q: '340 + 275', a: 615 },
-    { q: '1,200 ÷ 15', a: 80 },
-    { q: '15% of 640', a: 96 },
-    { q: '73 × 4', a: 292 },
-    { q: '900 − 366', a: 534 }
-  ];
-  let mathIndex = 0, mathCorrect = 0, mathStartTime;
-
-  function setupMathDrill() {
-    mathIndex = 0; mathCorrect = 0;
-    document.getElementById('math-question').textContent = '—';
-    document.getElementById('math-progress').textContent = `Question 1 of ${mathQuestions.length}`;
-    document.getElementById('math-input').value = '';
-    document.getElementById('math-input').onkeydown = null;
-  }
-
-  function startMathDrill() {
-    mathStartTime = Date.now();
-    mathIndex = 0; mathCorrect = 0;
-    showMathQuestion();
-    const actionBtn = document.getElementById('drill-action-btn');
-    actionBtn.style.display = 'none';
-    const input = document.getElementById('math-input');
-    input.focus();
-    input.onkeydown = (e) => { if (e.key === 'Enter') submitMathAnswer(); };
-  }
-
-  function showMathQuestion() {
-    const item = mathQuestions[mathIndex];
-    document.getElementById('math-question').textContent = item.q;
-    document.getElementById('math-progress').textContent = `Question ${mathIndex+1} of ${mathQuestions.length}`;
-    document.getElementById('math-input').value = '';
-  }
-
-  function submitMathAnswer() {
-    const val = parseFloat(document.getElementById('math-input').value);
-    if (val === mathQuestions[mathIndex].a) mathCorrect++;
-    mathIndex++;
-    if (mathIndex < mathQuestions.length) {
-      showMathQuestion();
-    } else {
-      finishMathDrill();
-    }
-  }
-
-  function finishMathDrill() {
-    const elapsed = ((Date.now() - mathStartTime) / 1000).toFixed(1);
-    document.getElementById('drill-action-btn').style.display = 'inline-block';
-    document.getElementById('drill-result-num').textContent = mathCorrect + '/' + mathQuestions.length;
-    document.getElementById('drill-result-label').textContent = `Correct in ${elapsed}s`;
-    document.getElementById('drill-result-note').textContent = mathCorrect === mathQuestions.length
-      ? "Perfect round — solid speed too."
-      : "Missed one or two — percentages tend to be the slower ones. Worth a few extra reps.";
-    goTo('drill-result');
   }
 
   // --- Shared 60s Sprint Engine (Arithmetic / Arithmetic Hard / Sequence) ---
