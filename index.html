@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mocko — Interview Practice</title>
+<title>Mocko: Interview Practice</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg transform='rotate(-8 40 58)'%3E%3Cpath d='M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%233FA796'/%3E%3C/g%3E%3Cg transform='rotate(8 61 42)'%3E%3Cpath d='M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%23F2E9DC'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
@@ -61,16 +62,13 @@
   .logo-text { font-family: 'Bricolage Grotesque', sans-serif; font-size: 23px; font-weight: 800; letter-spacing: -0.01em; }
   .tagline { color: var(--text-muted); font-size: 13px; }
 
-  /* Logo mascot: leans casually against the wordmark, legs crossed,
-     hollow jointed figure matching the loading-screen sprinter's style.
-     On hover the hanging arm raises and waves. */
-  .mascot .lean-body { transform-origin: 22px 29px; transform: rotate(14deg); }
-  .mascot .leg-l, .mascot .leg-r { transform-origin: 24px 21px; }
-  .mascot .arm-l, .mascot .arm-r { transform-origin: 24px 15px; }
-  .logo:hover .mascot .arm-l { animation: wave-arm 0.5s ease-in-out infinite; }
-  .logo:hover .mascot .wave-elbow { animation: wave-elbow 0.5s ease-in-out infinite; }
-  @keyframes wave-arm { 0%,100% { transform: rotate(80deg); } 50% { transform: rotate(105deg); } }
-  @keyframes wave-elbow { 0%,100% { transform: rotate(10deg); } 50% { transform: rotate(-15deg); } }
+  /* Logo mark: two speech bubbles tilted toward each other, "cheers"-style.
+     On hover they bump apart and settle back, like a little toast. */
+  .cheer-l, .cheer-r { transform-box: fill-box; transform-origin: center; }
+  .logo:hover .cheer-l { animation: clink-l 0.6s ease-in-out infinite; }
+  .logo:hover .cheer-r { animation: clink-r 0.6s ease-in-out infinite; }
+  @keyframes clink-l { 0%,100% { transform: rotate(0deg) translate(0,0); } 50% { transform: rotate(-9deg) translate(-1.5px,-1px); } }
+  @keyframes clink-r { 0%,100% { transform: rotate(0deg) translate(0,0); } 50% { transform: rotate(9deg) translate(1.5px,-1px); } }
 
   /* Processing-screen sprinter: same jointed rig, running hard on a
      treadmill whose belt scrolls backward under him, fast. */
@@ -100,12 +98,12 @@
   .mascot-toggle-card .card-mascot { flex-shrink: 0; }
   .mascot-toggle-card > div { flex: 1; }
 
-  [data-len="Quick"] .speed-mascot .leg-l, [data-len="Quick"] .speed-mascot .leg-r { transform-origin: 20px 23px; }
-  [data-len="Quick"] .speed-mascot .arm-l, [data-len="Quick"] .speed-mascot .arm-r { transform-origin: 20px 16px; }
-  [data-len="Quick"] .speed-mascot .shin-l-pivot { transform-origin: 18px 27px; }
-  [data-len="Quick"] .speed-mascot .shin-r-pivot { transform-origin: 22px 27px; }
-  [data-len="Quick"] .speed-mascot .forearm-l-pivot { transform-origin: 17px 19px; }
-  [data-len="Quick"] .speed-mascot .forearm-r-pivot { transform-origin: 23px 19px; }
+  .speed-mascot .leg-l, .speed-mascot .leg-r { transform-origin: 20px 23px; }
+  .speed-mascot .arm-l, .speed-mascot .arm-r { transform-origin: 20px 16px; }
+  .speed-mascot .shin-l-pivot { transform-origin: 18px 27px; }
+  .speed-mascot .shin-r-pivot { transform-origin: 22px 27px; }
+  .speed-mascot .forearm-l-pivot { transform-origin: 17px 19px; }
+  .speed-mascot .forearm-r-pivot { transform-origin: 23px 19px; }
 
   /* Frozen pose at the apex of the stride -- both legs extended and
      spread to their widest, scissor-like, rather than mid-recovery. */
@@ -137,9 +135,65 @@
   @keyframes talk-hand-a { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-22deg); } }
   @keyframes talk-hand-b { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(22deg); } }
 
+  /* Home welcome slideshow -- reuses the speed-mascot/full-mascot rigs
+     (and their default static poses) verbatim, just plays their
+     animations continuously while a slide is active instead of on hover. */
+  .welcome-slideshow { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 36px 56px; margin-bottom: 28px; text-align: center; position: relative; }
+  .slide-scene { display: none; flex-direction: column; align-items: center; }
+  .slide-scene.active { display: flex; animation: fadeIn 0.4s ease; }
+  .slide-scene svg { display: block; }
+  .slide-caption { margin-top: 14px; font-size: 14.5px; color: var(--text-muted); }
+  .slide-caption b { color: var(--text); font-weight: 700; }
+  .slide-dots { display: flex; justify-content: center; gap: 8px; margin-top: 22px; }
+  .slide-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); border: none; cursor: pointer; padding: 0; transition: background 0.2s; }
+  .slide-dot.active { background: var(--good); }
+  .slide-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
+  .slide-arrow:hover { color: var(--text); border-color: var(--text-muted); }
+  .slide-arrow-left { left: 14px; }
+  .slide-arrow-right { right: 14px; }
+  @media (max-width: 520px) { .welcome-slideshow { padding: 32px 40px; } .slide-arrow { width: 28px; height: 28px; } .slide-arrow-left { left: 6px; } .slide-arrow-right { right: 6px; } }
+
+  /* Icon chips: colored-tint circular/rounded backgrounds behind SVG icons,
+     reused for hub cards, drill cards (tinted by data-type), and the auth
+     info panel so accent color shows up in more than one isolated spot. */
+  .icon-chip { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--surface-2); color: var(--text-muted); }
+  .icon-chip svg { width: 19px; height: 19px; }
+  .icon-chip.tint-good, .drill-icon.tint-good { background: rgba(63,167,150,0.15); color: var(--good); }
+  .icon-chip.tint-warn, .drill-icon.tint-warn { background: rgba(233,162,59,0.15); color: var(--warn); }
+  .icon-chip.tint-record, .drill-icon.tint-record { background: rgba(230,57,70,0.15); color: var(--record); }
+  .icon-chip.tint-structure, .drill-icon.tint-structure { background: rgba(124,158,242,0.16); color: var(--tag-structure); }
+  .icon-chip.tint-communication, .drill-icon.tint-communication { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
+
+  .slide-scene.active .speed-mascot .leg-l { animation: sprint-leg-a .55s ease-in-out infinite; }
+  .slide-scene.active .speed-mascot .leg-r { animation: sprint-leg-b .55s ease-in-out infinite; }
+  .slide-scene.active .speed-mascot .arm-l { animation: sprint-arm-b .55s ease-in-out infinite; }
+  .slide-scene.active .speed-mascot .arm-r { animation: sprint-arm-a .55s ease-in-out infinite; }
+  .slide-scene.active .speed-mascot .shin-l-pivot { animation: sprint-knee-a .55s ease-in-out infinite; }
+  .slide-scene.active .speed-mascot .shin-r-pivot { animation: sprint-knee-b .55s ease-in-out infinite; }
+  .slide-scene.active .speed-mascot .forearm-l-pivot { animation: sprint-knee-b .55s ease-in-out infinite; }
+  .slide-scene.active .speed-mascot .forearm-r-pivot { animation: sprint-knee-a .55s ease-in-out infinite; }
+  .slide-scene.active .speed-mascot .sprint-body { animation: sprint-bob .55s ease-in-out infinite; }
+  .slide-scene.active .speed-mascot .belt { animation: belt-scroll-reverse .2s linear infinite; }
+
+  .slide-scene.active .full-mascot .full-arm-l { animation: talk-hand-a .6s ease-in-out infinite; }
+  .slide-scene.active .full-mascot .full-arm-r { animation: talk-hand-b .6s ease-in-out infinite; }
+
+  .prep-paper { transform-box: fill-box; transform-origin: center; }
+  .slide-scene.active .prep-paper { animation: paper-bob 2.2s ease-in-out infinite; }
+  @keyframes paper-bob { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+
+  .track-bars .bar { transform-box: fill-box; transform-origin: bottom; }
+  .slide-scene.active .track-bars .bar-1 { animation: bar-grow 2.4s ease-in-out infinite; }
+  .slide-scene.active .track-bars .bar-2 { animation: bar-grow 2.4s ease-in-out infinite .15s; }
+  .slide-scene.active .track-bars .bar-3 { animation: bar-grow 2.4s ease-in-out infinite .3s; }
+  @keyframes bar-grow { 0%,15% { transform: scaleY(0.15); } 50%,85% { transform: scaleY(1); } 100% { transform: scaleY(0.15); } }
+  .track-star { transform-box: fill-box; transform-origin: center; }
+  .slide-scene.active .track-star { animation: track-star-pulse 2.4s ease-in-out infinite; }
+  @keyframes track-star-pulse { 0%,100% { opacity: 0.5; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.1); } }
+
   .nav-tabs { display: flex; gap: 4px; }
   .nav-tab { font-family: 'IBM Plex Mono'; font-size: 12px; letter-spacing: 0.03em; color: var(--text-muted); background: none; border: none; padding: 8px 14px; cursor: pointer; border-radius: 6px; transition: all 0.15s; }
-  .nav-tab.active { color: var(--text); background: var(--surface-2); }
+  .nav-tab.active { color: var(--good); background: rgba(63,167,150,0.14); }
   .nav-tab:hover:not(.active) { color: var(--text); }
 
   .screen { display: none; animation: fadeIn 0.35s ease; }
@@ -355,15 +409,21 @@
   /* Drills */
   .drill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
   @media (max-width: 620px) { .drill-grid { grid-template-columns: 1fr; } }
-  .hub-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 14px; }
-  @media (max-width: 720px) { .hub-grid { grid-template-columns: 1fr; } }
+  .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
+  .hub-grid.hub-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 720px) { .hub-grid, .hub-grid.hub-grid-3 { grid-template-columns: 1fr; } }
   .hub-card h4 { font-size: 17px; }
   .drill-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 25px; cursor: pointer; transition: all 0.15s; }
   .drill-card:hover { border-color: var(--good); transform: translateY(-2px); }
   .drill-card.soon { cursor: default; opacity: 0.5; }
   .drill-card.soon:hover { border-color: var(--line); transform: none; }
   .drill-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .drill-icon { font-size: 20px; }
+  .drill-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; background: var(--surface-2); color: var(--text-muted); flex-shrink: 0; }
+  .drill-icon svg { width: 19px; height: 19px; }
+  .drill-card[data-type="quantitative"] .drill-icon { background: rgba(69,185,140,0.16); color: var(--tag-quantitative); }
+  .drill-card[data-type="risk"] .drill-icon { background: rgba(232,129,74,0.16); color: var(--tag-risk); }
+  .drill-card[data-type="communication"] .drill-icon { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
+  .drill-card[data-type="structure"] .drill-icon { background: rgba(124,158,242,0.16); color: var(--tag-structure); }
   .drill-badge { font-family: 'IBM Plex Mono'; font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
   .drill-badge.live { background: rgba(63,167,150,0.18); color: var(--good); }
   .drill-badge.soon { background: rgba(138,147,163,0.15); color: var(--text-muted); }
@@ -441,7 +501,13 @@
   .faq-item[open] summary::before { content: '−'; }
   .faq-item p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-top: 10px; padding-left: 20px; }
 
-  .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 36px; max-width: 380px; margin: 0 auto; }
+  .auth-layout { display: flex; gap: 48px; align-items: flex-start; flex-wrap: wrap; }
+  .auth-info { flex: 1 1 300px; display: flex; flex-direction: column; gap: 22px; padding-top: 6px; }
+  .auth-info-item { display: flex; gap: 14px; align-items: flex-start; }
+  .auth-info-item h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
+  .auth-info-item p { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+  .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 36px; max-width: 380px; flex: 0 0 380px; margin: 0 auto; }
+  @media (max-width: 760px) { .auth-panel { flex-basis: 100%; } }
   .auth-field { margin-bottom: 16px; }
   .auth-field label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
   .auth-field input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Inter'; font-size: 14px; }
@@ -472,15 +538,9 @@
 
   <div class="topbar">
     <div class="logo" onclick="goToHome()" style="cursor:pointer;">
-      <svg class="mascot" width="34" height="34" viewBox="0 0 34 34" fill="none">
-        <g class="lean-body">
-          <circle cx="24" cy="8" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
-          <path d="M24,12 Q23,16 24,21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
-          <g class="leg-l"><line x1="24" y1="21" x2="23" y2="25" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="23" y1="25" x2="22" y2="29" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
-          <g class="leg-r"><line x1="24" y1="21" x2="26" y2="24" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="26" y1="24" x2="29" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
-          <g class="arm-r"><line x1="24" y1="15" x2="27" y2="16" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="27" y1="16" x2="26" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
-          <g class="arm-l"><line x1="24" y1="15" x2="22" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="wave-elbow" style="transform-origin:22px 18px"><line x1="22" y1="18" x2="21" y2="21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-        </g>
+      <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+        <g transform="rotate(-8 40 58)"><path class="cheer-l" d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--good)"/></g>
+        <g transform="rotate(8 61 42)"><path class="cheer-r" d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--cue)"/></g>
       </svg>
       <div class="logo-text">MOCKO</div>
     </div>
@@ -494,48 +554,165 @@
 
   <!-- HOME (hub) -->
   <div class="screen active" id="screen-home">
-    <div class="step-label">Finance Track</div>
-    <div class="hero">
-      <h1 class="display">Welcome back</h1>
-      <p>Jump into a practice session, run a quick drill, or check your progress.</p>
-    </div>
-    <div class="hub-grid">
-      <div class="drill-card hub-card" onclick="switchTab('interview')">
-        <div class="drill-top"><span class="drill-icon">🎙</span></div>
-        <h4>Interview Practice</h4>
-        <p>Record a scored async session, or run a live voice mock interview.</p>
+
+    <!-- LOGGED OUT: welcome / landing -->
+    <div id="home-landing">
+      <div class="step-label">Finance Track</div>
+      <div class="hero">
+        <h1 class="display">Want to land your dream role?</h1>
+        <p>Mocko is interview prep built for finance. Practice real questions, drill the skills that come up cold, and walk in ready.</p>
+        <div class="btn-row" style="justify-content:flex-start; margin-top:-16px; margin-bottom:32px;">
+          <button class="btn btn-primary" onclick="setAuthMode('signin'); goTo('auth');">Log In</button>
+          <button class="btn btn-secondary" onclick="setAuthMode('signup'); goTo('auth');">Sign Up</button>
+        </div>
       </div>
-      <div class="drill-card hub-card" onclick="switchTab('drills')">
-        <div class="drill-top"><span class="drill-icon">⚡</span></div>
-        <h4>Drills</h4>
-        <p>Short, focused reps: arithmetic sprints, risk calls, pattern recognition.</p>
+
+      <div class="welcome-slideshow" id="home-slideshow">
+        <button class="slide-arrow slide-arrow-left" onclick="prevSlide()" aria-label="Previous slide">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="slide-scene active" data-slide="0">
+          <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
+            <g class="prep-paper">
+              <rect x="6" y="11" width="10" height="13" rx="1.2" fill="var(--bg)" stroke="var(--text)" stroke-width="1.5"/>
+              <line x1="8.5" y1="15" x2="13.5" y2="15" stroke="var(--text-muted)" stroke-width="1.1"/>
+              <line x1="8.5" y1="18" x2="13.5" y2="18" stroke="var(--text-muted)" stroke-width="1.1"/>
+              <line x1="8.5" y1="21" x2="11.5" y2="21" stroke="var(--text-muted)" stroke-width="1.1"/>
+            </g>
+            <circle cx="25" cy="9" r="4" fill="var(--bg)" stroke="var(--text)" stroke-width="2"/>
+            <path d="M25,13 Q24,18 25,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+            <line x1="25" y1="23" x2="23" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="25" y1="23" x2="27" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="25" y1="16" x2="29" y2="21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="25" y1="16" x2="18" y2="17" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+          <div class="slide-caption"><b>Prep</b>: turn your resume into interview questions built around your real experience.</div>
+        </div>
+        <div class="slide-scene" data-slide="1">
+          <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
+            <rect x="6" y="8" width="16" height="12" rx="1.3" fill="none" stroke="var(--text-muted)" stroke-width="1.3"/>
+            <circle cx="10" cy="12" r="1.6" fill="var(--record)"/>
+            <line x1="8.5" y1="16" x2="19.5" y2="16" stroke="var(--text-muted)" stroke-width="1.1"/>
+            <circle cx="28" cy="10" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
+            <path d="M28,14 Q27,19 28,24" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+            <line x1="28" y1="24" x2="26" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="28" y1="24" x2="30" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="28" y1="17" x2="24" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="28" y1="17" x2="32" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+          <div class="slide-caption"><b>Screens</b>: practice the one-question, on-camera format used by HireVue, Sonru, and Spark Hire.</div>
+        </div>
+        <div class="slide-scene" data-slide="2">
+          <svg width="64" height="64" viewBox="0 0 40 40" fill="none" class="card-mascot full-mascot">
+            <rect x="20" y="9" width="15" height="11" rx="1.5" fill="none" stroke="var(--text-muted)" stroke-width="1.3"/>
+            <line x1="27.5" y1="20" x2="27.5" y2="23" stroke="var(--text-muted)" stroke-width="1.3"/>
+            <line x1="23" y1="23" x2="32" y2="23" stroke="var(--text-muted)" stroke-width="1.3"/>
+            <g class="full-body">
+              <circle cx="10" cy="9" r="3.5" fill="none" stroke="var(--text)" stroke-width="1.8"/>
+              <path d="M10,12.5 Q9,17 10,21" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+              <line x1="10" y1="21" x2="8" y2="26" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/>
+              <line x1="10" y1="21" x2="12" y2="26" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/>
+              <g class="full-arm-l"><line x1="10" y1="14" x2="6" y2="17" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/></g>
+              <g class="full-arm-r"><line x1="10" y1="14" x2="14" y2="17" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/></g>
+            </g>
+          </svg>
+          <div class="slide-caption"><b>Talk</b>: a live spoken conversation that follows up naturally when an answer needs more.</div>
+        </div>
+        <div class="slide-scene" data-slide="3">
+          <svg width="64" height="64" viewBox="0 0 40 40" fill="none" class="card-mascot speed-mascot">
+            <g class="sprint-body">
+              <circle cx="20" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
+              <path d="M20,13 Q19,18 20,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+              <g class="leg-l"><line x1="20" y1="23" x2="18" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-l-pivot"><line x1="18" y1="27" x2="17" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+              <g class="leg-r"><line x1="20" y1="23" x2="22" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-r-pivot"><line x1="22" y1="27" x2="23" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+              <g class="arm-l"><line x1="20" y1="16" x2="17" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-l-pivot"><line x1="17" y1="19" x2="16" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+              <g class="arm-r"><line x1="20" y1="16" x2="23" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-r-pivot"><line x1="23" y1="19" x2="24" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
+            </g>
+            <line class="belt" x1="12" y1="32" x2="28" y2="32" stroke="var(--text-muted)" stroke-width="1.1" stroke-dasharray="2 3" opacity="0.6"/>
+          </svg>
+          <div class="slide-caption"><b>Drill</b>: fast reps in Arithmetic, Risk, and Sequence that sharpen speed and judgment.</div>
+        </div>
+        <div class="slide-scene" data-slide="4">
+          <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
+            <circle cx="12" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
+            <path d="M12,13 Q11,18 12,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+            <line x1="12" y1="23" x2="10" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="12" y1="23" x2="14" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="12" y1="16" x2="9" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="12" y1="16" x2="18" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <rect x="22" y="10" width="13" height="16" rx="1.3" fill="none" stroke="var(--text-muted)" stroke-width="1.3"/>
+            <path d="M25 17 l2.5 2.5 5-5.5" stroke="var(--good)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <line x1="25" y1="22" x2="32" y2="22" stroke="var(--text-muted)" stroke-width="1.1"/>
+          </svg>
+          <div class="slide-caption"><b>Grade</b>: every answer scored on structure, clarity, pace, and tone, straight from the transcript.</div>
+        </div>
+        <div class="slide-scene" data-slide="5">
+          <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
+            <circle cx="12" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
+            <path d="M12,13 Q11,18 12,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+            <line x1="12" y1="23" x2="10" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="12" y1="23" x2="14" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="12" y1="16" x2="8" y2="20" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <line x1="12" y1="16" x2="17" y2="12" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
+            <g class="track-bars">
+              <rect class="bar bar-1" x="24" y="20" width="3.2" height="12" rx="1" fill="var(--good)"/>
+              <rect class="bar bar-2" x="29" y="14" width="3.2" height="18" rx="1" fill="var(--warn)"/>
+              <rect class="bar bar-3" x="34" y="8" width="3.2" height="24" rx="1" fill="var(--good)"/>
+            </g>
+            <path class="track-star" d="M35.5 0.5 L36.7 3.5 L40 3.8 L37.5 5.9 L38.3 9 L35.5 7.2 L32.7 9 L33.5 5.9 L31 3.8 L34.3 3.5 Z" fill="var(--warn)"/>
+          </svg>
+          <div class="slide-caption"><b>Track</b>: scores, streaks, and where you rank on the leaderboard.</div>
+        </div>
+        <button class="slide-arrow slide-arrow-right" onclick="nextSlide()" aria-label="Next slide">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="slide-dots">
+          <button class="slide-dot active" data-dot="0" onclick="goToSlide(0)" aria-label="Slide 1"></button>
+          <button class="slide-dot" data-dot="1" onclick="goToSlide(1)" aria-label="Slide 2"></button>
+          <button class="slide-dot" data-dot="2" onclick="goToSlide(2)" aria-label="Slide 3"></button>
+          <button class="slide-dot" data-dot="3" onclick="goToSlide(3)" aria-label="Slide 4"></button>
+          <button class="slide-dot" data-dot="4" onclick="goToSlide(4)" aria-label="Slide 5"></button>
+          <button class="slide-dot" data-dot="5" onclick="goToSlide(5)" aria-label="Slide 6"></button>
+        </div>
       </div>
-      <div class="drill-card hub-card" onclick="openStats()">
-        <div class="drill-top"><span class="drill-icon">📈</span></div>
-        <h4>History &amp; Stats</h4>
-        <p>Your trends, personal bests, and practice streak.</p>
+
+      <div class="hub-grid">
+        <div class="drill-card hub-card" onclick="switchTab('interview')">
+          <div class="drill-top"><span class="drill-icon tint-good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></span></div>
+          <h4>Interview Practice</h4>
+          <p>Record a scored async session, or run a live voice mock interview.</p>
+        </div>
+        <div class="drill-card hub-card" onclick="switchTab('drills')">
+          <div class="drill-top"><span class="drill-icon tint-warn"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span></div>
+          <h4>Drills</h4>
+          <p>Short, focused reps: arithmetic sprints, risk calls, pattern recognition.</p>
+        </div>
       </div>
     </div>
 
-    <div class="step-label" style="margin-top:32px;">Quick Drills</div>
-    <div class="drill-grid">
-      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting" onclick="startDrill('arithmetic')">
-        <div class="drill-top"><span class="drill-icon">+</span><span class="drill-badge live">Live</span></div>
-        <h4>Arithmetic</h4>
-        <p>60 seconds — answer as many as you can before time runs out.</p>
-        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span></div>
+    <!-- LOGGED IN: dashboard -->
+    <div id="home-dashboard" style="display:none;">
+      <div class="step-label">Finance Track</div>
+      <div class="hero">
+        <h1 class="display">Welcome back</h1>
+        <p>Jump into a practice session, run a quick drill, or check your progress.</p>
       </div>
-      <div class="drill-card" data-type="risk" data-industries="ib,pe,quant" onclick="startDrill('risk')">
-        <div class="drill-top"><span class="drill-icon">◉</span><span class="drill-badge live">Live</span></div>
-        <h4>Risk</h4>
-        <p>Pump for points or collect and bank — how far do you push it?</p>
-        <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span></div>
-      </div>
-      <div class="drill-card" data-type="quantitative" data-industries="quant,tech" onclick="startDrill('sequence')">
-        <div class="drill-top"><span class="drill-icon">…</span><span class="drill-badge live">Live</span></div>
-        <h4>Sequence</h4>
-        <p>Spot the pattern, type the next number before the clock runs out.</p>
-        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span></div>
+      <div class="hub-grid hub-grid-3">
+        <div class="drill-card hub-card" onclick="switchTab('interview')">
+          <div class="drill-top"><span class="drill-icon tint-good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></span></div>
+          <h4>Interview Practice</h4>
+          <p>Record a scored async session, or run a live voice mock interview.</p>
+        </div>
+        <div class="drill-card hub-card" onclick="switchTab('drills')">
+          <div class="drill-top"><span class="drill-icon tint-warn"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span></div>
+          <h4>Drills</h4>
+          <p>Short, focused reps: arithmetic sprints, risk calls, pattern recognition.</p>
+        </div>
+        <div class="drill-card hub-card" onclick="openStats()">
+          <div class="drill-top"><span class="drill-icon tint-structure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span></div>
+          <h4>History &amp; Stats</h4>
+          <p>Your trends, personal bests, and practice streak.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -552,18 +729,18 @@
         <div class="mode-icon"><div class="waveform" style="color:var(--record)"><span style="animation-delay:0s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.4s"></span></div></div>
         <div class="mode-eyebrow">Async · Scored</div>
         <h3>On-Air Practice</h3>
-        <p>Mostly <b>behavioral</b>. Get a question, record your answer on camera, and get a scored breakdown — built for HireVue, Sonru, Spark Hire, and similar async video interview screens.</p>
+        <p>Mostly <b>behavioral</b>. Get a question, record your answer on camera, and get a scored breakdown, built for HireVue, Sonru, Spark Hire, and similar async video interview screens.</p>
         <div class="mode-cta">Start recording →</div>
       </div>
       <div class="mode-card mode-b" onclick="chooseMode('voice')">
         <div class="mode-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3FA796" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
         <div class="mode-eyebrow">Live · Voice</div>
         <h3>Mock Interview</h3>
-        <p>Talk it out loud. The AI asks a question, listens, and follows up naturally — like a real conversation, no typing.</p>
+        <p>Talk it out loud. The AI asks a question, listens, and follows up naturally, like a real conversation with no typing.</p>
         <div class="mode-cta">Start speaking →</div>
       </div>
     </div>
-    <p class="footer-note">Prototype only — recording, grading, and voice are all simulated here.</p>
+    <p class="footer-note">Prototype only. Recording, grading, and voice are all simulated here.</p>
   </div>
 
   <!-- AUTH -->
@@ -572,6 +749,44 @@
     <div class="hero">
       <h1 class="display" id="auth-title">Sign in</h1>
       <p id="auth-sub">Sign in to record a session and save your progress.</p>
+    </div>
+    <div class="auth-layout">
+    <div class="auth-info">
+      <div class="auth-info-item">
+        <span class="icon-chip tint-record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
+        <div>
+          <h4>Built for async video screens</h4>
+          <p>Practice the exact one-question, on-camera format used by HireVue, Sonru, Spark Hire, and similar platforms.</p>
+        </div>
+      </div>
+      <div class="auth-info-item">
+        <span class="icon-chip tint-good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></span>
+        <div>
+          <h4>Real back-and-forth, out loud</h4>
+          <p>Mock Interview is a live spoken conversation, with natural follow-up questions when an answer needs more depth.</p>
+        </div>
+      </div>
+      <div class="auth-info-item">
+        <span class="icon-chip tint-communication"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></span>
+        <div>
+          <h4>Questions pulled from your resume</h4>
+          <p>Upload a resume and get questions tailored to your actual roles and projects, not just a generic bank.</p>
+        </div>
+      </div>
+      <div class="auth-info-item">
+        <span class="icon-chip tint-warn"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span>
+        <div>
+          <h4>Drills for the moments that trip people up</h4>
+          <p>Timed arithmetic, risk-based decisions, and pattern sequences: the fast skills that come up cold.</p>
+        </div>
+      </div>
+      <div class="auth-info-item">
+        <span class="icon-chip tint-structure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span>
+        <div>
+          <h4>See exactly where you stand</h4>
+          <p>Every session is scored on structure, clarity, pace, and tone, with streaks and a leaderboard to track progress.</p>
+        </div>
+      </div>
     </div>
     <div class="auth-panel">
       <div class="oauth-row" style="margin-bottom:20px;">
@@ -623,6 +838,7 @@
         New here? <a onclick="setAuthMode('signup')">Create an account</a>
       </div>
     </div>
+    </div>
   </div>
 
   <!-- PROFILE -->
@@ -630,7 +846,7 @@
     <button class="back-btn" onclick="goToHome()">← Back</button>
     <div class="hero">
       <h1 class="display">Your Profile</h1>
-      <p>This is the start of Mocko as a platform — friends and more are coming.</p>
+      <p>This is the start of Mocko as a platform. Friends and more are coming.</p>
     </div>
     <div class="auth-error" id="profile-error" style="max-width:460px; margin:0 auto 12px;"></div>
 
@@ -729,15 +945,15 @@
     <div class="theme-section">
       <details class="faq-item">
         <summary>What is Mocko?</summary>
-        <p>A practice tool for job interviews. Record mock answers and get an AI-scored breakdown, or run quick skill drills — arithmetic, sequences, and risk-based decision making.</p>
+        <p>A practice tool for job interviews. Record mock answers and get an AI-scored breakdown, or run quick skill drills like arithmetic, sequences, and risk-based decision making.</p>
       </details>
       <details class="faq-item">
         <summary>Is my recording stored?</summary>
-        <p>Yes — recordings are stored privately under your account so they can be transcribed and graded. Only you can access your own recordings.</p>
+        <p>Yes. Recordings are stored privately under your account so they can be transcribed and graded, and only you can access them.</p>
       </details>
       <details class="faq-item">
         <summary>How is my answer graded?</summary>
-        <p>Your recording is transcribed, then scored against a rubric — content & structure, clarity, pace, and tone — using Claude, along with pace and filler-word stats pulled directly from the transcript.</p>
+        <p>Your recording is transcribed, then scored against a rubric (content & structure, clarity, pace, and tone) using Claude, along with pace and filler-word stats pulled directly from the transcript.</p>
       </details>
       <details class="faq-item">
         <summary>Why do I need to log in?</summary>
@@ -745,7 +961,7 @@
       </details>
       <details class="faq-item">
         <summary>Can I delete my data?</summary>
-        <p>There's no self-serve delete yet — reach out and we'll take care of it. Self-serve account deletion is on the roadmap.</p>
+        <p>There's no self-serve delete yet, so reach out and we'll take care of it. Self-serve account deletion is on the roadmap.</p>
       </details>
       <details class="faq-item">
         <summary>What's coming next?</summary>
@@ -838,7 +1054,7 @@
 
         <div class="select-group">
           <div class="select-group-label">Difficulty</div>
-          <div class="select-group-sub">This mode is mostly behavioral — pick how tough.</div>
+          <div class="select-group-sub">This mode is mostly behavioral. Pick how tough.</div>
           <div class="pill-row difficulty-pill-row" id="difficulty-row">
             <button class="pill-btn" data-difficulty="easy">Easy</button>
             <button class="pill-btn" data-difficulty="medium">Medium</button>
@@ -996,17 +1212,17 @@
       <div class="pointers good">
         <h4>What worked</h4>
         <ul>
-          <li>Strong STAR structure — situation and task were clear in the first 15 seconds.</li>
-          <li>Clear, confident opening — got straight to the point without hedging.</li>
-          <li>Good pacing — not rushed, gave the interviewer time to follow along.</li>
+          <li>Strong STAR structure: situation and task were clear in the first 15 seconds.</li>
+          <li>Clear, confident opening that got straight to the point without hedging.</li>
+          <li>Good pacing, not rushed, and gave the interviewer time to follow along.</li>
         </ul>
       </div>
       <div class="pointers work">
         <h4>Needs work</h4>
         <ul>
-          <li>Said "um" or "like" 11 times — try a silent pause instead of filling the gap.</li>
+          <li>Said "um" or "like" 11 times. Try a silent pause instead of filling the gap.</li>
           <li>The resolution was rushed. Spend more time on what changed afterward, not just what you did.</li>
-          <li>Tone stayed fairly flat — vary your energy on the key moment of the story.</li>
+          <li>Tone stayed fairly flat. Vary your energy on the key moment of the story.</li>
         </ul>
       </div>
 
@@ -1025,7 +1241,7 @@
     <button class="back-btn" onclick="goTo('setup')">← End &amp; back to setup</button>
     <div class="voice-shell">
       <div class="voice-header"><div class="interviewer-avatar">J</div><div class="interviewer-name">Jordan · AI Interviewer</div></div>
-      <div class="interviewer-role" id="voice-role">Finance — Behavioral</div>
+      <div class="interviewer-role" id="voice-role">Finance &middot; Behavioral</div>
 
       <div class="voice-orb" id="voice-orb"><div class="voice-orb-core"></div></div>
       <div class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</div>
@@ -1033,7 +1249,7 @@
 
       <div class="onair-badge" id="voice-rec-indicator" style="display:none; justify-content:center; margin-bottom:14px; color:var(--record);"><div class="dot"></div> Listening</div>
 
-      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎙️</button>
+      <button class="mic-btn" id="mic-btn" onclick="toggleMic()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></button>
       <div class="voice-timer mono" id="voice-timer">00:00</div>
 
       <div id="voice-text-fallback" style="display:none; margin-top:20px; text-align:left;">
@@ -1097,7 +1313,7 @@
     <div class="step-label">Finance Track</div>
     <div class="hero">
       <h1 class="display">Drills</h1>
-      <p>Short, focused reps on one skill at a time — not a full interview, just the muscle.</p>
+      <p>Short, focused reps on one skill at a time. Not a full interview, just the muscle.</p>
     </div>
 
     <div class="filter-dropdowns">
@@ -1131,25 +1347,25 @@
       <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting" onclick="startDrill('arithmetic')">
         <div class="drill-top"><span class="drill-icon">+</span><span class="drill-badge live">Live</span></div>
         <h4>Arithmetic</h4>
-        <p>60 seconds, addition, subtraction, multiplication, division — answer as many as you can before time runs out.</p>
+        <p>60 seconds, addition, subtraction, multiplication, division. Answer as many as you can before time runs out.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
       </div>
       <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant" onclick="startDrill('arithmetic_hard')">
         <div class="drill-top"><span class="drill-icon">±</span><span class="drill-badge live">Live</span></div>
         <h4>Arithmetic Hard</h4>
-        <p>Same four operations, uglier numbers and multi-step expressions. Still 60 seconds — see how far speed holds up.</p>
+        <p>Same four operations, uglier numbers and multi-step expressions. Still 60 seconds, see how far speed holds up.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
       </div>
       <div class="drill-card" data-type="risk" data-industries="ib,pe,quant" onclick="startDrill('risk')">
         <div class="drill-top"><span class="drill-icon">◉</span><span class="drill-badge live">Live</span></div>
         <h4>Risk</h4>
-        <p>Pump the balloon for +1 point a pop, or collect and bank your earnings. Pop it and you lose the round — how far do you push it?</p>
+        <p>Pump the balloon for +1 point a pop, or collect and bank your earnings. Pop it and you lose the round, so how far do you push it?</p>
         <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
       </div>
       <div class="drill-card" data-type="quantitative" data-industries="quant,tech" onclick="startDrill('sequence')">
         <div class="drill-top"><span class="drill-icon">…</span><span class="drill-badge live">Live</span></div>
         <h4>Sequence</h4>
-        <p>A pattern of numbers appears — type the next one in the sequence before the clock runs out.</p>
+        <p>A pattern of numbers appears. Type the next one in the sequence before the clock runs out.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Quant</span><span class="drill-tag tag-industry">Tech</span></div>
       </div>
       <div class="drill-card soon">
@@ -1160,7 +1376,7 @@
       <div class="drill-card soon">
         <div class="drill-top"><span class="drill-icon">≈</span><span class="drill-badge soon">Soon</span></div>
         <h4>Market Sizing Estimate</h4>
-        <p>Type a Fermi-style estimate and your reasoning — scored against a reasonable range, not one "right" number.</p>
+        <p>Type a Fermi-style estimate and your reasoning, scored against a reasonable range and not one "right" number.</p>
       </div>
       <div class="drill-card soon">
         <div class="drill-top"><span class="drill-icon">⇄</span><span class="drill-badge soon">Soon</span></div>
@@ -1168,7 +1384,7 @@
         <p>Click to match each term to its definition before time runs out.</p>
       </div>
       <div class="drill-card soon">
-        <div class="drill-top"><span class="drill-icon">✎</span><span class="drill-badge soon">Soon</span></div>
+        <div class="drill-top"><span class="drill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></span><span class="drill-badge soon">Soon</span></div>
         <h4>Rewrite the Weak Answer</h4>
         <p>Given a rambling sample answer, type a tightened version. Scored on structure and clarity.</p>
       </div>
@@ -1180,7 +1396,7 @@
       <div class="drill-card soon">
         <div class="drill-top"><span class="drill-icon">≡</span><span class="drill-badge soon">Soon</span></div>
         <h4>Order the STAR</h4>
-        <p>Four scrambled sentences from a real answer — click them into the correct STAR order.</p>
+        <p>Four scrambled sentences from a real answer. Click them into the correct STAR order.</p>
       </div>
     </div>
   </div>
@@ -1239,7 +1455,7 @@
 
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="startDrill(currentDrill)">↻ Retry drill</button>
-        <button class="btn btn-secondary" id="drill-result-leaderboard-btn" onclick="goToLeaderboard(currentDrill)" style="display:none;">🏆 Leaderboard</button>
+        <button class="btn btn-secondary" id="drill-result-leaderboard-btn" onclick="goToLeaderboard(currentDrill)" style="display:none;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:6px;"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 01-10 0V4z"/><path d="M7 5H4a3 3 0 003 3M17 5h3a3 3 0 01-3 3"/></svg>Leaderboard</button>
         <button class="btn btn-primary" onclick="goTo('drills')">Done →</button>
       </div>
     </div>
@@ -1278,12 +1494,26 @@
   window.addEventListener('mocko-auth-change', (e) => {
     const user = e.detail;
     renderAccountArea(user);
+    renderHomeAuthState(user);
     if (user && pendingAuthAction) {
       const action = pendingAuthAction;
       pendingAuthAction = null;
       action();
     }
   });
+
+  function renderHomeAuthState(user) {
+    const landing = document.getElementById('home-landing');
+    const dashboard = document.getElementById('home-dashboard');
+    if (!landing || !dashboard) return;
+    landing.style.display = user ? 'none' : 'block';
+    dashboard.style.display = user ? 'block' : 'none';
+    if (user) {
+      clearInterval(homeSlideInterval);
+    } else {
+      startHomeSlideshow();
+    }
+  }
 
   async function renderAccountArea(user) {
     const areaEl = document.getElementById('account-area');
@@ -1555,6 +1785,45 @@
     document.getElementById('setup-next').disabled = !ready;
   }
 
+  // Home welcome slideshow
+  let homeSlideIndex = 0;
+  let homeSlideInterval = null;
+
+  function goToSlide(i) {
+    const scenes = document.querySelectorAll('#home-slideshow .slide-scene');
+    if (!scenes.length) return;
+    homeSlideIndex = i;
+    scenes.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    document.querySelectorAll('#home-slideshow .slide-dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
+  }
+
+  function startHomeSlideshow() {
+    const scenes = document.querySelectorAll('#home-slideshow .slide-scene');
+    if (!scenes.length) return;
+    clearInterval(homeSlideInterval);
+    homeSlideInterval = setInterval(() => goToSlide((homeSlideIndex + 1) % scenes.length), 4000);
+  }
+
+  function prevSlide() {
+    const scenes = document.querySelectorAll('#home-slideshow .slide-scene');
+    if (!scenes.length) return;
+    goToSlide((homeSlideIndex - 1 + scenes.length) % scenes.length);
+    startHomeSlideshow();
+  }
+
+  function nextSlide() {
+    const scenes = document.querySelectorAll('#home-slideshow .slide-scene');
+    if (!scenes.length) return;
+    goToSlide((homeSlideIndex + 1) % scenes.length);
+    startHomeSlideshow();
+  }
+
+  const homeSlideshowEl = document.getElementById('home-slideshow');
+  if (homeSlideshowEl) {
+    homeSlideshowEl.addEventListener('mouseenter', () => clearInterval(homeSlideInterval));
+    homeSlideshowEl.addEventListener('mouseleave', startHomeSlideshow);
+  }
+
   function switchTab(tab) {
     document.getElementById('tab-home').classList.toggle('active', tab === 'home');
     document.getElementById('tab-interview').classList.toggle('active', tab === 'interview');
@@ -1626,11 +1895,11 @@
         document.getElementById('voice-resume-textarea').value = text;
         statusEl.textContent = `Loaded ${file.name}.`;
       } else {
-        statusEl.textContent = 'Could not read text from that PDF — try pasting instead.';
+        statusEl.textContent = 'Could not read text from that PDF. Try pasting instead.';
       }
     } catch (err) {
       console.error(err);
-      statusEl.textContent = 'Could not read that PDF — try pasting instead.';
+      statusEl.textContent = 'Could not read that PDF. Try pasting instead.';
     }
     event.target.value = '';
   }
@@ -1655,7 +1924,7 @@
         <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 0; font-size:12.5px;">
           <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:200px;">${r.label}</span>
           <button onclick="setPrimaryFromPicker('${r.id}')" title="${r.is_primary ? 'Primary resume' : 'Set as primary'}"
-            style="background:none; border:none; cursor:pointer; font-size:16px; color:${r.is_primary ? 'var(--warn)' : 'var(--text-muted)'};">${r.is_primary ? '★' : '☆'}</button>
+            style="background:none; border:none; cursor:pointer; display:flex; color:${r.is_primary ? 'var(--warn)' : 'var(--text-muted)'};"><svg width="16" height="16" viewBox="0 0 24 24" fill="${r.is_primary ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3 1.2-6.9-5-4.9 6.9-1z"/></svg></button>
         </div>
       `).join('') || '<p style="font-size:12px; color:var(--text-muted); padding:4px 0;">No resumes with readable text yet.</p>';
     } catch (err) {
@@ -1701,7 +1970,7 @@
         startRecordSetup();
       } catch (err) {
         console.error(err);
-        alert('Could not load questions — please try again.');
+        alert('Could not load questions. Please try again.');
       } finally {
         btn.disabled = false;
         btn.textContent = 'Begin →';
@@ -1717,7 +1986,7 @@
       startRecordSetup();
     } catch (err) {
       console.error(err);
-      alert('Could not load questions — please try again.');
+      alert('Could not load questions. Please try again.');
     }
   }
 
@@ -1803,11 +2072,11 @@
     try {
       mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     } catch (err) {
-      status.textContent = 'Camera/mic access denied — allow access in your browser settings to try again.';
+      status.textContent = 'Camera/mic access denied. Allow access in your browser settings to try again.';
       return;
     }
     video.srcObject = mediaStream;
-    status.textContent = 'Get ready — recording starts automatically.';
+    status.textContent = 'Get ready, recording starts automatically.';
 
     prepSecondsLeft = PREP_SECONDS;
     prepNumber.textContent = prepSecondsLeft;
@@ -1864,7 +2133,7 @@
     stopMediaStream();
     document.getElementById('rec-btn').style.display = 'none';
     document.getElementById('rec-status').textContent = '';
-    document.getElementById('processing-label').textContent = 'Analyzing your answer — this can take up to a minute...';
+    document.getElementById('processing-label').textContent = 'Analyzing your answer, this can take up to a minute...';
     document.getElementById('processing-overlay').style.display = 'flex';
   }
 
@@ -1892,7 +2161,7 @@
     } catch (err) {
       console.error(err);
       document.getElementById('processing-overlay').style.display = 'none';
-      status.textContent = 'Something went wrong grading your answer — please try again.';
+      status.textContent = 'Something went wrong grading your answer. Please try again.';
       document.getElementById('rec-btn').style.display = 'none';
     }
   }
@@ -1994,7 +2263,7 @@
 
       listEl.innerHTML = sessions.map(s => {
         const date = new Date(s.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const title = `${s.length} ${s.length === 'Quick' ? 'Round' : 'Session'} — ${s.format}`;
+        const title = `${s.length} ${s.length === 'Quick' ? 'Round' : 'Session'} · ${s.format}`;
         return `<div class="history-row">
           <div class="history-left">
             <div class="history-title">${title}</div>
@@ -2301,7 +2570,7 @@
       if (err.code === '23505') {
         errorEl.textContent = 'That username is taken.';
       } else if (err.code === '23514') {
-        errorEl.textContent = "That username isn't allowed — check length, characters, or content.";
+        errorEl.textContent = "That username isn't allowed. Check length, characters, or content.";
       } else {
         errorEl.textContent = err.message || 'Something went wrong.';
       }
@@ -2349,7 +2618,7 @@
 
   function resetVoiceUI() {
     document.getElementById('mic-btn').style.display = 'inline-flex';
-    document.getElementById('mic-btn').textContent = '🎙️';
+    document.getElementById('mic-btn').innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
     document.getElementById('mic-btn').disabled = false;
     document.getElementById('voice-state').textContent = 'Ready';
     document.getElementById('voice-orb').className = 'voice-orb';
@@ -2375,7 +2644,7 @@
       document.getElementById('mic-btn').disabled = false;
     } catch (err) {
       console.error(err);
-      document.getElementById('voice-caption').textContent = 'Could not set up the interview — please go back and try again.';
+      document.getElementById('voice-caption').textContent = 'Could not set up the interview. Please go back and try again.';
     }
   }
 
@@ -2412,7 +2681,7 @@
       mainTranscript: null, mainDuration: 0, followUpTranscript: null, followUpDuration: 0,
       pendingNote: null, pendingTransitionLine: null, results: [], finalOverallScore: 0, toughestId: null,
     };
-    document.getElementById('voice-role').textContent = 'Finance — ' + (state.type || 'Behavioral');
+    document.getElementById('voice-role').textContent = 'Finance · ' + (state.type || 'Behavioral');
   }
 
   function toggleMic() {
@@ -2484,7 +2753,7 @@
     voiceSession.transcriptBuffer = '';
     voiceSession.manualStop = false;
     voiceSession.questionStartTs = Date.now();
-    document.getElementById('voice-state').textContent = 'Your turn — speak now';
+    document.getElementById('voice-state').textContent = 'Your turn, speak now';
     document.getElementById('voice-timer').textContent = '00:00';
     clearInterval(voiceTimerInterval);
     let seconds = 0;
@@ -2499,7 +2768,7 @@
       document.getElementById('voice-rec-indicator').style.display = 'flex';
       document.getElementById('voice-text-fallback').style.display = 'none';
       document.getElementById('mic-btn').style.display = 'inline-flex';
-      document.getElementById('mic-btn').textContent = '⏹️';
+      document.getElementById('mic-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>';
       startRecognition(SR);
     } else {
       document.getElementById('voice-caption').textContent = 'Type your answer below.';
@@ -2728,7 +2997,7 @@
   async function finishVoiceSession() {
     voiceSession.phase = 'done';
     document.getElementById('voice-orb').className = 'voice-orb';
-    document.getElementById('voice-caption').textContent = "That's a wrap — nice work.";
+    document.getElementById('voice-caption').textContent = "That's a wrap, nice work.";
     document.getElementById('voice-state').textContent = 'Session complete';
     document.getElementById('mic-btn').style.display = 'none';
     document.getElementById('voice-text-fallback').style.display = 'none';
@@ -2786,7 +3055,7 @@
 
     goTo('voice');
     resetVoiceUI();
-    document.getElementById('voice-role').textContent = 'Finance — ' + (voiceSession.format || 'Behavioral');
+    document.getElementById('voice-role').textContent = 'Finance · ' + (voiceSession.format || 'Behavioral');
     document.getElementById('voice-caption').textContent = "Tap the mic to retry this question.";
   }
 
@@ -2794,7 +3063,7 @@
   const drillMeta = {
     arithmetic: { label: 'Arithmetic', title: 'Answer as Many as You Can', instructions: 'Addition, subtraction, multiplication, division. Type your answer and press Enter. You have 60 seconds.' },
     arithmetic_hard: { label: 'Arithmetic Hard', title: 'Answer as Many as You Can', instructions: 'Same four operations, uglier numbers and multi-step expressions. Type your answer and press Enter. You have 60 seconds.' },
-    sequence: { label: 'Sequence', title: 'Complete the Pattern', instructions: 'A sequence of numbers appears — type the next number to fit the pattern and press Enter. You have 60 seconds.' },
+    sequence: { label: 'Sequence', title: 'Complete the Pattern', instructions: 'A sequence of numbers appears. Type the next number to fit the pattern and press Enter. You have 60 seconds.' },
     risk: { label: 'Risk', title: 'Pump or Collect', instructions: 'Each pump earns +1 point but risks popping the balloon. Collect to bank what you\'ve earned this round, or keep pumping. 8 balloons per session.' }
   };
   let currentDrill = 'arithmetic';
@@ -2889,7 +3158,7 @@
           <div class="leaderboard-score">—</div>
         </div>`;
       }
-      listEl.innerHTML = rowsHtml || '<div class="leaderboard-empty">No scores yet — be the first.</div>';
+      listEl.innerHTML = rowsHtml || '<div class="leaderboard-empty">No scores yet. Be the first.</div>';
     } catch (err) {
       console.error(err);
       listEl.innerHTML = '<div class="leaderboard-empty">Could not load the leaderboard.</div>';
@@ -2916,7 +3185,7 @@
     try {
       const rows = await MockoDrills.fetchLeaderboard({ drillKey, period });
       if (!rows.length) {
-        listEl.innerHTML = '<div class="leaderboard-empty">No scores yet — be the first.</div>';
+        listEl.innerHTML = '<div class="leaderboard-empty">No scores yet. Be the first.</div>';
         return;
       }
       listEl.innerHTML = rows.map(r => {
@@ -3094,8 +3363,8 @@
   function finishSprintDrill() {
     document.getElementById('sprint-input').onkeydown = null;
     const label = drillMeta[sprintKey].label;
-    finishDrillWithScore(sprintKey, sprintCorrect, sprintCorrect, `${label} — Correct in 60s`,
-      sprintCorrect >= 15 ? "Fast round — that's a strong pace." : "Solid start — speed comes with reps.");
+    finishDrillWithScore(sprintKey, sprintCorrect, sprintCorrect, `${label} · Correct in 60s`,
+      sprintCorrect >= 15 ? "Fast round, that's a strong pace." : "Solid start, speed comes with reps.");
   }
 
   // --- Risk (balloon pump-or-collect) ---
@@ -3173,7 +3442,7 @@
   function finishRiskDrill() {
     document.getElementById('risk-actions').style.display = 'none';
     finishDrillWithScore('risk', riskBanked, riskBanked, 'Points Banked',
-      riskBanked >= 30 ? "Strong session — you found a good edge between greed and caution." : "Solid run — a bit more patience on the risky colors could push the total higher.");
+      riskBanked >= 30 ? "Strong session. You found a good edge between greed and caution." : "Solid run. A bit more patience on the risky colors could push the total higher.");
   }
 </script>
 </body>
