@@ -12,8 +12,14 @@ async function submitScore({ drillKey, score, meta = {} }) {
   return data;
 }
 
+function leaderboardView(period) {
+  if (period === 'daily') return 'drill_leaderboard_daily';
+  if (period === 'weekly') return 'drill_leaderboard_weekly';
+  return 'drill_leaderboard_alltime';
+}
+
 async function fetchLeaderboard({ drillKey, period = 'alltime', limit = 20 }) {
-  const view = period === 'daily' ? 'drill_leaderboard_daily' : 'drill_leaderboard_alltime';
+  const view = leaderboardView(period);
   const { data: rows, error } = await supabase
     .from(view)
     .select('user_id, score, created_at')
@@ -26,6 +32,19 @@ async function fetchLeaderboard({ drillKey, period = 'alltime', limit = 20 }) {
   const profiles = await window.MockoProfile.getProfilesByIds([...new Set(rows.map(r => r.user_id))]);
   const byId = Object.fromEntries(profiles.map(p => [p.user_id, p]));
   return rows.map((r, i) => ({ rank: i + 1, ...r, profile: byId[r.user_id] }));
+}
+
+async function fetchMyScore({ drillKey, period = 'alltime' }) {
+  const user = window.MockoAuth.getUser();
+  if (!user) return null;
+  const { data, error } = await supabase
+    .from(leaderboardView(period))
+    .select('score')
+    .eq('drill_key', drillKey)
+    .eq('user_id', user.id)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? data.score : null;
 }
 
 async function fetchPercentile({ drillKey, score }) {
@@ -42,4 +61,4 @@ async function fetchRank({ drillKey, period = 'alltime' }) {
   return data;
 }
 
-window.MockoDrills = { submitScore, fetchLeaderboard, fetchPercentile, fetchRank };
+window.MockoDrills = { submitScore, fetchLeaderboard, fetchPercentile, fetchRank, fetchMyScore };
