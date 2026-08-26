@@ -7,9 +7,12 @@ supabase.auth.getSession().then(({ data }) => {
   window.dispatchEvent(new CustomEvent('mocko-auth-change', { detail: currentUser }));
 });
 
-supabase.auth.onAuthStateChange((_event, session) => {
+supabase.auth.onAuthStateChange((event, session) => {
   currentUser = session?.user ?? null;
   window.dispatchEvent(new CustomEvent('mocko-auth-change', { detail: currentUser }));
+  if (event === 'PASSWORD_RECOVERY') {
+    window.dispatchEvent(new CustomEvent('mocko-password-recovery'));
+  }
 });
 
 async function signUp(email, password) {
@@ -38,8 +41,28 @@ async function signInWithLinkedIn() {
   if (error) throw error;
 }
 
+async function resetPassword(email) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + window.location.pathname,
+  });
+  if (error) throw error;
+}
+
+async function updatePassword(newPassword) {
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) throw error;
+}
+
+async function updateEmail(newEmail) {
+  const { error } = await supabase.auth.updateUser({ email: newEmail });
+  if (error) throw error;
+}
+
 function getUser() {
   return currentUser;
 }
 
-window.MockoAuth = { signUp, signIn, signOut, getUser, signInWithGoogle, signInWithLinkedIn };
+window.MockoAuth = {
+  signUp, signIn, signOut, getUser, signInWithGoogle, signInWithLinkedIn,
+  resetPassword, updatePassword, updateEmail,
+};

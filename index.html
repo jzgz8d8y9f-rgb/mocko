@@ -3,25 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <title>Mocko: Interview Practice</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg transform='rotate(-8 40 58)'%3E%3Cpath d='M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%233FA796'/%3E%3C/g%3E%3Cg transform='rotate(8 61 42)'%3E%3Cpath d='M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%23F2E9DC'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg transform='rotate(-8 40 58)'%3E%3Cpath d='M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%2327CBBB'/%3E%3C/g%3E%3Cg transform='rotate(8 61 42)'%3E%3Cpath d='M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%23268691'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
   :root {
-    --bg: #0E1116;
-    --surface: #171B22;
-    --surface-2: #1E232C;
+    --bg: #22264B;
+    --surface: #2B305E;
+    --surface-2: #31376C;
     --cue: #F2E9DC;
     --cue-dim: #E4D8C4;
     --record: #E63946;
-    --good: #3FA796;
+    --good: #27CBBB;
+    --good-dim: #268691;
     --warn: #E9A23B;
-    --text: #E8EAED;
-    --text-muted: #8A93A3;
-    --line: #2A2F3A;
+    --text: #EDEFFA;
+    --text-muted: #868BB3;
+    --line: #3E447B;
     --tag-structure: #7C9EF2;
     --tag-communication: #C77DE0;
-    --tag-quantitative: #45B98C;
+    --tag-quantitative: #4ECDA0;
     --tag-risk: #E8814A;
   }
 
@@ -29,24 +30,25 @@
     --bg: #F7F5F0;
     --surface: #FFFFFF;
     --surface-2: #EFECE5;
-    --cue: #171B22;
-    --cue-dim: #2A2F3A;
+    --cue: #22264B;
+    --cue-dim: #31376C;
     --record: #D6303E;
-    --good: #1F8577;
+    --good: #187E74;
+    --good-dim: #195961;
     --warn: #C97F1E;
     --text: #1A1D23;
     --text-muted: #6B7280;
     --line: #E2DFD8;
     --tag-structure: #3E63C9;
     --tag-communication: #9A4CB8;
-    --tag-quantitative: #23886A;
+    --tag-quantitative: #1E8F68;
     --tag-risk: #BD5C25;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
-  .display { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; }
+  .display { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.01em; }
   .mono { font-family: 'IBM Plex Mono', monospace; }
 
   .app { max-width: 900px; margin: 0 auto; padding: 40px 24px 90px; }
@@ -158,7 +160,7 @@
      info panel so accent color shows up in more than one isolated spot. */
   .icon-chip { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--surface-2); color: var(--text-muted); }
   .icon-chip svg { width: 19px; height: 19px; }
-  .icon-chip.tint-good, .drill-icon.tint-good { background: rgba(63,167,150,0.15); color: var(--good); }
+  .icon-chip.tint-good, .drill-icon.tint-good { background: rgba(39,203,187,0.15); color: var(--good); }
   .icon-chip.tint-warn, .drill-icon.tint-warn { background: rgba(233,162,59,0.15); color: var(--warn); }
   .icon-chip.tint-record, .drill-icon.tint-record { background: rgba(230,57,70,0.15); color: var(--record); }
   .icon-chip.tint-structure, .drill-icon.tint-structure { background: rgba(124,158,242,0.16); color: var(--tag-structure); }
@@ -193,7 +195,7 @@
 
   .nav-tabs { display: flex; gap: 4px; }
   .nav-tab { font-family: 'IBM Plex Mono'; font-size: 12px; letter-spacing: 0.03em; color: var(--text-muted); background: none; border: none; padding: 8px 14px; cursor: pointer; border-radius: 6px; transition: all 0.15s; }
-  .nav-tab.active { color: var(--good); background: rgba(63,167,150,0.14); }
+  .nav-tab.active { color: var(--good); background: rgba(39,203,187,0.14); }
   .nav-tab:hover:not(.active) { color: var(--text); }
 
   .screen { display: none; animation: fadeIn 0.35s ease; }
@@ -214,7 +216,7 @@
 
   .toggle-row { display: flex; gap: 10px; }
   .toggle-card { flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.15s; }
-  .toggle-card.selected { border-color: var(--good); background: rgba(63,167,150,0.08); }
+  .toggle-card.selected { border-color: var(--good); background: rgba(39,203,187,0.08); }
   .toggle-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
   .toggle-card p { font-size: 12.5px; color: var(--text-muted); }
 
@@ -228,7 +230,7 @@
   .difficulty-pill-row .pill-btn[data-difficulty="medium"].selected { background: var(--warn); border-color: var(--warn); color: var(--bg); }
   .difficulty-pill-row .pill-btn[data-difficulty="hard"].selected { background: var(--record); border-color: var(--record); color: white; }
   .difficulty-tag { font-family: 'IBM Plex Mono'; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; display: inline-block; }
-  .difficulty-tag[data-difficulty="easy"] { background: rgba(63,167,150,0.16); color: var(--good); }
+  .difficulty-tag[data-difficulty="easy"] { background: rgba(39,203,187,0.16); color: var(--good); }
   .difficulty-tag[data-difficulty="medium"] { background: rgba(233,162,59,0.18); color: var(--warn); }
   .difficulty-tag[data-difficulty="hard"] { background: rgba(230,57,70,0.16); color: var(--record); }
   .count-select { font-family: 'Inter'; font-size: 14px; font-weight: 600; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer; }
@@ -282,7 +284,7 @@
   .mode-card p { color: var(--text-muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 20px; }
   .mode-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
   .mode-a .mode-icon { background: rgba(230,57,70,0.15); }
-  .mode-b .mode-icon { background: rgba(63,167,150,0.15); }
+  .mode-b .mode-icon { background: rgba(39,203,187,0.15); }
   .mode-cta { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
   .mode-a .mode-cta { color: var(--record); }
   .mode-b .mode-cta { color: var(--good); }
@@ -360,7 +362,7 @@
   .interviewer-name { font-size: 15px; font-weight: 600; }
   .interviewer-role { font-size: 12px; color: var(--text-muted); margin-bottom: 30px; }
 
-  .voice-orb { width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 24px; position: relative; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(63,167,150,0.25), transparent 70%); }
+  .voice-orb { width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 24px; position: relative; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(39,203,187,0.25), transparent 70%); }
   .voice-orb-core { width: 90px; height: 90px; border-radius: 50%; background: var(--good); opacity: 0.85; transition: transform 0.15s ease; }
   .voice-orb.listening .voice-orb-core { animation: orb-pulse 1.4s ease-in-out infinite; }
   .voice-orb.ai-talking .voice-orb-core { background: var(--cue); animation: orb-pulse 0.9s ease-in-out infinite; }
@@ -388,7 +390,7 @@
   .theme-item .tname { display: flex; align-items: center; gap: 10px; }
   .theme-tag { font-family: 'IBM Plex Mono'; font-size: 10px; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.03em; }
   .theme-tag.recurring { background: rgba(230,57,70,0.18); color: var(--record); }
-  .theme-tag.strength { background: rgba(63,167,150,0.18); color: var(--good); }
+  .theme-tag.strength { background: rgba(39,203,187,0.18); color: var(--good); }
   .theme-freq { font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--text-muted); }
 
   .history-list { display: flex; flex-direction: column; gap: 10px; }
@@ -425,7 +427,7 @@
   .drill-card[data-type="communication"] .drill-icon { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
   .drill-card[data-type="structure"] .drill-icon { background: rgba(124,158,242,0.16); color: var(--tag-structure); }
   .drill-badge { font-family: 'IBM Plex Mono'; font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
-  .drill-badge.live { background: rgba(63,167,150,0.18); color: var(--good); }
+  .drill-badge.live { background: rgba(39,203,187,0.18); color: var(--good); }
   .drill-badge.soon { background: rgba(138,147,163,0.15); color: var(--text-muted); }
   .drill-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
   .drill-card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
@@ -506,7 +508,7 @@
   .auth-info-item { display: flex; gap: 14px; align-items: flex-start; }
   .auth-info-item h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
   .auth-info-item p { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
-  .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 36px; max-width: 380px; flex: 0 0 380px; margin: 0 auto; }
+  .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 40px; max-width: 460px; flex: 0 0 460px; margin: 0 auto; }
   @media (max-width: 760px) { .auth-panel { flex-basis: 100%; } }
   .auth-field { margin-bottom: 16px; }
   .auth-field label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
@@ -514,7 +516,15 @@
   .auth-field input:focus { outline: none; border-color: var(--good); }
   .auth-field input.field-invalid { border-color: var(--record); }
   .auth-error { color: var(--record); font-size: 13px; margin-bottom: 14px; min-height: 18px; }
+  .auth-note { color: var(--text-muted); font-size: 13px; margin-bottom: 14px; }
+  .auth-forgot { text-align: center; font-size: 13px; margin-top: -6px; margin-bottom: 14px; }
+  .auth-forgot a { color: var(--good); cursor: pointer; text-decoration: underline; }
   .auth-switch { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 18px; }
+  .gender-row { display: flex; gap: 10px; }
+  .gender-option { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 8px; cursor: pointer; transition: all 0.15s; font-family: 'Inter'; font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+  .gender-option svg { width: 20px; height: 20px; }
+  .gender-option:hover { border-color: var(--text-muted); }
+  .gender-option.selected { border-color: var(--good); background: rgba(39,203,187,0.08); color: var(--good); }
   .auth-switch a { color: var(--good); cursor: pointer; text-decoration: underline; }
 
   .oauth-row { display: flex; gap: 10px; }
@@ -540,7 +550,7 @@
     <div class="logo" onclick="goToHome()" style="cursor:pointer;">
       <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
         <g transform="rotate(-8 40 58)"><path class="cheer-l" d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--good)"/></g>
-        <g transform="rotate(8 61 42)"><path class="cheer-r" d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--cue)"/></g>
+        <g transform="rotate(8 61 42)"><path class="cheer-r" d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--good-dim)"/></g>
       </svg>
       <div class="logo-text">MOCKO</div>
     </div>
@@ -557,7 +567,6 @@
 
     <!-- LOGGED OUT: welcome / landing -->
     <div id="home-landing">
-      <div class="step-label">Finance Track</div>
       <div class="hero">
         <h1 class="display">Want to land your dream role?</h1>
         <p>Mocko is interview prep built for finance. Practice real questions, drill the skills that come up cold, and walk in ready.</p>
@@ -692,7 +701,6 @@
 
     <!-- LOGGED IN: dashboard -->
     <div id="home-dashboard" style="display:none;">
-      <div class="step-label">Finance Track</div>
       <div class="hero">
         <h1 class="display">Welcome back</h1>
         <p>Jump into a practice session, run a quick drill, or check your progress.</p>
@@ -719,7 +727,6 @@
 
   <!-- INTERVIEW PRACTICE (mode choice) -->
   <div class="screen" id="screen-interview">
-    <div class="step-label">Finance Track</div>
     <div class="hero">
       <h1 class="display">Choose your format</h1>
       <p>Record and get graded, or run a live conversation.</p>
@@ -733,7 +740,7 @@
         <div class="mode-cta">Start recording →</div>
       </div>
       <div class="mode-card mode-b" onclick="chooseMode('voice')">
-        <div class="mode-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3FA796" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
+        <div class="mode-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#27CBBB" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
         <div class="mode-eyebrow">Live · Voice</div>
         <h3>Mock Interview</h3>
         <p>Talk it out loud. The AI asks a question, listens, and follows up naturally, like a real conversation with no typing.</p>
@@ -810,9 +817,17 @@
         <span style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em;">or</span>
         <div style="flex:1; height:1px; background:var(--line);"></div>
       </div>
+      <div class="auth-field" id="auth-username-field" style="display:none;">
+        <label>Username</label>
+        <input type="text" id="auth-username" maxlength="20" autocomplete="username" placeholder="yourname">
+      </div>
       <div class="auth-field">
         <label>Email</label>
         <input type="email" id="auth-email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="auth-field" id="auth-phone-field" style="display:none;">
+        <label>Phone Number</label>
+        <input type="tel" id="auth-phone" autocomplete="tel" placeholder="+1 555 123 4567">
       </div>
       <div class="auth-field">
         <label>Password</label>
@@ -830,7 +845,34 @@
         <label>Confirm Password</label>
         <input type="password" id="auth-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onAuthConfirmInput()">
       </div>
+      <div class="auth-field" id="auth-gender-field" style="display:none;">
+        <label>Gender</label>
+        <div class="gender-row" id="auth-gender-row">
+          <div class="gender-option" data-gender="male" onclick="selectAuthGender('male')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="6"/><line x1="14.5" y1="9.5" x2="20" y2="4"/><polyline points="14 4 20 4 20 10"/></svg>
+            Male
+          </div>
+          <div class="gender-option" data-gender="female" onclick="selectAuthGender('female')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="19" x2="16" y2="19"/></svg>
+            Female
+          </div>
+          <div class="gender-option" data-gender="other" onclick="selectAuthGender('other')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Other
+          </div>
+        </div>
+      </div>
+      <div class="auth-field" id="auth-resume-field" style="display:none;">
+        <label>Resume <span style="text-transform:none; font-weight:400; color:var(--text-muted);">(optional)</span></label>
+        <label class="btn btn-secondary" style="cursor:pointer; display:block; width:100%; text-align:center; box-sizing:border-box;">
+          <span id="auth-resume-filename">Upload PDF</span>
+          <input type="file" accept=".pdf" id="auth-resume-input" style="display:none;" onchange="onAuthResumeSelected(event)">
+        </label>
+      </div>
       <div class="auth-error" id="auth-error"></div>
+      <div class="auth-forgot" id="auth-forgot-password" style="display:none;">
+        <a onclick="sendPasswordReset()">Forgot your password?</a>
+      </div>
       <div class="btn-row">
         <button class="btn btn-primary" id="auth-submit-btn" onclick="submitAuthForm()" style="width:100%">Sign In</button>
       </div>
@@ -838,6 +880,36 @@
         New here? <a onclick="setAuthMode('signup')">Create an account</a>
       </div>
     </div>
+    </div>
+  </div>
+
+  <!-- RESET PASSWORD -->
+  <div class="screen" id="screen-reset-password">
+    <div class="hero">
+      <h1 class="display">Set a new password</h1>
+      <p>Choose a new password for your account.</p>
+    </div>
+    <div class="auth-panel">
+      <div class="auth-field">
+        <label>New Password</label>
+        <input type="password" id="reset-password" autocomplete="new-password" placeholder="••••••••" oninput="onResetPasswordInput()">
+        <div class="pw-strength" id="reset-pw-strength">
+          <div class="pw-strength-track">
+            <div class="pw-strength-seg" id="reset-pw-seg-0"></div>
+            <div class="pw-strength-seg" id="reset-pw-seg-1"></div>
+            <div class="pw-strength-seg" id="reset-pw-seg-2"></div>
+          </div>
+          <div class="pw-strength-label" id="reset-pw-strength-label"></div>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>Confirm New Password</label>
+        <input type="password" id="reset-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onResetConfirmInput()">
+      </div>
+      <div class="auth-error" id="reset-password-error"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="reset-password-btn" onclick="submitPasswordReset()" style="width:100%">Update Password</button>
+      </div>
     </div>
   </div>
 
@@ -874,10 +946,6 @@
           Change photo
           <input type="file" accept="image/*" id="profile-avatar-input" style="display:none;" onchange="handleAvatarUpload(event)">
         </label>
-      </div>
-      <div class="auth-field">
-        <label>Username</label>
-        <input type="text" id="profile-username" maxlength="20">
       </div>
       <div class="auth-field">
         <label>Bio</label>
@@ -921,9 +989,72 @@
     <button class="back-btn" onclick="goToHome()">← Back</button>
     <div class="hero">
       <h1 class="display">Settings</h1>
-      <p>More settings are coming as Mocko grows.</p>
+      <p>Manage your account details and how Mocko looks.</p>
     </div>
     <div class="select-panel" style="max-width:460px;">
+      <div class="select-group">
+        <div class="select-group-label">Account</div>
+        <div class="select-group-sub">Your account details.</div>
+        <div class="auth-field">
+          <label>Username</label>
+          <input type="text" id="settings-username" maxlength="20">
+        </div>
+        <div class="auth-field">
+          <label>Email</label>
+          <input type="email" id="settings-email" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label>Phone Number</label>
+          <input type="tel" id="settings-phone" autocomplete="tel" placeholder="+1 555 123 4567">
+        </div>
+        <div class="auth-field">
+          <label>Gender</label>
+          <div class="gender-row" id="settings-gender-row">
+            <div class="gender-option" data-gender="male" onclick="selectSettingsGender('male')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="6"/><line x1="14.5" y1="9.5" x2="20" y2="4"/><polyline points="14 4 20 4 20 10"/></svg>
+              Male
+            </div>
+            <div class="gender-option" data-gender="female" onclick="selectSettingsGender('female')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="19" x2="16" y2="19"/></svg>
+              Female
+            </div>
+            <div class="gender-option" data-gender="other" onclick="selectSettingsGender('other')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              Other
+            </div>
+          </div>
+        </div>
+        <div class="auth-error" id="settings-account-error"></div>
+        <div class="btn-row" style="justify-content:flex-end;">
+          <button class="btn btn-primary" onclick="saveAccountSettings()">Save</button>
+        </div>
+      </div>
+
+      <div class="select-group">
+        <div class="select-group-label">Password</div>
+        <div class="select-group-sub">Change your password.</div>
+        <div class="auth-field">
+          <label>New Password</label>
+          <input type="password" id="settings-new-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsPasswordInput()">
+          <div class="pw-strength" id="settings-pw-strength">
+            <div class="pw-strength-track">
+              <div class="pw-strength-seg" id="settings-pw-seg-0"></div>
+              <div class="pw-strength-seg" id="settings-pw-seg-1"></div>
+              <div class="pw-strength-seg" id="settings-pw-seg-2"></div>
+            </div>
+            <div class="pw-strength-label" id="settings-pw-strength-label"></div>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm New Password</label>
+          <input type="password" id="settings-confirm-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsConfirmInput()">
+        </div>
+        <div class="auth-error" id="settings-password-error"></div>
+        <div class="btn-row" style="justify-content:flex-end;">
+          <button class="btn btn-primary" onclick="saveNewPassword()">Update Password</button>
+        </div>
+      </div>
+
       <div class="select-group" style="margin-bottom:0;">
         <div class="select-group-label">Theme</div>
         <div class="select-group-sub">Choose how Mocko looks.</div>
@@ -1310,7 +1441,6 @@
 
   <!-- DRILLS -->
   <div class="screen" id="screen-drills">
-    <div class="step-label">Finance Track</div>
     <div class="hero">
       <h1 class="display">Drills</h1>
       <p>Short, focused reps on one skill at a time. Not a full interview, just the muscle.</p>
@@ -1604,16 +1734,144 @@
     loadProfile();
   }
 
-  function goToSettings() {
+  let settingsSelectedGender = null;
+
+  async function goToSettings() {
     closeAccountMenu();
     goTo('settings');
     updateThemeCards();
+    await loadSettingsAccountForm();
+  }
+
+  async function loadSettingsAccountForm() {
+    const errorEl = document.getElementById('settings-account-error');
+    errorEl.textContent = '';
+    const user = MockoAuth.getUser();
+    document.getElementById('settings-email').value = user ? (user.email || '') : '';
+    try {
+      const profile = currentProfile || await MockoProfile.getProfile();
+      currentProfile = profile;
+      document.getElementById('settings-username').value = profile.username || '';
+      document.getElementById('settings-phone').value = profile.phone_number || '';
+      settingsSelectedGender = profile.gender || null;
+      document.querySelectorAll('#settings-gender-row .gender-option').forEach(el => {
+        el.classList.toggle('selected', el.dataset.gender === settingsSelectedGender);
+      });
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = 'Could not load your account details.';
+    }
+  }
+
+  function selectSettingsGender(g) {
+    settingsSelectedGender = g;
+    document.querySelectorAll('#settings-gender-row .gender-option').forEach(el => {
+      el.classList.toggle('selected', el.dataset.gender === g);
+    });
+  }
+
+  async function saveAccountSettings() {
+    const errorEl = document.getElementById('settings-account-error');
+    errorEl.textContent = '';
+    const username = document.getElementById('settings-username').value.trim();
+    const email = document.getElementById('settings-email').value.trim();
+    const phone = document.getElementById('settings-phone').value.trim();
+
+    const usernameError = validateUsername(username);
+    if (usernameError) { errorEl.textContent = usernameError; return; }
+    const phoneError = validatePhone(phone);
+    if (phoneError) { errorEl.textContent = phoneError; return; }
+
+    try {
+      currentProfile = await MockoProfile.updateProfile({
+        username, phone_number: phone, gender: settingsSelectedGender,
+      });
+      updateAccountBadge(currentProfile);
+    } catch (err) {
+      if (err.code === '23505') errorEl.textContent = 'That username is taken.';
+      else if (err.code === '23514') errorEl.textContent = "That username isn't allowed. Check length, characters, or content.";
+      else errorEl.textContent = err.message || 'Something went wrong.';
+      return;
+    }
+
+    const user = MockoAuth.getUser();
+    if (user && email && email !== user.email) {
+      try {
+        await MockoAuth.updateEmail(email);
+        errorEl.style.color = 'var(--good)';
+        errorEl.textContent = 'Saved. Check your new email to confirm the change.';
+      } catch (err) {
+        errorEl.style.color = '';
+        errorEl.textContent = err.message || 'Could not update email.';
+        return;
+      }
+    } else {
+      errorEl.style.color = 'var(--good)';
+      errorEl.textContent = 'Saved.';
+    }
+  }
+
+  function onSettingsPasswordInput() {
+    const meter = document.getElementById('settings-pw-strength');
+    const pw = document.getElementById('settings-new-password').value;
+    if (!pw) {
+      meter.classList.remove('active');
+    } else {
+      meter.classList.add('active');
+      const score = scorePasswordStrength(pw);
+      const tier = PW_STRENGTH_TIERS[score] || { label: '', color: 'var(--line)' };
+      for (let i = 0; i < 3; i++) {
+        document.getElementById('settings-pw-seg-' + i).style.background = i < score ? tier.color : 'var(--line)';
+      }
+      document.getElementById('settings-pw-strength-label').innerHTML = pw.length
+        ? `Password strength: <b style="color:${tier.color}">${tier.label}</b>` : '';
+    }
+    onSettingsConfirmInput();
+  }
+
+  function onSettingsConfirmInput() {
+    const confirmInput = document.getElementById('settings-confirm-password');
+    const password = document.getElementById('settings-new-password').value;
+    if (!confirmInput.value) {
+      confirmInput.classList.remove('field-invalid');
+      return;
+    }
+    confirmInput.classList.toggle('field-invalid', confirmInput.value !== password);
+  }
+
+  async function saveNewPassword() {
+    const errorEl = document.getElementById('settings-password-error');
+    errorEl.textContent = '';
+    errorEl.style.color = '';
+    const password = document.getElementById('settings-new-password').value;
+    const confirmPassword = document.getElementById('settings-confirm-password').value;
+    const passwordError = validatePassword(password);
+    if (passwordError) { errorEl.textContent = passwordError; return; }
+    if (password !== confirmPassword) {
+      document.getElementById('settings-confirm-password').classList.add('field-invalid');
+      errorEl.textContent = 'Passwords do not match.';
+      return;
+    }
+    try {
+      await MockoAuth.updatePassword(password);
+      document.getElementById('settings-new-password').value = '';
+      document.getElementById('settings-confirm-password').value = '';
+      document.getElementById('settings-pw-strength').classList.remove('active');
+      errorEl.style.color = 'var(--good)';
+      errorEl.textContent = 'Password updated.';
+    } catch (err) {
+      errorEl.textContent = err.message || 'Could not update password.';
+    }
   }
 
   function goToHelp() {
     closeAccountMenu();
     goTo('help');
   }
+
+  let failedSignInAttempts = 0;
+  let pendingSignupResumeFile = null;
+  let authSelectedGender = null;
 
   function setAuthMode(mode) {
     const isSignup = mode === 'signup';
@@ -1627,12 +1885,50 @@
       ? `Already have an account? <a onclick="setAuthMode('signin')">Sign in</a>`
       : `New here? <a onclick="setAuthMode('signup')">Create an account</a>`;
     document.getElementById('auth-error').textContent = '';
+    document.getElementById('auth-username-field').style.display = isSignup ? '' : 'none';
+    document.getElementById('auth-phone-field').style.display = isSignup ? '' : 'none';
     document.getElementById('auth-confirm-field').style.display = isSignup ? '' : 'none';
+    document.getElementById('auth-gender-field').style.display = isSignup ? '' : 'none';
+    document.getElementById('auth-resume-field').style.display = isSignup ? '' : 'none';
     document.getElementById('pw-strength').classList.remove('active');
+    failedSignInAttempts = 0;
+    document.getElementById('auth-forgot-password').style.display = 'none';
     const confirmInput = document.getElementById('auth-password-confirm');
     confirmInput.value = '';
     confirmInput.classList.remove('field-invalid');
     document.getElementById('auth-password').classList.remove('field-invalid');
+    document.getElementById('auth-username').value = '';
+    document.getElementById('auth-phone').value = '';
+    pendingSignupResumeFile = null;
+    document.getElementById('auth-resume-filename').textContent = 'Upload PDF';
+    authSelectedGender = null;
+    document.querySelectorAll('#auth-gender-row .gender-option').forEach(el => el.classList.remove('selected'));
+  }
+
+  function selectAuthGender(g) {
+    authSelectedGender = g;
+    document.querySelectorAll('#auth-gender-row .gender-option').forEach(el => {
+      el.classList.toggle('selected', el.dataset.gender === g);
+    });
+  }
+
+  function onAuthResumeSelected(event) {
+    const file = event.target.files[0];
+    pendingSignupResumeFile = file || null;
+    document.getElementById('auth-resume-filename').textContent = file ? file.name : 'Upload PDF';
+  }
+
+  function validatePassword(pw) {
+    if (pw.length < 8) return 'Password must be at least 8 characters.';
+    if (!/[^A-Za-z0-9]/.test(pw)) return 'Password must include at least one special character.';
+    return null;
+  }
+
+  function validatePhone(raw) {
+    if (!/^[+\d][\d\s().-]{6,18}$/.test(raw.trim())) {
+      return 'Enter a valid phone number.';
+    }
+    return null;
   }
 
   function scorePasswordStrength(pw) {
@@ -1701,24 +1997,136 @@
     const password = document.getElementById('auth-password').value;
     const errorEl = document.getElementById('auth-error');
     errorEl.textContent = '';
-    if (mode === 'signup') {
-      const confirmPassword = document.getElementById('auth-password-confirm').value;
-      if (password !== confirmPassword) {
-        document.getElementById('auth-password-confirm').classList.add('field-invalid');
-        errorEl.textContent = 'Passwords do not match.';
-        return;
-      }
-    }
-    try {
-      if (mode === 'signup') {
-        await MockoAuth.signUp(email, password);
-      } else {
+
+    if (mode === 'signin') {
+      try {
         await MockoAuth.signIn(email, password);
+        failedSignInAttempts = 0;
+        document.getElementById('auth-forgot-password').style.display = 'none';
+      } catch (err) {
+        failedSignInAttempts++;
+        errorEl.textContent = err.message || 'Something went wrong.';
+        if (failedSignInAttempts >= 3) {
+          document.getElementById('auth-forgot-password').style.display = 'block';
+        }
       }
+      return;
+    }
+
+    // signup
+    const username = document.getElementById('auth-username').value.trim();
+    const phone = document.getElementById('auth-phone').value.trim();
+    const confirmPassword = document.getElementById('auth-password-confirm').value;
+
+    const usernameError = validateUsername(username);
+    if (usernameError) { errorEl.textContent = usernameError; return; }
+    const phoneError = validatePhone(phone);
+    if (phoneError) { errorEl.textContent = phoneError; return; }
+    const passwordError = validatePassword(password);
+    if (passwordError) { errorEl.textContent = passwordError; return; }
+    if (password !== confirmPassword) {
+      document.getElementById('auth-password-confirm').classList.add('field-invalid');
+      errorEl.textContent = 'Passwords do not match.';
+      return;
+    }
+    if (!authSelectedGender) { errorEl.textContent = 'Please select a gender.'; return; }
+
+    try {
+      await MockoAuth.signUp(email, password);
     } catch (err) {
       errorEl.textContent = err.message || 'Something went wrong.';
+      return;
+    }
+
+    try {
+      await MockoProfile.updateProfile({ username, phone_number: phone, gender: authSelectedGender });
+    } catch (err) {
+      if (err.code === '23505') {
+        errorEl.textContent = 'Account created, but that username is taken. You can change it in Settings.';
+      } else if (err.code === '23514') {
+        errorEl.textContent = "Account created, but that username isn't allowed. You can change it in Settings.";
+      } else {
+        console.error(err);
+      }
+    }
+
+    if (pendingSignupResumeFile) {
+      try {
+        await MockoResume.uploadResume(pendingSignupResumeFile, pendingSignupResumeFile.name);
+      } catch (err) {
+        console.error('Resume upload at signup failed:', err);
+      }
     }
   }
+
+  async function sendPasswordReset() {
+    const errorEl = document.getElementById('auth-error');
+    const email = document.getElementById('auth-email').value.trim();
+    if (!email) {
+      errorEl.textContent = 'Enter your email above first, then tap "Forgot your password?" again.';
+      return;
+    }
+    try {
+      await MockoAuth.resetPassword(email);
+      errorEl.style.color = 'var(--good)';
+      errorEl.textContent = 'Check your email for a password reset link.';
+    } catch (err) {
+      errorEl.style.color = '';
+      errorEl.textContent = err.message || 'Could not send reset email.';
+    }
+  }
+
+  function onResetPasswordInput() {
+    const meter = document.getElementById('reset-pw-strength');
+    const pw = document.getElementById('reset-password').value;
+    if (!pw) {
+      meter.classList.remove('active');
+    } else {
+      meter.classList.add('active');
+      const score = scorePasswordStrength(pw);
+      const tier = PW_STRENGTH_TIERS[score] || { label: '', color: 'var(--line)' };
+      for (let i = 0; i < 3; i++) {
+        document.getElementById('reset-pw-seg-' + i).style.background = i < score ? tier.color : 'var(--line)';
+      }
+      document.getElementById('reset-pw-strength-label').innerHTML = pw.length
+        ? `Password strength: <b style="color:${tier.color}">${tier.label}</b>` : '';
+    }
+    onResetConfirmInput();
+  }
+
+  function onResetConfirmInput() {
+    const confirmInput = document.getElementById('reset-password-confirm');
+    const password = document.getElementById('reset-password').value;
+    if (!confirmInput.value) {
+      confirmInput.classList.remove('field-invalid');
+      return;
+    }
+    confirmInput.classList.toggle('field-invalid', confirmInput.value !== password);
+  }
+
+  async function submitPasswordReset() {
+    const errorEl = document.getElementById('reset-password-error');
+    errorEl.textContent = '';
+    const password = document.getElementById('reset-password').value;
+    const confirmPassword = document.getElementById('reset-password-confirm').value;
+    const passwordError = validatePassword(password);
+    if (passwordError) { errorEl.textContent = passwordError; return; }
+    if (password !== confirmPassword) {
+      document.getElementById('reset-password-confirm').classList.add('field-invalid');
+      errorEl.textContent = 'Passwords do not match.';
+      return;
+    }
+    try {
+      await MockoAuth.updatePassword(password);
+      goToHome();
+    } catch (err) {
+      errorEl.textContent = err.message || 'Could not update password.';
+    }
+  }
+
+  window.addEventListener('mocko-password-recovery', () => {
+    goTo('reset-password');
+  });
 
   document.querySelectorAll('#length-row .toggle-card').forEach(el => el.addEventListener('click', () => {
     document.querySelectorAll('#length-row .toggle-card').forEach(c => c.classList.remove('selected'));
@@ -2478,7 +2886,6 @@
   }
 
   function populateProfileEditForm(profile) {
-    document.getElementById('profile-username').value = profile.username || '';
     document.getElementById('profile-bio').value = profile.bio || '';
     const links = profile.social_links || {};
     document.getElementById('profile-twitter').value = links.twitter || '';
@@ -2547,15 +2954,8 @@
   async function saveProfile() {
     const errorEl = document.getElementById('profile-error');
     errorEl.textContent = '';
-    const username = document.getElementById('profile-username').value.trim();
-    const usernameError = validateUsername(username);
-    if (usernameError) {
-      errorEl.textContent = usernameError;
-      return;
-    }
     try {
       currentProfile = await MockoProfile.updateProfile({
-        username,
         bio: document.getElementById('profile-bio').value.trim(),
         social_links: {
           twitter: document.getElementById('profile-twitter').value.trim(),
@@ -2567,13 +2967,7 @@
       updateAccountBadge(currentProfile);
       exitProfileEditMode();
     } catch (err) {
-      if (err.code === '23505') {
-        errorEl.textContent = 'That username is taken.';
-      } else if (err.code === '23514') {
-        errorEl.textContent = "That username isn't allowed. Check length, characters, or content.";
-      } else {
-        errorEl.textContent = err.message || 'Something went wrong.';
-      }
+      errorEl.textContent = err.message || 'Something went wrong.';
     }
   }
 
