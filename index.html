@@ -2188,6 +2188,17 @@
     }
   }
 
+  // Supabase deliberately returns the same "Invalid login credentials"
+  // error whether the email doesn't exist or the password is wrong --
+  // distinguishing them here would let an attacker enumerate which
+  // emails have accounts, so both map to one generic message.
+  function formatSignInError(err) {
+    const msg = (err && err.message) || '';
+    if (/invalid login credentials/i.test(msg)) return 'Invalid email or password.';
+    if (/email not confirmed/i.test(msg)) return 'Please confirm your email before signing in.';
+    return msg || 'Something went wrong.';
+  }
+
   async function submitAuthForm() {
     const mode = document.getElementById('auth-submit-btn').dataset.mode || 'signin';
     const email = document.getElementById('auth-email').value.trim();
@@ -2202,7 +2213,8 @@
         document.getElementById('auth-forgot-password').style.display = 'none';
       } catch (err) {
         failedSignInAttempts++;
-        errorEl.textContent = err.message || 'Something went wrong.';
+        document.getElementById('auth-password').value = '';
+        errorEl.textContent = formatSignInError(err);
         if (failedSignInAttempts >= 3) {
           document.getElementById('auth-forgot-password').style.display = 'block';
         }
