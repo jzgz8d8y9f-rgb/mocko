@@ -1696,6 +1696,8 @@
       const action = pendingAuthAction;
       pendingAuthAction = null;
       action();
+    } else if (user && document.getElementById('screen-auth').classList.contains('active')) {
+      goToHome();
     }
   });
 
