@@ -24,6 +24,8 @@
     --tag-communication: #C77DE0;
     --tag-quantitative: #4ECDA0;
     --tag-risk: #E8814A;
+    --texture-dot: rgba(39,203,187,0.07);
+    --texture-glow: rgba(39,203,187,0.12);
   }
 
   :root[data-theme="light"] {
@@ -43,11 +45,20 @@
     --tag-communication: #9A4CB8;
     --tag-quantitative: #1E8F68;
     --tag-risk: #BD5C25;
+    --texture-dot: rgba(24,126,116,0.06);
+    --texture-glow: rgba(24,126,116,0.07);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
-  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  body {
+    background:
+      radial-gradient(circle at 18% 0%, var(--texture-glow), transparent 40%),
+      radial-gradient(var(--texture-dot) 1px, transparent 1px) 0 0/24px 24px,
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased;
+  }
   .display { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.01em; }
   .mono { font-family: 'IBM Plex Mono', monospace; }
 
@@ -415,6 +426,34 @@
   .hub-grid.hub-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
   @media (max-width: 720px) { .hub-grid, .hub-grid.hub-grid-3 { grid-template-columns: 1fr; } }
   .hub-card h4 { font-size: 17px; }
+
+  /* Home life signals: streak, recent activity, continue-session, and
+     per-card stat tags -- all hidden unless there's real data, so a
+     fresh account still sees today's plain layout. */
+  .hero h1 { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .streak-chip { font-family: 'IBM Plex Mono'; font-size: 13px; font-weight: 600; color: var(--warn); background: rgba(233,162,59,0.14); border-radius: 100px; padding: 5px 12px 5px 10px; display: inline-flex; align-items: center; gap: 5px; }
+  .recent-strip { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+  .recent-chip { display: flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 100px; padding: 7px 14px 7px 8px; font-size: 12.5px; color: var(--text-muted); }
+  .recent-chip .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .recent-chip b { color: var(--text); font-weight: 600; }
+
+  .continue-card {
+    cursor: pointer;
+    background: linear-gradient(135deg, rgba(39,203,187,0.14), rgba(39,203,187,0.04));
+    border: 1px solid var(--good); border-radius: 14px; padding: 18px 22px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    margin-bottom: 24px;
+  }
+  .continue-left { display: flex; align-items: center; gap: 16px; }
+  .continue-icon { width: 42px; height: 42px; border-radius: 10px; background: rgba(39,203,187,0.2); color: var(--good); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .continue-icon svg { width: 21px; height: 21px; }
+  .continue-eyebrow { font-family: 'IBM Plex Mono'; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--good); margin-bottom: 3px; }
+  .continue-title { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .continue-sub { font-size: 12.5px; color: var(--text-muted); }
+  .continue-btn { flex-shrink: 0; background: var(--good); color: var(--bg); border: none; }
+
+  .stat-tag { font-family: 'IBM Plex Mono'; font-size: 10.5px; font-weight: 600; letter-spacing: 0.03em; padding: 4px 9px; border-radius: 100px; background: var(--surface-2); color: var(--text-muted); }
+  .stat-tag.good { color: var(--good); }
   .drill-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 25px; cursor: pointer; transition: all 0.15s; }
   .drill-card:hover { border-color: var(--good); transform: translateY(-2px); }
   .drill-card.soon { cursor: default; opacity: 0.5; }
@@ -702,22 +741,37 @@
     <!-- LOGGED IN: dashboard -->
     <div id="home-dashboard" style="display:none;">
       <div class="hero">
-        <h1 class="display">Welcome back</h1>
+        <h1 class="display">Welcome back<span class="streak-chip" id="home-streak-chip" style="display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4-3 5-3 9a3 3 0 006 0c1.5 1 2 3 2 4.5A5.5 5.5 0 018.5 21 6.5 6.5 0 015 12c2 1 2-1 1-3 3 0 4-3 4-5 1 1 2 3 2 5s2 2 3 0c1 2 0 4-1 5"/></svg><span id="home-streak-num"></span></span></h1>
         <p>Jump into a practice session, run a quick drill, or check your progress.</p>
       </div>
+
+      <div class="recent-strip" id="home-recent-strip" style="display:none;"></div>
+
+      <div class="continue-card" id="home-continue-card" style="display:none;" onclick="resumeFromContinueCard()">
+        <div class="continue-left">
+          <div class="continue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
+          <div>
+            <div class="continue-eyebrow">Continue</div>
+            <div class="continue-title" id="home-continue-title"></div>
+            <div class="continue-sub" id="home-continue-sub"></div>
+          </div>
+        </div>
+        <button class="btn continue-btn" onclick="event.stopPropagation(); resumeFromContinueCard();">Resume →</button>
+      </div>
+
       <div class="hub-grid hub-grid-3">
         <div class="drill-card hub-card" onclick="switchTab('interview')">
-          <div class="drill-top"><span class="drill-icon tint-good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></span></div>
+          <div class="drill-top"><span class="drill-icon tint-good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></span><span class="stat-tag good" id="home-stat-interview" style="display:none;"></span></div>
           <h4>Interview Practice</h4>
           <p>Record a scored async session, or run a live voice mock interview.</p>
         </div>
         <div class="drill-card hub-card" onclick="switchTab('drills')">
-          <div class="drill-top"><span class="drill-icon tint-warn"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span></div>
+          <div class="drill-top"><span class="drill-icon tint-warn"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="stat-tag" id="home-stat-drills" style="display:none;"></span></div>
           <h4>Drills</h4>
           <p>Short, focused reps: arithmetic sprints, risk calls, pattern recognition.</p>
         </div>
         <div class="drill-card hub-card" onclick="openStats()">
-          <div class="drill-top"><span class="drill-icon tint-structure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span></div>
+          <div class="drill-top"><span class="drill-icon tint-structure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span><span class="stat-tag" id="home-stat-stats" style="display:none;"></span></div>
           <h4>History &amp; Stats</h4>
           <p>Your trends, personal bests, and practice streak.</p>
         </div>
@@ -730,6 +784,19 @@
     <div class="hero">
       <h1 class="display">Choose your format</h1>
       <p>Record and get graded, or run a live conversation.</p>
+    </div>
+    <div class="auth-panel" id="resume-prompt-panel" style="display:none; max-width:600px; margin:0 auto 28px;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+        <span class="icon-chip tint-good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></span>
+        <div>
+          <div style="font-size:15px; font-weight:700;">You have a Mock Interview in progress</div>
+          <div style="font-size:13px; color:var(--text-muted);" id="resume-prompt-sub"></div>
+        </div>
+      </div>
+      <div class="btn-row" style="justify-content:flex-end; gap:10px;">
+        <button class="btn btn-secondary" onclick="startNewDiscardingResume()">Start New</button>
+        <button class="btn btn-primary" onclick="resumeVoiceSession(pendingResumeRow)">Resume →</button>
+      </div>
     </div>
     <div class="modes">
       <div class="mode-card mode-a" onclick="chooseMode('record')">
@@ -1369,7 +1436,7 @@
 
   <!-- VOICE MOCK INTERVIEW -->
   <div class="screen" id="screen-voice">
-    <button class="back-btn" onclick="goTo('setup')">← End &amp; back to setup</button>
+    <button class="back-btn" onclick="exitVoiceSession()">← Save &amp; exit</button>
     <div class="voice-shell">
       <div class="voice-header"><div class="interviewer-avatar">J</div><div class="interviewer-name">Jordan · AI Interviewer</div></div>
       <div class="interviewer-role" id="voice-role">Finance &middot; Behavioral</div>
@@ -1475,25 +1542,25 @@
 
     <div class="drill-grid">
       <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting" onclick="startDrill('arithmetic')">
-        <div class="drill-top"><span class="drill-icon">+</span><span class="drill-badge live">Live</span></div>
+        <div class="drill-top"><span class="drill-icon">+</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="arithmetic" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Arithmetic</h4>
         <p>60 seconds, addition, subtraction, multiplication, division. Answer as many as you can before time runs out.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
       </div>
       <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant" onclick="startDrill('arithmetic_hard')">
-        <div class="drill-top"><span class="drill-icon">±</span><span class="drill-badge live">Live</span></div>
+        <div class="drill-top"><span class="drill-icon">±</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="arithmetic_hard" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Arithmetic Hard</h4>
         <p>Same four operations, uglier numbers and multi-step expressions. Still 60 seconds, see how far speed holds up.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
       </div>
       <div class="drill-card" data-type="risk" data-industries="ib,pe,quant" onclick="startDrill('risk')">
-        <div class="drill-top"><span class="drill-icon">◉</span><span class="drill-badge live">Live</span></div>
+        <div class="drill-top"><span class="drill-icon">◉</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="risk" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Risk</h4>
         <p>Pump the balloon for +1 point a pop, or collect and bank your earnings. Pop it and you lose the round, so how far do you push it?</p>
         <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
       </div>
       <div class="drill-card" data-type="quantitative" data-industries="quant,tech" onclick="startDrill('sequence')">
-        <div class="drill-top"><span class="drill-icon">…</span><span class="drill-badge live">Live</span></div>
+        <div class="drill-top"><span class="drill-icon">…</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="sequence" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Sequence</h4>
         <p>A pattern of numbers appears. Type the next one in the sequence before the clock runs out.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Quant</span><span class="drill-tag tag-industry">Tech</span></div>
@@ -1640,9 +1707,137 @@
     dashboard.style.display = user ? 'block' : 'none';
     if (user) {
       clearInterval(homeSlideInterval);
+      loadHomeLifeSignals();
     } else {
       startHomeSlideshow();
     }
+  }
+
+  let homeResumableRow = null;
+
+  function formatRelativeTime(dateStr) {
+    const diffMs = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.round(diffMs / 60000);
+    if (mins < 60) return mins <= 1 ? 'just now' : `${mins}m ago`;
+    const hours = Math.round(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.round(hours / 24);
+    if (days === 1) return 'yesterday';
+    if (days < 7) return `${days} days ago`;
+    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  async function loadHomeLifeSignals() {
+    let sessions = [], drillScores = [], resumable = null;
+    try {
+      [sessions, drillScores, resumable] = await Promise.all([
+        MockoHistory.fetchSessions(),
+        MockoHistory.fetchDrillStats(),
+        MockoVoiceSession.fetchResumableSession(),
+      ]);
+    } catch (err) {
+      console.error('Could not load home life signals:', err);
+    }
+
+    // --- Streak ---
+    const allDates = [...sessions.map(s => s.created_at), ...drillScores.map(s => s.created_at)]
+      .map(d => new Date(d).toISOString().slice(0, 10));
+    const streak = computeStreak(allDates);
+    const streakChip = document.getElementById('home-streak-chip');
+    if (streak > 0) {
+      document.getElementById('home-streak-num').textContent = `${streak} day${streak === 1 ? '' : 's'}`;
+      streakChip.style.display = 'inline-flex';
+    } else {
+      streakChip.style.display = 'none';
+    }
+
+    // --- Continue card (unfinished Mock Interview) ---
+    homeResumableRow = resumable;
+    const continueCard = document.getElementById('home-continue-card');
+    if (resumable) {
+      let answered = 0;
+      try { answered = (await MockoVoiceSession.fetchSessionQuestions(resumable.id)).length; } catch (err) { console.error(err); }
+      const total = resumable.saved_state && resumable.saved_state.questions ? resumable.saved_state.questions.length : null;
+      document.getElementById('home-continue-title').textContent = `Mock Interview — ${resumable.length || 'Full'}, ${resumable.difficulty || 'Medium'}`;
+      document.getElementById('home-continue-sub').textContent = total ? `${answered} of ${total} questions answered` : 'In progress';
+      continueCard.style.display = 'flex';
+    } else {
+      continueCard.style.display = 'none';
+    }
+
+    // --- Recent activity strip (top 3, sessions + drills combined) ---
+    const recentEvents = [
+      ...sessions.filter(s => s.overall_score != null).map(s => ({
+        ts: s.created_at,
+        html: `<span class="dot" style="background:${s.mode === 'voice' ? 'var(--good)' : 'var(--tag-structure)'};"></span>${s.mode === 'voice' ? 'Mock Interview' : 'On-Air Practice'} <b>${Math.round(s.overall_score)}</b> · ${formatRelativeTime(s.created_at)}`,
+      })),
+      ...drillScores.map(d => ({
+        ts: d.created_at,
+        html: `<span class="dot" style="background:var(--warn);"></span>${(drillMeta[d.drill_key] && drillMeta[d.drill_key].label) || d.drill_key} <b>${d.score}</b> · ${formatRelativeTime(d.created_at)}`,
+      })),
+    ].sort((a, b) => new Date(b.ts) - new Date(a.ts)).slice(0, 3);
+    const strip = document.getElementById('home-recent-strip');
+    if (recentEvents.length) {
+      strip.innerHTML = recentEvents.map(e => `<div class="recent-chip">${e.html}</div>`).join('');
+      strip.style.display = 'flex';
+    } else {
+      strip.style.display = 'none';
+    }
+
+    // --- Hub card stat tags ---
+    const lastInterview = sessions.find(s => s.overall_score != null);
+    const interviewTag = document.getElementById('home-stat-interview');
+    if (lastInterview) {
+      interviewTag.textContent = `Last: ${Math.round(lastInterview.overall_score)}`;
+      interviewTag.style.display = 'inline-block';
+    } else {
+      interviewTag.style.display = 'none';
+    }
+
+    const drillsTag = document.getElementById('home-stat-drills');
+    if (drillScores.length) {
+      const best = Math.max(...drillScores.map(d => d.score));
+      drillsTag.textContent = `Best: ${best}`;
+      drillsTag.style.display = 'inline-block';
+    } else {
+      drillsTag.style.display = 'none';
+    }
+
+    const statsTag = document.getElementById('home-stat-stats');
+    const totalActivity = sessions.length + drillScores.length;
+    if (totalActivity > 0) {
+      statsTag.textContent = `${totalActivity} session${totalActivity === 1 ? '' : 's'}`;
+      statsTag.style.display = 'inline-block';
+    } else {
+      statsTag.style.display = 'none';
+    }
+  }
+
+  function resumeFromContinueCard() {
+    if (!homeResumableRow) return;
+    resumeVoiceSession(homeResumableRow);
+  }
+
+  async function loadDrillsBestTags() {
+    if (!MockoAuth.getUser()) return;
+    let drillScores = [];
+    try {
+      drillScores = await MockoHistory.fetchDrillStats();
+    } catch (err) {
+      console.error(err);
+      return;
+    }
+    const bestByKey = {};
+    drillScores.forEach(r => { bestByKey[r.drill_key] = Math.max(bestByKey[r.drill_key] || 0, r.score); });
+    document.querySelectorAll('[data-best-for]').forEach(el => {
+      const key = el.dataset.bestFor;
+      if (bestByKey[key] != null) {
+        el.textContent = `Best: ${bestByKey[key]}`;
+        el.style.display = 'inline-block';
+      } else {
+        el.style.display = 'none';
+      }
+    });
   }
 
   async function renderAccountArea(user) {
@@ -2238,15 +2433,55 @@
     document.getElementById('tab-drills').classList.toggle('active', tab === 'drills');
     if (tab === 'drills') {
       goTo('drills');
+      loadDrillsBestTags();
     } else if (tab === 'interview') {
+      hideResumePrompt();
       goTo('interview');
     } else {
       goTo('home');
     }
   }
 
+  let pendingResumeRow = null;
+
+  function showResumePrompt(row) {
+    pendingResumeRow = row;
+    const total = row.saved_state && row.saved_state.questions ? row.saved_state.questions.length : null;
+    const answered = row._answeredCount || 0;
+    document.getElementById('resume-prompt-sub').textContent = total
+      ? `${row.format || 'Behavioral'} · ${row.length || 'Full'} — question ${Math.min(answered + 1, total)} of ${total}`
+      : `${row.format || 'Behavioral'} · ${row.length || 'Full'}`;
+    document.getElementById('resume-prompt-panel').style.display = 'block';
+  }
+
+  function hideResumePrompt() {
+    pendingResumeRow = null;
+    document.getElementById('resume-prompt-panel').style.display = 'none';
+  }
+
+  async function startNewDiscardingResume() {
+    if (pendingResumeRow) {
+      try { await MockoVoiceSession.discardSavedState(pendingResumeRow.id); } catch (err) { console.error(err); }
+    }
+    hideResumePrompt();
+    chooseMode('voice');
+  }
+
   async function chooseMode(mode) {
     if (!requireAuth(() => chooseMode(mode))) return;
+
+    if (mode === 'voice') {
+      try {
+        const resumable = await MockoVoiceSession.fetchResumableSession();
+        if (resumable) {
+          try { resumable._answeredCount = (await MockoVoiceSession.fetchSessionQuestions(resumable.id)).length; } catch (err) { console.error(err); }
+          showResumePrompt(resumable);
+          return;
+        }
+      } catch (err) { console.error(err); }
+    }
+    hideResumePrompt();
+
     state.mode = mode;
     document.getElementById('setup-record-block').style.display = mode === 'record' ? 'block' : 'none';
     document.getElementById('setup-voice-block').style.display = mode === 'voice' ? 'block' : 'none';
@@ -3076,6 +3311,47 @@
       pendingNote: null, pendingTransitionLine: null, results: [], finalOverallScore: 0, toughestId: null,
     };
     document.getElementById('voice-role').textContent = 'Finance · ' + (state.type || 'Behavioral');
+  }
+
+  async function exitVoiceSession() {
+    if (voiceSession && voiceSession.phase !== 'done' && voiceSession.currentIndex < voiceSession.questions.length) {
+      try {
+        await MockoVoiceSession.saveSessionState(voiceSession.id, { questions: voiceSession.questions });
+      } catch (err) {
+        console.error('Could not save interview progress:', err);
+      }
+    }
+    resetVoiceUI();
+    voiceSession = null;
+    goTo('interview');
+  }
+
+  async function resumeVoiceSession(row) {
+    hideResumePrompt();
+    goTo('voice');
+    resetVoiceUI();
+    document.getElementById('voice-caption').textContent = 'Loading your interview...';
+    document.getElementById('mic-btn').disabled = true;
+    try {
+      const results = await MockoVoiceSession.fetchSessionQuestions(row.id);
+      state.difficulty = row.difficulty;
+      state.type = row.format;
+      state.length = row.length;
+      voiceSession = {
+        id: row.id, difficulty: row.difficulty, format: row.format, length: row.length,
+        questions: row.saved_state.questions, currentIndex: results.length, priorSummaries: [],
+        sttAvailable: true, manualStop: false, transcriptBuffer: '', questionStartTs: 0, phase: 'idle',
+        followUpCountThisQuestion: 0, followUpCountSession: results.filter(r => r.follow_up_asked).length, inFollowUp: false,
+        mainTranscript: null, mainDuration: 0, followUpTranscript: null, followUpDuration: 0,
+        pendingNote: null, pendingTransitionLine: null, results, finalOverallScore: 0, toughestId: null,
+      };
+      document.getElementById('voice-role').textContent = 'Finance · ' + (state.type || 'Behavioral');
+      document.getElementById('voice-caption').textContent = "Welcome back. Tap the mic to pick up where you left off.";
+      document.getElementById('mic-btn').disabled = false;
+    } catch (err) {
+      console.error(err);
+      document.getElementById('voice-caption').textContent = 'Could not load your saved interview. Please go back and try again.';
+    }
   }
 
   function toggleMic() {

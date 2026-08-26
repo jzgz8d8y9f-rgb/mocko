@@ -29,10 +29,38 @@ async function updateSession(sessionId, { overallScore, categoryScores, pointers
       pointers_good: pointersGood,
       pointers_work: pointersWork,
       transcript,
+      saved_state: null,
     })
     .eq('id', sessionId)
     .select()
     .single();
+  if (error) throw error;
+  return data;
+}
+
+async function saveSessionState(sessionId, savedState) {
+  const { error } = await supabase.from('sessions').update({ saved_state: savedState }).eq('id', sessionId);
+  if (error) throw error;
+}
+
+async function discardSavedState(sessionId) {
+  const { error } = await supabase.from('sessions').update({ saved_state: null }).eq('id', sessionId);
+  if (error) throw error;
+}
+
+async function fetchResumableSession() {
+  const user = window.MockoAuth.getUser();
+  if (!user) return null;
+  const { data, error } = await supabase
+    .from('sessions')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('mode', 'voice')
+    .is('overall_score', null)
+    .not('saved_state', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
   if (error) throw error;
   return data;
 }
@@ -122,4 +150,5 @@ async function tailorResumeQuestions({ resumeText, difficulty, industry }) {
 window.MockoVoiceSession = {
   insertSession, updateSession, gradeAnswer, updateSessionQuestion, deleteSessionQuestion,
   fetchSessionQuestions, analyzeAnswer, tailorResumeQuestions,
+  saveSessionState, discardSavedState, fetchResumableSession,
 };
