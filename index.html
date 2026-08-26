@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Mocko — Interview Practice</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg transform='rotate(-8 40 58)'%3E%3Cpath d='M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%233FA796'/%3E%3C/g%3E%3Cg transform='rotate(8 61 42)'%3E%3Cpath d='M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%23F2E9DC'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
@@ -61,16 +62,13 @@
   .logo-text { font-family: 'Bricolage Grotesque', sans-serif; font-size: 23px; font-weight: 800; letter-spacing: -0.01em; }
   .tagline { color: var(--text-muted); font-size: 13px; }
 
-  /* Logo mascot: leans casually against the wordmark, legs crossed,
-     hollow jointed figure matching the loading-screen sprinter's style.
-     On hover the hanging arm raises and waves. */
-  .mascot .lean-body { transform-origin: 22px 29px; transform: rotate(14deg); }
-  .mascot .leg-l, .mascot .leg-r { transform-origin: 24px 21px; }
-  .mascot .arm-l, .mascot .arm-r { transform-origin: 24px 15px; }
-  .logo:hover .mascot .arm-l { animation: wave-arm 0.5s ease-in-out infinite; }
-  .logo:hover .mascot .wave-elbow { animation: wave-elbow 0.5s ease-in-out infinite; }
-  @keyframes wave-arm { 0%,100% { transform: rotate(80deg); } 50% { transform: rotate(105deg); } }
-  @keyframes wave-elbow { 0%,100% { transform: rotate(10deg); } 50% { transform: rotate(-15deg); } }
+  /* Logo mark: two speech bubbles tilted toward each other, "cheers"-style.
+     On hover they bump apart and settle back, like a little toast. */
+  .cheer-l, .cheer-r { transform-box: fill-box; transform-origin: center; }
+  .logo:hover .cheer-l { animation: clink-l 0.6s ease-in-out infinite; }
+  .logo:hover .cheer-r { animation: clink-r 0.6s ease-in-out infinite; }
+  @keyframes clink-l { 0%,100% { transform: rotate(0deg) translate(0,0); } 50% { transform: rotate(-9deg) translate(-1.5px,-1px); } }
+  @keyframes clink-r { 0%,100% { transform: rotate(0deg) translate(0,0); } 50% { transform: rotate(9deg) translate(1.5px,-1px); } }
 
   /* Processing-screen sprinter: same jointed rig, running hard on a
      treadmill whose belt scrolls backward under him, fast. */
@@ -513,15 +511,9 @@
 
   <div class="topbar">
     <div class="logo" onclick="goToHome()" style="cursor:pointer;">
-      <svg class="mascot" width="34" height="34" viewBox="0 0 34 34" fill="none">
-        <g class="lean-body">
-          <circle cx="24" cy="8" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
-          <path d="M24,12 Q23,16 24,21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
-          <g class="leg-l"><line x1="24" y1="21" x2="23" y2="25" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="23" y1="25" x2="22" y2="29" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
-          <g class="leg-r"><line x1="24" y1="21" x2="26" y2="24" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="26" y1="24" x2="29" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
-          <g class="arm-r"><line x1="24" y1="15" x2="27" y2="16" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><line x1="27" y1="16" x2="26" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g>
-          <g class="arm-l"><line x1="24" y1="15" x2="22" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="wave-elbow" style="transform-origin:22px 18px"><line x1="22" y1="18" x2="21" y2="21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-        </g>
+      <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+        <g transform="rotate(-8 40 58)"><path class="cheer-l" d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--good)"/></g>
+        <g transform="rotate(8 61 42)"><path class="cheer-r" d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--cue)"/></g>
       </svg>
       <div class="logo-text">MOCKO</div>
     </div>
