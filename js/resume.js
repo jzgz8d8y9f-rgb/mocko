@@ -77,4 +77,13 @@ async function deleteResume(id, storagePath) {
   if (error) throw error;
 }
 
-window.MockoResume = { uploadResume, listResumes, getPrimaryResume, setPrimaryResume, deleteResume, extractPdfText };
+async function getResumeUrl(storagePath) {
+  const { data, error } = await supabase.storage.from('resumes').createSignedUrl(storagePath, 3600);
+  if (error) throw error;
+  return data.signedUrl;
+}
+
+window.MockoResume = {
+  uploadResume, listResumes, getPrimaryResume, setPrimaryResume, deleteResume,
+  extractPdfText, getResumeUrl,
+};
