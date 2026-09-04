@@ -419,6 +419,18 @@
   .resume-actions { display: flex; gap: 10px; flex-shrink: 0; }
   .resume-actions button { background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; text-decoration: underline; padding: 0; }
   .resume-actions button:hover { color: var(--text); }
+
+  .resume-select { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; color: var(--text); font-family: 'Inter'; font-size: 13.5px; }
+  .resume-picker-empty { font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 28px; max-width: 380px; width: 100%; }
+  .modal-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+  .modal-field { margin-bottom: 14px; }
+  .modal-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+  .modal-field input[type="text"] { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; color: var(--text); font-family: 'Inter'; font-size: 13.5px; }
+  .modal-checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; margin-bottom: 18px; }
   .history-row { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
   .history-left { display: flex; flex-direction: column; gap: 3px; }
   .history-title { font-size: 14px; font-weight: 600; }
@@ -1454,9 +1466,10 @@
             Tailor a question or two to my resume
           </label>
           <div id="voice-resume-panel" style="display:none; margin-top:14px;">
-            <textarea id="voice-resume-textarea" placeholder="Paste your resume text here..." style="width:100%; min-height:90px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Inter'; font-size:13.5px; resize:vertical;"></textarea>
+            <div id="voice-resume-picker-empty" class="resume-picker-empty" style="display:none;">No saved resumes yet — upload one to tailor questions to it.</div>
+            <select class="resume-select" id="voice-resume-select" style="display:none;"></select>
             <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:12.5px; padding:8px 14px;">
-              or upload a PDF
+              + Upload new resume
               <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
             </label>
             <div id="voice-resume-status" style="font-size:12px; color:var(--text-muted); margin-top:8px;"></div>
@@ -1806,6 +1819,25 @@
 
 </div>
 
+<div class="modal-overlay" id="resume-upload-modal">
+  <div class="modal-card">
+    <h4>Add resume</h4>
+    <div class="modal-field">
+      <label for="resume-upload-label">Nickname</label>
+      <input type="text" id="resume-upload-label" placeholder="e.g. IB Resume, General">
+    </div>
+    <label class="modal-checkbox">
+      <input type="checkbox" id="resume-upload-primary">
+      Set as primary resume
+    </label>
+    <div id="resume-upload-modal-error" class="auth-error" style="min-height:0; margin-bottom:10px;"></div>
+    <div class="btn-row" style="justify-content:flex-end; gap:10px;">
+      <button class="btn btn-secondary" onclick="closeResumeUploadModal()">Cancel</button>
+      <button class="btn btn-primary" id="resume-upload-modal-submit" onclick="submitResumeUploadModal()">Add resume</button>
+    </div>
+  </div>
+</div>
+
 <script type="module" src="js/supabase-client.js"></script>
 <script type="module" src="js/recording.js"></script>
 <script type="module" src="js/history.js"></script>
@@ -1816,7 +1848,7 @@
 <script type="module" src="js/voice.js"></script>
 <script type="module" src="js/auth.js"></script>
 <script>
-  const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null, voiceResumeText: null };
+  const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null };
   let pendingAuthAction = null;
   let currentUserProfile = null;
 
@@ -2801,9 +2833,8 @@
     } else if (mode === 'voice') {
       document.getElementById('voice-resume-toggle').checked = false;
       document.getElementById('voice-resume-panel').style.display = 'none';
-      document.getElementById('voice-resume-textarea').value = '';
       document.getElementById('voice-resume-status').textContent = '';
-      state.voiceResumeText = null;
+      voiceResumePickerList = [];
     }
 
     if (currentUserProfile && currentUserProfile.industry) {
@@ -2816,34 +2847,50 @@
     goTo('setup');
   }
 
-  function toggleVoiceResumePanel() {
+  async function toggleVoiceResumePanel() {
     const checked = document.getElementById('voice-resume-toggle').checked;
     document.getElementById('voice-resume-panel').style.display = checked ? 'block' : 'none';
+    if (checked) await loadVoiceResumePicker();
   }
 
-  async function handleVoiceResumeUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+  // Saved resumes with extracted text, cached here so setupVoiceSession()
+  // can look up the selected dropdown option's text without a re-fetch.
+  let voiceResumePickerList = [];
+
+  async function loadVoiceResumePicker(selectId) {
+    const selectEl = document.getElementById('voice-resume-select');
+    const emptyEl = document.getElementById('voice-resume-picker-empty');
     const statusEl = document.getElementById('voice-resume-status');
-    if (file.type !== 'application/pdf') {
-      statusEl.textContent = 'Please upload a PDF.';
-      event.target.value = '';
-      return;
-    }
-    statusEl.textContent = 'Reading resume...';
+    statusEl.textContent = '';
     try {
-      const text = await MockoResume.extractPdfText(file);
-      if (text) {
-        document.getElementById('voice-resume-textarea').value = text;
-        statusEl.textContent = `Loaded ${file.name}.`;
-      } else {
-        statusEl.textContent = 'Could not read text from that PDF. Try pasting instead.';
+      voiceResumePickerList = (await MockoResume.listResumes()).filter((r) => r.extracted_text);
+      if (!voiceResumePickerList.length) {
+        selectEl.style.display = 'none';
+        emptyEl.style.display = 'block';
+        return;
       }
+      emptyEl.style.display = 'none';
+      selectEl.style.display = 'block';
+      selectEl.innerHTML = voiceResumePickerList.map((r) =>
+        `<option value="${r.id}">${r.label}${r.is_primary ? ' (Primary)' : ''}</option>`
+      ).join('');
+      const primary = voiceResumePickerList.find((r) => r.is_primary);
+      selectEl.value = selectId || (primary ? primary.id : voiceResumePickerList[0].id);
     } catch (err) {
       console.error(err);
-      statusEl.textContent = 'Could not read that PDF. Try pasting instead.';
+      statusEl.textContent = 'Could not load your resumes.';
     }
+  }
+
+  function handleVoiceResumeUpload(event) {
+    const file = event.target.files[0];
     event.target.value = '';
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      document.getElementById('voice-resume-status').textContent = 'Please upload a PDF.';
+      return;
+    }
+    openResumeUploadModal(file, 'voice');
   }
 
   async function toggleResumePicker() {
@@ -2884,22 +2931,15 @@
     }
   }
 
-  async function handleSetupResumeUpload(event) {
+  function handleSetupResumeUpload(event) {
     const file = event.target.files[0];
+    event.target.value = '';
     if (!file) return;
     if (file.type !== 'application/pdf') {
       alert('Please upload a PDF for now.');
-      event.target.value = '';
       return;
     }
-    try {
-      await MockoResume.uploadResume(file, file.name);
-      event.target.value = '';
-      await loadResumePicker();
-    } catch (err) {
-      console.error(err);
-      alert(err.message || 'Upload failed.');
-    }
+    openResumeUploadModal(file, 'onair');
   }
 
   async function beginSession() {
@@ -3346,6 +3386,7 @@
             ${r.is_primary ? '<span class="resume-primary-badge">Primary</span>' : ''}
           </div>
           <div class="resume-actions">
+            <button onclick="viewResumeUI('${r.storage_path}')">View</button>
             ${r.is_primary ? '' : `<button onclick="setPrimaryResumeUI('${r.id}')">Set primary</button>`}
             <button onclick="deleteResumeUI('${r.id}', '${r.storage_path}')">Delete</button>
           </div>
@@ -3358,23 +3399,77 @@
     }
   }
 
-  async function handleResumeUpload(event) {
+  async function viewResumeUI(storagePath) {
+    try {
+      const url = await MockoResume.getResumeUrl(storagePath);
+      window.open(url, '_blank');
+    } catch (err) {
+      console.error(err);
+      document.getElementById('resume-error').textContent = 'Could not open that resume.';
+    }
+  }
+
+  function handleResumeUpload(event) {
     const file = event.target.files[0];
+    event.target.value = '';
     if (!file) return;
     const errorEl = document.getElementById('resume-error');
     errorEl.textContent = '';
     if (file.type !== 'application/pdf') {
       errorEl.textContent = 'Please upload a PDF for now.';
-      event.target.value = '';
       return;
     }
+    openResumeUploadModal(file, 'settings');
+  }
+
+  // --- Shared "add resume" modal: nickname + optional "set as primary",
+  // used by every resume-upload entry point (Settings, On-Air setup
+  // picker, Mock Interview picker) so a saved resume always gets a
+  // proper label rather than defaulting to the raw filename.
+  let pendingResumeUploadFile = null;
+  let pendingResumeUploadContext = null;
+
+  function openResumeUploadModal(file, context) {
+    pendingResumeUploadFile = file;
+    pendingResumeUploadContext = context;
+    document.getElementById('resume-upload-modal-error').textContent = '';
+    document.getElementById('resume-upload-label').value = file.name.replace(/\.pdf$/i, '');
+    document.getElementById('resume-upload-primary').checked = false;
+    document.getElementById('resume-upload-modal').classList.add('open');
+  }
+
+  function closeResumeUploadModal() {
+    document.getElementById('resume-upload-modal').classList.remove('open');
+    pendingResumeUploadFile = null;
+    pendingResumeUploadContext = null;
+  }
+
+  async function submitResumeUploadModal() {
+    const file = pendingResumeUploadFile;
+    const context = pendingResumeUploadContext;
+    if (!file) return;
+    const label = document.getElementById('resume-upload-label').value.trim();
+    const makePrimary = document.getElementById('resume-upload-primary').checked;
+    const errorEl = document.getElementById('resume-upload-modal-error');
+    errorEl.textContent = '';
+    const btn = document.getElementById('resume-upload-modal-submit');
+    btn.disabled = true;
+    btn.textContent = 'Adding...';
     try {
-      await MockoResume.uploadResume(file, file.name);
-      event.target.value = '';
-      loadResumes();
+      const resume = await MockoResume.uploadResume(file, label || file.name);
+      if (makePrimary && !resume.is_primary) {
+        await MockoResume.setPrimaryResume(resume.id);
+      }
+      closeResumeUploadModal();
+      if (context === 'settings') await loadResumes();
+      else if (context === 'onair') await loadResumePicker();
+      else if (context === 'voice') await loadVoiceResumePicker(resume.id);
     } catch (err) {
       console.error(err);
       errorEl.textContent = err.message || 'Upload failed.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Add resume';
     }
   }
 
@@ -3580,8 +3675,12 @@
     const category = state.type === 'Technical' ? 'technical' : 'behavioral';
     const isFull = state.length === 'Full';
     let resumeQuestions = [];
-    if (isFull && state.voiceResumeText) {
-      const resumeText = state.voiceResumeText.trim();
+    const selectedResumeId = document.getElementById('voice-resume-toggle').checked
+      ? document.getElementById('voice-resume-select').value
+      : null;
+    const selectedResume = selectedResumeId && voiceResumePickerList.find((r) => r.id === selectedResumeId);
+    if (isFull && selectedResume) {
+      const resumeText = selectedResume.extracted_text.trim();
       const wordCount = resumeText.split(/\s+/).filter(Boolean).length;
       if (wordCount >= 50) {
         try {
