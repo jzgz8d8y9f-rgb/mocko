@@ -2724,6 +2724,21 @@
       const sub = isFinance && document.querySelector(`#finance-dropdown button[data-industry="${state.industry}"]`);
       financeLabelEl.textContent = sub ? sub.textContent : 'Finance';
     }
+
+    // General is behavioral-only for now -- Technical/Both need a real
+    // technical question bank, which only the Finance sub-industries have.
+    const generalOnly = state.industry === 'general';
+    const technicalBtn = document.querySelector('#type-row .pill-btn[data-type="Technical"]');
+    const bothBtn = document.querySelector('#type-row .pill-btn[data-type="Both"]');
+    const behavioralBtn = document.querySelector('#type-row .pill-btn[data-type="Behavioral"]');
+    if (technicalBtn) technicalBtn.style.display = generalOnly ? 'none' : '';
+    if (bothBtn) bothBtn.style.display = generalOnly ? 'none' : '';
+    if (generalOnly && state.type !== 'Behavioral' && behavioralBtn) {
+      document.querySelectorAll('#type-row .pill-btn').forEach(c => c.classList.remove('selected'));
+      behavioralBtn.classList.add('selected');
+      state.type = 'Behavioral';
+      checkSetupReady();
+    }
   }
 
   function selectIndustry(el) {
