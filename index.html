@@ -243,6 +243,12 @@
     border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); cursor: pointer; transition: all 0.15s;
   }
   .pill-btn.selected { background: var(--cue); color: var(--bg); border-color: var(--cue); }
+  .industry-dropdown-wrap { position: relative; display: inline-block; }
+  .industry-dropdown-wrap .pill-btn { display: inline-flex; align-items: center; gap: 6px; }
+  .industry-dropdown-wrap .pill-chevron { transition: transform 0.15s; }
+  .industry-dropdown-wrap .pill-btn.selected .pill-chevron { color: var(--bg); }
+  .industry-dropdown { left: 0; right: auto; }
+  .industry-dropdown button.selected { background: var(--surface-2); color: var(--good); font-weight: 700; }
   .difficulty-pill-row .pill-btn[data-difficulty="easy"].selected { background: var(--good); border-color: var(--good); color: var(--bg); }
   .difficulty-pill-row .pill-btn[data-difficulty="medium"].selected { background: var(--warn); border-color: var(--warn); color: var(--bg); }
   .difficulty-pill-row .pill-btn[data-difficulty="hard"].selected { background: var(--record); border-color: var(--record); color: white; }
@@ -1327,12 +1333,20 @@
         <div class="select-group-label">Industry</div>
         <div class="select-group-sub">Saved to your profile so it's remembered next time.</div>
         <div class="pill-row" id="industry-row">
-          <button class="pill-btn" data-industry="ib">Investment Banking</button>
-          <button class="pill-btn" data-industry="consulting">Consulting</button>
-          <button class="pill-btn" data-industry="tech">Tech</button>
-          <button class="pill-btn" data-industry="quant">Quant</button>
-          <button class="pill-btn" data-industry="pe">Private Equity</button>
-          <button class="pill-btn" data-industry="general">General</button>
+          <button class="pill-btn" data-industry="general" onclick="selectIndustry(this)">General</button>
+          <div class="industry-dropdown-wrap">
+            <button class="pill-btn" id="finance-pill-btn" onclick="toggleFinanceDropdown(event)">
+              <span id="finance-pill-label">Finance</span>
+              <svg class="pill-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="account-dropdown industry-dropdown" id="finance-dropdown" style="display:none;">
+              <button data-industry="finance" onclick="selectIndustry(this)">General Finance</button>
+              <button data-industry="ib" onclick="selectIndustry(this)">Investment Banking</button>
+              <button data-industry="consulting" onclick="selectIndustry(this)">Consulting</button>
+              <button data-industry="pe" onclick="selectIndustry(this)">Private Equity</button>
+              <button data-industry="quant" onclick="selectIndustry(this)">Quant</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2692,10 +2706,30 @@
     estimateEl.textContent = n ? `Takes about ${Math.round(n * 2.5)} minutes.` : '';
     checkSetupReady();
   });
-  document.querySelectorAll('#industry-row .pill-btn').forEach(el => el.addEventListener('click', () => {
-    document.querySelectorAll('#industry-row .pill-btn').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
+  // Industry picker: a flat "General" pill plus a "Finance" pill that
+  // opens a dropdown of finance sub-industries (more top-level dropdowns,
+  // e.g. Tech, land here later as the bank grows).
+  const FINANCE_INDUSTRIES = ['finance', 'ib', 'consulting', 'pe', 'quant'];
+
+  function syncIndustrySelection() {
+    const generalBtn = document.querySelector('#industry-row .pill-btn[data-industry="general"]');
+    const financeBtn = document.getElementById('finance-pill-btn');
+    const financeLabelEl = document.getElementById('finance-pill-label');
+    const isFinance = FINANCE_INDUSTRIES.includes(state.industry);
+    if (generalBtn) generalBtn.classList.toggle('selected', state.industry === 'general');
+    if (financeBtn) financeBtn.classList.toggle('selected', isFinance);
+    document.querySelectorAll('#finance-dropdown button').forEach(b =>
+      b.classList.toggle('selected', b.dataset.industry === state.industry));
+    if (financeLabelEl) {
+      const sub = isFinance && document.querySelector(`#finance-dropdown button[data-industry="${state.industry}"]`);
+      financeLabelEl.textContent = sub ? sub.textContent : 'Finance';
+    }
+  }
+
+  function selectIndustry(el) {
     state.industry = el.dataset.industry;
+    syncIndustrySelection();
+    closeFinanceDropdown();
     if (window.MockoProfile && window.MockoAuth.getUser()) {
       MockoProfile.updateProfile({
         username: currentUserProfile ? currentUserProfile.username : undefined,
@@ -2705,7 +2739,18 @@
       }).then(p => { currentUserProfile = p; }).catch(err => console.error(err));
     }
     checkSetupReady();
-  }));
+  }
+
+  function toggleFinanceDropdown(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('finance-dropdown');
+    dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+  }
+  function closeFinanceDropdown() {
+    const dd = document.getElementById('finance-dropdown');
+    if (dd) dd.style.display = 'none';
+  }
+  document.addEventListener('click', closeFinanceDropdown);
 
   function checkSetupReady() {
     let ready;
@@ -2839,8 +2884,7 @@
 
     if (currentUserProfile && currentUserProfile.industry) {
       state.industry = currentUserProfile.industry;
-      document.querySelectorAll('#industry-row .pill-btn').forEach(c =>
-        c.classList.toggle('selected', c.dataset.industry === state.industry));
+      syncIndustrySelection();
     }
 
     checkSetupReady();
