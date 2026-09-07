@@ -3004,7 +3004,14 @@
       if (data.error) throw new Error(data.error);
       sessionQuestions = data.questions;
     } else {
-      const qs = await MockoQuestions.fetchQuestions({ difficulty: state.difficulty, industry: state.industry, count });
+      let qs;
+      if (state.length === 'Full' && count > 1) {
+        const [opener] = await MockoQuestions.fetchOpeners(1);
+        const guideQs = await MockoQuestions.fetchQuestions({ difficulty: state.difficulty, industry: state.industry, count: count - 1 });
+        qs = opener ? [opener, ...guideQs] : guideQs;
+      } else {
+        qs = await MockoQuestions.fetchQuestions({ difficulty: state.difficulty, industry: state.industry, count });
+      }
       if (qs.length === 0) throw new Error('No questions available for that difficulty/industry.');
       sessionQuestions = qs.map(q => q.text);
     }
