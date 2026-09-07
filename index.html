@@ -297,24 +297,42 @@
   .back-btn { background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 24px; font-weight: 500; }
   .back-btn:hover { color: var(--text); }
 
-  .modes { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 600px; margin: 0 auto; }
+  .modes { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 720px; margin: 0 auto; }
   @media (max-width: 620px) { .toggle-row { flex-direction: column; } }
 
-  .mode-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 32px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
-  .mode-card:hover { border-color: var(--text-muted); transform: translateY(-2px); }
-  .mode-eyebrow { font-size: 11px; letter-spacing: 0.12em; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; text-transform: uppercase; }
-  .mode-card h3 { font-size: 26px; font-weight: 700; margin-bottom: 10px; }
-  .mode-card p { color: var(--text-muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 20px; }
-  .mode-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
-  .mode-a .mode-icon { background: rgba(230,57,70,0.15); }
-  .mode-b .mode-icon { background: rgba(39,203,187,0.15); }
-  .mode-cta { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
-  .mode-a .mode-cta { color: var(--record); }
-  .mode-b .mode-cta { color: var(--good); }
+  .mode-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 34px 38px; cursor: pointer; transition: border-color 0.15s; position: relative; }
+  .mode-card:hover { border-color: var(--mode-accent, var(--good)); }
+  .mode-a { --mode-accent: var(--record); }
+  .mode-b { --mode-accent: var(--good); border-color: var(--good); box-shadow: 0 0 32px color-mix(in srgb, var(--good) 28%, transparent); }
+  .mode-b:hover { box-shadow: 0 0 40px color-mix(in srgb, var(--good) 38%, transparent); }
 
-  .waveform { display: flex; align-items: center; gap: 3px; height: 18px; }
-  .waveform span { width: 3px; background: currentColor; border-radius: 2px; animation: wave 1.2s ease-in-out infinite; }
-  @keyframes wave { 0%,100% { height: 4px; } 50% { height: 16px; } }
+  .mode-top { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 18px; }
+  .mode-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: color-mix(in srgb, var(--mode-accent) 16%, transparent); color: var(--mode-accent); }
+  .mode-icon svg { width: 24px; height: 24px; }
+  .mode-heading { flex: 1; min-width: 0; }
+  .mode-eyebrow { font-size: 11px; letter-spacing: 0.12em; color: var(--mode-accent); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .mode-card h3 { font-size: 23px; font-weight: 800; margin: 0; }
+  .mode-card p.mode-desc { color: var(--text-muted); font-size: 15px; line-height: 1.6; max-width: 56ch; margin: 0 0 18px; }
+  .mode-card p.mode-desc b { color: var(--text); font-weight: 600; }
+
+  .mode-features { list-style: none; margin: 0 0 20px; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .mode-features li { display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; color: var(--text); }
+  .mode-features svg { width: 15px; height: 15px; color: var(--mode-accent); flex-shrink: 0; margin-top: 2px; }
+
+  .platform-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 0 22px; }
+  .platform-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .platform-chip { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14.5px; letter-spacing: 0.01em; padding: 5px 13px 4px; border-radius: 7px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); }
+
+  .mode-stats { display: flex; gap: 28px; margin: 0 0 20px; }
+  .mode-stat-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 30px; line-height: 1; color: var(--text); }
+  .mode-stat-label { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-top: 5px; }
+
+  .mode-empty { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px dashed var(--line); border-radius: 10px; margin: 0 0 20px; }
+  .mode-empty svg { width: 18px; height: 18px; color: var(--mode-accent); flex-shrink: 0; }
+  .mode-empty-text b { display: block; font-size: 13.5px; color: var(--text); font-weight: 700; }
+  .mode-empty-text span { font-size: 12.5px; color: var(--text-muted); }
+
+  .mode-cta { font-size: 14px; font-weight: 700; color: var(--mode-accent); display: flex; align-items: center; gap: 6px; padding-top: 18px; border-top: 1px solid var(--line); }
 
   .summary-strip { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; }
   .summary-strip span { color: var(--text-muted); }
@@ -396,8 +414,6 @@
   .mic-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: var(--record); color: white; font-size: 20px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; }
   .mic-btn:hover { background: #d02836; }
   .voice-timer { font-size: 12px; color: var(--text-muted); margin-top: 16px; }
-
-  .footer-note { text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px; }
 
   .trend-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; margin-bottom: 36px; }
   @media (max-width: 620px) { .trend-summary { grid-template-columns: 1fr; } }
@@ -951,21 +967,36 @@
     </div>
     <div class="modes">
       <div class="mode-card mode-b" onclick="chooseMode('voice')">
-        <div class="mode-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#27CBBB" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
-        <div class="mode-eyebrow">Live · Voice</div>
-        <h3>Mock Interview</h3>
-        <p>A live spoken conversation with an AI interviewer — it asks, listens, and follows up in real time, no typing.</p>
+        <div class="mode-top">
+          <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
+          <div class="mode-heading">
+            <div class="mode-eyebrow">Live · Voice</div>
+            <h3>Mock Interview</h3>
+          </div>
+        </div>
+        <p class="mode-desc">A real, spoken back-and-forth with an AI interviewer. It asks a question out loud, listens to your answer, and <b>follows up naturally</b> when there's more worth digging into — no typing, no scripts to read from.</p>
+        <div class="mode-state" id="mode-state-voice"></div>
         <div class="mode-cta">Start speaking →</div>
       </div>
       <div class="mode-card mode-a" onclick="chooseMode('record')">
-        <div class="mode-icon"><div class="waveform" style="color:var(--record)"><span style="animation-delay:0s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.4s"></span></div></div>
-        <div class="mode-eyebrow">Async · Scored</div>
-        <h3>On-Air Practice</h3>
-        <p>Record your answer on camera, one question at a time, and get a scored breakdown — the same format as <b>HireVue</b>, <b>Sonru</b>, and <b>Spark Hire</b>.</p>
+        <div class="mode-top">
+          <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg></div>
+          <div class="mode-heading">
+            <div class="mode-eyebrow">Async · Scored</div>
+            <h3>On-Air Practice</h3>
+          </div>
+        </div>
+        <p class="mode-desc">Record your answer on camera, one question at a time, then get a <b>scored breakdown</b> of your structure, clarity, pace, and tone — the same one-question, on-camera format used by real async video screens.</p>
+        <div class="platform-row">
+          <span class="platform-label">Same format as</span>
+          <span class="platform-chip">HireVue</span>
+          <span class="platform-chip">Sonru</span>
+          <span class="platform-chip">Spark Hire</span>
+        </div>
+        <div class="mode-state" id="mode-state-record"></div>
         <div class="mode-cta">Start recording →</div>
       </div>
     </div>
-    <p class="footer-note">Prototype only. Recording, grading, and voice are all simulated here.</p>
   </div>
 
   <!-- AUTH -->
@@ -1537,7 +1568,7 @@
 
   <!-- FEEDBACK -->
   <div class="screen" id="screen-feedback">
-    <button class="back-btn" onclick="goTo('interview')">← Back to Interview Practice</button>
+    <button class="back-btn" onclick="switchTab('interview')">← Back to Interview Practice</button>
     <div class="studio-panel">
       <div class="overall-score">
         <div class="num">78<span class="of100" style="font-size:22px">/100</span></div>
@@ -1589,7 +1620,7 @@
 
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="retryRecordSession()">↻ Retry this round</button>
-        <button class="btn btn-primary" onclick="goTo('interview')">Done →</button>
+        <button class="btn btn-primary" onclick="switchTab('interview')">Done →</button>
       </div>
     </div>
   </div>
@@ -2827,6 +2858,7 @@
     } else if (tab === 'interview') {
       hideResumePrompt();
       goTo('interview');
+      loadModeCardStates();
     } else {
       goTo('home');
       if (MockoAuth.getUser()) resetHomeLeagueCycle();
@@ -2848,6 +2880,69 @@
   function hideResumePrompt() {
     pendingResumeRow = null;
     document.getElementById('resume-prompt-panel').style.display = 'none';
+  }
+
+  // Mode-choice cards: signed-out visitors see what each mode offers,
+  // signed-in users see their own last/best score for it (or a light nudge
+  // if they've never tried that mode yet).
+  const MODE_FEATURES = {
+    voice: [
+      'Follows up in real time when an answer needs more depth',
+      'Quick Round (3 questions) or Full Interview (5 questions)',
+      'Optionally tailors a question or two to your resume',
+    ],
+    record: [
+      'Scored on structure, clarity, pace, and tone',
+      'Practice under a real on-screen countdown',
+      'One quick question, or a full multi-question set',
+    ],
+  };
+  const MODE_EMPTY_COPY = {
+    voice: 'Jump into a live conversation and see where you land.',
+    record: 'Record your first answer and get your first score.',
+  };
+
+  function renderModeFeatures(mode) {
+    return `<ul class="mode-features">${MODE_FEATURES[mode].map((f) =>
+      `<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>${f}</li>`
+    ).join('')}</ul>`;
+  }
+
+  function renderModeState(mode, sessions) {
+    const scored = sessions.filter((s) => (s.mode || 'record') === mode && s.overall_score != null);
+    if (!scored.length) {
+      return `<div class="mode-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <div class="mode-empty-text"><b>You haven't tried this yet</b><span>${MODE_EMPTY_COPY[mode]}</span></div>
+      </div>`;
+    }
+    const last = Math.round(scored[0].overall_score);
+    const best = Math.round(Math.max(...scored.map((s) => s.overall_score)));
+    return `<div class="mode-stats">
+      <div><div class="mode-stat-num">${last}</div><div class="mode-stat-label">Last score</div></div>
+      <div><div class="mode-stat-num">${best}</div><div class="mode-stat-label">Best score</div></div>
+      <div><div class="mode-stat-num">${scored.length}</div><div class="mode-stat-label">Sessions</div></div>
+    </div>`;
+  }
+
+  async function loadModeCardStates() {
+    const voiceEl = document.getElementById('mode-state-voice');
+    const recordEl = document.getElementById('mode-state-record');
+    if (!voiceEl || !recordEl) return;
+    const user = MockoAuth.getUser();
+    if (!user) {
+      voiceEl.innerHTML = renderModeFeatures('voice');
+      recordEl.innerHTML = renderModeFeatures('record');
+      return;
+    }
+    let sessions = [];
+    try {
+      sessions = await MockoHistory.fetchSessions();
+    } catch (err) {
+      console.error('Could not load mode card stats:', err);
+    }
+    voiceEl.innerHTML = renderModeState('voice', sessions);
+    recordEl.innerHTML = renderModeState('record', sessions);
   }
 
   async function startNewDiscardingResume() {
@@ -3787,7 +3882,7 @@
     }
     resetVoiceUI();
     voiceSession = null;
-    goTo('interview');
+    switchTab('interview');
   }
 
   async function resumeVoiceSession(row) {
