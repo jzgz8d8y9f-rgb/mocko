@@ -297,8 +297,8 @@
   .back-btn { background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 24px; font-weight: 500; }
   .back-btn:hover { color: var(--text); }
 
-  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  @media (max-width: 620px) { .modes { grid-template-columns: 1fr; } .toggle-row { flex-direction: column; } }
+  .modes { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 600px; margin: 0 auto; }
+  @media (max-width: 620px) { .toggle-row { flex-direction: column; } }
 
   .mode-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 32px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
   .mode-card:hover { border-color: var(--text-muted); transform: translateY(-2px); }
@@ -755,7 +755,7 @@
             <line x1="28" y1="17" x2="24" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
             <line x1="28" y1="17" x2="32" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
           </svg>
-          <div class="slide-caption"><b>Screens</b>: practice the one-question, on-camera format used by HireVue, Sonru, and Spark Hire.</div>
+          <div class="slide-caption"><b>Screens</b>: practice the one-question, on-camera format used by <b>HireVue</b>, <b>Sonru</b>, and <b>Spark Hire</b>.</div>
         </div>
         <div class="slide-scene" data-slide="2">
           <svg width="64" height="64" viewBox="0 0 40 40" fill="none" class="card-mascot full-mascot">
@@ -950,19 +950,19 @@
       </div>
     </div>
     <div class="modes">
-      <div class="mode-card mode-a" onclick="chooseMode('record')">
-        <div class="mode-icon"><div class="waveform" style="color:var(--record)"><span style="animation-delay:0s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.4s"></span></div></div>
-        <div class="mode-eyebrow">Async · Scored</div>
-        <h3>On-Air Practice</h3>
-        <p>Mostly <b>behavioral</b>. Get a question, record your answer on camera, and get a scored breakdown, built for HireVue, Sonru, Spark Hire, and similar async video interview screens.</p>
-        <div class="mode-cta">Start recording →</div>
-      </div>
       <div class="mode-card mode-b" onclick="chooseMode('voice')">
         <div class="mode-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#27CBBB" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
         <div class="mode-eyebrow">Live · Voice</div>
         <h3>Mock Interview</h3>
-        <p>Talk it out loud. The AI asks a question, listens, and follows up naturally, like a real conversation with no typing.</p>
+        <p>A live spoken conversation with an AI interviewer — it asks, listens, and follows up in real time, no typing.</p>
         <div class="mode-cta">Start speaking →</div>
+      </div>
+      <div class="mode-card mode-a" onclick="chooseMode('record')">
+        <div class="mode-icon"><div class="waveform" style="color:var(--record)"><span style="animation-delay:0s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.4s"></span></div></div>
+        <div class="mode-eyebrow">Async · Scored</div>
+        <h3>On-Air Practice</h3>
+        <p>Record your answer on camera, one question at a time, and get a scored breakdown — the same format as <b>HireVue</b>, <b>Sonru</b>, and <b>Spark Hire</b>.</p>
+        <div class="mode-cta">Start recording →</div>
       </div>
     </div>
     <p class="footer-note">Prototype only. Recording, grading, and voice are all simulated here.</p>
@@ -981,7 +981,7 @@
         <span class="icon-chip tint-record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
         <div>
           <h4>Built for async video screens</h4>
-          <p>Practice the exact one-question, on-camera format used by HireVue, Sonru, Spark Hire, and similar platforms.</p>
+          <p>Practice the exact one-question, on-camera format used by <b>HireVue</b>, <b>Sonru</b>, <b>Spark Hire</b>, and similar platforms.</p>
         </div>
       </div>
       <div class="auth-info-item">
