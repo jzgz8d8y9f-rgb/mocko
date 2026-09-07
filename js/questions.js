@@ -1,24 +1,62 @@
 import { supabase } from './supabase-client.js';
 
+// A session set to one difficulty still mostly draws from that tier, but
+// leans on neighboring tiers too so a session doesn't feel monotone --
+// real interviews don't ask questions of uniform difficulty back-to-back.
+const DIFFICULTY_MIX = {
+  easy: { easy: 0.75, medium: 0.20, hard: 0.05 },
+  medium: { easy: 0.15, medium: 0.70, hard: 0.15 },
+  hard: { easy: 0.05, medium: 0.20, hard: 0.75 },
+};
+
+function pickWeightedTier(targetDifficulty) {
+  const mix = DIFFICULTY_MIX[targetDifficulty] || DIFFICULTY_MIX.medium;
+  let r = Math.random();
+  for (const tier of ['easy', 'medium', 'hard']) {
+    r -= mix[tier];
+    if (r <= 0) return tier;
+  }
+  return targetDifficulty;
+}
+
+// Picks `count` questions from `pool`, rolling a difficulty tier per slot
+// against DIFFICULTY_MIX (falling back to neighboring tiers, then anything
+// left, if the rolled tier is thin), preferring exact-industry matches
+// within whichever tier gets picked, and never repeating a question.
+function pickWeightedByDifficulty(pool, count, difficulty, industry) {
+  const usedIds = new Set();
+  const picked = [];
+  for (let i = 0; i < count; i++) {
+    const available = pool.filter((q) => !usedIds.has(q.id));
+    if (!available.length) break;
+    const targetTier = pickWeightedTier(difficulty);
+    const tierOrder = [targetTier, ...['easy', 'medium', 'hard'].filter((t) => t !== targetTier)];
+    let tierPool = [];
+    for (const tier of tierOrder) {
+      tierPool = available.filter((q) => q.difficulty === tier);
+      if (tierPool.length) break;
+    }
+    const exact = tierPool.filter((q) => q.industries.includes(industry));
+    const general = tierPool.filter((q) => !q.industries.includes(industry));
+    const [chosen] = weightedSample(exact.length ? exact : general, 1);
+    if (!chosen) break;
+    usedIds.add(chosen.id);
+    picked.push(chosen);
+  }
+  return picked;
+}
+
 async function fetchQuestions({ difficulty, industry, count, category = 'behavioral' }) {
   const { data, error } = await supabase
     .from('questions')
     .select('*')
     .eq('category', category)
-    .eq('difficulty', difficulty)
     .eq('opener', false)
     .eq('closing_friendly', false)
     .overlaps('industries', [industry || 'general', 'general']);
   if (error) throw error;
   if (!data || data.length === 0) return [];
-
-  const exact = data.filter((q) => q.industries.includes(industry));
-  const general = data.filter((q) => !q.industries.includes(industry));
-  const picked = weightedSample(exact, count);
-  if (picked.length < count) {
-    picked.push(...weightedSample(general, count - picked.length));
-  }
-  return picked;
+  return pickWeightedByDifficulty(data, count, difficulty, industry);
 }
 
 async function fetchOpeners(count = 1) {
@@ -32,18 +70,10 @@ async function fetchClosingQuestions({ difficulty, industry, count = 1 }) {
     .from('questions')
     .select('*')
     .eq('closing_friendly', true)
-    .eq('difficulty', difficulty)
     .overlaps('industries', [industry || 'general', 'general']);
   if (error) throw error;
-  if (data && data.length > 0) return weightedSample(data, count);
-  // Soft fallback: no closing-friendly row at this exact difficulty -- any difficulty is fine, still closing-friendly.
-  const { data: anyDifficulty, error: err2 } = await supabase
-    .from('questions')
-    .select('*')
-    .eq('closing_friendly', true)
-    .overlaps('industries', [industry || 'general', 'general']);
-  if (err2) throw err2;
-  return weightedSample(anyDifficulty || [], count);
+  if (!data || !data.length) return [];
+  return pickWeightedByDifficulty(data, count, difficulty, industry);
 }
 
 function weightedSample(pool, count) {
