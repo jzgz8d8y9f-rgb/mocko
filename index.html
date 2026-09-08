@@ -640,6 +640,68 @@
   .risk-balloon.popped { background: var(--surface-2) !important; opacity: 0.4; }
   .risk-live { font-family: 'Barlow Condensed'; font-size: 40px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
 
+  /* Digits (memory span) */
+  .digit-display { font-family: 'Barlow Condensed'; font-size: 52px; font-weight: 800; letter-spacing: 0.08em; margin-bottom: 22px; min-height: 64px; }
+  .digit-display .digit-flash { display: inline-block; opacity: 0; transform: scale(0.7); animation: digitPop 0.55s ease forwards; }
+  @keyframes digitPop { 0% { opacity: 0; transform: scale(0.7); } 30% { opacity: 1; transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
+
+  /* Stop (go/no-go) */
+  .stop-stimulus { width: 120px; height: 120px; border-radius: 50%; margin: 6px auto 22px; transition: background-color 0.1s; }
+  .stop-stimulus.go { background: var(--record); }
+  .stop-stimulus.nogo { background: var(--good); }
+  .stop-stimulus.idle { background: var(--surface-2); }
+
+  /* Cards (Iowa Gambling Task) */
+  .cards-total { font-family: 'Barlow Condensed'; font-size: 44px; font-weight: 800; margin-bottom: 4px; }
+  .cards-row { display: flex; gap: 14px; justify-content: center; margin: 22px 0 8px; flex-wrap: wrap; }
+  .cards-deck { width: 74px; height: 100px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface-2); color: var(--text); font-family: 'Barlow Condensed'; font-size: 26px; font-weight: 800; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .cards-deck:hover:not(:disabled) { border-color: var(--good); transform: translateY(-3px); }
+  .cards-deck:disabled { opacity: 0.4; cursor: default; }
+  .cards-feedback { font-family: 'IBM Plex Mono'; font-size: 14px; font-weight: 600; min-height: 20px; margin-bottom: 4px; }
+  .cards-feedback.pos { color: var(--good); }
+  .cards-feedback.neg { color: var(--record); }
+
+  /* Arrows (rule-switching) */
+  .arrows-rule { font-family: 'IBM Plex Mono'; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 14px; }
+  .arrows-rule.same { background: rgba(39,203,187,0.16); color: var(--good); }
+  .arrows-rule.opposite { background: rgba(233,162,59,0.18); color: var(--warn); }
+  .arrows-stimulus { font-size: 56px; margin-bottom: 22px; line-height: 1; }
+  .arrows-choices { display: flex; gap: 14px; justify-content: center; }
+  .arrows-choice { width: 84px; height: 64px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); font-size: 26px; cursor: pointer; transition: border-color 0.15s; }
+  .arrows-choice:hover { border-color: var(--good); }
+
+  /* Towers (Tower of Hanoi) */
+  .towers-board { display: flex; justify-content: center; gap: 36px; margin: 10px 0 20px; align-items: flex-end; height: 150px; }
+  .towers-peg { width: 96px; height: 150px; display: flex; flex-direction: column-reverse; align-items: center; gap: 4px; padding-bottom: 8px; border-bottom: 4px solid var(--line); cursor: pointer; position: relative; }
+  .towers-peg::before { content: ''; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 6px; height: 120px; background: var(--line); border-radius: 3px; z-index: 0; }
+  .towers-peg.selected { background: rgba(39,203,187,0.08); border-radius: 8px; }
+  .towers-disk { height: 18px; border-radius: 4px; background: var(--good); z-index: 1; }
+  .towers-disk.n1 { width: 34px; background: var(--good); }
+  .towers-disk.n2 { width: 48px; background: var(--warn); }
+  .towers-disk.n3 { width: 62px; background: var(--tag-structure); }
+  .towers-disk.n4 { width: 76px; background: var(--tag-communication); }
+  .towers-disk.n5 { width: 90px; background: var(--record); }
+  .towers-moves { font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* Magnitudes (fraction/number comparison) */
+  .magnitude-choices { display: flex; gap: 16px; justify-content: center; margin-bottom: 8px; }
+  .magnitude-choice { width: 150px; padding: 22px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); font-family: 'Barlow Condensed'; font-size: 30px; font-weight: 800; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .magnitude-choice:hover { border-color: var(--good); transform: translateY(-2px); }
+
+  /* Shapes (odd one out) */
+  .shape-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; max-width: 320px; margin: 10px auto 8px; }
+  .shape-cell { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); cursor: pointer; transition: border-color 0.15s; }
+  .shape-cell:hover { border-color: var(--good); }
+  .shape-mark { width: 30px; height: 30px; background: var(--good); }
+  .shape-mark.circle { border-radius: 50%; }
+  .shape-mark.square { border-radius: 4px; }
+  .shape-mark.triangle { width: 0; height: 0; background: none !important; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 26px solid var(--good); }
+  .shape-mark.diamond { transform: rotate(45deg); border-radius: 3px; }
+  .shape-mark.star { background: none !important; color: var(--good); font-size: 30px; line-height: 30px; }
+
+  /* Letters (N-Back) */
+  .nback-letter { font-family: 'Barlow Condensed'; font-size: 72px; font-weight: 800; margin-bottom: 22px; min-height: 80px; }
+
   .login-prompt { display: flex; align-items: center; gap: 10px; }
   .login-prompt-text { font-size: 12px; color: var(--text-muted); display: none; }
   @media (min-width: 560px) { .login-prompt-text { display: inline; } }
@@ -1756,6 +1818,54 @@
         <p>A pattern of numbers appears. Type the next one in the sequence before the clock runs out.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Quant</span><span class="drill-tag tag-industry">Tech</span></div>
       </div>
+      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('digits')">
+        <div class="drill-top"><span class="drill-icon">#</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="digits" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <h4>Digits</h4>
+        <p>A sequence of digits flashes, then disappears. Type it back. Each round adds one more digit until you slip.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Consulting</span></div>
+      </div>
+      <div class="drill-card" data-type="structure" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('stop')">
+        <div class="drill-top"><span class="drill-icon">●</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="stop" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <h4>Stop</h4>
+        <p>Press on red, hold still on green. 40 fast trials testing how well you catch yourself.</p>
+        <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">Consulting</span></div>
+      </div>
+      <div class="drill-card" data-type="risk" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('cards')">
+        <div class="drill-top"><span class="drill-icon">▥</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="cards" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <h4>Cards</h4>
+        <p>Four decks, 24 draws. Every deck pays out, but some carry bigger hidden losses. Learn which to avoid.</p>
+        <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span></div>
+      </div>
+      <div class="drill-card" data-type="structure" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('arrows')">
+        <div class="drill-top"><span class="drill-icon">→</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="arrows" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <h4>Arrows</h4>
+        <p>An arrow appears with a rule above it that keeps changing. Read the rule, not just the arrow. 30 trials.</p>
+        <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-industry">Consulting</span><span class="drill-tag tag-industry">Tech</span></div>
+      </div>
+      <div class="drill-card" data-type="structure" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('towers')">
+        <div class="drill-top"><span class="drill-icon">⟁</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="towers" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <h4>Towers</h4>
+        <p>Move the whole disk stack to the last peg, one move at a time, in as few moves as possible. Three rounds.</p>
+        <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-industry">Consulting</span><span class="drill-tag tag-industry">PE</span></div>
+      </div>
+      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('magnitudes')">
+        <div class="drill-top"><span class="drill-icon">⋚</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="magnitudes" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <h4>Magnitudes</h4>
+        <p>Two fractions appear. Click the larger one, as fast as you can, for 60 seconds.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Quant</span><span class="drill-tag tag-industry">IB</span></div>
+      </div>
+      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('shapes')">
+        <div class="drill-top"><span class="drill-icon">◆</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="shapes" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <h4>Shapes</h4>
+        <p>A grid of shapes appears, all identical but one. Spot the odd one out before time runs out.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Tech</span><span class="drill-tag tag-industry">Quant</span></div>
+      </div>
+      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('nback')">
+        <div class="drill-top"><span class="drill-icon">↺</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="nback" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <h4>Letters</h4>
+        <p>Letters appear one at a time. Click Match when the current one repeats the letter from two spots back.</p>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Tech</span><span class="drill-tag tag-industry">Consulting</span></div>
+      </div>
       <div class="drill-card soon">
         <div class="drill-top"><span class="drill-icon">$</span><span class="drill-badge soon">Soon</span></div>
         <h4>Valuation Speed Round</h4>
@@ -1814,6 +1924,89 @@
         <div class="btn-row" id="risk-actions" style="display:none; margin-top:18px;">
           <button class="btn btn-record" id="risk-pump-btn" onclick="riskPump()">Pump (+1)</button>
           <button class="btn btn-secondary" id="risk-collect-btn" onclick="riskCollect()">Collect</button>
+        </div>
+      </div>
+
+      <!-- Digits (memory span) -->
+      <div id="drill-digits-panel" style="display:none; margin-bottom:24px;">
+        <div class="math-progress mono" id="digits-progress">Length 3</div>
+        <div class="digit-display" id="digits-display">—</div>
+        <input type="text" inputmode="numeric" id="digits-input" class="math-input" placeholder="Type the sequence" autocomplete="off" style="display:none;">
+        <div class="math-progress mono" id="digits-score">Score: 0</div>
+      </div>
+
+      <!-- Stop (go/no-go) -->
+      <div id="drill-stop-panel" style="display:none; margin-bottom:24px;">
+        <div class="math-progress mono" id="stop-progress">Trial 0 of 40</div>
+        <div class="stop-stimulus idle" id="stop-stimulus"></div>
+        <div class="math-progress mono" id="stop-score">Score: 0</div>
+        <div class="btn-row" id="stop-actions" style="display:none; margin-top:18px; justify-content:center;">
+          <button class="btn btn-record" id="stop-press-btn" onclick="stopPress()">Press</button>
+        </div>
+      </div>
+
+      <!-- Cards (Iowa Gambling Task) -->
+      <div id="drill-cards-panel" style="display:none; margin-bottom:24px;">
+        <div class="math-progress mono" id="cards-progress">Draw 1 of 24</div>
+        <div class="cards-total" id="cards-total">0</div>
+        <div class="cards-feedback" id="cards-feedback"></div>
+        <div class="cards-row" id="cards-row">
+          <button class="cards-deck" data-deck="A" onclick="cardsDraw('A')">A</button>
+          <button class="cards-deck" data-deck="B" onclick="cardsDraw('B')">B</button>
+          <button class="cards-deck" data-deck="C" onclick="cardsDraw('C')">C</button>
+          <button class="cards-deck" data-deck="D" onclick="cardsDraw('D')">D</button>
+        </div>
+      </div>
+
+      <!-- Arrows (rule-switching) -->
+      <div id="drill-arrows-panel" style="display:none; margin-bottom:24px;">
+        <div class="math-progress mono" id="arrows-progress">Trial 1 of 30</div>
+        <div class="arrows-rule same" id="arrows-rule">Press the direction shown</div>
+        <div class="arrows-stimulus" id="arrows-stimulus">→</div>
+        <div class="arrows-choices" id="arrows-choices" style="display:none;">
+          <button class="arrows-choice" onclick="arrowsAnswer('left')">←</button>
+          <button class="arrows-choice" onclick="arrowsAnswer('right')">→</button>
+        </div>
+        <div class="math-progress mono" id="arrows-score">Score: 0</div>
+      </div>
+
+      <!-- Towers (Tower of Hanoi) -->
+      <div id="drill-towers-panel" style="display:none; margin-bottom:24px;">
+        <div class="math-progress mono" id="towers-progress">Round 1 of 3 · 3 disks</div>
+        <div class="towers-board" id="towers-board"></div>
+        <div class="towers-moves" id="towers-moves">Moves: 0 · Optimal: 7</div>
+        <div class="math-progress mono" id="towers-score" style="margin-top:8px;">Score: 0</div>
+        <div class="btn-row" id="towers-skip-row" style="display:none; margin-top:14px; justify-content:center;">
+          <button class="btn btn-secondary" onclick="towersSkip()">Skip round</button>
+        </div>
+      </div>
+
+      <!-- Magnitudes (fraction/number comparison) -->
+      <div id="drill-magnitudes-panel" style="display:none; margin-bottom:24px;">
+        <div class="drill-timer mono" id="magnitudes-timer">00:60</div>
+        <p class="drill-session-instructions" style="margin-bottom:14px;">Which is larger?</p>
+        <div class="magnitude-choices" id="magnitude-choices">
+          <button class="magnitude-choice" id="magnitude-choice-1" onclick="magnitudeAnswer(1)">—</button>
+          <button class="magnitude-choice" id="magnitude-choice-2" onclick="magnitudeAnswer(2)">—</button>
+        </div>
+        <div class="math-progress mono" id="magnitudes-progress">Correct: 0</div>
+      </div>
+
+      <!-- Shapes (odd one out) -->
+      <div id="drill-shapes-panel" style="display:none; margin-bottom:24px;">
+        <div class="drill-timer mono" id="shapes-timer">00:60</div>
+        <p class="drill-session-instructions" style="margin-bottom:6px;">Click the one that's different.</p>
+        <div class="shape-grid" id="shape-grid"></div>
+        <div class="math-progress mono" id="shapes-progress">Correct: 0</div>
+      </div>
+
+      <!-- Letters (N-Back) -->
+      <div id="drill-nback-panel" style="display:none; margin-bottom:24px;">
+        <div class="math-progress mono" id="nback-progress">Letter 0 of 25</div>
+        <div class="nback-letter" id="nback-letter">—</div>
+        <div class="math-progress mono" id="nback-score">Score: 0</div>
+        <div class="btn-row" id="nback-actions" style="display:none; margin-top:14px; justify-content:center;">
+          <button class="btn btn-record" onclick="nbackAnswer()">Match</button>
         </div>
       </div>
 
@@ -4293,15 +4486,44 @@
     arithmetic: { label: 'Arithmetic', title: 'Answer as Many as You Can', instructions: 'Addition, subtraction, multiplication, division. Type your answer and press Enter. You have 60 seconds.' },
     arithmetic_hard: { label: 'Arithmetic Hard', title: 'Answer as Many as You Can', instructions: 'Same four operations, uglier numbers and multi-step expressions. Type your answer and press Enter. You have 60 seconds.' },
     sequence: { label: 'Sequence', title: 'Complete the Pattern', instructions: 'A sequence of numbers appears. Type the next number to fit the pattern and press Enter. You have 60 seconds.' },
-    risk: { label: 'Risk', title: 'Pump or Collect', instructions: 'Each pump earns +1 point but risks popping the balloon. Collect to bank what you\'ve earned this round, or keep pumping. 8 balloons per session.' }
+    risk: { label: 'Risk', title: 'Pump or Collect', instructions: 'Each pump earns +1 point but risks popping the balloon. Collect to bank what you\'ve earned this round, or keep pumping. 8 balloons per session.' },
+    digits: { label: 'Digits', title: 'How Long a Sequence Can You Hold?', instructions: 'A sequence of digits flashes on screen, one at a time. Once it disappears, type the whole sequence back in order. Each correct round adds one more digit. One miss ends the run.' },
+    stop: { label: 'Stop', title: 'Press on Red, Hold on Green', instructions: 'A circle flashes red or green. Press when it\'s red. Do nothing when it\'s green. 40 trials.' },
+    cards: { label: 'Cards', title: 'Pick a Deck, Any Deck', instructions: 'Four decks, 24 draws. Every deck pays out on a draw, but some decks carry bigger hidden losses than others. Figure out which decks are worth it.' },
+    arrows: { label: 'Arrows', title: 'Follow the Rule, Not Just the Arrow', instructions: 'An arrow appears with a rule above it. Teal means press the direction shown. Orange means press the opposite direction. The rule changes, so read it every time. 30 trials.' },
+    towers: { label: 'Towers', title: 'Move the Whole Stack, One Disk at a Time', instructions: 'Click a peg to pick up its top disk, then click another peg to place it. You can never put a bigger disk on a smaller one. Move the entire stack to the last peg in as few moves as possible. Three rounds, one disk harder each time.' },
+    magnitudes: { label: 'Magnitudes', title: 'Which One Is Bigger?', instructions: 'Two fractions appear. Click the larger one as fast as you can. You have 60 seconds.' },
+    shapes: { label: 'Shapes', title: 'Spot the One That\'s Different', instructions: 'A grid of shapes appears -- all identical except one. Click the odd one out before time runs out. You have 60 seconds.' },
+    nback: { label: 'Letters', title: 'Does It Match Two Back?', instructions: 'Letters appear one at a time. Click Match whenever the current letter is the same as the one shown two letters ago. 25 letters.' },
   };
   let currentDrill = 'arithmetic';
 
+  const DRILL_PANEL_IDS = [
+    'drill-sprint-panel', 'drill-risk-panel', 'drill-digits-panel', 'drill-stop-panel',
+    'drill-cards-panel', 'drill-arrows-panel', 'drill-towers-panel', 'drill-magnitudes-panel',
+    'drill-shapes-panel', 'drill-nback-panel',
+  ];
+
   function showPanel(id) {
-    ['drill-sprint-panel','drill-risk-panel'].forEach(p => {
+    DRILL_PANEL_IDS.forEach((p) => {
       document.getElementById(p).style.display = (p === id) ? 'block' : 'none';
     });
   }
+
+  const DRILL_SETUP = {
+    arithmetic: { panel: 'drill-sprint-panel', setup: () => setupSprintDrill('arithmetic'), start: startSprintDrill, cta: 'Start →' },
+    arithmetic_hard: { panel: 'drill-sprint-panel', setup: () => setupSprintDrill('arithmetic_hard'), start: startSprintDrill, cta: 'Start →' },
+    sequence: { panel: 'drill-sprint-panel', setup: () => setupSprintDrill('sequence'), start: startSprintDrill, cta: 'Start →' },
+    risk: { panel: 'drill-risk-panel', setup: setupRiskDrill, start: startRiskDrill, cta: 'Start Session →' },
+    digits: { panel: 'drill-digits-panel', setup: setupDigitsDrill, start: startDigitsDrill, cta: 'Start →' },
+    stop: { panel: 'drill-stop-panel', setup: setupStopDrill, start: startStopDrill, cta: 'Start →' },
+    cards: { panel: 'drill-cards-panel', setup: setupCardsDrill, start: startCardsDrill, cta: 'Start →' },
+    arrows: { panel: 'drill-arrows-panel', setup: setupArrowsDrill, start: startArrowsDrill, cta: 'Start →' },
+    towers: { panel: 'drill-towers-panel', setup: setupTowersDrill, start: startTowersDrill, cta: 'Start →' },
+    magnitudes: { panel: 'drill-magnitudes-panel', setup: setupMagnitudesDrill, start: startMagnitudesDrill, cta: 'Start →' },
+    shapes: { panel: 'drill-shapes-panel', setup: setupShapesDrill, start: startShapesDrill, cta: 'Start →' },
+    nback: { panel: 'drill-nback-panel', setup: setupNbackDrill, start: startNbackDrill, cta: 'Start →' },
+  };
 
   function startDrill(key) {
     currentDrill = key;
@@ -4315,17 +4537,11 @@
     const actionBtn = document.getElementById('drill-action-btn');
     actionBtn.style.display = 'inline-block';
 
-    if (key === 'arithmetic' || key === 'arithmetic_hard' || key === 'sequence') {
-      showPanel('drill-sprint-panel');
-      setupSprintDrill(key);
-      actionBtn.textContent = 'Start →';
-      actionBtn.onclick = startSprintDrill;
-    } else if (key === 'risk') {
-      showPanel('drill-risk-panel');
-      setupRiskDrill();
-      actionBtn.textContent = 'Start Session →';
-      actionBtn.onclick = startRiskDrill;
-    }
+    const cfg = DRILL_SETUP[key];
+    showPanel(cfg.panel);
+    cfg.setup();
+    actionBtn.textContent = cfg.cta;
+    actionBtn.onclick = cfg.start;
     goTo('drill-session');
   }
 
@@ -4672,6 +4888,504 @@
     document.getElementById('risk-actions').style.display = 'none';
     finishDrillWithScore('risk', riskBanked, riskBanked, 'Points Banked',
       riskBanked >= 30 ? "Strong session. You found a good edge between greed and caution." : "Solid run. A bit more patience on the risky colors could push the total higher.");
+  }
+
+  // --- Digits (memory span) ---
+  let digitsLength, digitsScore, digitsSequence;
+
+  function setupDigitsDrill() {
+    digitsLength = 3;
+    digitsScore = 0;
+    document.getElementById('digits-progress').textContent = 'Length 3';
+    document.getElementById('digits-display').textContent = '—';
+    const input = document.getElementById('digits-input');
+    input.style.display = 'none';
+    input.value = '';
+    input.onkeydown = null;
+    document.getElementById('digits-score').textContent = 'Score: 0';
+  }
+
+  function startDigitsDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    playDigitsRound();
+  }
+
+  function playDigitsRound() {
+    document.getElementById('digits-progress').textContent = `Length ${digitsLength}`;
+    document.getElementById('digits-input').style.display = 'none';
+    digitsSequence = Array.from({ length: digitsLength }, () => randInt(0, 9));
+    const displayEl = document.getElementById('digits-display');
+    displayEl.textContent = '';
+    let i = 0;
+    const showNext = () => {
+      if (i >= digitsSequence.length) {
+        setTimeout(() => {
+          displayEl.textContent = '';
+          const input = document.getElementById('digits-input');
+          input.style.display = 'inline-block';
+          input.value = '';
+          input.focus();
+          input.onkeydown = (e) => { if (e.key === 'Enter') submitDigitsAnswer(); };
+        }, 500);
+        return;
+      }
+      displayEl.innerHTML = `<span class="digit-flash">${digitsSequence[i]}</span>`;
+      i++;
+      setTimeout(showNext, 800);
+    };
+    showNext();
+  }
+
+  function submitDigitsAnswer() {
+    const input = document.getElementById('digits-input');
+    const val = input.value.trim();
+    input.onkeydown = null;
+    if (val === digitsSequence.join('')) {
+      digitsScore += digitsLength;
+      document.getElementById('digits-score').textContent = `Score: ${digitsScore}`;
+      digitsLength++;
+      playDigitsRound();
+    } else {
+      finishDigitsDrill();
+    }
+  }
+
+  function finishDigitsDrill() {
+    finishDrillWithScore('digits', digitsScore, digitsScore, `${drillMeta.digits.label} · Score`,
+      digitsScore >= 20 ? "Strong memory span, that's a lot to hold at once." : "Solid run. Chunking the digits into pairs can help push further.");
+  }
+
+  // --- Stop (go/no-go) ---
+  const STOP_TOTAL_TRIALS = 40;
+  let stopTrial, stopScore, stopCurrent, stopResponded, stopTimeout;
+
+  function setupStopDrill() {
+    stopTrial = 0;
+    stopScore = 0;
+    clearTimeout(stopTimeout);
+    document.getElementById('stop-progress').textContent = `Trial 0 of ${STOP_TOTAL_TRIALS}`;
+    document.getElementById('stop-stimulus').className = 'stop-stimulus idle';
+    document.getElementById('stop-score').textContent = 'Score: 0';
+    document.getElementById('stop-actions').style.display = 'none';
+  }
+
+  function startStopDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    document.getElementById('stop-actions').style.display = 'flex';
+    nextStopTrial();
+  }
+
+  function nextStopTrial() {
+    stopTrial++;
+    if (stopTrial > STOP_TOTAL_TRIALS) { finishStopDrill(); return; }
+    document.getElementById('stop-progress').textContent = `Trial ${stopTrial} of ${STOP_TOTAL_TRIALS}`;
+    stopCurrent = Math.random() < 0.7 ? 'go' : 'nogo';
+    stopResponded = false;
+    document.getElementById('stop-stimulus').className = 'stop-stimulus idle';
+    const delay = randInt(300, 900);
+    setTimeout(() => {
+      document.getElementById('stop-stimulus').className = 'stop-stimulus ' + stopCurrent;
+      stopTimeout = setTimeout(() => evaluateStopTrial(false), 850);
+    }, delay);
+  }
+
+  function stopPress() {
+    if (stopResponded) return;
+    stopResponded = true;
+    clearTimeout(stopTimeout);
+    evaluateStopTrial(true);
+  }
+
+  function evaluateStopTrial(pressed) {
+    if (stopCurrent === 'go' && pressed) stopScore++;
+    else if (stopCurrent === 'nogo' && !pressed) stopScore++;
+    else stopScore = Math.max(0, stopScore - 1);
+    document.getElementById('stop-score').textContent = `Score: ${stopScore}`;
+    document.getElementById('stop-stimulus').className = 'stop-stimulus idle';
+    setTimeout(nextStopTrial, 250);
+  }
+
+  function finishStopDrill() {
+    document.getElementById('stop-actions').style.display = 'none';
+    finishDrillWithScore('stop', stopScore, stopScore, `${drillMeta.stop.label} · Score`,
+      stopScore >= 32 ? "Sharp control, you barely slipped." : "Decent run. The hard part is holding still on green.");
+  }
+
+  // --- Cards (Iowa Gambling Task) ---
+  const CARDS_TOTAL_DRAWS = 24;
+  const CARDS_PAYOFF = {
+    A: { gain: 10, lossChance: 0.5, loss: 25 },
+    B: { gain: 10, lossChance: 0.1, loss: 125 },
+    C: { gain: 5, lossChance: 0.5, loss: 5 },
+    D: { gain: 5, lossChance: 0.1, loss: 25 },
+  };
+  let cardsDrawCount, cardsTotalScore;
+
+  function setupCardsDrill() {
+    cardsDrawCount = 0;
+    cardsTotalScore = 0;
+    document.getElementById('cards-progress').textContent = `Draw 1 of ${CARDS_TOTAL_DRAWS}`;
+    document.getElementById('cards-total').textContent = '0';
+    document.getElementById('cards-feedback').textContent = '';
+    document.getElementById('cards-feedback').className = 'cards-feedback';
+    document.querySelectorAll('.cards-deck').forEach((b) => { b.disabled = true; });
+  }
+
+  function startCardsDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    document.querySelectorAll('.cards-deck').forEach((b) => { b.disabled = false; });
+  }
+
+  function cardsDraw(deckKey) {
+    if (cardsDrawCount >= CARDS_TOTAL_DRAWS) return;
+    const payoff = CARDS_PAYOFF[deckKey];
+    let delta = payoff.gain;
+    if (Math.random() < payoff.lossChance) delta -= payoff.loss;
+    cardsTotalScore = Math.max(0, cardsTotalScore + delta);
+    cardsDrawCount++;
+    document.getElementById('cards-total').textContent = cardsTotalScore;
+    const feedbackEl = document.getElementById('cards-feedback');
+    feedbackEl.textContent = (delta >= 0 ? '+' : '') + delta;
+    feedbackEl.className = 'cards-feedback ' + (delta >= 0 ? 'pos' : 'neg');
+    if (cardsDrawCount >= CARDS_TOTAL_DRAWS) {
+      document.getElementById('cards-progress').textContent = `Draw ${CARDS_TOTAL_DRAWS} of ${CARDS_TOTAL_DRAWS}`;
+      document.querySelectorAll('.cards-deck').forEach((b) => { b.disabled = true; });
+      setTimeout(finishCardsDrill, 600);
+    } else {
+      document.getElementById('cards-progress').textContent = `Draw ${cardsDrawCount + 1} of ${CARDS_TOTAL_DRAWS}`;
+    }
+  }
+
+  function finishCardsDrill() {
+    finishDrillWithScore('cards', cardsTotalScore, cardsTotalScore, `${drillMeta.cards.label} · Points`,
+      cardsTotalScore >= 150 ? "You found the safer decks and stuck with them." : "Some expensive lessons from the high-risk decks along the way.");
+  }
+
+  // --- Arrows (rule-switching) ---
+  const ARROWS_TOTAL_TRIALS = 30;
+  let arrowsTrial, arrowsScore, arrowsRule, arrowsDirection, arrowsAnswered;
+
+  function setupArrowsDrill() {
+    arrowsTrial = 0;
+    arrowsScore = 0;
+    document.getElementById('arrows-progress').textContent = `Trial 1 of ${ARROWS_TOTAL_TRIALS}`;
+    document.getElementById('arrows-stimulus').textContent = '→';
+    document.getElementById('arrows-rule').textContent = 'Press the direction shown';
+    document.getElementById('arrows-rule').className = 'arrows-rule same';
+    document.getElementById('arrows-choices').style.display = 'none';
+    document.getElementById('arrows-score').textContent = 'Score: 0';
+  }
+
+  function startArrowsDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    document.getElementById('arrows-choices').style.display = 'flex';
+    nextArrowsTrial();
+  }
+
+  function nextArrowsTrial() {
+    arrowsTrial++;
+    if (arrowsTrial > ARROWS_TOTAL_TRIALS) { finishArrowsDrill(); return; }
+    document.getElementById('arrows-progress').textContent = `Trial ${arrowsTrial} of ${ARROWS_TOTAL_TRIALS}`;
+    arrowsRule = Math.random() < 0.5 ? 'same' : 'opposite';
+    arrowsDirection = Math.random() < 0.5 ? 'left' : 'right';
+    arrowsAnswered = false;
+    const ruleEl = document.getElementById('arrows-rule');
+    ruleEl.textContent = arrowsRule === 'same' ? 'Press the direction shown' : 'Press the opposite direction';
+    ruleEl.className = 'arrows-rule ' + arrowsRule;
+    document.getElementById('arrows-stimulus').textContent = arrowsDirection === 'left' ? '←' : '→';
+  }
+
+  function arrowsAnswer(choice) {
+    if (arrowsAnswered) return;
+    arrowsAnswered = true;
+    const correctChoice = arrowsRule === 'same' ? arrowsDirection : (arrowsDirection === 'left' ? 'right' : 'left');
+    if (choice === correctChoice) arrowsScore++;
+    document.getElementById('arrows-score').textContent = `Score: ${arrowsScore}`;
+    setTimeout(nextArrowsTrial, 200);
+  }
+
+  function finishArrowsDrill() {
+    document.getElementById('arrows-choices').style.display = 'none';
+    finishDrillWithScore('arrows', arrowsScore, arrowsScore, `${drillMeta.arrows.label} · Correct`,
+      arrowsScore >= 24 ? "You tracked the rule switches well." : "The rule flips are the hard part, worth another pass.");
+  }
+
+  // --- Towers (Tower of Hanoi) ---
+  const TOWERS_ROUNDS = [3, 4, 5];
+  const TOWERS_BASE_POINTS = [30, 50, 70];
+  let towersRoundIndex, towersScore, towersPegs, towersMoves, towersSelectedPeg;
+
+  function towersOptimalMoves(n) { return Math.pow(2, n) - 1; }
+
+  function setupTowersDrill() {
+    towersRoundIndex = 0;
+    towersScore = 0;
+    towersSelectedPeg = null;
+    document.getElementById('towers-score').textContent = 'Score: 0';
+    document.getElementById('towers-skip-row').style.display = 'none';
+    document.getElementById('towers-board').innerHTML = '';
+    document.getElementById('towers-progress').textContent = `Round 1 of ${TOWERS_ROUNDS.length} · ${TOWERS_ROUNDS[0]} disks`;
+    document.getElementById('towers-moves').textContent = `Moves: 0 · Optimal: ${towersOptimalMoves(TOWERS_ROUNDS[0])}`;
+  }
+
+  function setupTowersRound() {
+    const n = TOWERS_ROUNDS[towersRoundIndex];
+    towersPegs = [Array.from({ length: n }, (_, i) => n - i), [], []];
+    towersMoves = 0;
+    towersSelectedPeg = null;
+    document.getElementById('towers-progress').textContent = `Round ${towersRoundIndex + 1} of ${TOWERS_ROUNDS.length} · ${n} disks`;
+    document.getElementById('towers-moves').textContent = `Moves: 0 · Optimal: ${towersOptimalMoves(n)}`;
+    renderTowersBoard();
+  }
+
+  function renderTowersBoard() {
+    const boardEl = document.getElementById('towers-board');
+    boardEl.innerHTML = towersPegs.map((peg, i) => {
+      const disksHtml = peg.map((size) => `<div class="towers-disk n${size}"></div>`).join('');
+      return `<div class="towers-peg${towersSelectedPeg === i ? ' selected' : ''}" onclick="towersClickPeg(${i})">${disksHtml}</div>`;
+    }).join('');
+  }
+
+  function startTowersDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    document.getElementById('towers-skip-row').style.display = 'flex';
+    setupTowersRound();
+  }
+
+  function towersClickPeg(i) {
+    if (towersSelectedPeg === null) {
+      if (towersPegs[i].length === 0) return;
+      towersSelectedPeg = i;
+    } else if (towersSelectedPeg === i) {
+      towersSelectedPeg = null;
+    } else {
+      const fromPeg = towersPegs[towersSelectedPeg];
+      const toPeg = towersPegs[i];
+      const disk = fromPeg[fromPeg.length - 1];
+      const topOfTo = toPeg[toPeg.length - 1];
+      if (topOfTo === undefined || disk < topOfTo) {
+        fromPeg.pop();
+        toPeg.push(disk);
+        towersMoves++;
+        document.getElementById('towers-moves').textContent = `Moves: ${towersMoves} · Optimal: ${towersOptimalMoves(TOWERS_ROUNDS[towersRoundIndex])}`;
+      }
+      towersSelectedPeg = null;
+    }
+    renderTowersBoard();
+    checkTowersSolved();
+  }
+
+  function checkTowersSolved() {
+    const n = TOWERS_ROUNDS[towersRoundIndex];
+    if (towersPegs[2].length === n) {
+      const optimal = towersOptimalMoves(n);
+      const excess = Math.max(0, towersMoves - optimal);
+      const roundScore = Math.max(5, TOWERS_BASE_POINTS[towersRoundIndex] - excess * 2);
+      towersScore += roundScore;
+      document.getElementById('towers-score').textContent = `Score: ${towersScore}`;
+      setTimeout(advanceTowersRound, 700);
+    }
+  }
+
+  function towersSkip() {
+    advanceTowersRound();
+  }
+
+  function advanceTowersRound() {
+    towersRoundIndex++;
+    towersSelectedPeg = null;
+    if (towersRoundIndex >= TOWERS_ROUNDS.length) {
+      finishTowersDrill();
+    } else {
+      setupTowersRound();
+    }
+  }
+
+  function finishTowersDrill() {
+    document.getElementById('towers-skip-row').style.display = 'none';
+    finishDrillWithScore('towers', towersScore, towersScore, `${drillMeta.towers.label} · Points`,
+      towersScore >= 120 ? "Efficient solves across all three rounds." : "Solved them, and efficiency comes with practice.");
+  }
+
+  // --- Magnitudes (fraction comparison) ---
+  let magnitudesSeconds, magnitudesInterval, magnitudesCorrect, magnitudesCurrent;
+
+  function randFraction() {
+    const den = randInt(2, 12);
+    const num = randInt(1, den - 1);
+    return { num, den, value: num / den };
+  }
+
+  function generateMagnitudesQuestion() {
+    const a = randFraction();
+    let b = randFraction();
+    let attempts = 0;
+    while (Math.abs(a.value - b.value) < 0.03 && attempts < 10) { b = randFraction(); attempts++; }
+    return { a, b };
+  }
+
+  function setupMagnitudesDrill() {
+    magnitudesSeconds = 60;
+    magnitudesCorrect = 0;
+    clearInterval(magnitudesInterval);
+    document.getElementById('magnitudes-timer').textContent = '00:60';
+    document.getElementById('magnitude-choice-1').textContent = '—';
+    document.getElementById('magnitude-choice-2').textContent = '—';
+    document.getElementById('magnitudes-progress').textContent = 'Correct: 0';
+  }
+
+  function startMagnitudesDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    showMagnitudesQuestion();
+    magnitudesInterval = setInterval(() => {
+      magnitudesSeconds--;
+      document.getElementById('magnitudes-timer').textContent = '00:' + String(magnitudesSeconds).padStart(2, '0');
+      if (magnitudesSeconds <= 0) { clearInterval(magnitudesInterval); finishMagnitudesDrill(); }
+    }, 1000);
+  }
+
+  function showMagnitudesQuestion() {
+    magnitudesCurrent = generateMagnitudesQuestion();
+    document.getElementById('magnitude-choice-1').textContent = `${magnitudesCurrent.a.num}/${magnitudesCurrent.a.den}`;
+    document.getElementById('magnitude-choice-2').textContent = `${magnitudesCurrent.b.num}/${magnitudesCurrent.b.den}`;
+  }
+
+  function magnitudeAnswer(choice) {
+    const picked = choice === 1 ? magnitudesCurrent.a : magnitudesCurrent.b;
+    const other = choice === 1 ? magnitudesCurrent.b : magnitudesCurrent.a;
+    if (picked.value > other.value) {
+      magnitudesCorrect++;
+      document.getElementById('magnitudes-progress').textContent = `Correct: ${magnitudesCorrect}`;
+    }
+    showMagnitudesQuestion();
+  }
+
+  function finishMagnitudesDrill() {
+    finishDrillWithScore('magnitudes', magnitudesCorrect, magnitudesCorrect, `${drillMeta.magnitudes.label} · Correct in 60s`,
+      magnitudesCorrect >= 20 ? "Fast, accurate reads on the fractions." : "Solid pace, comparing fractions gets quicker with reps.");
+  }
+
+  // --- Shapes (odd one out) ---
+  const SHAPE_KINDS = ['circle', 'square', 'diamond', 'triangle', 'star'];
+  const SHAPE_GRID_SIZE = 8;
+  let shapesSeconds, shapesInterval, shapesCorrect, shapesOddIndex;
+
+  function shapeMarkHtml(kind, colored) {
+    const color = colored ? 'var(--record)' : 'var(--good)';
+    if (kind === 'star') return `<span class="shape-mark star" style="color:${color};">★</span>`;
+    if (kind === 'triangle') return `<span class="shape-mark triangle" style="border-bottom-color:${color};"></span>`;
+    return `<span class="shape-mark ${kind}" style="background:${color};"></span>`;
+  }
+
+  function setupShapesDrill() {
+    shapesSeconds = 60;
+    shapesCorrect = 0;
+    clearInterval(shapesInterval);
+    document.getElementById('shapes-timer').textContent = '00:60';
+    document.getElementById('shapes-progress').textContent = 'Correct: 0';
+    document.getElementById('shape-grid').innerHTML = '';
+  }
+
+  function startShapesDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    showShapesRound();
+    shapesInterval = setInterval(() => {
+      shapesSeconds--;
+      document.getElementById('shapes-timer').textContent = '00:' + String(shapesSeconds).padStart(2, '0');
+      if (shapesSeconds <= 0) { clearInterval(shapesInterval); finishShapesDrill(); }
+    }, 1000);
+  }
+
+  function showShapesRound() {
+    shapesOddIndex = randInt(0, SHAPE_GRID_SIZE - 1);
+    const baseKind = SHAPE_KINDS[randInt(0, SHAPE_KINDS.length - 1)];
+    const oddByColor = Math.random() < 0.5;
+    const others = SHAPE_KINDS.filter((k) => k !== baseKind);
+    const oddKind = others[randInt(0, others.length - 1)];
+    let html = '';
+    for (let i = 0; i < SHAPE_GRID_SIZE; i++) {
+      const isOdd = i === shapesOddIndex;
+      const kind = (isOdd && !oddByColor) ? oddKind : baseKind;
+      const colored = isOdd && oddByColor;
+      html += `<div class="shape-cell" onclick="shapesAnswer(${i})">${shapeMarkHtml(kind, colored)}</div>`;
+    }
+    document.getElementById('shape-grid').innerHTML = html;
+  }
+
+  function shapesAnswer(index) {
+    if (index === shapesOddIndex) {
+      shapesCorrect++;
+      document.getElementById('shapes-progress').textContent = `Correct: ${shapesCorrect}`;
+    }
+    showShapesRound();
+  }
+
+  function finishShapesDrill() {
+    finishDrillWithScore('shapes', shapesCorrect, shapesCorrect, `${drillMeta.shapes.label} · Correct in 60s`,
+      shapesCorrect >= 15 ? "Quick eye for the odd one out." : "Good rep, pattern-spotting gets faster with practice.");
+  }
+
+  // --- Letters (N-Back, 2-back) ---
+  const NBACK_LETTERS = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L'];
+  const NBACK_TOTAL = 25;
+  const NBACK_N = 2;
+  let nbackIndex, nbackScore, nbackSequence, nbackAnswered, nbackTimeout;
+
+  function setupNbackDrill() {
+    nbackIndex = 0;
+    nbackScore = 0;
+    nbackSequence = [];
+    clearTimeout(nbackTimeout);
+    document.getElementById('nback-progress').textContent = `Letter 0 of ${NBACK_TOTAL}`;
+    document.getElementById('nback-letter').textContent = '—';
+    document.getElementById('nback-score').textContent = 'Score: 0';
+    document.getElementById('nback-actions').style.display = 'none';
+  }
+
+  function startNbackDrill() {
+    document.getElementById('drill-action-btn').style.display = 'none';
+    document.getElementById('nback-actions').style.display = 'flex';
+    nextNbackLetter();
+  }
+
+  function nextNbackLetter() {
+    nbackIndex++;
+    if (nbackIndex > NBACK_TOTAL) { finishNbackDrill(); return; }
+    document.getElementById('nback-progress').textContent = `Letter ${nbackIndex} of ${NBACK_TOTAL}`;
+    let letter;
+    if (nbackSequence.length >= NBACK_N && Math.random() < 0.35) {
+      letter = nbackSequence[nbackSequence.length - NBACK_N];
+    } else {
+      letter = NBACK_LETTERS[randInt(0, NBACK_LETTERS.length - 1)];
+    }
+    nbackSequence.push(letter);
+    nbackAnswered = false;
+    document.getElementById('nback-letter').textContent = letter;
+    nbackTimeout = setTimeout(() => evaluateNbackLetter(false), 1800);
+  }
+
+  function nbackAnswer() {
+    if (nbackAnswered) return;
+    nbackAnswered = true;
+    clearTimeout(nbackTimeout);
+    evaluateNbackLetter(true);
+  }
+
+  function evaluateNbackLetter(pressed) {
+    if (nbackSequence.length > NBACK_N) {
+      const isMatch = nbackSequence[nbackSequence.length - 1] === nbackSequence[nbackSequence.length - 1 - NBACK_N];
+      if (isMatch && pressed) nbackScore++;
+      else if (!isMatch && !pressed) nbackScore++;
+      else nbackScore = Math.max(0, nbackScore - 1);
+      document.getElementById('nback-score').textContent = `Score: ${nbackScore}`;
+    }
+    setTimeout(nextNbackLetter, 200);
+  }
+
+  function finishNbackDrill() {
+    document.getElementById('nback-actions').style.display = 'none';
+    finishDrillWithScore('nback', nbackScore, nbackScore, `${drillMeta.nback.label} · Score`,
+      nbackScore >= 15 ? "Solid working memory under pressure." : "2-back is genuinely hard, this gets easier with reps.");
   }
 </script>
 </body>
