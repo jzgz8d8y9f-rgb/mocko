@@ -1842,7 +1842,7 @@
       <div class="drill-card" data-type="structure" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('towers')">
         <div class="drill-top"><span class="drill-icon">⟁</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="towers" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Towers</h4>
-        <p>Move the whole disk stack to the last peg, one move at a time, in as few moves as possible. Three rounds.</p>
+        <p>Move the whole disk stack to the last peg, one move at a time, as fast as you can. Three rounds, no skipping.</p>
         <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-industry">Consulting</span><span class="drill-tag tag-industry">PE</span></div>
       </div>
       <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('magnitudes')">
@@ -1939,13 +1939,10 @@
 
       <!-- Towers (Tower of Hanoi) -->
       <div id="drill-towers-panel" style="display:none; margin-bottom:24px;">
+        <div class="drill-timer mono" id="towers-timer">0.0s</div>
         <div class="math-progress mono" id="towers-progress">Round 1 of 3 · 3 disks</div>
         <div class="towers-board" id="towers-board"></div>
-        <div class="towers-moves" id="towers-moves">Moves: 0 · Optimal: 7</div>
-        <div class="math-progress mono" id="towers-score" style="margin-top:8px;">Score: 0</div>
-        <div class="btn-row" id="towers-skip-row" style="display:none; margin-top:14px; justify-content:center;">
-          <button class="btn btn-secondary" onclick="towersSkip()">Skip round</button>
-        </div>
+        <div class="towers-moves" id="towers-moves">Moves: 0</div>
       </div>
 
       <!-- Magnitudes (fraction/number comparison) -->
@@ -4458,7 +4455,7 @@
     stop: { label: 'Stop', title: 'Press on Red, Hold on Green', instructions: 'A circle flashes red or green. Press when it\'s red. Do nothing when it\'s green. 40 trials.' },
     cards: { label: 'Cards', title: 'Pick a Deck, Any Deck', instructions: 'Four decks, 24 draws. Every deck pays out on a draw, but some decks carry bigger hidden losses than others. Figure out which decks are worth it.' },
     arrows: { label: 'Arrows', title: 'Follow the Rule, Not Just the Arrow', instructions: 'An arrow appears with a rule above it. Teal means press the direction shown. Orange means press the opposite direction. The rule changes, so read it every time. 30 trials.' },
-    towers: { label: 'Towers', title: 'Move the Whole Stack, One Disk at a Time', instructions: 'Click a peg to pick up its top disk, then click another peg to place it. You can never put a bigger disk on a smaller one. Move the entire stack to the last peg in as few moves as possible. Three rounds, one disk harder each time.' },
+    towers: { label: 'Towers', title: 'Move the Whole Stack, One Disk at a Time', instructions: 'Click a peg to pick up its top disk, then click another peg to place it. You can never put a bigger disk on a smaller one. Move the entire stack to the last peg as fast as you can. Three rounds, one disk harder each time, no skipping.' },
     magnitudes: { label: 'Magnitudes', title: 'Which One Is Bigger?', instructions: 'Two fractions appear. Click the larger one as fast as you can. You have 60 seconds.' },
     shapes: { label: 'Shapes', title: 'Spot the One That\'s Different', instructions: 'A grid of shapes appears -- all identical except one. Click the odd one out before time runs out. You have 60 seconds.' },
     nback: { label: 'Letters', title: 'Does It Match Two Back?', instructions: 'Letters appear one at a time. Click Match whenever the current letter is the same as the one shown two letters ago. 25 letters.' },
@@ -5079,20 +5076,21 @@
 
   // --- Towers (Tower of Hanoi) ---
   const TOWERS_ROUNDS = [3, 4, 5];
-  const TOWERS_BASE_POINTS = [30, 50, 70];
-  let towersRoundIndex, towersScore, towersPegs, towersMoves, towersSelectedPeg;
+  const TOWERS_SCORE_CAP = 300; // seconds; score = cap - elapsed, so faster solves rank higher
+  let towersRoundIndex, towersPegs, towersMoves, towersSelectedPeg, towersStartTime, towersTimerInterval;
 
   function towersOptimalMoves(n) { return Math.pow(2, n) - 1; }
 
+  function towersFormatTime(seconds) { return seconds.toFixed(1) + 's'; }
+
   function setupTowersDrill() {
     towersRoundIndex = 0;
-    towersScore = 0;
     towersSelectedPeg = null;
-    document.getElementById('towers-score').textContent = 'Score: 0';
-    document.getElementById('towers-skip-row').style.display = 'none';
+    clearInterval(towersTimerInterval);
+    document.getElementById('towers-timer').textContent = '0.0s';
     document.getElementById('towers-board').innerHTML = '';
     document.getElementById('towers-progress').textContent = `Round 1 of ${TOWERS_ROUNDS.length} · ${TOWERS_ROUNDS[0]} disks`;
-    document.getElementById('towers-moves').textContent = `Moves: 0 · Optimal: ${towersOptimalMoves(TOWERS_ROUNDS[0])}`;
+    document.getElementById('towers-moves').textContent = 'Moves: 0';
   }
 
   function setupTowersRound() {
@@ -5101,7 +5099,7 @@
     towersMoves = 0;
     towersSelectedPeg = null;
     document.getElementById('towers-progress').textContent = `Round ${towersRoundIndex + 1} of ${TOWERS_ROUNDS.length} · ${n} disks`;
-    document.getElementById('towers-moves').textContent = `Moves: 0 · Optimal: ${towersOptimalMoves(n)}`;
+    document.getElementById('towers-moves').textContent = 'Moves: 0';
     renderTowersBoard();
   }
 
@@ -5115,7 +5113,11 @@
 
   function startTowersDrill() {
     document.getElementById('drill-action-btn').style.display = 'none';
-    document.getElementById('towers-skip-row').style.display = 'flex';
+    towersStartTime = Date.now();
+    clearInterval(towersTimerInterval);
+    towersTimerInterval = setInterval(() => {
+      document.getElementById('towers-timer').textContent = towersFormatTime((Date.now() - towersStartTime) / 1000);
+    }, 100);
     setupTowersRound();
   }
 
@@ -5134,7 +5136,7 @@
         fromPeg.pop();
         toPeg.push(disk);
         towersMoves++;
-        document.getElementById('towers-moves').textContent = `Moves: ${towersMoves} · Optimal: ${towersOptimalMoves(TOWERS_ROUNDS[towersRoundIndex])}`;
+        document.getElementById('towers-moves').textContent = `Moves: ${towersMoves}`;
       }
       towersSelectedPeg = null;
     }
@@ -5145,17 +5147,8 @@
   function checkTowersSolved() {
     const n = TOWERS_ROUNDS[towersRoundIndex];
     if (towersPegs[2].length === n) {
-      const optimal = towersOptimalMoves(n);
-      const excess = Math.max(0, towersMoves - optimal);
-      const roundScore = Math.max(5, TOWERS_BASE_POINTS[towersRoundIndex] - excess * 2);
-      towersScore += roundScore;
-      document.getElementById('towers-score').textContent = `Score: ${towersScore}`;
-      setTimeout(advanceTowersRound, 700);
+      setTimeout(advanceTowersRound, 500);
     }
-  }
-
-  function towersSkip() {
-    advanceTowersRound();
   }
 
   function advanceTowersRound() {
@@ -5169,9 +5162,11 @@
   }
 
   function finishTowersDrill() {
-    document.getElementById('towers-skip-row').style.display = 'none';
-    finishDrillWithScore('towers', towersScore, towersScore, `${drillMeta.towers.label} · Points`,
-      towersScore >= 120 ? "Efficient solves across all three rounds." : "Solved them, and efficiency comes with practice.");
+    clearInterval(towersTimerInterval);
+    const elapsed = (Date.now() - towersStartTime) / 1000;
+    const score = Math.max(0, Math.round(TOWERS_SCORE_CAP - elapsed));
+    finishDrillWithScore('towers', score, towersFormatTime(elapsed), 'Total Time',
+      elapsed <= 90 ? "Fast work across all three rounds." : "All three solved. Fewer wasted moves is the quickest way to shave off time.");
   }
 
   // --- Magnitudes (fraction comparison) ---
