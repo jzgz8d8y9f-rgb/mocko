@@ -2022,10 +2022,11 @@
 
   <!-- DRILL LEADERBOARD -->
   <div class="screen" id="screen-drill-leaderboard">
-    <button class="back-btn" onclick="goTo('drill-result')">← Back</button>
+    <button class="back-btn" onclick="backFromLeaderboard()">← Back</button>
     <div class="hero">
       <h1 class="display" id="leaderboard-drill-title">Leaderboard</h1>
     </div>
+    <select class="resume-select" id="leaderboard-drill-select" style="max-width:280px; margin:0 auto 20px; display:block;" onchange="switchLeaderboardDrill(this.value)"></select>
     <div class="pill-row" id="leaderboard-period-row" style="margin-bottom:20px;">
       <button class="pill-btn selected" data-period="daily">Today</button>
       <button class="pill-btn" data-period="alltime">All-Time</button>
@@ -2247,7 +2248,7 @@
     weekCard.style.display = 'block';
   }
 
-  const homeDrillKeys = ['arithmetic', 'arithmetic_hard', 'risk', 'sequence'];
+  const homeDrillKeys = ['arithmetic', 'arithmetic_hard', 'risk', 'sequence', 'digits', 'stop', 'cards', 'arrows', 'towers', 'magnitudes', 'shapes', 'nback'];
   let homeDrillIdx = 0;
   let homeLeaguePeriod = 'daily';
   let homeLeagueCache = {};
@@ -2393,6 +2394,7 @@
         <div class="account-dropdown" id="account-dropdown" style="display:none;">
           <button onclick="goToProfile()">Profile</button>
           <button onclick="openStats()">Stats</button>
+          <button onclick="goToLeaderboardHub()">Leaderboard</button>
           <button onclick="goToSettings()">Settings</button>
           <button onclick="goToHelp()">Help</button>
           <div class="account-dropdown-divider"></div>
@@ -4725,12 +4727,51 @@
     renderMiniLeaderboard(currentDrill, el.dataset.period);
   }));
 
-  function goToLeaderboard(drillKey) {
+  const ALL_DRILL_KEYS = ['arithmetic', 'arithmetic_hard', 'risk', 'sequence', 'digits', 'stop', 'cards', 'arrows', 'towers', 'magnitudes', 'shapes', 'nback'];
+  let leaderboardReturnScreen = 'drill-result';
+
+  function populateLeaderboardDrillSelect(selectedKey) {
+    const select = document.getElementById('leaderboard-drill-select');
+    select.innerHTML = ALL_DRILL_KEYS.map((key) => `<option value="${key}">${drillMeta[key].label}</option>`).join('');
+    select.value = selectedKey;
+  }
+
+  function switchLeaderboardDrill(drillKey) {
     currentDrill = drillKey;
+    document.getElementById('leaderboard-drill-title').textContent = (drillMeta[drillKey] || {}).label || 'Leaderboard';
+    const period = document.querySelector('#leaderboard-period-row .pill-btn.selected').dataset.period;
+    loadLeaderboard(drillKey, period);
+  }
+
+  function renderLeaderboardScreen(drillKey) {
+    currentDrill = drillKey;
+    populateLeaderboardDrillSelect(drillKey);
     document.getElementById('leaderboard-drill-title').textContent = (drillMeta[drillKey] || {}).label || 'Leaderboard';
     document.querySelectorAll('#leaderboard-period-row .pill-btn').forEach(b => b.classList.toggle('selected', b.dataset.period === 'daily'));
     goTo('drill-leaderboard');
     loadLeaderboard(drillKey, 'daily');
+  }
+
+  function goToLeaderboard(drillKey) {
+    leaderboardReturnScreen = 'drill-result';
+    renderLeaderboardScreen(drillKey);
+  }
+
+  function goToLeaderboardHub() {
+    closeAccountMenu();
+    leaderboardReturnScreen = document.getElementById('tab-home').classList.contains('active') ? 'home'
+      : document.getElementById('tab-drills').classList.contains('active') ? 'drills' : 'interview';
+    renderLeaderboardScreen(currentDrill || 'arithmetic');
+  }
+
+  function backFromLeaderboard() {
+    if (leaderboardReturnScreen === 'drill-result') {
+      goTo('drill-result');
+    } else if (leaderboardReturnScreen === 'home' || leaderboardReturnScreen === 'drills' || leaderboardReturnScreen === 'interview') {
+      switchTab(leaderboardReturnScreen);
+    } else {
+      goTo('drills');
+    }
   }
 
   async function loadLeaderboard(drillKey, period) {
