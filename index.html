@@ -1867,6 +1867,19 @@
   </div>
 
   <!-- DRILL SESSION -->
+  <!-- DRILL TUTORIAL -->
+  <div class="screen" id="screen-drill-tutorial">
+    <button class="back-btn" onclick="goTo('drills')">← Back to Drills</button>
+    <div class="drill-session">
+      <div class="drill-session-label" id="tutorial-label">Drill</div>
+      <h2 id="tutorial-title"></h2>
+      <p class="drill-session-instructions" id="tutorial-instructions"></p>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="beginDrillFromTutorial()">Start →</button>
+      </div>
+    </div>
+  </div>
+
   <div class="screen" id="screen-drill-session">
     <button class="back-btn" onclick="goTo('drills')">← Back to Drills</button>
     <div class="drill-session">
@@ -1972,10 +1985,6 @@
         <div class="btn-row" id="nback-actions" style="display:none; margin-top:14px; justify-content:center;">
           <button class="btn btn-record" onclick="nbackAnswer()">Match</button>
         </div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-primary" id="drill-action-btn" onclick="handleDrillAction()">Start →</button>
       </div>
     </div>
   </div>
@@ -4484,22 +4493,34 @@
   }
 
   const DRILL_SETUP = {
-    arithmetic: { panel: 'drill-sprint-panel', setup: () => setupSprintDrill('arithmetic'), start: startSprintDrill, cta: 'Start →' },
-    arithmetic_hard: { panel: 'drill-sprint-panel', setup: () => setupSprintDrill('arithmetic_hard'), start: startSprintDrill, cta: 'Start →' },
-    sequence: { panel: 'drill-sprint-panel', setup: () => setupSprintDrill('sequence'), start: startSprintDrill, cta: 'Start →' },
-    risk: { panel: 'drill-risk-panel', setup: setupRiskDrill, start: startRiskDrill, cta: 'Start Session →' },
-    digits: { panel: 'drill-digits-panel', setup: setupDigitsDrill, start: startDigitsDrill, cta: 'Start →' },
-    stop: { panel: 'drill-stop-panel', setup: setupStopDrill, start: startStopDrill, cta: 'Start →' },
-    cards: { panel: 'drill-cards-panel', setup: setupCardsDrill, start: startCardsDrill, cta: 'Start →' },
-    arrows: { panel: 'drill-arrows-panel', setup: setupArrowsDrill, start: startArrowsDrill, cta: 'Start →' },
-    towers: { panel: 'drill-towers-panel', setup: setupTowersDrill, start: startTowersDrill, cta: 'Start →' },
-    magnitudes: { panel: 'drill-magnitudes-panel', setup: setupMagnitudesDrill, start: startMagnitudesDrill, cta: 'Start →' },
-    shapes: { panel: 'drill-shapes-panel', setup: setupShapesDrill, start: startShapesDrill, cta: 'Start →' },
-    nback: { panel: 'drill-nback-panel', setup: setupNbackDrill, start: startNbackDrill, cta: 'Start →' },
+    arithmetic: { panel: 'drill-sprint-panel', setup: () => setupSprintDrill('arithmetic'), start: startSprintDrill },
+    arithmetic_hard: { panel: 'drill-sprint-panel', setup: () => setupSprintDrill('arithmetic_hard'), start: startSprintDrill },
+    sequence: { panel: 'drill-sprint-panel', setup: () => setupSprintDrill('sequence'), start: startSprintDrill },
+    risk: { panel: 'drill-risk-panel', setup: setupRiskDrill, start: startRiskDrill },
+    digits: { panel: 'drill-digits-panel', setup: setupDigitsDrill, start: startDigitsDrill },
+    stop: { panel: 'drill-stop-panel', setup: setupStopDrill, start: startStopDrill },
+    cards: { panel: 'drill-cards-panel', setup: setupCardsDrill, start: startCardsDrill },
+    arrows: { panel: 'drill-arrows-panel', setup: setupArrowsDrill, start: startArrowsDrill },
+    towers: { panel: 'drill-towers-panel', setup: setupTowersDrill, start: startTowersDrill },
+    magnitudes: { panel: 'drill-magnitudes-panel', setup: setupMagnitudesDrill, start: startMagnitudesDrill },
+    shapes: { panel: 'drill-shapes-panel', setup: setupShapesDrill, start: startShapesDrill },
+    nback: { panel: 'drill-nback-panel', setup: setupNbackDrill, start: startNbackDrill },
   };
 
+  // Clicking a drill card shows a short tutorial (label/title/instructions,
+  // no game UI yet); its Start button is what actually sets up the panel
+  // and begins play.
   function startDrill(key) {
     currentDrill = key;
+    const meta = drillMeta[key];
+    document.getElementById('tutorial-label').textContent = meta.label;
+    document.getElementById('tutorial-title').textContent = meta.title;
+    document.getElementById('tutorial-instructions').textContent = meta.instructions;
+    goTo('drill-tutorial');
+  }
+
+  function beginDrillFromTutorial() {
+    const key = currentDrill;
     const meta = drillMeta[key];
     document.getElementById('drill-label').textContent = meta.label;
     document.getElementById('drill-title').textContent = meta.title;
@@ -4507,15 +4528,12 @@
     document.getElementById('drill-result-percentile').style.display = 'none';
     document.getElementById('drill-result-leaderboard-btn').style.display = 'none';
     document.getElementById('drill-result-mini-lb').style.display = 'none';
-    const actionBtn = document.getElementById('drill-action-btn');
-    actionBtn.style.display = 'inline-block';
 
     const cfg = DRILL_SETUP[key];
     showPanel(cfg.panel);
     cfg.setup();
-    actionBtn.textContent = cfg.cta;
-    actionBtn.onclick = cfg.start;
     goTo('drill-session');
+    cfg.start();
   }
 
   async function finishDrillWithScore(drillKey, score, resultNum, resultLabel, resultNote) {
@@ -4751,7 +4769,6 @@
   }
 
   function startSprintDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     showSprintQuestion();
     const input = document.getElementById('sprint-input');
     input.focus();
@@ -4806,7 +4823,6 @@
   }
 
   function startRiskDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     document.getElementById('risk-actions').style.display = 'flex';
     nextRiskBalloon();
   }
@@ -4879,7 +4895,6 @@
   }
 
   function startDigitsDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     playDigitsRound();
   }
 
@@ -4943,7 +4958,6 @@
   }
 
   function startStopDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     document.getElementById('stop-actions').style.display = 'flex';
     nextStopTrial();
   }
@@ -5005,7 +5019,6 @@
   }
 
   function startCardsDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     document.querySelectorAll('.cards-deck').forEach((b) => { b.disabled = false; });
   }
 
@@ -5050,7 +5063,6 @@
   }
 
   function startArrowsDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     document.getElementById('arrows-choices').style.display = 'flex';
     nextArrowsTrial();
   }
@@ -5121,7 +5133,6 @@
   }
 
   function startTowersDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     towersStartTime = Date.now();
     clearInterval(towersTimerInterval);
     towersTimerInterval = setInterval(() => {
@@ -5206,7 +5217,6 @@
   }
 
   function startMagnitudesDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     showMagnitudesQuestion();
     magnitudesInterval = setInterval(() => {
       magnitudesSeconds--;
@@ -5258,7 +5268,6 @@
   }
 
   function startShapesDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     showShapesRound();
     shapesInterval = setInterval(() => {
       shapesSeconds--;
@@ -5314,7 +5323,6 @@
   }
 
   function startNbackDrill() {
-    document.getElementById('drill-action-btn').style.display = 'none';
     document.getElementById('nback-actions').style.display = 'flex';
     nextNbackLetter();
   }
