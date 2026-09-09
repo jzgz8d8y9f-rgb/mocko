@@ -2351,7 +2351,7 @@
     document.querySelectorAll('[data-best-for]').forEach(el => {
       const key = el.dataset.bestFor;
       if (bestByKey[key] != null) {
-        el.textContent = `Best: ${bestByKey[key]}`;
+        el.textContent = `Best: ${formatDrillScoreDisplay(key, bestByKey[key])}`;
         el.style.display = 'inline-block';
       } else {
         el.style.display = 'none';
@@ -4460,6 +4460,15 @@
     shapes: { label: 'Shapes', title: 'Spot the One That\'s Different', instructions: 'A grid of shapes appears -- all identical except one. Click the odd one out before time runs out. You have 60 seconds.' },
     nback: { label: 'Letters', title: 'Does It Match Two Back?', instructions: 'Letters appear one at a time. Click Match whenever the current letter is the same as the one shown two letters ago. 25 letters.' },
   };
+
+  // Leaderboards always sort by score descending, so timed drills still
+  // store a "higher is faster" value underneath -- this converts that
+  // back into a real time for display wherever a raw score would
+  // otherwise show up (leaderboard rows, "Best:" tags).
+  function formatDrillScoreDisplay(drillKey, score) {
+    if (drillKey === 'towers') return towersFormatTime(TOWERS_SCORE_CAP - score);
+    return score;
+  }
   let currentDrill = 'arithmetic';
 
   const DRILL_PANEL_IDS = [
@@ -4555,7 +4564,7 @@
           <div class="leaderboard-rank">${r.rank}</div>
           <div class="leaderboard-avatar">${avatar}</div>
           <div class="leaderboard-name">${username}</div>
-          <div class="leaderboard-score">${r.score}</div>
+          <div class="leaderboard-score">${formatDrillScoreDisplay(drillKey, r.score)}</div>
         </div>`;
       }).join('');
       if (myRank != null && myRank > 3) {
@@ -4607,7 +4616,7 @@
           <div class="leaderboard-rank">${r.rank}</div>
           <div class="leaderboard-avatar">${avatar}</div>
           <div class="leaderboard-name">${username}</div>
-          <div class="leaderboard-score">${r.score}</div>
+          <div class="leaderboard-score">${formatDrillScoreDisplay(drillKey, r.score)}</div>
         </div>`;
       }).join('');
     } catch (err) {
