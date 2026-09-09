@@ -384,6 +384,14 @@
   .pointers.good li::before { content: '+'; position: absolute; left: 0; color: var(--good); font-weight: 700; }
   .pointers.work li::before { content: '—'; position: absolute; left: 0; color: var(--warn); }
 
+  .tutorial-steps { list-style: none; counter-reset: step; text-align: left; max-width: 440px; margin: 0 auto; }
+  .tutorial-steps li { position: relative; padding-left: 36px; margin-bottom: 15px; font-size: 13.5px; line-height: 1.55; color: var(--text); }
+  .tutorial-steps li::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 0; width: 23px; height: 23px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); color: var(--text-muted); font-size: 11.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .interview-tutorial-demo { display: flex; align-items: center; justify-content: center; min-height: 120px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; margin: 0 auto 24px; padding: 18px; max-width: 340px; }
+  .interview-tutorial-demo .voice-orb { width: 76px; height: 76px; margin: 0; }
+  .interview-tutorial-demo .voice-orb-core { width: 50px; height: 50px; }
+  .interview-tutorial-demo .onair-badge { font-size: 13px; }
+
   .qresult-card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 20px; margin-bottom: 14px; text-align: left; }
   .qresult-card.toughest { border-color: var(--warn); }
   .qresult-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
@@ -554,11 +562,13 @@
   .play-link { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12.5px; font-weight: 600; text-decoration: none; color: var(--good); }
   .play-link svg { width: 13px; height: 13px; }
 
-  .empty-pulse { border: 1px dashed var(--line); border-radius: 16px; padding: 30px 28px; margin-bottom: 16px; display: flex; align-items: center; gap: 18px; }
+  .empty-pulse { border: 1px dashed var(--line); border-radius: 16px; padding: 30px 28px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  .empty-pulse-left { display: flex; align-items: center; gap: 18px; }
   .empty-pulse-icon { width: 46px; height: 46px; border-radius: 12px; background: rgba(39,203,187,0.14); color: var(--good); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .empty-pulse-icon svg { width: 23px; height: 23px; }
   .empty-pulse-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; font-family: 'Bricolage Grotesque'; }
   .empty-pulse-sub { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .empty-pulse-btn { flex-shrink: 0; background: var(--good); color: var(--bg); border: none; }
 
   .continue-card {
     cursor: pointer;
@@ -958,11 +968,14 @@
       </div>
 
       <div class="empty-pulse" id="home-empty-state" style="display:none;">
-        <div class="empty-pulse-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
-        <div>
-          <div class="empty-pulse-title">No sessions yet</div>
-          <div class="empty-pulse-sub">Run a mock interview, a scored recording, or a quick drill — your weekly breakdown shows up here once you've played.</div>
+        <div class="empty-pulse-left">
+          <div class="empty-pulse-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
+          <div>
+            <div class="empty-pulse-title">No sessions yet</div>
+            <div class="empty-pulse-sub">Run a mock interview, a scored recording, or a quick drill — your weekly breakdown shows up here once you've played.</div>
+          </div>
         </div>
+        <button class="btn empty-pulse-btn" onclick="switchTab('interview')">Start now →</button>
       </div>
 
       <div class="action-grid-2">
@@ -1605,6 +1618,20 @@
     </div>
   </div>
 
+  <!-- INTERVIEW TUTORIAL -->
+  <div class="screen" id="screen-interview-tutorial">
+    <button class="back-btn" onclick="goTo('setup')">← Back</button>
+    <div class="hero">
+      <div class="step-label" id="interview-tutorial-eyebrow">Mock Interview</div>
+      <h1 class="display" id="interview-tutorial-title">How it works</h1>
+    </div>
+    <div class="interview-tutorial-demo" id="interview-tutorial-demo"></div>
+    <ul class="tutorial-steps" id="interview-tutorial-steps"></ul>
+    <div class="btn-row" style="justify-content:center; margin-top:10px;">
+      <button class="btn btn-primary" id="interview-tutorial-start" onclick="beginInterviewFromTutorial()">Start →</button>
+    </div>
+  </div>
+
   <!-- RECORD STAGE -->
   <div class="screen" id="screen-record-setup">
     <button class="back-btn" onclick="cancelRecordSetup()">← Back</button>
@@ -2007,6 +2034,7 @@
       <div id="drill-result-mini-lb" style="display:none; margin:20px 0; text-align:left;">
         <div class="pill-row" id="result-lb-period-row" style="justify-content:center; margin-bottom:12px;">
           <button class="pill-btn selected" data-period="daily">Today</button>
+          <button class="pill-btn" data-period="weekly">Weekly</button>
           <button class="pill-btn" data-period="alltime">All-Time</button>
         </div>
         <div class="leaderboard-list" id="drill-result-mini-lb-list"></div>
@@ -2029,6 +2057,7 @@
     <select class="resume-select" id="leaderboard-drill-select" style="max-width:280px; margin:0 auto 20px; display:block;" onchange="switchLeaderboardDrill(this.value)"></select>
     <div class="pill-row" id="leaderboard-period-row" style="margin-bottom:20px;">
       <button class="pill-btn selected" data-period="daily">Today</button>
+      <button class="pill-btn" data-period="weekly">Weekly</button>
       <button class="pill-btn" data-period="alltime">All-Time</button>
     </div>
     <div class="leaderboard-list" id="leaderboard-list"></div>
@@ -3270,8 +3299,41 @@
   }
 
   async function beginSession() {
+    showInterviewTutorial();
+  }
+
+  const INTERVIEW_TUTORIAL_STEPS = {
+    record: [
+      'You\'ll see your question and a live camera preview.',
+      'A short "Get ready" countdown gives you a moment to compose yourself.',
+      'Recording starts automatically — answer out loud, on camera.',
+      'Stop recording yourself, or it\'ll stop on its own.',
+      'You\'ll get a scored breakdown — structure, clarity, pace, and tone — plus your transcript.',
+    ],
+    voice: [
+      'Jordan, your AI interviewer, asks a question out loud.',
+      'Answer naturally when you\'re ready to talk — no script to read from.',
+      'Jordan may ask a quick follow-up if there\'s more worth digging into.',
+      'Tap Done when you\'ve finished answering. No mic access? You can type instead.',
+      'At the end, you\'ll get an overall score and a breakdown for every question.',
+    ],
+  };
+
+  function showInterviewTutorial() {
+    const mode = state.mode;
+    document.getElementById('interview-tutorial-eyebrow').textContent = mode === 'record' ? 'On-Air Practice' : 'Mock Interview';
+    document.getElementById('interview-tutorial-title').textContent = mode === 'record' ? 'How On-Air Practice works' : 'How Mock Interview works';
+    document.getElementById('interview-tutorial-demo').innerHTML = mode === 'record'
+      ? '<div class="onair-badge" style="color:var(--record);"><div class="dot"></div> ON AIR</div>'
+      : '<div class="voice-orb ai-talking"><div class="voice-orb-core"></div></div>';
+    const steps = INTERVIEW_TUTORIAL_STEPS[mode] || INTERVIEW_TUTORIAL_STEPS.record;
+    document.getElementById('interview-tutorial-steps').innerHTML = steps.map((s) => `<li>${s}</li>`).join('');
+    goTo('interview-tutorial');
+  }
+
+  async function beginInterviewFromTutorial() {
     if (state.mode === 'record') {
-      const btn = document.getElementById('setup-next');
+      const btn = document.getElementById('interview-tutorial-start');
       btn.disabled = true;
       btn.textContent = 'Loading questions...';
       try {
@@ -3282,7 +3344,7 @@
         alert('Could not load questions. Please try again.');
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Begin →';
+        btn.textContent = 'Start →';
       }
     } else {
       startVoice();
