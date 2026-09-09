@@ -584,7 +584,6 @@
   .drill-icon svg { width: 19px; height: 19px; }
   .drill-card[data-type="quantitative"] .drill-icon { background: rgba(69,185,140,0.16); color: var(--tag-quantitative); }
   .drill-card[data-type="risk"] .drill-icon { background: rgba(232,129,74,0.16); color: var(--tag-risk); }
-  .drill-card[data-type="communication"] .drill-icon { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
   .drill-card[data-type="structure"] .drill-icon { background: rgba(124,158,242,0.16); color: var(--tag-structure); }
   .drill-badge { font-family: 'IBM Plex Mono'; font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
   .drill-badge.live { background: rgba(39,203,187,0.18); color: var(--good); }
@@ -593,10 +592,9 @@
   .drill-tags { display: flex; gap: 6px; flex-wrap: wrap; }
   .drill-tag { font-family: 'IBM Plex Mono'; font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
   .drill-tag.tag-structure { background: rgba(124,158,242,0.16); color: var(--tag-structure); }
-  .drill-tag.tag-communication { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
+  .drill-tag.tag-pymetrics { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
   .drill-tag.tag-quantitative { background: rgba(69,185,140,0.16); color: var(--tag-quantitative); }
   .drill-tag.tag-risk { background: rgba(232,129,74,0.16); color: var(--tag-risk); }
-  .drill-tag.tag-industry { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--line); }
 
   .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
   .leaderboard-row { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; cursor: pointer; transition: border-color 0.15s; }
@@ -1791,99 +1789,85 @@
           <span id="type-filter-label">All Types</span> <span class="filter-dropdown-caret">▾</span>
         </button>
         <div class="filter-dropdown-panel" id="type-filter-panel">
-          <label><input type="checkbox" value="structure" onchange="applyDrillFilters()"> Structure</label>
-          <label><input type="checkbox" value="communication" onchange="applyDrillFilters()"> Communication</label>
           <label><input type="checkbox" value="quantitative" onchange="applyDrillFilters()"> Quantitative</label>
           <label><input type="checkbox" value="risk" onchange="applyDrillFilters()"> Risk/Probability</label>
-        </div>
-      </div>
-      <div class="filter-dropdown" id="industry-filter-dropdown">
-        <button class="filter-dropdown-btn" onclick="toggleFilterDropdown('industry', event)">
-          <span id="industry-filter-label">All Industries</span> <span class="filter-dropdown-caret">▾</span>
-        </button>
-        <div class="filter-dropdown-panel" id="industry-filter-panel">
-          <label><input type="checkbox" value="ib" onchange="applyDrillFilters()"> IB</label>
-          <label><input type="checkbox" value="consulting" onchange="applyDrillFilters()"> Consulting</label>
-          <label><input type="checkbox" value="tech" onchange="applyDrillFilters()"> Tech</label>
-          <label><input type="checkbox" value="quant" onchange="applyDrillFilters()"> Quant</label>
-          <label><input type="checkbox" value="pe" onchange="applyDrillFilters()"> PE</label>
-          <label><input type="checkbox" value="general" onchange="applyDrillFilters()"> General</label>
+          <label><input type="checkbox" value="structure" onchange="applyDrillFilters()"> Structure</label>
         </div>
       </div>
     </div>
 
     <div class="drill-grid">
-      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting" onclick="startDrill('arithmetic')">
+      <div class="drill-card" data-type="quantitative" onclick="startDrill('arithmetic')">
         <div class="drill-top"><span class="drill-icon">+</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="arithmetic" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Arithmetic</h4>
         <p>60 seconds, addition, subtraction, multiplication, division. Answer as many as you can before time runs out.</p>
-        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span></div>
       </div>
-      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant" onclick="startDrill('arithmetic_hard')">
+      <div class="drill-card" data-type="quantitative" onclick="startDrill('arithmetic_hard')">
         <div class="drill-top"><span class="drill-icon">±</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="arithmetic_hard" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Arithmetic Hard</h4>
         <p>Same four operations, uglier numbers and multi-step expressions. Still 60 seconds, see how far speed holds up.</p>
-        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span></div>
       </div>
-      <div class="drill-card" data-type="risk" data-industries="ib,pe,quant" onclick="startDrill('risk')">
+      <div class="drill-card" data-type="risk" onclick="startDrill('risk')">
         <div class="drill-top"><span class="drill-icon">◉</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="risk" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Risk</h4>
         <p>Pump the balloon for +1 point a pop, or collect and bank your earnings. Pop it and you lose the round, so how far do you push it?</p>
-        <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Quant</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
-      <div class="drill-card" data-type="quantitative" data-industries="quant,tech" onclick="startDrill('sequence')">
+      <div class="drill-card" data-type="quantitative" onclick="startDrill('sequence')">
         <div class="drill-top"><span class="drill-icon">…</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="sequence" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Sequence</h4>
         <p>A pattern of numbers appears. Type the next one in the sequence before the clock runs out.</p>
-        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Quant</span><span class="drill-tag tag-industry">Tech</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
-      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('digits')">
+      <div class="drill-card" data-type="quantitative" onclick="startDrill('digits')">
         <div class="drill-top"><span class="drill-icon">#</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="digits" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Digits</h4>
         <p>A sequence of digits flashes, then disappears. Type it back. Each round adds one more digit until you slip.</p>
-        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span><span class="drill-tag tag-industry">Consulting</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
-      <div class="drill-card" data-type="structure" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('stop')">
+      <div class="drill-card" data-type="structure" onclick="startDrill('stop')">
         <div class="drill-top"><span class="drill-icon">●</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="stop" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Stop</h4>
         <p>Press on red, hold still on green. 40 fast trials testing how well you catch yourself.</p>
-        <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">Consulting</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
-      <div class="drill-card" data-type="risk" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('cards')">
+      <div class="drill-card" data-type="risk" onclick="startDrill('cards')">
         <div class="drill-top"><span class="drill-icon">▥</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="cards" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Cards</h4>
         <p>Four decks, 24 draws. Every deck pays out, but some carry bigger hidden losses. Learn which to avoid.</p>
-        <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-industry">IB</span><span class="drill-tag tag-industry">PE</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
-      <div class="drill-card" data-type="structure" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('arrows')">
+      <div class="drill-card" data-type="structure" onclick="startDrill('arrows')">
         <div class="drill-top"><span class="drill-icon">→</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="arrows" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Arrows</h4>
         <p>An arrow appears with a rule above it that keeps changing. Read the rule, not just the arrow. 30 trials.</p>
-        <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-industry">Consulting</span><span class="drill-tag tag-industry">Tech</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
-      <div class="drill-card" data-type="structure" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('towers')">
+      <div class="drill-card" data-type="structure" onclick="startDrill('towers')">
         <div class="drill-top"><span class="drill-icon">⟁</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="towers" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Towers</h4>
         <p>Move the whole disk stack to the last peg, one move at a time, as fast as you can. Three rounds, no skipping.</p>
-        <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-industry">Consulting</span><span class="drill-tag tag-industry">PE</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
-      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('magnitudes')">
+      <div class="drill-card" data-type="quantitative" onclick="startDrill('magnitudes')">
         <div class="drill-top"><span class="drill-icon">⋚</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="magnitudes" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Magnitudes</h4>
         <p>Two fractions appear. Click the larger one, as fast as you can, for 60 seconds.</p>
-        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Quant</span><span class="drill-tag tag-industry">IB</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
-      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('shapes')">
+      <div class="drill-card" data-type="quantitative" onclick="startDrill('shapes')">
         <div class="drill-top"><span class="drill-icon">◆</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="shapes" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Shapes</h4>
         <p>A grid of shapes appears, all identical but one. Spot the odd one out before time runs out.</p>
-        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Tech</span><span class="drill-tag tag-industry">Quant</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
-      <div class="drill-card" data-type="quantitative" data-industries="ib,pe,quant,consulting,tech" onclick="startDrill('nback')">
+      <div class="drill-card" data-type="quantitative" onclick="startDrill('nback')">
         <div class="drill-top"><span class="drill-icon">↺</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="nback" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Letters</h4>
         <p>Letters appear one at a time. Click Match when the current one repeats the letter from two spots back.</p>
-        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-industry">Tech</span><span class="drill-tag tag-industry">Consulting</span></div>
+        <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
     </div>
   </div>
@@ -4786,8 +4770,7 @@
   }));
 
   // --- Drills filter bar (multi-select dropdowns) ---
-  const TYPE_LABELS = { structure: 'Structure', communication: 'Communication', quantitative: 'Quantitative', risk: 'Risk/Probability' };
-  const INDUSTRY_LABELS = { ib: 'IB', consulting: 'Consulting', tech: 'Tech', quant: 'Quant', pe: 'PE', general: 'General' };
+  const TYPE_LABELS = { quantitative: 'Quantitative', risk: 'Risk/Probability', structure: 'Structure' };
 
   function toggleFilterDropdown(which, event) {
     event.stopPropagation();
@@ -4809,19 +4792,13 @@
 
   function applyDrillFilters() {
     const types = getCheckedValues('type-filter-panel');
-    const industries = getCheckedValues('industry-filter-panel');
 
     document.getElementById('type-filter-label').textContent = types.length
       ? (types.length === 1 ? TYPE_LABELS[types[0]] : `${types.length} Types`) : 'All Types';
-    document.getElementById('industry-filter-label').textContent = industries.length
-      ? (industries.length === 1 ? INDUSTRY_LABELS[industries[0]] : `${industries.length} Industries`) : 'All Industries';
 
     document.querySelectorAll('.drill-card[data-type]').forEach(card => {
-      const cardType = card.dataset.type;
-      const cardIndustries = (card.dataset.industries || '').split(',');
-      const typeOk = types.length === 0 || types.includes(cardType);
-      const industryOk = industries.length === 0 || cardIndustries.some(i => industries.includes(i));
-      card.style.display = (typeOk && industryOk) ? '' : 'none';
+      const typeOk = types.length === 0 || types.includes(card.dataset.type);
+      card.style.display = typeOk ? '' : 'none';
     });
   }
 
