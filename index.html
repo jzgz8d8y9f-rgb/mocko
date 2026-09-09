@@ -627,8 +627,9 @@
   .math-input:focus { outline: none; border-color: var(--good); }
   .math-progress { margin-top: 12px; font-size: 12px; color: var(--text-muted); }
 
-  .risk-balloon { width: 90px; height: 110px; border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%; margin: 10px auto 4px; transition: width 0.12s ease, height 0.12s ease, background-color 0.3s; position: relative; }
-  .risk-balloon::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid inherit; }
+  .risk-balloon { width: 90px; height: 110px; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; margin: 10px auto 4px; transition: width 0.12s ease, height 0.12s ease, background-color 0.3s; position: relative; }
+  .risk-balloon::before { content: ''; position: absolute; top: 16%; left: 20%; width: 24%; height: 32%; border-radius: 50%; background: rgba(255,255,255,0.35); }
+  .risk-balloon::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 11px solid inherit; }
   .risk-balloon.green { background: var(--good); }
   .risk-balloon.yellow { background: var(--warn); }
   .risk-balloon.red { background: var(--record); }
@@ -1805,12 +1806,12 @@
       </div>
       <div class="drill-card" data-type="quantitative" onclick="startDrill('arithmetic_hard')">
         <div class="drill-top"><span class="drill-icon">±</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="arithmetic_hard" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
-        <h4>Arithmetic Hard</h4>
+        <h4>Arithmetic Pro</h4>
         <p>Same four operations, uglier numbers and multi-step expressions. Still 60 seconds, see how far speed holds up.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span></div>
       </div>
       <div class="drill-card" data-type="risk" onclick="startDrill('risk')">
-        <div class="drill-top"><span class="drill-icon">◉</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="risk" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <div class="drill-top"><span class="drill-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="9" rx="7" ry="8" fill="currentColor"/><path d="M9.3 16.8L12 19.5l2.7-2.7z" fill="currentColor"/><path d="M12 19.5c-.8 1.3-.8 2.6 0 3.5" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg></span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="risk" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Risk</h4>
         <p>Pump the balloon for +1 point a pop, or collect and bank your earnings. Pop it and you lose the round, so how far do you push it?</p>
         <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
@@ -1828,13 +1829,13 @@
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
       <div class="drill-card" data-type="structure" onclick="startDrill('stop')">
-        <div class="drill-top"><span class="drill-icon">●</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="stop" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <div class="drill-top"><span class="drill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 2h8l6 6v8l-6 6H8l-6-6V8z"/></svg></span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="stop" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Stop</h4>
         <p>Press on red, hold still on green. 40 fast trials testing how well you catch yourself.</p>
         <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
       <div class="drill-card" data-type="risk" onclick="startDrill('cards')">
-        <div class="drill-top"><span class="drill-icon">▥</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="cards" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <div class="drill-top"><span class="drill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2.5"/><path d="M12 6l3 6-3 6-3-6z" fill="currentColor" stroke="none"/></svg></span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="cards" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Cards</h4>
         <p>Four decks, 24 draws. Every deck pays out, but some carry bigger hidden losses. Learn which to avoid.</p>
         <div class="drill-tags"><span class="drill-tag tag-risk">Risk/Probability</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
@@ -1846,13 +1847,13 @@
         <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
       <div class="drill-card" data-type="structure" onclick="startDrill('towers')">
-        <div class="drill-top"><span class="drill-icon">⟁</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="towers" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <div class="drill-top"><span class="drill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="9" y="2" width="6" height="4.5" rx="1"/><rect x="6" y="9" width="12" height="4.5" rx="1"/><rect x="3" y="16" width="18" height="4.5" rx="1"/></svg></span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="towers" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Towers</h4>
         <p>Move the whole disk stack to the last peg, one move at a time, as fast as you can. Three rounds, no skipping.</p>
         <div class="drill-tags"><span class="drill-tag tag-structure">Structure</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
       <div class="drill-card" data-type="quantitative" onclick="startDrill('magnitudes')">
-        <div class="drill-top"><span class="drill-icon">⋚</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="magnitudes" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <div class="drill-top"><span class="drill-icon">½</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="magnitudes" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Magnitudes</h4>
         <p>Two fractions appear. Click the larger one, as fast as you can, for 60 seconds.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
@@ -1864,7 +1865,7 @@
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
       </div>
       <div class="drill-card" data-type="quantitative" onclick="startDrill('nback')">
-        <div class="drill-top"><span class="drill-icon">↺</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="nback" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
+        <div class="drill-top"><span class="drill-icon">A</span><span style="display:flex; align-items:center; gap:6px;"><span class="stat-tag good" data-best-for="nback" style="display:none;"></span><span class="drill-badge live">Live</span></span></div>
         <h4>Letters</h4>
         <p>Letters appear one at a time. Click Match when the current one repeats the letter from two spots back.</p>
         <div class="drill-tags"><span class="drill-tag tag-quantitative">Quantitative</span><span class="drill-tag tag-pymetrics">Pymetrics-style</span></div>
@@ -4464,7 +4465,7 @@
   // Drills
   const drillMeta = {
     arithmetic: { label: 'Arithmetic', title: 'Answer as Many as You Can', instructions: 'Addition, subtraction, multiplication, division. Type your answer and press Enter. You have 60 seconds.' },
-    arithmetic_hard: { label: 'Arithmetic Hard', title: 'Answer as Many as You Can', instructions: 'Same four operations, uglier numbers and multi-step expressions. Type your answer and press Enter. You have 60 seconds.' },
+    arithmetic_hard: { label: 'Arithmetic Pro', title: 'Answer as Many as You Can', instructions: 'Same four operations, uglier numbers and multi-step expressions. Type your answer and press Enter. You have 60 seconds.' },
     sequence: { label: 'Sequence', title: 'Complete the Pattern', instructions: 'A sequence of numbers appears. Type the next number to fit the pattern and press Enter. You have 60 seconds.' },
     risk: { label: 'Risk', title: 'Pump or Collect', instructions: 'Each pump earns +1 point but risks popping the balloon. Collect to bank what you\'ve earned this round, or keep pumping. 8 balloons per session.' },
     digits: { label: 'Digits', title: 'How Long a Sequence Can You Hold?', instructions: 'A sequence of digits flashes on screen, one at a time. Once it disappears, type the whole sequence back in order. Each correct round adds one more digit. One miss ends the run.' },
