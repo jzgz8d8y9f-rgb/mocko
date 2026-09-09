@@ -699,6 +699,28 @@
   /* Letters (N-Back) */
   .nback-letter { font-family: 'Barlow Condensed'; font-size: 72px; font-weight: 800; margin-bottom: 22px; min-height: 80px; }
 
+  /* Tutorial demo (small looping preview of how each drill plays) */
+  .tutorial-demo { display: none; align-items: center; justify-content: center; flex-direction: column; gap: 10px; min-height: 140px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; margin: 0 auto 22px; padding: 18px; max-width: 340px; }
+  .demo-row { display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .demo-caption { font-family: 'IBM Plex Mono'; font-size: 11px; color: var(--text-muted); letter-spacing: 0.03em; }
+  .demo-check { color: var(--good); font-family: 'Barlow Condensed'; font-weight: 800; font-size: 19px; }
+  .demo-badge { font-family: 'IBM Plex Mono'; font-weight: 700; font-size: 14px; }
+  .demo-badge.pos { color: var(--good); }
+  .demo-badge.neg { color: var(--record); }
+  .demo-highlight { box-shadow: 0 0 0 3px var(--good); border-radius: 8px; }
+  .tutorial-demo .math-question, .tutorial-demo .digit-flash, .tutorial-demo .nback-letter { margin-bottom: 0; min-height: 0; font-size: 30px; }
+  .tutorial-demo .risk-balloon { margin: 0; }
+  .tutorial-demo .towers-board { height: 90px; gap: 20px; margin: 0; }
+  .tutorial-demo .towers-peg { width: 64px; height: 90px; }
+  .tutorial-demo .towers-peg::before { height: 70px; }
+  .tutorial-demo .shape-cell { width: 40px; height: 40px; cursor: default; }
+  .tutorial-demo .shape-mark { width: 20px; height: 20px; }
+  .tutorial-demo .cards-deck { width: 46px; height: 62px; font-size: 17px; cursor: default; }
+  .tutorial-demo .arrows-choice { width: 56px; height: 44px; font-size: 18px; cursor: default; }
+  .tutorial-demo .magnitude-choice { width: 90px; padding: 12px 6px; font-size: 20px; cursor: default; }
+  .tutorial-demo .stop-stimulus { width: 60px; height: 60px; margin: 0; }
+  .tutorial-demo .math-input { width: auto; padding: 8px 14px; font-size: 16px; }
+
   .login-prompt { display: flex; align-items: center; gap: 10px; }
   .login-prompt-text { font-size: 12px; color: var(--text-muted); display: none; }
   @media (min-width: 560px) { .login-prompt-text { display: inline; } }
@@ -1869,10 +1891,11 @@
   <!-- DRILL SESSION -->
   <!-- DRILL TUTORIAL -->
   <div class="screen" id="screen-drill-tutorial">
-    <button class="back-btn" onclick="goTo('drills')">← Back to Drills</button>
+    <button class="back-btn" onclick="leaveTutorial()">← Back to Drills</button>
     <div class="drill-session">
       <div class="drill-session-label" id="tutorial-label">Drill</div>
       <h2 id="tutorial-title"></h2>
+      <div class="tutorial-demo" id="tutorial-demo"></div>
       <p class="drill-session-instructions" id="tutorial-instructions"></p>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="beginDrillFromTutorial()">Start →</button>
@@ -4517,9 +4540,16 @@
     document.getElementById('tutorial-title').textContent = meta.title;
     document.getElementById('tutorial-instructions').textContent = meta.instructions;
     goTo('drill-tutorial');
+    playTutorialDemo(key);
+  }
+
+  function leaveTutorial() {
+    stopTutorialDemo();
+    goTo('drills');
   }
 
   function beginDrillFromTutorial() {
+    stopTutorialDemo();
     const key = currentDrill;
     const meta = drillMeta[key];
     document.getElementById('drill-label').textContent = meta.label;
@@ -4534,6 +4564,112 @@
     cfg.setup();
     goTo('drill-session');
     cfg.start();
+  }
+
+  // --- Tutorial demos: a tiny looping preview of each drill's mechanic,
+  // built from the same CSS the live game uses. Each entry is a list of
+  // {html, duration} frames played in a loop.
+  const TUTORIAL_DEMO_FRAMES = {
+    arithmetic: [
+      { html: `<div class="math-question">7 + 5</div>`, duration: 900 },
+      { html: `<div class="math-question">7 + 5</div><div class="demo-check">✓ 12</div>`, duration: 650 },
+      { html: `<div class="math-question">9 × 4</div>`, duration: 900 },
+      { html: `<div class="math-question">9 × 4</div><div class="demo-check">✓ 36</div>`, duration: 650 },
+    ],
+    arithmetic_hard: [
+      { html: `<div class="math-question" style="font-size:24px;">(14 × 6) − 23</div>`, duration: 1000 },
+      { html: `<div class="math-question" style="font-size:24px;">(14 × 6) − 23</div><div class="demo-check">✓ 61</div>`, duration: 700 },
+      { html: `<div class="math-question">156 ÷ 12</div>`, duration: 900 },
+      { html: `<div class="math-question">156 ÷ 12</div><div class="demo-check">✓ 13</div>`, duration: 650 },
+    ],
+    sequence: [
+      { html: `<div class="math-question" style="font-size:26px;">2, 4, 6, 8, ?</div>`, duration: 1000 },
+      { html: `<div class="math-question" style="font-size:26px;">2, 4, 6, 8, ?</div><div class="demo-check">✓ 10</div>`, duration: 700 },
+      { html: `<div class="math-question" style="font-size:26px;">1, 3, 9, 27, ?</div>`, duration: 1000 },
+      { html: `<div class="math-question" style="font-size:26px;">1, 3, 9, 27, ?</div><div class="demo-check">✓ 81</div>`, duration: 700 },
+    ],
+    risk: [
+      { html: `<div class="risk-balloon green" style="width:60px; height:74px;"></div><div class="demo-caption">Pump…</div>`, duration: 450 },
+      { html: `<div class="risk-balloon green" style="width:80px; height:98px;"></div><div class="demo-caption">Pump…</div>`, duration: 450 },
+      { html: `<div class="risk-balloon green" style="width:100px; height:122px;"></div><div class="demo-caption">Pump…</div>`, duration: 450 },
+      { html: `<div class="risk-balloon green" style="width:100px; height:122px;"></div><div class="demo-check">✓ Collected +3</div>`, duration: 900 },
+      { html: `<div class="risk-balloon red" style="width:60px; height:74px;"></div><div class="demo-caption">Pump…</div>`, duration: 450 },
+      { html: `<div class="risk-balloon red" style="width:90px; height:110px;"></div><div class="demo-caption">Pump…</div>`, duration: 450 },
+      { html: `<div class="risk-balloon popped" style="width:90px; height:110px;"></div><div class="demo-caption" style="color:var(--record);">Popped — lost it</div>`, duration: 900 },
+    ],
+    digits: [
+      { html: `<div class="digit-flash">4</div>`, duration: 500 },
+      { html: `<div class="digit-flash">7</div>`, duration: 500 },
+      { html: `<div class="digit-flash">2</div>`, duration: 500 },
+      { html: `<div class="math-input">4 7 2</div>`, duration: 500 },
+      { html: `<div class="math-input">4 7 2</div><div class="demo-check">✓</div>`, duration: 700 },
+    ],
+    stop: [
+      { html: `<div class="stop-stimulus go"></div><div class="demo-caption">Red → press</div>`, duration: 700 },
+      { html: `<div class="stop-stimulus go"></div><div class="demo-check">Pressed ✓</div>`, duration: 500 },
+      { html: `<div class="stop-stimulus nogo"></div><div class="demo-caption">Green → hold still</div>`, duration: 700 },
+      { html: `<div class="stop-stimulus nogo"></div><div class="demo-check">Held ✓</div>`, duration: 500 },
+    ],
+    cards: [
+      { html: `<div class="demo-row"><div class="cards-deck">A</div><div class="cards-deck">B</div><div class="cards-deck">C</div><div class="cards-deck">D</div></div>`, duration: 500 },
+      { html: `<div class="demo-row"><div class="cards-deck">A</div><div class="cards-deck demo-highlight">B</div><div class="cards-deck">C</div><div class="cards-deck">D</div></div>`, duration: 500 },
+      { html: `<div class="demo-row"><div class="cards-deck">A</div><div class="cards-deck demo-highlight">B</div><div class="cards-deck">C</div><div class="cards-deck">D</div></div><div class="demo-badge pos">+10</div>`, duration: 700 },
+      { html: `<div class="demo-row"><div class="cards-deck demo-highlight">A</div><div class="cards-deck">B</div><div class="cards-deck">C</div><div class="cards-deck">D</div></div>`, duration: 500 },
+      { html: `<div class="demo-row"><div class="cards-deck demo-highlight">A</div><div class="cards-deck">B</div><div class="cards-deck">C</div><div class="cards-deck">D</div></div><div class="demo-badge neg">−25</div>`, duration: 700 },
+    ],
+    arrows: [
+      { html: `<div class="arrows-rule same">Same</div><div class="arrows-stimulus" style="font-size:34px; margin:6px 0;">→</div>`, duration: 700 },
+      { html: `<div class="arrows-rule same">Same</div><div class="demo-row"><div class="arrows-choice">←</div><div class="arrows-choice demo-highlight">→</div></div><div class="demo-check">✓</div>`, duration: 700 },
+      { html: `<div class="arrows-rule opposite">Opposite</div><div class="arrows-stimulus" style="font-size:34px; margin:6px 0;">←</div>`, duration: 700 },
+      { html: `<div class="arrows-rule opposite">Opposite</div><div class="demo-row"><div class="arrows-choice demo-highlight">→</div><div class="arrows-choice">←</div></div><div class="demo-check">✓</div>`, duration: 700 },
+    ],
+    towers: [
+      { html: towersDemoBoard([2, 1], [], []) + `<div class="demo-caption">Move the top disk…</div>`, duration: 700 },
+      { html: towersDemoBoard([2], [1], []) + `<div class="demo-caption">…to another peg</div>`, duration: 700 },
+      { html: towersDemoBoard([], [1], [2]) + `<div class="demo-caption">Never big on small</div>`, duration: 700 },
+      { html: towersDemoBoard([], [], [2, 1]) + `<div class="demo-check">✓ Solved</div>`, duration: 900 },
+    ],
+    magnitudes: [
+      { html: `<div class="demo-row"><div class="magnitude-choice">1/3</div><div class="magnitude-choice">3/4</div></div>`, duration: 700 },
+      { html: `<div class="demo-row"><div class="magnitude-choice">1/3</div><div class="magnitude-choice demo-highlight">3/4</div></div><div class="demo-check">✓ Bigger</div>`, duration: 800 },
+    ],
+    shapes: [
+      { html: `<div class="demo-row"><div class="shape-cell"><span class="shape-mark circle" style="background:var(--good);"></span></div><div class="shape-cell"><span class="shape-mark circle" style="background:var(--good);"></span></div><div class="shape-cell"><span class="shape-mark triangle" style="border-bottom-color:var(--good);"></span></div><div class="shape-cell"><span class="shape-mark circle" style="background:var(--good);"></span></div></div>`, duration: 800 },
+      { html: `<div class="demo-row"><div class="shape-cell"><span class="shape-mark circle" style="background:var(--good);"></span></div><div class="shape-cell"><span class="shape-mark circle" style="background:var(--good);"></span></div><div class="shape-cell demo-highlight"><span class="shape-mark triangle" style="border-bottom-color:var(--good);"></span></div><div class="shape-cell"><span class="shape-mark circle" style="background:var(--good);"></span></div></div><div class="demo-check">✓ Different</div>`, duration: 800 },
+    ],
+    nback: [
+      { html: `<div class="nback-letter">B</div><div class="demo-caption">1</div>`, duration: 550 },
+      { html: `<div class="nback-letter">C</div><div class="demo-caption">2</div>`, duration: 550 },
+      { html: `<div class="nback-letter">B</div><div class="demo-check">Match! (2 back)</div>`, duration: 900 },
+    ],
+  };
+
+  function towersDemoBoard(peg0, peg1, peg2) {
+    const disksHtml = (peg) => peg.map((size) => `<div class="towers-disk n${size}"></div>`).join('');
+    return `<div class="towers-board"><div class="towers-peg">${disksHtml(peg0)}</div><div class="towers-peg">${disksHtml(peg1)}</div><div class="towers-peg">${disksHtml(peg2)}</div></div>`;
+  }
+
+  let tutorialDemoTimer = null;
+
+  function stopTutorialDemo() {
+    clearTimeout(tutorialDemoTimer);
+    tutorialDemoTimer = null;
+  }
+
+  function playTutorialDemo(key) {
+    stopTutorialDemo();
+    const stage = document.getElementById('tutorial-demo');
+    const frames = TUTORIAL_DEMO_FRAMES[key];
+    if (!frames) { stage.style.display = 'none'; return; }
+    stage.style.display = 'flex';
+    let i = 0;
+    const render = () => {
+      stage.innerHTML = frames[i].html;
+      const duration = frames[i].duration;
+      i = (i + 1) % frames.length;
+      tutorialDemoTimer = setTimeout(render, duration);
+    };
+    render();
   }
 
   async function finishDrillWithScore(drillKey, score, resultNum, resultLabel, resultNote) {
