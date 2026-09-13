@@ -28,7 +28,8 @@
     --silver: #B9C0D4;
     --bronze: #C8875A;
     --texture-dot: rgba(34,195,182,0.07);
-    --texture-glow: rgba(34,195,182,0.12);
+    --texture-glow: rgba(34,195,182,0.14);
+    --texture-pool: rgba(0,0,0,0.55);
   }
 
   :root[data-theme="light"] {
@@ -59,11 +60,21 @@
   html, body { height: 100%; }
   body {
     background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, var(--texture-glow), transparent 60%),
+      radial-gradient(ellipse 1200px 650px at 50% 120%, var(--texture-pool), transparent 60%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text); font-family: 'Work Sans', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased;
+  }
+  /* Light mode keeps the original dot-grid texture rather than the dark
+     theme's vignette -- a bottom-darkening pool reads wrong on a light
+     background, and this was never re-designed for light mode. */
+  :root[data-theme="light"] body {
+    background:
       radial-gradient(circle at 18% 0%, var(--texture-glow), transparent 40%),
       radial-gradient(var(--texture-dot) 1px, transparent 1px) 0 0/24px 24px,
       var(--bg);
     background-attachment: fixed;
-    color: var(--text); font-family: 'Work Sans', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased;
   }
   .display { font-family: 'Libre Baskerville', serif; letter-spacing: 0; }
   .mono { font-family: 'Work Sans', sans-serif; }
@@ -76,9 +87,9 @@
     .nav-tabs { order: 3; width: 100%; justify-content: center; }
     .nav-tab { padding: 6px 10px; font-size: 13px; }
   }
-  .logo { display: flex; align-items: center; gap: 1px; }
+  .logo { display: flex; align-items: center; gap: 4px; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .logo-text { font-family: 'Libre Baskerville', serif; font-size: 27px; font-weight: 700; letter-spacing: 0.01em; }
+  .logo-text { font-family: 'Libre Baskerville', serif; font-size: 33px; font-weight: 700; letter-spacing: 0.01em; }
   .tagline { color: var(--text-muted); font-size: 14px; }
 
   /* Logo mark: two speech bubbles tilted toward each other, "cheers"-style.
@@ -808,7 +819,7 @@
 
   <div class="topbar">
     <div class="logo" onclick="goToHome()" style="cursor:pointer;">
-      <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+      <svg width="42" height="42" viewBox="0 0 100 100" fill="none">
         <g transform="rotate(-8 40 58)"><path class="cheer-l" d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--good)"/></g>
         <g transform="rotate(8 61 42)"><path class="cheer-r" d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--good-dim)"/></g>
       </svg>
