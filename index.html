@@ -86,7 +86,7 @@
   @media (max-width: 520px) {
     .topbar { flex-wrap: wrap; gap: 10px; padding-bottom: 14px; }
     .nav-tabs { order: 3; width: 100%; justify-content: center; }
-    .nav-tab { padding: 6px 10px; font-size: 13px; }
+    .nav-tab { padding: 6px 10px; font-size: 14px; }
   }
   .logo { display: flex; align-items: center; gap: 4px; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -178,7 +178,7 @@
   .icon-chip.tint-communication, .drill-icon.tint-communication { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
 
   .nav-tabs { display: flex; gap: 4px; }
-  .nav-tab { font-family: 'Work Sans'; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; color: var(--text-muted); background: none; border: none; padding: 8px 14px; cursor: pointer; border-radius: 6px; transition: all 0.15s; }
+  .nav-tab { font-family: 'Work Sans'; font-size: 16px; font-weight: 500; letter-spacing: 0.01em; color: var(--text-muted); background: none; border: none; padding: 8px 14px; cursor: pointer; border-radius: 6px; transition: all 0.15s; }
   .nav-tab.active { color: var(--good); background: rgba(39,203,187,0.14); }
   .nav-tab:hover:not(.active) { color: var(--text); }
 
@@ -190,6 +190,7 @@
   .hero h1 { font-size: 46px; font-weight: 700; line-height: 1.08; margin-bottom: 12px; }
   .hero p { color: var(--text-muted); font-size: 15px; max-width: 500px; line-height: 1.6; margin-bottom: 36px; }
   #home-landing .hero { text-align: center; }
+  #home-landing .hero h1 { justify-content: center; }
   #home-landing .hero p { font-size: 19px; max-width: 480px; margin-left: auto; margin-right: auto; }
 
   /* Condensed setup panel */
@@ -800,7 +801,7 @@
   .auth-info-item p { font-size: 14px; color: var(--text-muted); line-height: 1.55; }
   .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 40px; max-width: 460px; flex: 0 0 460px; margin: 0 auto; }
   @media (max-width: 760px) { .auth-panel { flex-basis: 100%; } }
-  .login-prompt .btn { background: color-mix(in srgb, var(--good) 18%, var(--surface-2)); border-color: color-mix(in srgb, var(--good) 40%, var(--line)); }
+  .login-prompt .btn { background: var(--good); color: var(--bg); border-color: var(--good); font-weight: 700; }
   .auth-field { margin-bottom: 16px; }
   .auth-field label { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
   .auth-field input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Work Sans'; font-size: 15px; }
