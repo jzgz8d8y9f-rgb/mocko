@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mocko: Interview Practice</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg transform='rotate(-8 40 58)'%3E%3Cpath d='M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%2327CBBB'/%3E%3C/g%3E%3Cg transform='rotate(8 61 42)'%3E%3Cpath d='M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z' fill='%23268691'/%3E%3C/g%3E%3C/svg%3E">
 <style>
@@ -89,7 +90,7 @@
   }
   .logo { display: flex; align-items: center; gap: 4px; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .logo-text { font-family: 'Libre Baskerville', serif; font-size: 33px; font-weight: 700; letter-spacing: 0.01em; }
+  .logo-text { font-family: 'Libre Baskerville', serif; font-size: 30px; font-weight: 700; letter-spacing: 0.01em; }
   .tagline { color: var(--text-muted); font-size: 14px; }
 
   /* Logo mark: two speech bubbles tilted toward each other, "cheers"-style.
@@ -165,24 +166,6 @@
   @keyframes talk-hand-a { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-22deg); } }
   @keyframes talk-hand-b { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(22deg); } }
 
-  /* Home welcome slideshow -- reuses the speed-mascot/full-mascot rigs
-     (and their default static poses) verbatim, just plays their
-     animations continuously while a slide is active instead of on hover. */
-  .welcome-slideshow { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 36px 56px; margin-bottom: 28px; text-align: center; position: relative; }
-  .slide-scene { display: none; flex-direction: column; align-items: center; }
-  .slide-scene.active { display: flex; animation: fadeIn 0.4s ease; }
-  .slide-scene svg { display: block; }
-  .slide-caption { margin-top: 14px; font-size: 15.5px; color: var(--text-muted); }
-  .slide-caption b { color: var(--text); font-weight: 700; }
-  .slide-dots { display: flex; justify-content: center; gap: 8px; margin-top: 22px; }
-  .slide-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); border: none; cursor: pointer; padding: 0; transition: background 0.2s; }
-  .slide-dot.active { background: var(--good); }
-  .slide-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
-  .slide-arrow:hover { color: var(--text); border-color: var(--text-muted); }
-  .slide-arrow-left { left: 14px; }
-  .slide-arrow-right { right: 14px; }
-  @media (max-width: 520px) { .welcome-slideshow { padding: 32px 40px; } .slide-arrow { width: 28px; height: 28px; } .slide-arrow-left { left: 6px; } .slide-arrow-right { right: 6px; } }
-
   /* Icon chips: colored-tint circular/rounded backgrounds behind SVG icons,
      reused for hub cards, drill cards (tinted by data-type), and the auth
      info panel so accent color shows up in more than one isolated spot. */
@@ -193,33 +176,6 @@
   .icon-chip.tint-record, .drill-icon.tint-record { background: rgba(230,57,70,0.15); color: var(--record); }
   .icon-chip.tint-structure, .drill-icon.tint-structure { background: rgba(124,158,242,0.16); color: var(--tag-structure); }
   .icon-chip.tint-communication, .drill-icon.tint-communication { background: rgba(199,125,224,0.16); color: var(--tag-communication); }
-
-  .slide-scene.active .speed-mascot .leg-l { animation: sprint-leg-a .55s ease-in-out infinite; }
-  .slide-scene.active .speed-mascot .leg-r { animation: sprint-leg-b .55s ease-in-out infinite; }
-  .slide-scene.active .speed-mascot .arm-l { animation: sprint-arm-b .55s ease-in-out infinite; }
-  .slide-scene.active .speed-mascot .arm-r { animation: sprint-arm-a .55s ease-in-out infinite; }
-  .slide-scene.active .speed-mascot .shin-l-pivot { animation: sprint-knee-a .55s ease-in-out infinite; }
-  .slide-scene.active .speed-mascot .shin-r-pivot { animation: sprint-knee-b .55s ease-in-out infinite; }
-  .slide-scene.active .speed-mascot .forearm-l-pivot { animation: sprint-knee-b .55s ease-in-out infinite; }
-  .slide-scene.active .speed-mascot .forearm-r-pivot { animation: sprint-knee-a .55s ease-in-out infinite; }
-  .slide-scene.active .speed-mascot .sprint-body { animation: sprint-bob .55s ease-in-out infinite; }
-  .slide-scene.active .speed-mascot .belt { animation: belt-scroll-reverse .2s linear infinite; }
-
-  .slide-scene.active .full-mascot .full-arm-l { animation: talk-hand-a .6s ease-in-out infinite; }
-  .slide-scene.active .full-mascot .full-arm-r { animation: talk-hand-b .6s ease-in-out infinite; }
-
-  .prep-paper { transform-box: fill-box; transform-origin: center; }
-  .slide-scene.active .prep-paper { animation: paper-bob 2.2s ease-in-out infinite; }
-  @keyframes paper-bob { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
-
-  .track-bars .bar { transform-box: fill-box; transform-origin: bottom; }
-  .slide-scene.active .track-bars .bar-1 { animation: bar-grow 2.4s ease-in-out infinite; }
-  .slide-scene.active .track-bars .bar-2 { animation: bar-grow 2.4s ease-in-out infinite .15s; }
-  .slide-scene.active .track-bars .bar-3 { animation: bar-grow 2.4s ease-in-out infinite .3s; }
-  @keyframes bar-grow { 0%,15% { transform: scaleY(0.15); } 50%,85% { transform: scaleY(1); } 100% { transform: scaleY(0.15); } }
-  .track-star { transform-box: fill-box; transform-origin: center; }
-  .slide-scene.active .track-star { animation: track-star-pulse 2.4s ease-in-out infinite; }
-  @keyframes track-star-pulse { 0%,100% { opacity: 0.5; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.1); } }
 
   .nav-tabs { display: flex; gap: 4px; }
   .nav-tab { font-family: 'Work Sans'; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; color: var(--text-muted); background: none; border: none; padding: 8px 14px; cursor: pointer; border-radius: 6px; transition: all 0.15s; }
@@ -233,6 +189,8 @@
   .step-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
   .hero h1 { font-size: 46px; font-weight: 700; line-height: 1.08; margin-bottom: 12px; }
   .hero p { color: var(--text-muted); font-size: 15px; max-width: 500px; line-height: 1.6; margin-bottom: 36px; }
+  #home-landing .hero { text-align: center; }
+  #home-landing .hero p { font-size: 19px; max-width: 480px; margin-left: auto; margin-right: auto; }
 
   /* Condensed setup panel */
   .select-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 36px; margin-bottom: 28px; }
@@ -481,9 +439,72 @@
   /* Drills */
   .drill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
   @media (max-width: 620px) { .drill-grid { grid-template-columns: 1fr; } }
-  .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
-  @media (max-width: 720px) { .hub-grid { grid-template-columns: 1fr; } }
-  .hub-card h4 { font-family: 'Libre Baskerville', serif; font-size: 17px; font-weight: 700; }
+  /* Logged-out landing: card carousel */
+  .carousel-wrap { position: relative; margin: 0 -32px 56px; }
+  .carousel { display: flex; gap: 18px; overflow-x: auto; padding: 4px 32px 12px; scrollbar-width: none; }
+  .carousel::-webkit-scrollbar { display: none; }
+  .carousel-wrap .arrow { position: absolute; top: 42%; width: 40px; height: 40px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; }
+  .carousel-wrap .arrow.left { left: -4px; } .carousel-wrap .arrow.right { right: -4px; }
+  .carousel-wrap .arrow svg { width: 16px; height: 16px; }
+
+  .card { flex: 0 0 270px; height: 370px; border-radius: 20px; position: relative; overflow: hidden; padding: 26px 24px; display: flex; flex-direction: column; }
+  .card h3 { font-family: 'Libre Baskerville', serif; font-size: 24px; font-weight: 700; color: #fff; margin: 0 0 8px; position: relative; z-index: 1; }
+  .card p { font-size: 12.5px; color: rgba(255,255,255,0.72); line-height: 1.5; max-width: 200px; position: relative; z-index: 1; }
+  .card-peek { position: absolute; left: 16px; right: 16px; bottom: -16px; border-radius: 14px 14px 0 0; background: #12131a; border: 1px solid rgba(255,255,255,0.08); padding: 16px 18px 26px; box-shadow: 0 -16px 30px -14px rgba(0,0,0,0.6); }
+  .card.c1 { background: linear-gradient(160deg, #1d5c56, #123430); }
+  .card.c2 { background: linear-gradient(160deg, #6e2f3d, #401c25); }
+  .card.c3 { background: linear-gradient(160deg, #6b4a1f, #423012); }
+  .card.c4 { background: linear-gradient(160deg, #243a5e, #16233a); }
+
+  .peek-orb { width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle, rgba(34,195,182,0.35), transparent 70%); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
+  .peek-orb-core { width: 26px; height: 26px; border-radius: 50%; background: #22c3b6; }
+  .peek-caption { text-align: center; font-size: 11px; color: #8a8a92; font-family: 'IBM Plex Mono', monospace; margin-bottom: 8px; }
+  .peek-note { text-align: center; font-size: 10.5px; color: #c4c4cb; line-height: 1.4; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .peek-note b { color: #57ddd1; font-weight: 600; }
+
+  .peek-cue { background: #1a1c23; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; font-size: 11.5px; color: #d8d8dc; line-height: 1.4; }
+  .peek-cue .dot-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: #e0899a; letter-spacing: 0.04em; }
+  .peek-dot { width: 6px; height: 6px; border-radius: 50%; background: #e0899a; position: relative; }
+  .peek-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid #e0899a; animation: recPulse 1.8s ease-out infinite; }
+  @keyframes recPulse { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(1.8); opacity: 0; } }
+  .onair-logos { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: nowrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .tool-chip { flex: 1; text-align: center; font-family: 'Work Sans'; font-weight: 600; font-size: 9px; letter-spacing: 0.01em; color: #a9a9b0; background: #1a1c23; border: 1px solid rgba(255,255,255,0.09); border-radius: 100px; padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .mini-towers { display: flex; justify-content: center; gap: 12px; align-items: flex-end; height: 58px; margin-bottom: 8px; }
+  .mini-peg { width: 36px; height: 58px; display: flex; flex-direction: column-reverse; align-items: center; gap: 3px; padding-bottom: 5px; border-bottom: 3px solid rgba(255,255,255,0.14); position: relative; }
+  .mini-peg::before { content: ''; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 4px; height: 42px; background: rgba(255,255,255,0.14); border-radius: 2px; z-index: 0; }
+  .mini-disk { height: 10px; border-radius: 3px; z-index: 1; }
+  .mini-caption { display: flex; align-items: center; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: #8a8a92; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .mini-caption b { color: #c9a24b; font-weight: 500; }
+
+  .peek-rank-row { display: flex; align-items: center; gap: 8px; font-size: 11px; padding: 5px 0; }
+  .peek-rank-row .n { font-family: 'IBM Plex Mono', monospace; color: #8a8a92; width: 14px; }
+  .peek-rank-row .a { width: 18px; height: 18px; border-radius: 50%; background: #3a4a68; flex-shrink: 0; }
+  .peek-rank-row.gold .n { color: #e8c547; }
+  .peek-rank-row.gold .a { background: #e8c547; }
+  .peek-rank-row .nm { color: #d8d8dc; flex: 1; }
+  .peek-rank-row .sc { font-family: 'IBM Plex Mono', monospace; color: #8a8a92; }
+
+  /* Logged-out landing: testimonials + closing CTA */
+  .section-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--good); text-align: center; margin-bottom: 12px; }
+  .section-title { font-family: 'Libre Baskerville', serif; font-size: 28px; font-weight: 700; text-align: center; margin: 0 auto 36px; max-width: 600px; }
+  .quotes { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-bottom: 56px; }
+  .quote-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px 26px; display: flex; flex-direction: column; }
+  .quote-mark { font-family: 'Libre Baskerville', serif; font-size: 38px; color: var(--good-dim); line-height: 1; margin-bottom: 6px; }
+  .quote-card p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; flex: 1; }
+  .quote-person { display: flex; align-items: center; gap: 12px; }
+  .quote-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1px solid var(--line); }
+  .quote-attr { font-size: 12.5px; font-weight: 600; color: var(--text); }
+  .quote-role { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+  .closing { text-align: center; padding: 44px 40px 8px; border-top: 1px solid var(--line); }
+  .closing h2 { font-family: 'Libre Baskerville', serif; font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+  .closing p { color: var(--text-muted); font-size: 14.5px; margin-bottom: 22px; }
+
+  @media (max-width: 720px) {
+    .card { flex-basis: 240px; }
+    .quotes { grid-template-columns: 1fr; }
+  }
 
   /* Home life signals: streak, continue-session, "This Week" breakdown
      table, and drill leaderboard -- all hidden unless there's real data,
@@ -750,8 +771,6 @@
   .tutorial-demo .math-input { width: auto; padding: 8px 14px; font-size: 16px; }
 
   .login-prompt { display: flex; align-items: center; gap: 10px; }
-  .login-prompt-text { font-size: 13px; color: var(--text-muted); display: none; }
-  @media (min-width: 560px) { .login-prompt-text { display: inline; } }
 
   .account-menu { position: relative; }
   .account-trigger { display: flex; align-items: center; gap: 8px; background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: 8px; }
@@ -781,6 +800,7 @@
   .auth-info-item p { font-size: 14px; color: var(--text-muted); line-height: 1.55; }
   .auth-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 40px; max-width: 460px; flex: 0 0 460px; margin: 0 auto; }
   @media (max-width: 760px) { .auth-panel { flex-basis: 100%; } }
+  .login-prompt .btn { background: color-mix(in srgb, var(--good) 18%, var(--surface-2)); border-color: color-mix(in srgb, var(--good) 40%, var(--line)); }
   .auth-field { margin-bottom: 16px; }
   .auth-field label { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
   .auth-field input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Work Sans'; font-size: 15px; }
@@ -839,134 +859,112 @@
     <!-- LOGGED OUT: welcome / landing -->
     <div id="home-landing">
       <div class="hero">
-        <h1 class="display">Want to land your dream role?</h1>
-        <p>Mocko is interview prep built for finance. Practice real questions, drill the skills that come up cold, and walk in ready.</p>
-        <div class="btn-row" style="justify-content:flex-start; margin-top:-16px; margin-bottom:32px;">
-          <button class="btn btn-primary" onclick="setAuthMode('signin'); goTo('auth');">Log In</button>
-          <button class="btn btn-secondary" onclick="setAuthMode('signup'); goTo('auth');">Sign Up</button>
+        <h1 class="display">Practice makes perfect.</h1>
+        <p>Conquer your next interview with Mocko.</p>
+        <div class="btn-row" style="justify-content:center; margin-top:-16px; margin-bottom:32px;">
+          <button class="btn btn-secondary" onclick="setAuthMode('signin'); goTo('auth');">Log In</button>
+          <button class="btn btn-primary" onclick="setAuthMode('signup'); goTo('auth');">Sign Up</button>
         </div>
       </div>
 
-      <div class="welcome-slideshow" id="home-slideshow">
-        <button class="slide-arrow slide-arrow-left" onclick="prevSlide()" aria-label="Previous slide">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <div class="slide-scene active" data-slide="0">
-          <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
-            <g class="prep-paper">
-              <rect x="6" y="11" width="10" height="13" rx="1.2" fill="var(--bg)" stroke="var(--text)" stroke-width="1.5"/>
-              <line x1="8.5" y1="15" x2="13.5" y2="15" stroke="var(--text-muted)" stroke-width="1.1"/>
-              <line x1="8.5" y1="18" x2="13.5" y2="18" stroke="var(--text-muted)" stroke-width="1.1"/>
-              <line x1="8.5" y1="21" x2="11.5" y2="21" stroke="var(--text-muted)" stroke-width="1.1"/>
-            </g>
-            <circle cx="25" cy="9" r="4" fill="var(--bg)" stroke="var(--text)" stroke-width="2"/>
-            <path d="M25,13 Q24,18 25,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
-            <line x1="25" y1="23" x2="23" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="25" y1="23" x2="27" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="25" y1="16" x2="29" y2="21" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="25" y1="16" x2="18" y2="17" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-          </svg>
-          <div class="slide-caption"><b>Prep</b>: turn your resume into interview questions built around your real experience.</div>
+      <div class="carousel-wrap">
+        <div class="arrow left" onclick="scrollLandingCarousel(-1)" aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </div>
-        <div class="slide-scene" data-slide="1">
-          <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
-            <rect x="6" y="8" width="16" height="12" rx="1.3" fill="none" stroke="var(--text-muted)" stroke-width="1.3"/>
-            <circle cx="10" cy="12" r="1.6" fill="var(--record)"/>
-            <line x1="8.5" y1="16" x2="19.5" y2="16" stroke="var(--text-muted)" stroke-width="1.1"/>
-            <circle cx="28" cy="10" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
-            <path d="M28,14 Q27,19 28,24" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
-            <line x1="28" y1="24" x2="26" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="28" y1="24" x2="30" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="28" y1="17" x2="24" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="28" y1="17" x2="32" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-          </svg>
-          <div class="slide-caption"><b>Screens</b>: practice the one-question, on-camera format used by <b>HireVue</b>, <b>Sonru</b>, and <b>Spark Hire</b>.</div>
+        <div class="carousel" id="landing-carousel">
+          <div class="card c1">
+            <h3>Mock Interview</h3>
+            <p>A spoken back-and-forth with an AI interviewer that follows up when your answer needs more. Upload your resume and it'll ask about that too.</p>
+            <div class="card-peek">
+              <div class="peek-orb"><div class="peek-orb-core"></div></div>
+              <div class="peek-caption">Listening…</div>
+              <div class="peek-note">Pulls questions from <b>your resume</b></div>
+            </div>
+          </div>
+          <div class="card c2">
+            <h3>On-Air Practice</h3>
+            <p>Record one question at a time on camera, then get scored on structure, clarity, pace, and tone.</p>
+            <div class="card-peek">
+              <div class="peek-cue">
+                <div class="dot-row"><span class="peek-dot"></span>ON AIR</div>
+                Tell me about a time you disagreed with a teammate.
+              </div>
+              <div class="onair-logos">
+                <span class="tool-chip">HireVue</span>
+                <span class="tool-chip">Sonru</span>
+                <span class="tool-chip">Spark Hire</span>
+              </div>
+            </div>
+          </div>
+          <div class="card c3">
+            <h3>Drills</h3>
+            <p>Short timed reps for the reflexes interviewers actually test: math, risk, memory, pattern.</p>
+            <div class="card-peek">
+              <div class="mini-towers">
+                <div class="mini-peg"><div class="mini-disk" style="width:32px; background:#7c9ef2;"></div></div>
+                <div class="mini-peg"><div class="mini-disk" style="width:24px; background:#e9a23b;"></div><div class="mini-disk" style="width:16px; background:#22c3b6;"></div></div>
+                <div class="mini-peg"></div>
+              </div>
+              <div class="mini-caption"><span>Towers</span><b>Round 2 of 3</b><span>0:42</span></div>
+            </div>
+          </div>
+          <div class="card c4">
+            <h3>Compete</h3>
+            <p>See where you stand today, this week, and all-time, drill by drill.</p>
+            <div class="card-peek">
+              <div class="peek-rank-row gold"><span class="n">1</span><span class="a"></span><span class="nm">zoe_okafor</span><span class="sc">19</span></div>
+              <div class="peek-rank-row"><span class="n">2</span><span class="a"></span><span class="nm">mia_chen</span><span class="sc">18</span></div>
+              <div class="peek-rank-row"><span class="n">3</span><span class="a"></span><span class="nm">priya_s</span><span class="sc">17</span></div>
+            </div>
+          </div>
         </div>
-        <div class="slide-scene" data-slide="2">
-          <svg width="64" height="64" viewBox="0 0 40 40" fill="none" class="card-mascot full-mascot">
-            <rect x="20" y="9" width="15" height="11" rx="1.5" fill="none" stroke="var(--text-muted)" stroke-width="1.3"/>
-            <line x1="27.5" y1="20" x2="27.5" y2="23" stroke="var(--text-muted)" stroke-width="1.3"/>
-            <line x1="23" y1="23" x2="32" y2="23" stroke="var(--text-muted)" stroke-width="1.3"/>
-            <g class="full-body">
-              <circle cx="10" cy="9" r="3.5" fill="none" stroke="var(--text)" stroke-width="1.8"/>
-              <path d="M10,12.5 Q9,17 10,21" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round" fill="none"/>
-              <line x1="10" y1="21" x2="8" y2="26" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/>
-              <line x1="10" y1="21" x2="12" y2="26" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/>
-              <g class="full-arm-l"><line x1="10" y1="14" x2="6" y2="17" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/></g>
-              <g class="full-arm-r"><line x1="10" y1="14" x2="14" y2="17" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/></g>
-            </g>
-          </svg>
-          <div class="slide-caption"><b>Talk</b>: a live spoken conversation that follows up naturally when an answer needs more.</div>
-        </div>
-        <div class="slide-scene" data-slide="3">
-          <svg width="64" height="64" viewBox="0 0 40 40" fill="none" class="card-mascot speed-mascot">
-            <g class="sprint-body">
-              <circle cx="20" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
-              <path d="M20,13 Q19,18 20,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
-              <g class="leg-l"><line x1="20" y1="23" x2="18" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-l-pivot"><line x1="18" y1="27" x2="17" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-              <g class="leg-r"><line x1="20" y1="23" x2="22" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-r-pivot"><line x1="22" y1="27" x2="23" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-              <g class="arm-l"><line x1="20" y1="16" x2="17" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-l-pivot"><line x1="17" y1="19" x2="16" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-              <g class="arm-r"><line x1="20" y1="16" x2="23" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-r-pivot"><line x1="23" y1="19" x2="24" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-            </g>
-            <line class="belt" x1="12" y1="32" x2="28" y2="32" stroke="var(--text-muted)" stroke-width="1.1" stroke-dasharray="2 3" opacity="0.6"/>
-          </svg>
-          <div class="slide-caption"><b>Drill</b>: fast reps in Arithmetic, Risk, and Sequence that sharpen speed and judgment.</div>
-        </div>
-        <div class="slide-scene" data-slide="4">
-          <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
-            <circle cx="12" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
-            <path d="M12,13 Q11,18 12,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
-            <line x1="12" y1="23" x2="10" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="12" y1="23" x2="14" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="12" y1="16" x2="9" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="12" y1="16" x2="18" y2="18" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <rect x="22" y="10" width="13" height="16" rx="1.3" fill="none" stroke="var(--text-muted)" stroke-width="1.3"/>
-            <path d="M25 17 l2.5 2.5 5-5.5" stroke="var(--good)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <line x1="25" y1="22" x2="32" y2="22" stroke="var(--text-muted)" stroke-width="1.1"/>
-          </svg>
-          <div class="slide-caption"><b>Grade</b>: every answer scored on structure, clarity, pace, and tone, straight from the transcript.</div>
-        </div>
-        <div class="slide-scene" data-slide="5">
-          <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
-            <circle cx="12" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
-            <path d="M12,13 Q11,18 12,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
-            <line x1="12" y1="23" x2="10" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="12" y1="23" x2="14" y2="30" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="12" y1="16" x2="8" y2="20" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <line x1="12" y1="16" x2="17" y2="12" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/>
-            <g class="track-bars">
-              <rect class="bar bar-1" x="24" y="20" width="3.2" height="12" rx="1" fill="var(--good)"/>
-              <rect class="bar bar-2" x="29" y="14" width="3.2" height="18" rx="1" fill="var(--warn)"/>
-              <rect class="bar bar-3" x="34" y="8" width="3.2" height="24" rx="1" fill="var(--good)"/>
-            </g>
-            <path class="track-star" d="M35.5 0.5 L36.7 3.5 L40 3.8 L37.5 5.9 L38.3 9 L35.5 7.2 L32.7 9 L33.5 5.9 L31 3.8 L34.3 3.5 Z" fill="var(--warn)"/>
-          </svg>
-          <div class="slide-caption"><b>Track</b>: scores, streaks, and where you rank on the leaderboard.</div>
-        </div>
-        <button class="slide-arrow slide-arrow-right" onclick="nextSlide()" aria-label="Next slide">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <div class="slide-dots">
-          <button class="slide-dot active" data-dot="0" onclick="goToSlide(0)" aria-label="Slide 1"></button>
-          <button class="slide-dot" data-dot="1" onclick="goToSlide(1)" aria-label="Slide 2"></button>
-          <button class="slide-dot" data-dot="2" onclick="goToSlide(2)" aria-label="Slide 3"></button>
-          <button class="slide-dot" data-dot="3" onclick="goToSlide(3)" aria-label="Slide 4"></button>
-          <button class="slide-dot" data-dot="4" onclick="goToSlide(4)" aria-label="Slide 5"></button>
-          <button class="slide-dot" data-dot="5" onclick="goToSlide(5)" aria-label="Slide 6"></button>
+        <div class="arrow right" onclick="scrollLandingCarousel(1)" aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </div>
 
-      <div class="hub-grid">
-        <div class="drill-card hub-card" onclick="switchTab('interview')">
-          <div class="drill-top"><span class="drill-icon tint-good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></span></div>
-          <h4>Interview Practice</h4>
-          <p>Answer one question on camera and get scored on it, or talk it out loud with an AI interviewer that follows up when your answer needs more.</p>
+      <div class="section-eyebrow">What people are saying</div>
+      <div class="section-title">From the people who tested it</div>
+      <div class="quotes">
+        <div class="quote-card">
+          <div class="quote-mark">&ldquo;</div>
+          <p>The scored breakdown is what got me. I always thought I was rambling a little, but seeing my own filler count and pace laid out next to the transcript made it obvious exactly where I was losing the thread. Fixed it in about a week of reps, and it carried straight over into how I answer questions in my med school interviews.</p>
+          <div class="quote-person">
+            <img class="quote-avatar" src="img/testimonials/sean-m.png" alt="Sean M.">
+            <div>
+              <div class="quote-attr">Sean M.</div>
+              <div class="quote-role">Pre-med student</div>
+            </div>
+          </div>
         </div>
-        <div class="drill-card hub-card" onclick="switchTab('drills')">
-          <div class="drill-top"><span class="drill-icon tint-warn"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span></div>
-          <h4>Drills</h4>
-          <p>Twelve short games that drill the reflexes interviewers actually test: mental math under a clock, risk calls, pattern spotting, working memory.</p>
+        <div class="quote-card">
+          <div class="quote-mark">&ldquo;</div>
+          <p>I'd never touched anything like the Pymetrics-style games before I found this. Running the balloon and card drills a few times a night for two weeks meant the actual assessment wasn't the thing throwing me off, I already knew the rhythm of it going in.</p>
+          <div class="quote-person">
+            <img class="quote-avatar" src="img/testimonials/peter-s.png" alt="Peter S.">
+            <div>
+              <div class="quote-attr">Peter S.</div>
+              <div class="quote-role">Consulting recruit</div>
+            </div>
+          </div>
         </div>
+        <div class="quote-card">
+          <div class="quote-mark">&ldquo;</div>
+          <p>I did four mock interviews the week before my first-round with a bank, and by the third one the follow-up questions stopped catching me off guard. Hearing myself get asked "walk me through that" out loud, instead of just reading it off a page, made the real interview feel like the fifth rep instead of the first.</p>
+          <div class="quote-person">
+            <img class="quote-avatar" src="img/testimonials/max-k.png" alt="Max K.">
+            <div>
+              <div class="quote-attr">Max K.</div>
+              <div class="quote-role">Investment banking track</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="closing">
+        <h2>Your next interview shouldn't be your first rep.</h2>
+        <p>Free to start. No card required.</p>
+        <button class="btn btn-primary" onclick="setAuthMode('signup'); goTo('auth');">Sign Up</button>
       </div>
     </div>
 
@@ -2160,11 +2158,9 @@
     landing.style.display = user ? 'none' : 'block';
     dashboard.style.display = user ? 'block' : 'none';
     if (user) {
-      clearInterval(homeSlideInterval);
       loadHomeLifeSignals();
     } else {
       clearInterval(homeLeagueCycleTimer);
-      startHomeSlideshow();
     }
   }
 
@@ -2507,7 +2503,6 @@
     if (!user) {
       areaEl.innerHTML = `
         <div class="login-prompt">
-          <span class="login-prompt-text">Log in to track your scores</span>
           <button class="btn btn-secondary" onclick="setAuthMode('signin'); goTo('auth');">Log In</button>
         </div>`;
       return;
@@ -3125,43 +3120,11 @@
     document.getElementById('setup-next').disabled = !ready;
   }
 
-  // Home welcome slideshow
-  let homeSlideIndex = 0;
-  let homeSlideInterval = null;
-
-  function goToSlide(i) {
-    const scenes = document.querySelectorAll('#home-slideshow .slide-scene');
-    if (!scenes.length) return;
-    homeSlideIndex = i;
-    scenes.forEach((s, idx) => s.classList.toggle('active', idx === i));
-    document.querySelectorAll('#home-slideshow .slide-dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
-  }
-
-  function startHomeSlideshow() {
-    const scenes = document.querySelectorAll('#home-slideshow .slide-scene');
-    if (!scenes.length) return;
-    clearInterval(homeSlideInterval);
-    homeSlideInterval = setInterval(() => goToSlide((homeSlideIndex + 1) % scenes.length), 4000);
-  }
-
-  function prevSlide() {
-    const scenes = document.querySelectorAll('#home-slideshow .slide-scene');
-    if (!scenes.length) return;
-    goToSlide((homeSlideIndex - 1 + scenes.length) % scenes.length);
-    startHomeSlideshow();
-  }
-
-  function nextSlide() {
-    const scenes = document.querySelectorAll('#home-slideshow .slide-scene');
-    if (!scenes.length) return;
-    goToSlide((homeSlideIndex + 1) % scenes.length);
-    startHomeSlideshow();
-  }
-
-  const homeSlideshowEl = document.getElementById('home-slideshow');
-  if (homeSlideshowEl) {
-    homeSlideshowEl.addEventListener('mouseenter', () => clearInterval(homeSlideInterval));
-    homeSlideshowEl.addEventListener('mouseleave', startHomeSlideshow);
+  // Home landing: card carousel
+  function scrollLandingCarousel(dir) {
+    const el = document.getElementById('landing-carousel');
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' });
   }
 
   function switchTab(tab) {
