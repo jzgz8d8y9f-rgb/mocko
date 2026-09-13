@@ -231,7 +231,7 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
   .step-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
-  .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.05; margin-bottom: 12px; }
+  .hero h1 { font-size: 46px; font-weight: 700; line-height: 1.08; margin-bottom: 12px; }
   .hero p { color: var(--text-muted); font-size: 15px; max-width: 500px; line-height: 1.6; margin-bottom: 36px; }
 
   /* Condensed setup panel */
@@ -322,7 +322,7 @@
   .mode-icon svg { width: 24px; height: 24px; }
   .mode-heading { flex: 1; min-width: 0; }
   .mode-eyebrow { font-size: 12px; letter-spacing: 0.12em; color: var(--mode-accent); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
-  .mode-card h3 { font-size: 23px; font-weight: 800; margin: 0; }
+  .mode-card h3 { font-family: 'Libre Baskerville', serif; font-size: 23px; font-weight: 700; margin: 0; }
   .mode-card p.mode-desc { color: var(--text-muted); font-size: 15px; line-height: 1.6; max-width: 56ch; margin: 0 0 18px; }
   .mode-card p.mode-desc b { color: var(--text); font-weight: 600; }
 
@@ -483,7 +483,7 @@
   @media (max-width: 620px) { .drill-grid { grid-template-columns: 1fr; } }
   .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
   @media (max-width: 720px) { .hub-grid { grid-template-columns: 1fr; } }
-  .hub-card h4 { font-size: 17px; }
+  .hub-card h4 { font-family: 'Libre Baskerville', serif; font-size: 17px; font-weight: 700; }
 
   /* Home life signals: streak, continue-session, "This Week" breakdown
      table, and drill leaderboard -- all hidden unless there's real data,
@@ -621,7 +621,7 @@
   .drill-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .drill-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; background: var(--surface-2); color: var(--text-muted); flex-shrink: 0; }
   .drill-icon svg { width: 19px; height: 19px; }
-  .drill-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .drill-card h4 { font-family: 'Libre Baskerville', serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
   .drill-card p { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
   .drill-tags { display: flex; gap: 6px; flex-wrap: wrap; }
   .drill-tag { font-family: 'Work Sans'; font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; border: 1px solid var(--line); color: var(--text-muted); }
@@ -639,7 +639,7 @@
 
   .drill-session { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 44px; text-align: center; }
   .drill-session-label { font-size: 13px; color: var(--good); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
-  .drill-session h2 { font-family: 'Work Sans'; font-size: 32px; font-weight: 800; margin-bottom: 12px; }
+  .drill-session h2 { font-family: 'Libre Baskerville', serif; font-size: 32px; font-weight: 700; margin-bottom: 12px; }
   .drill-session-instructions { color: var(--text-muted); font-size: 15px; max-width: 440px; margin: 0 auto 30px; line-height: 1.6; }
   .drill-counter { font-family: 'Work Sans'; font-size: 72px; font-weight: 800; color: var(--good); line-height: 1; margin-bottom: 6px; cursor: pointer; user-select: none; }
   .drill-counter-label { font-size: 13px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
@@ -819,7 +819,7 @@
 
   <div class="topbar">
     <div class="logo" onclick="goToHome()" style="cursor:pointer;">
-      <svg width="42" height="42" viewBox="0 0 100 100" fill="none">
+      <svg width="54" height="54" viewBox="0 0 100 100" fill="none">
         <g transform="rotate(-8 40 58)"><path class="cheer-l" d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--good)"/></g>
         <g transform="rotate(8 61 42)"><path class="cheer-r" d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="var(--good-dim)"/></g>
       </svg>
@@ -1371,6 +1371,10 @@
       <div class="select-group">
         <div class="select-group-label">Account</div>
         <div class="select-group-sub">Your account details.</div>
+        <div class="auth-field">
+          <label>Name</label>
+          <input type="text" id="settings-name" maxlength="60" autocomplete="name" placeholder="Alex Chen">
+        </div>
         <div class="auth-field">
           <label>Username</label>
           <input type="text" id="settings-username" maxlength="20">
@@ -2613,6 +2617,7 @@
     try {
       const profile = currentProfile || await MockoProfile.getProfile();
       currentProfile = profile;
+      document.getElementById('settings-name').value = profile.full_name || '';
       document.getElementById('settings-username').value = profile.username || '';
       document.getElementById('settings-phone').value = profile.phone_number || '';
       settingsSelectedGender = profile.gender || null;
@@ -2635,10 +2640,12 @@
   async function saveAccountSettings() {
     const errorEl = document.getElementById('settings-account-error');
     errorEl.textContent = '';
+    const fullName = document.getElementById('settings-name').value.trim();
     const username = document.getElementById('settings-username').value.trim();
     const email = document.getElementById('settings-email').value.trim();
     const phone = document.getElementById('settings-phone').value.trim();
 
+    if (!fullName) { errorEl.textContent = 'Please enter your name.'; return; }
     const usernameError = validateUsername(username);
     if (usernameError) { errorEl.textContent = usernameError; return; }
     const phoneError = validatePhone(phone);
@@ -2646,8 +2653,9 @@
 
     try {
       currentProfile = await MockoProfile.updateProfile({
-        username, phone_number: phone, gender: settingsSelectedGender,
+        username, phone_number: phone, gender: settingsSelectedGender, full_name: fullName,
       });
+      updateHomeWelcome(currentProfile);
       updateAccountBadge(currentProfile);
     } catch (err) {
       if (err.code === '23505') errorEl.textContent = 'That username is taken.';
