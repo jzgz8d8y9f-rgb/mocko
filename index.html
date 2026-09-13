@@ -1372,6 +1372,10 @@
         <div class="select-group-label">Account</div>
         <div class="select-group-sub">Your account details.</div>
         <div class="auth-field">
+          <label>Name</label>
+          <input type="text" id="settings-name" maxlength="60" autocomplete="name" placeholder="Alex Chen">
+        </div>
+        <div class="auth-field">
           <label>Username</label>
           <input type="text" id="settings-username" maxlength="20">
         </div>
@@ -2613,6 +2617,7 @@
     try {
       const profile = currentProfile || await MockoProfile.getProfile();
       currentProfile = profile;
+      document.getElementById('settings-name').value = profile.full_name || '';
       document.getElementById('settings-username').value = profile.username || '';
       document.getElementById('settings-phone').value = profile.phone_number || '';
       settingsSelectedGender = profile.gender || null;
@@ -2635,10 +2640,12 @@
   async function saveAccountSettings() {
     const errorEl = document.getElementById('settings-account-error');
     errorEl.textContent = '';
+    const fullName = document.getElementById('settings-name').value.trim();
     const username = document.getElementById('settings-username').value.trim();
     const email = document.getElementById('settings-email').value.trim();
     const phone = document.getElementById('settings-phone').value.trim();
 
+    if (!fullName) { errorEl.textContent = 'Please enter your name.'; return; }
     const usernameError = validateUsername(username);
     if (usernameError) { errorEl.textContent = usernameError; return; }
     const phoneError = validatePhone(phone);
@@ -2646,8 +2653,9 @@
 
     try {
       currentProfile = await MockoProfile.updateProfile({
-        username, phone_number: phone, gender: settingsSelectedGender,
+        username, phone_number: phone, gender: settingsSelectedGender, full_name: fullName,
       });
+      updateHomeWelcome(currentProfile);
       updateAccountBadge(currentProfile);
     } catch (err) {
       if (err.code === '23505') errorEl.textContent = 'That username is taken.';
