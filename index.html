@@ -566,9 +566,50 @@
   .activity-score { font-family: 'Work Sans'; font-size: 15px; font-weight: 700; color: var(--text); flex-shrink: 0; }
   .activity-empty { font-size: 14px; color: var(--text-muted); padding: 20px 0; text-align: center; }
 
-  .profile-stat-strip { display: flex; gap: 32px; padding: 18px 0; margin-bottom: 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .profile-stat-num { font-family: 'Work Sans'; font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+  .profile-stat-strip { display: flex; align-items: center; gap: 44px; padding: 0; margin-bottom: 0; border-top: none; border-bottom: none; }
+  .profile-stat-num { font-family: 'Work Sans'; font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
   .profile-stat-label { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+
+  /* Profile: banner + facts + percentile ring + links (LinkedIn-style layout) */
+  #profile-view, #profile-edit { padding: 0; max-width: 900px; overflow: hidden; }
+  .profile-banner { height: 190px; position: relative;
+    background:
+      radial-gradient(ellipse 560px 300px at 20% 0%, rgba(34,195,182,0.22), transparent 60%),
+      radial-gradient(ellipse 640px 340px at 100% 120%, rgba(0,0,0,0.5), transparent 60%),
+      var(--surface-2);
+    background-size: cover; background-position: center; }
+  .profile-banner-edit { position: absolute; bottom: 14px; right: 14px; }
+  .profile-body-pad { padding: 0 44px 40px; }
+  .profile-top-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: -58px; padding: 0 44px; margin-bottom: 20px; }
+  .profile-top-row .profile-avatar { width: 116px; height: 116px; font-size: 40px; border: 5px solid var(--surface); }
+  .profile-name-block { padding: 0 44px; margin-bottom: 22px; }
+  .profile-name { font-family: 'Libre Baskerville', serif; font-size: 30px; font-weight: 700; margin-bottom: 4px; }
+  .profile-handle { font-size: 14px; color: var(--text-muted); }
+  .profile-facts { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 44px; margin-bottom: 26px; }
+  .profile-fact { font-size: 13.5px; color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--line); border-radius: 100px; padding: 8px 17px; display: inline-flex; align-items: center; gap: 7px; }
+  .profile-fact svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--text-muted); }
+  .profile-section-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .profile-section-block { padding: 26px 0; border-top: 1px solid var(--line); }
+  .profile-section-block.first-visible { padding-top: 0; border-top: none; }
+
+  .profile-ring { --pct: 0; width: 70px; height: 70px; border-radius: 50%; background: conic-gradient(var(--good) calc(var(--pct)*1%), var(--surface-2) 0); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .profile-ring-inner { width: 56px; height: 56px; border-radius: 50%; background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .profile-ring-inner b { font-size: 14.5px; font-weight: 700; line-height: 1; }
+  .profile-ring-inner span { font-size: 7px; color: var(--text-muted); letter-spacing: 0.03em; text-transform: uppercase; margin-top: 1px; }
+  .profile-ring-label b { display: block; font-size: 15px; font-weight: 600; }
+  .profile-ring-label span { font-size: 12.5px; color: var(--text-muted); }
+
+  .profile-links-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .profile-link-chip { font-size: 13.5px; color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 100px; padding: 8px 18px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+  .profile-link-chip svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--good); }
+
+  @media (max-width: 720px) {
+    .profile-banner { height: 140px; }
+    .profile-top-row, .profile-name-block, .profile-facts { padding: 0 24px; }
+    .profile-body-pad { padding: 0 24px 28px; }
+    .profile-top-row .profile-avatar { width: 88px; height: 88px; font-size: 30px; }
+    .profile-top-row { margin-top: -44px; }
+  }
   .pulse-eyebrow { font-family: 'Work Sans'; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
 
   .stats-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 28px; }
@@ -830,8 +871,8 @@
   .login-prompt .btn { background: var(--good); color: var(--bg); border-color: var(--good); font-weight: 700; }
   .auth-field { margin-bottom: 16px; }
   .auth-field label { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
-  .auth-field input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Work Sans'; font-size: 15px; }
-  .auth-field input:focus { outline: none; border-color: var(--good); }
+  .auth-field input, .auth-field select { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Work Sans'; font-size: 15px; }
+  .auth-field input:focus, .auth-field select:focus { outline: none; border-color: var(--good); }
   .auth-field input.field-invalid { border-color: var(--record); }
   .auth-error { color: var(--record); font-size: 14px; margin-bottom: 14px; min-height: 18px; }
   .auth-note { color: var(--text-muted); font-size: 14px; margin-bottom: 14px; }
@@ -1315,62 +1356,112 @@
       <h1 class="display">Your Profile</h1>
       <p>This is the start of Mocko as a platform. Friends and more are coming.</p>
     </div>
-    <div class="auth-error" id="profile-error" style="max-width:460px; margin:0 auto 12px;"></div>
+    <div class="auth-error" id="profile-error" style="max-width:900px; margin:0 auto 12px;"></div>
 
     <!-- VIEW MODE -->
-    <div class="auth-panel" id="profile-view" style="max-width:460px;">
-      <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+    <div class="auth-panel" id="profile-view">
+      <div class="profile-banner" id="profile-view-banner"></div>
+      <div class="profile-top-row">
         <div class="profile-avatar" id="profile-view-avatar">?</div>
-        <div>
-          <div style="font-size:18px; font-weight:700;" id="profile-view-username">—</div>
-          <div style="font-size:13px; color:var(--text-muted);" id="profile-view-joined"></div>
+        <div class="btn-row" id="profile-view-actions" style="justify-content:flex-end; margin:0;">
+          <button class="btn btn-secondary" onclick="enterProfileEditMode()">Edit Profile</button>
         </div>
       </div>
-      <p id="profile-view-bio" style="font-size:14.5px; color:var(--text-muted); line-height:1.5; margin-bottom:18px;"></p>
-      <div class="profile-stat-strip" id="profile-stat-strip" style="display:none;">
-        <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-sessions">0</div><div class="profile-stat-label">Sessions logged</div></div>
-        <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-avg">—</div><div class="profile-stat-label">Average score</div></div>
-        <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-streak">0</div><div class="profile-stat-label">Day streak</div></div>
+      <div class="profile-name-block">
+        <div class="profile-name" id="profile-view-name">—</div>
+        <div class="profile-handle" id="profile-view-handle"></div>
       </div>
-      <div id="profile-view-links" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;"></div>
-      <div class="btn-row" id="profile-view-actions" style="justify-content:flex-end;">
-        <button class="btn btn-secondary" onclick="enterProfileEditMode()">Edit Profile</button>
+      <div class="profile-facts" id="profile-view-facts"></div>
+      <div class="profile-body-pad">
+        <div class="profile-section-block" id="profile-view-bio-block" style="display:none;">
+          <div class="profile-section-title">About</div>
+          <p id="profile-view-bio" style="font-size:14.5px; color:var(--text-muted); line-height:1.6; margin:0;"></p>
+        </div>
+        <div class="profile-section-block" id="profile-stat-strip" style="display:none;">
+          <div class="profile-section-title">Activity</div>
+          <div class="profile-stat-strip">
+            <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-sessions">0</div><div class="profile-stat-label">Sessions logged</div></div>
+            <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-avg">—</div><div class="profile-stat-label">Average score</div></div>
+            <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-streak">0</div><div class="profile-stat-label">Day streak</div></div>
+            <div class="profile-stat-strip-ring" id="profile-percentile-row" style="display:none; align-items:center; gap:14px; margin-left:auto;">
+              <div class="profile-ring" id="profile-percentile-ring"><div class="profile-ring-inner"><b id="profile-percentile-num">—</b><span>Rank</span></div></div>
+              <div class="profile-ring-label"><b id="profile-percentile-text">—</b><span>of all users</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="profile-section-block" id="profile-view-links-wrap" style="display:none;">
+          <div class="profile-section-title">Links</div>
+          <div id="profile-view-links" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+        </div>
       </div>
     </div>
 
     <!-- EDIT MODE -->
-    <div class="auth-panel" id="profile-edit" style="max-width:460px; display:none;">
-      <div style="display:flex; align-items:center; gap:16px; margin-bottom:24px;">
+    <div class="auth-panel" id="profile-edit" style="display:none;">
+      <div class="profile-banner" id="profile-edit-banner">
+        <label class="btn btn-secondary profile-banner-edit" style="cursor:pointer;">
+          Change cover
+          <input type="file" accept="image/*" id="profile-banner-input" style="display:none;" onchange="handleBannerUpload(event)">
+        </label>
+      </div>
+      <div class="profile-top-row">
         <div class="profile-avatar" id="profile-avatar-preview">?</div>
         <label class="btn btn-secondary" style="cursor:pointer; display:inline-block;">
           Change photo
           <input type="file" accept="image/*" id="profile-avatar-input" style="display:none;" onchange="handleAvatarUpload(event)">
         </label>
       </div>
-      <div class="auth-field">
-        <label>Bio</label>
-        <input type="text" id="profile-bio" placeholder="A short intro (optional)">
-      </div>
-      <div class="auth-field">
-        <label>Twitter / X</label>
-        <input type="text" id="profile-twitter" placeholder="https://x.com/...">
-      </div>
-      <div class="auth-field">
-        <label>LinkedIn</label>
-        <input type="text" id="profile-linkedin" placeholder="https://linkedin.com/in/...">
-      </div>
-      <div class="auth-field">
-        <label>Instagram</label>
-        <input type="text" id="profile-instagram" placeholder="https://instagram.com/...">
-      </div>
-      <div class="btn-row" style="justify-content:flex-end; gap:10px;">
-        <button class="btn btn-secondary" onclick="cancelProfileEdit()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveProfile()">Save</button>
+      <div class="profile-body-pad">
+        <div class="auth-field">
+          <label>Bio</label>
+          <input type="text" id="profile-bio" placeholder="A short intro (optional)">
+        </div>
+        <div class="auth-field">
+          <label>College</label>
+          <input type="text" id="profile-college" placeholder="University of Michigan">
+        </div>
+        <div class="auth-field">
+          <label>Graduation year</label>
+          <input type="text" id="profile-graduation-year" placeholder="2026">
+        </div>
+        <div class="auth-field">
+          <label>Intended industry</label>
+          <select id="profile-industry">
+            <option value="">Not set</option>
+            <option value="general">General</option>
+            <option value="finance">General Finance</option>
+            <option value="ib">Investment Banking</option>
+            <option value="consulting">Consulting</option>
+            <option value="pe">Private Equity</option>
+            <option value="quant">Quant</option>
+          </select>
+        </div>
+        <div class="auth-field">
+          <label>Hometown</label>
+          <input type="text" id="profile-hometown" placeholder="Chicago, IL">
+        </div>
+        <div class="profile-links-title" style="margin-top:22px;">Links</div>
+        <div class="auth-field">
+          <label>Twitter / X</label>
+          <input type="text" id="profile-twitter" placeholder="https://x.com/...">
+        </div>
+        <div class="auth-field">
+          <label>LinkedIn</label>
+          <input type="text" id="profile-linkedin" placeholder="https://linkedin.com/in/...">
+        </div>
+        <div class="auth-field">
+          <label>Instagram</label>
+          <input type="text" id="profile-instagram" placeholder="https://instagram.com/...">
+        </div>
+        <div class="btn-row" style="justify-content:flex-end; gap:10px;">
+          <button class="btn btn-secondary" onclick="cancelProfileEdit()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveProfile()">Save</button>
+        </div>
       </div>
     </div>
 
     <!-- RESUMES -->
-    <div class="auth-panel" id="profile-resumes-section" style="max-width:460px; margin-top:16px;">
+    <div class="auth-panel" id="profile-resumes-section" style="max-width:900px; margin-top:16px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
         <div style="font-size:15px; font-weight:700;">Resumes</div>
         <label class="btn btn-secondary" style="cursor:pointer; font-size:14px; padding:8px 14px;">
@@ -3079,6 +3170,7 @@
   // opens a dropdown of finance sub-industries (more top-level dropdowns,
   // e.g. Tech, land here later as the bank grows).
   const FINANCE_INDUSTRIES = ['finance', 'ib', 'consulting', 'pe', 'quant'];
+  const INDUSTRY_LABELS = { general: 'General', finance: 'General Finance', ib: 'Investment Banking', consulting: 'Consulting', pe: 'Private Equity', quant: 'Quant' };
 
   function syncIndustrySelection() {
     const generalBtn = document.querySelector('#industry-row .pill-btn[data-industry="general"]');
@@ -3856,9 +3948,10 @@
   async function loadProfileStats() {
     const stripEl = document.getElementById('profile-stat-strip');
     try {
-      const [sessions, drillScores] = await Promise.all([
+      const [sessions, drillScores, percentile] = await Promise.all([
         MockoHistory.fetchSessions(),
         MockoHistory.fetchDrillStats(),
+        MockoProfile.fetchAccountPercentile().catch(() => null),
       ]);
       const scored = sessions.filter(s => s.overall_score != null);
       const avg = scored.length ? Math.round(scored.reduce((a, s) => a + s.overall_score, 0) / scored.length) : null;
@@ -3867,10 +3960,24 @@
       document.getElementById('profile-stat-sessions').textContent = sessions.length;
       document.getElementById('profile-stat-avg').textContent = avg != null ? avg : '—';
       document.getElementById('profile-stat-streak').textContent = computeStreak(allDates);
-      stripEl.style.display = 'flex';
+      stripEl.style.display = 'block';
+
+      const pctRow = document.getElementById('profile-percentile-row');
+      if (percentile != null) {
+        const rank = Math.round(percentile);
+        const topPct = Math.max(1, 100 - rank);
+        document.getElementById('profile-percentile-ring').style.setProperty('--pct', rank);
+        document.getElementById('profile-percentile-num').textContent = `${rank}%`;
+        document.getElementById('profile-percentile-text').textContent = `Top ${topPct}%`;
+        pctRow.style.display = 'flex';
+      } else {
+        pctRow.style.display = 'none';
+      }
+      updateProfileFirstVisibleSection();
     } catch (err) {
       console.error(err);
       stripEl.style.display = 'none';
+      updateProfileFirstVisibleSection();
     }
   }
 
@@ -4017,32 +4124,67 @@
 
   function renderProfileView(profile, readOnly) {
     renderAvatarInto('profile-view-avatar', profile);
-    document.getElementById('profile-view-username').textContent = profile.username;
-    document.getElementById('profile-view-bio').textContent = profile.bio || '';
-    document.getElementById('profile-view-bio').style.display = profile.bio ? 'block' : 'none';
-
+    renderBannerInto('profile-view-banner', profile);
+    document.getElementById('profile-view-name').textContent = profile.full_name || profile.username;
     const joined = new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    document.getElementById('profile-view-joined').textContent = `Joined ${joined}`;
+    document.getElementById('profile-view-handle').textContent = `@${profile.username} · Joined ${joined}`;
+    document.getElementById('profile-view-bio').textContent = profile.bio || '';
+    document.getElementById('profile-view-bio-block').style.display = profile.bio ? 'block' : 'none';
 
     document.getElementById('profile-view-actions').style.display = readOnly ? 'none' : 'flex';
     document.getElementById('profile-resumes-section').style.display = readOnly ? 'none' : 'block';
 
-    const links = profile.social_links || {};
-    const linkMeta = [['twitter', 'Twitter / X'], ['linkedin', 'LinkedIn'], ['instagram', 'Instagram']];
-    const linksEl = document.getElementById('profile-view-links');
-    linksEl.innerHTML = linkMeta
-      .filter(([key]) => links[key])
-      .map(([key, label]) => `<a href="${links[key]}" target="_blank" rel="noopener" class="pill-btn" style="text-decoration:none;">${label}</a>`)
+    const factMeta = [
+      profile.college ? { icon: 'grad', text: profile.graduation_year ? `${profile.college} · Class of ${profile.graduation_year}` : profile.college } : null,
+      profile.industry && INDUSTRY_LABELS[profile.industry] ? { icon: 'briefcase', text: INDUSTRY_LABELS[profile.industry] } : null,
+      profile.hometown ? { icon: 'pin', text: profile.hometown } : null,
+    ].filter(Boolean);
+    const factIcons = {
+      grad: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>',
+      briefcase: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V9l6-6 6 6v12M10 21v-6h4v6"/></svg>',
+      pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z"/></svg>',
+    };
+    document.getElementById('profile-view-facts').innerHTML = factMeta
+      .map(f => `<span class="profile-fact">${factIcons[f.icon]}${f.text}</span>`)
       .join('');
+
+    const links = profile.social_links || {};
+    const linkMeta = [
+      ['linkedin', 'LinkedIn', '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.28 2.37 4.28 5.45v6.29zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>'],
+      ['twitter', 'Twitter / X', '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.2 8.2L23 22h-6.6l-5.2-6.8L5 22H2l7.7-8.8L1.4 2H8l4.7 6.2L18.9 2z"/></svg>'],
+      ['instagram', 'Instagram', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>'],
+    ];
+    const linksEl = document.getElementById('profile-view-links');
+    const activeLinks = linkMeta.filter(([key]) => links[key]);
+    linksEl.innerHTML = activeLinks
+      .map(([key, label, icon]) => `<a href="${links[key]}" target="_blank" rel="noopener" class="profile-link-chip">${icon}${label}</a>`)
+      .join('');
+    document.getElementById('profile-view-links-wrap').style.display = activeLinks.length ? 'block' : 'none';
+    updateProfileFirstVisibleSection();
+  }
+
+  function updateProfileFirstVisibleSection() {
+    const blocks = document.querySelectorAll('#profile-view .profile-section-block');
+    let found = false;
+    blocks.forEach(el => {
+      const visible = el.style.display !== 'none';
+      el.classList.toggle('first-visible', visible && !found);
+      if (visible) found = true;
+    });
   }
 
   function populateProfileEditForm(profile) {
     document.getElementById('profile-bio').value = profile.bio || '';
+    document.getElementById('profile-college').value = profile.college || '';
+    document.getElementById('profile-graduation-year').value = profile.graduation_year || '';
+    document.getElementById('profile-industry').value = profile.industry || '';
+    document.getElementById('profile-hometown').value = profile.hometown || '';
     const links = profile.social_links || {};
     document.getElementById('profile-twitter').value = links.twitter || '';
     document.getElementById('profile-linkedin').value = links.linkedin || '';
     document.getElementById('profile-instagram').value = links.instagram || '';
     renderAvatarInto('profile-avatar-preview', profile);
+    renderBannerInto('profile-edit-banner', profile);
   }
 
   function renderAvatarInto(elId, profile) {
@@ -4053,6 +4195,15 @@
     } else {
       el.style.backgroundImage = '';
       el.textContent = (profile.username || '?')[0].toUpperCase();
+    }
+  }
+
+  function renderBannerInto(elId, profile) {
+    const el = document.getElementById(elId);
+    if (profile.banner_url) {
+      el.style.backgroundImage = `url(${profile.banner_url})`;
+    } else {
+      el.style.backgroundImage = '';
     }
   }
 
@@ -4108,6 +4259,10 @@
     try {
       currentProfile = await MockoProfile.updateProfile({
         bio: document.getElementById('profile-bio').value.trim(),
+        college: document.getElementById('profile-college').value.trim(),
+        graduation_year: document.getElementById('profile-graduation-year').value.trim(),
+        industry: document.getElementById('profile-industry').value || null,
+        hometown: document.getElementById('profile-hometown').value.trim(),
         social_links: {
           twitter: document.getElementById('profile-twitter').value.trim(),
           linkedin: document.getElementById('profile-linkedin').value.trim(),
@@ -4134,6 +4289,20 @@
       updateAccountBadge(currentProfile);
     } catch (err) {
       errorEl.textContent = err.message || 'Avatar upload failed.';
+    }
+  }
+
+  async function handleBannerUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const errorEl = document.getElementById('profile-error');
+    errorEl.textContent = '';
+    try {
+      currentProfile = await MockoProfile.uploadBanner(file);
+      renderBannerInto('profile-edit-banner', currentProfile);
+      renderBannerInto('profile-view-banner', currentProfile);
+    } catch (err) {
+      errorEl.textContent = err.message || 'Cover photo upload failed.';
     }
   }
 

@@ -12,10 +12,10 @@ async function getProfile() {
   return data;
 }
 
-async function updateProfile({ username, bio, social_links, industry, phone_number, gender, full_name }) {
+async function updateProfile({ username, bio, social_links, industry, phone_number, gender, full_name, college, graduation_year, hometown }) {
   const user = window.MockoAuth.getUser();
   if (!user) throw new Error('Not signed in');
-  const fields = { username, bio, social_links, industry, phone_number, gender, full_name };
+  const fields = { username, bio, social_links, industry, phone_number, gender, full_name, college, graduation_year, hometown };
   Object.keys(fields).forEach((key) => { if (fields[key] === undefined) delete fields[key]; });
   const { data, error } = await supabase
     .from('profiles')
@@ -47,6 +47,34 @@ async function uploadAvatar(file) {
   return data;
 }
 
+async function uploadBanner(file) {
+  const user = window.MockoAuth.getUser();
+  if (!user) throw new Error('Not signed in');
+  const path = `${user.id}/${Date.now()}-${file.name}`;
+  const { error: uploadErr } = await supabase.storage
+    .from('banners')
+    .upload(path, file, { upsert: true });
+  if (uploadErr) throw uploadErr;
+
+  const { data: urlData } = supabase.storage.from('banners').getPublicUrl(path);
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ banner_url: urlData.publicUrl })
+    .eq('user_id', user.id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function fetchAccountPercentile() {
+  const user = window.MockoAuth.getUser();
+  if (!user) return null;
+  const { data, error } = await supabase.rpc('account_percentile', { p_user_id: user.id });
+  if (error) throw error;
+  return data;
+}
+
 async function getProfileById(userId) {
   const { data, error } = await supabase
     .from('profiles')
@@ -66,4 +94,4 @@ async function getProfilesByIds(userIds) {
   return data;
 }
 
-window.MockoProfile = { getProfile, updateProfile, uploadAvatar, getProfileById, getProfilesByIds };
+window.MockoProfile = { getProfile, updateProfile, uploadAvatar, uploadBanner, fetchAccountPercentile, getProfileById, getProfilesByIds };
