@@ -12,10 +12,10 @@ async function getProfile() {
   return data;
 }
 
-async function updateProfile({ username, bio, social_links, industry, phone_number, gender, full_name, college, graduation_year, hometown }) {
+async function updateProfile({ username, bio, social_links, industry, phone_number, gender, full_name, location, education }) {
   const user = window.MockoAuth.getUser();
   if (!user) throw new Error('Not signed in');
-  const fields = { username, bio, social_links, industry, phone_number, gender, full_name, college, graduation_year, hometown };
+  const fields = { username, bio, social_links, industry, phone_number, gender, full_name, location, education };
   Object.keys(fields).forEach((key) => { if (fields[key] === undefined) delete fields[key]; });
   const { data, error } = await supabase
     .from('profiles')
