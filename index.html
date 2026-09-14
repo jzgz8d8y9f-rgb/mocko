@@ -566,39 +566,50 @@
   .activity-score { font-family: 'Work Sans'; font-size: 15px; font-weight: 700; color: var(--text); flex-shrink: 0; }
   .activity-empty { font-size: 14px; color: var(--text-muted); padding: 20px 0; text-align: center; }
 
-  .profile-stat-strip { display: flex; align-items: center; gap: 32px; padding: 18px 0; margin-bottom: 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .profile-stat-num { font-family: 'Work Sans'; font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+  .profile-stat-strip { display: flex; align-items: center; gap: 44px; padding: 0; margin-bottom: 0; border-top: none; border-bottom: none; }
+  .profile-stat-num { font-family: 'Work Sans'; font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
   .profile-stat-label { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
 
   /* Profile: banner + facts + percentile ring + links (LinkedIn-style layout) */
-  #profile-view, #profile-edit { padding: 0; max-width: 620px; overflow: hidden; }
-  .profile-banner { height: 120px; position: relative;
+  #profile-view, #profile-edit { padding: 0; max-width: 900px; overflow: hidden; }
+  .profile-banner { height: 190px; position: relative;
     background:
-      radial-gradient(ellipse 420px 220px at 20% 0%, rgba(34,195,182,0.22), transparent 60%),
-      radial-gradient(ellipse 500px 260px at 100% 120%, rgba(0,0,0,0.5), transparent 60%),
+      radial-gradient(ellipse 560px 300px at 20% 0%, rgba(34,195,182,0.22), transparent 60%),
+      radial-gradient(ellipse 640px 340px at 100% 120%, rgba(0,0,0,0.5), transparent 60%),
       var(--surface-2);
     background-size: cover; background-position: center; }
-  .profile-banner-edit { position: absolute; bottom: 10px; right: 10px; }
-  .profile-body-pad { padding: 0 28px 28px; }
-  .profile-top-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: -40px; padding: 0 28px; margin-bottom: 14px; }
-  .profile-top-row .profile-avatar { width: 84px; height: 84px; font-size: 30px; border: 4px solid var(--surface); }
-  .profile-name-block { padding: 0 28px; margin-bottom: 14px; }
-  .profile-name { font-family: 'Libre Baskerville', serif; font-size: 23px; font-weight: 700; margin-bottom: 2px; }
-  .profile-handle { font-size: 13px; color: var(--text-muted); }
-  .profile-facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 28px; margin-bottom: 16px; }
-  .profile-fact { font-size: 12.5px; color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--line); border-radius: 100px; padding: 6px 13px; display: inline-flex; align-items: center; gap: 6px; }
-  .profile-fact svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--text-muted); }
+  .profile-banner-edit { position: absolute; bottom: 14px; right: 14px; }
+  .profile-body-pad { padding: 0 44px 40px; }
+  .profile-top-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: -58px; padding: 0 44px; margin-bottom: 20px; }
+  .profile-top-row .profile-avatar { width: 116px; height: 116px; font-size: 40px; border: 5px solid var(--surface); }
+  .profile-name-block { padding: 0 44px; margin-bottom: 22px; }
+  .profile-name { font-family: 'Libre Baskerville', serif; font-size: 30px; font-weight: 700; margin-bottom: 4px; }
+  .profile-handle { font-size: 14px; color: var(--text-muted); }
+  .profile-facts { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 44px; margin-bottom: 26px; }
+  .profile-fact { font-size: 13.5px; color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--line); border-radius: 100px; padding: 8px 17px; display: inline-flex; align-items: center; gap: 7px; }
+  .profile-fact svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--text-muted); }
+  .profile-section-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .profile-section-block { padding: 26px 0; border-top: 1px solid var(--line); }
+  .profile-section-block.first-visible { padding-top: 0; border-top: none; }
 
-  .profile-ring { --pct: 0; width: 58px; height: 58px; border-radius: 50%; background: conic-gradient(var(--good) calc(var(--pct)*1%), var(--surface-2) 0); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .profile-ring-inner { width: 46px; height: 46px; border-radius: 50%; background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .profile-ring-inner b { font-size: 12.5px; font-weight: 700; line-height: 1; }
-  .profile-ring-inner span { font-size: 6.5px; color: var(--text-muted); letter-spacing: 0.03em; text-transform: uppercase; margin-top: 1px; }
-  .profile-ring-label b { display: block; font-size: 13.5px; font-weight: 600; }
-  .profile-ring-label span { font-size: 11.5px; color: var(--text-muted); }
+  .profile-ring { --pct: 0; width: 70px; height: 70px; border-radius: 50%; background: conic-gradient(var(--good) calc(var(--pct)*1%), var(--surface-2) 0); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .profile-ring-inner { width: 56px; height: 56px; border-radius: 50%; background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .profile-ring-inner b { font-size: 14.5px; font-weight: 700; line-height: 1; }
+  .profile-ring-inner span { font-size: 7px; color: var(--text-muted); letter-spacing: 0.03em; text-transform: uppercase; margin-top: 1px; }
+  .profile-ring-label b { display: block; font-size: 15px; font-weight: 600; }
+  .profile-ring-label span { font-size: 12.5px; color: var(--text-muted); }
 
-  .profile-links-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
-  .profile-link-chip { font-size: 13px; color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 100px; padding: 7px 15px; display: inline-flex; align-items: center; gap: 7px; text-decoration: none; }
+  .profile-links-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .profile-link-chip { font-size: 13.5px; color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 100px; padding: 8px 18px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
   .profile-link-chip svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--good); }
+
+  @media (max-width: 720px) {
+    .profile-banner { height: 140px; }
+    .profile-top-row, .profile-name-block, .profile-facts { padding: 0 24px; }
+    .profile-body-pad { padding: 0 24px 28px; }
+    .profile-top-row .profile-avatar { width: 88px; height: 88px; font-size: 30px; }
+    .profile-top-row { margin-top: -44px; }
+  }
   .pulse-eyebrow { font-family: 'Work Sans'; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
 
   .stats-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 28px; }
@@ -1345,7 +1356,7 @@
       <h1 class="display">Your Profile</h1>
       <p>This is the start of Mocko as a platform. Friends and more are coming.</p>
     </div>
-    <div class="auth-error" id="profile-error" style="max-width:620px; margin:0 auto 12px;"></div>
+    <div class="auth-error" id="profile-error" style="max-width:900px; margin:0 auto 12px;"></div>
 
     <!-- VIEW MODE -->
     <div class="auth-panel" id="profile-view">
@@ -1362,19 +1373,25 @@
       </div>
       <div class="profile-facts" id="profile-view-facts"></div>
       <div class="profile-body-pad">
-        <p id="profile-view-bio" style="font-size:14.5px; color:var(--text-muted); line-height:1.5; margin-bottom:18px;"></p>
-        <div class="profile-stat-strip" id="profile-stat-strip" style="display:none;">
-          <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-sessions">0</div><div class="profile-stat-label">Sessions logged</div></div>
-          <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-avg">—</div><div class="profile-stat-label">Average score</div></div>
-          <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-streak">0</div><div class="profile-stat-label">Day streak</div></div>
-          <div class="profile-stat-strip-ring" id="profile-percentile-row" style="display:none; align-items:center; gap:12px; margin-left:auto;">
-            <div class="profile-ring" id="profile-percentile-ring"><div class="profile-ring-inner"><b id="profile-percentile-num">—</b><span>Rank</span></div></div>
-            <div class="profile-ring-label"><b id="profile-percentile-text">—</b><span>of all users</span></div>
+        <div class="profile-section-block" id="profile-view-bio-block" style="display:none;">
+          <div class="profile-section-title">About</div>
+          <p id="profile-view-bio" style="font-size:14.5px; color:var(--text-muted); line-height:1.6; margin:0;"></p>
+        </div>
+        <div class="profile-section-block" id="profile-stat-strip" style="display:none;">
+          <div class="profile-section-title">Activity</div>
+          <div class="profile-stat-strip">
+            <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-sessions">0</div><div class="profile-stat-label">Sessions logged</div></div>
+            <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-avg">—</div><div class="profile-stat-label">Average score</div></div>
+            <div class="profile-stat"><div class="profile-stat-num" id="profile-stat-streak">0</div><div class="profile-stat-label">Day streak</div></div>
+            <div class="profile-stat-strip-ring" id="profile-percentile-row" style="display:none; align-items:center; gap:14px; margin-left:auto;">
+              <div class="profile-ring" id="profile-percentile-ring"><div class="profile-ring-inner"><b id="profile-percentile-num">—</b><span>Rank</span></div></div>
+              <div class="profile-ring-label"><b id="profile-percentile-text">—</b><span>of all users</span></div>
+            </div>
           </div>
         </div>
-        <div id="profile-view-links-wrap" style="display:none; margin-bottom:8px;">
-          <div class="profile-links-title">Links</div>
-          <div id="profile-view-links" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+        <div class="profile-section-block" id="profile-view-links-wrap" style="display:none;">
+          <div class="profile-section-title">Links</div>
+          <div id="profile-view-links" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
         </div>
       </div>
     </div>
@@ -1444,7 +1461,7 @@
     </div>
 
     <!-- RESUMES -->
-    <div class="auth-panel" id="profile-resumes-section" style="max-width:620px; margin-top:16px;">
+    <div class="auth-panel" id="profile-resumes-section" style="max-width:900px; margin-top:16px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
         <div style="font-size:15px; font-weight:700;">Resumes</div>
         <label class="btn btn-secondary" style="cursor:pointer; font-size:14px; padding:8px 14px;">
@@ -3943,7 +3960,7 @@
       document.getElementById('profile-stat-sessions').textContent = sessions.length;
       document.getElementById('profile-stat-avg').textContent = avg != null ? avg : '—';
       document.getElementById('profile-stat-streak').textContent = computeStreak(allDates);
-      stripEl.style.display = 'flex';
+      stripEl.style.display = 'block';
 
       const pctRow = document.getElementById('profile-percentile-row');
       if (percentile != null) {
@@ -3956,9 +3973,11 @@
       } else {
         pctRow.style.display = 'none';
       }
+      updateProfileFirstVisibleSection();
     } catch (err) {
       console.error(err);
       stripEl.style.display = 'none';
+      updateProfileFirstVisibleSection();
     }
   }
 
@@ -4110,7 +4129,7 @@
     const joined = new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     document.getElementById('profile-view-handle').textContent = `@${profile.username} · Joined ${joined}`;
     document.getElementById('profile-view-bio').textContent = profile.bio || '';
-    document.getElementById('profile-view-bio').style.display = profile.bio ? 'block' : 'none';
+    document.getElementById('profile-view-bio-block').style.display = profile.bio ? 'block' : 'none';
 
     document.getElementById('profile-view-actions').style.display = readOnly ? 'none' : 'flex';
     document.getElementById('profile-resumes-section').style.display = readOnly ? 'none' : 'block';
@@ -4141,6 +4160,17 @@
       .map(([key, label, icon]) => `<a href="${links[key]}" target="_blank" rel="noopener" class="profile-link-chip">${icon}${label}</a>`)
       .join('');
     document.getElementById('profile-view-links-wrap').style.display = activeLinks.length ? 'block' : 'none';
+    updateProfileFirstVisibleSection();
+  }
+
+  function updateProfileFirstVisibleSection() {
+    const blocks = document.querySelectorAll('#profile-view .profile-section-block');
+    let found = false;
+    blocks.forEach(el => {
+      const visible = el.style.display !== 'none';
+      el.classList.toggle('first-visible', visible && !found);
+      if (visible) found = true;
+    });
   }
 
   function populateProfileEditForm(profile) {
