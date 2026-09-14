@@ -2915,7 +2915,9 @@
   }
 
   function validatePhone(raw) {
-    if (!/^[+\d][\d\s().-]{6,18}$/.test(raw.trim())) {
+    const v = raw.trim();
+    if (!v) return null;
+    if (!/^[+\d][\d\s().-]{6,18}$/.test(v)) {
       return 'Enter a valid phone number.';
     }
     return null;
