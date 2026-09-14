@@ -755,7 +755,8 @@
 
 
   .math-question { font-family: 'Work Sans'; font-size: 44px; font-weight: 800; margin-bottom: 20px; }
-  .math-input { width: 180px; text-align: center; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'Work Sans'; font-size: 20px; }
+  .math-input { width: 180px; text-align: center; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'Work Sans'; font-size: 20px; transition: border-color 0.15s; }
+  .math-input.field-invalid { border-color: var(--record); }
   .math-input:focus { outline: none; border-color: var(--good); }
   .math-progress { margin-top: 12px; font-size: 13px; color: var(--text-muted); }
 
@@ -1053,7 +1054,7 @@
     <div id="home-dashboard" style="display:none;">
       <div class="hero">
         <h1 class="display"><span id="home-welcome-text">Welcome back</span><span class="streak-chip" id="home-streak-chip" style="display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4-3 5-3 9a3 3 0 006 0c1.5 1 2 3 2 4.5A5.5 5.5 0 018.5 21 6.5 6.5 0 015 12c2 1 2-1 1-3 3 0 4-3 4-5 1 1 2 3 2 5s2 2 3 0c1 2 0 4-1 5"/></svg><span id="home-streak-num"></span></span></h1>
-        <p>Jump into a practice session, run a quick drill, or check your progress.</p>
+        <p id="home-welcome-sub">Jump into a practice session, run a quick drill, or check your progress.</p>
       </div>
 
       <div class="continue-card" id="home-continue-card" style="display:none;" onclick="resumeFromContinueCard()">
@@ -1077,25 +1078,6 @@
           </div>
         </div>
         <button class="btn empty-pulse-btn" onclick="switchTab('interview')">Start now →</button>
-      </div>
-
-      <div class="action-grid-2">
-        <div class="action-card" onclick="switchTab('interview')">
-          <span class="drill-icon tint-good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></span>
-          <h4>Interview Practice</h4>
-          <p>Answer one question on camera and get scored on it, or talk it out loud with an AI interviewer that follows up when your answer needs more.</p>
-          <span class="go">Start a session →</span>
-          <div class="card-insight" id="home-interview-insight" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
-            <span id="home-interview-insight-text"></span>
-          </div>
-        </div>
-        <div class="action-card" onclick="switchTab('drills')">
-          <span class="drill-icon tint-warn"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span>
-          <h4>Drills</h4>
-          <p>Twelve short games that drill the reflexes interviewers actually test: mental math under a clock, risk calls, pattern spotting, working memory.</p>
-          <span class="go">Run a drill →</span>
-        </div>
       </div>
 
       <div class="home-stack">
@@ -1132,6 +1114,25 @@
             <span id="home-league-play-text"></span>
           </a>
           <button class="league-arrow league-arrow-right" onclick="shiftHomeLeagueDrill(1)" aria-label="Next drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="action-grid-2">
+        <div class="action-card" onclick="switchTab('interview')">
+          <span class="drill-icon tint-good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></span>
+          <h4>Interview Practice</h4>
+          <p>Answer one question on camera and get scored on it, or talk it out loud with an AI interviewer that follows up when your answer needs more.</p>
+          <span class="go">Start a session →</span>
+          <div class="card-insight" id="home-interview-insight" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+            <span id="home-interview-insight-text"></span>
+          </div>
+        </div>
+        <div class="action-card" onclick="switchTab('drills')">
+          <span class="drill-icon tint-warn"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span>
+          <h4>Drills</h4>
+          <p>Twelve short games that drill the reflexes interviewers actually test: mental math under a clock, risk calls, pattern spotting, working memory.</p>
+          <span class="go">Run a drill →</span>
         </div>
       </div>
 
@@ -2082,7 +2083,7 @@
         <div class="drill-timer mono" id="sprint-timer">00:60</div>
         <div class="math-question" id="sprint-question">—</div>
         <input type="text" inputmode="numeric" id="sprint-input" class="math-input" placeholder="Your answer" autocomplete="off">
-        <div class="math-progress mono" id="sprint-progress">Correct: 0</div>
+        <div class="math-progress mono" id="sprint-progress">Score: 0</div>
       </div>
 
       <!-- Risk -->
@@ -2286,15 +2287,24 @@
   let homeResumableRow = null;
 
   async function loadHomeLifeSignals() {
-    let sessions = [], drillScores = [], resumable = null;
+    let sessions = [], drillScores = [], resumable = null, percentile = null;
     try {
-      [sessions, drillScores, resumable] = await Promise.all([
+      [sessions, drillScores, resumable, percentile] = await Promise.all([
         MockoHistory.fetchSessions(),
         MockoHistory.fetchDrillStats(),
         MockoVoiceSession.fetchResumableSession(),
+        MockoProfile.fetchAccountPercentile().catch(() => null),
       ]);
     } catch (err) {
       console.error('Could not load home life signals:', err);
+    }
+
+    const welcomeSubEl = document.getElementById('home-welcome-sub');
+    if (percentile != null) {
+      const topPct = Math.max(1, 100 - Math.round(percentile));
+      welcomeSubEl.textContent = `You're in the top ${topPct}% of all users.`;
+    } else {
+      welcomeSubEl.textContent = 'Jump into a practice session, run a quick drill, or check your progress.';
     }
 
     // --- Streak ---
@@ -5284,19 +5294,21 @@
   function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
   function generateArithmeticQuestion() {
+    // Operands can run up to 3 digits, but the answer must always land in
+    // 1-99 (1-2 digits) -- this is "basic" arithmetic, so the mental-math
+    // load is in reading the problem, not the size of the result.
     const op = ['+','-','×','÷'][randInt(0,3)];
     if (op === '+') {
-      const a = randInt(10,999), b = randInt(10,999);
+      const a = randInt(1,89), b = randInt(1,99-a);
       return { q: `${a} + ${b}`, a: a + b };
     } else if (op === '-') {
-      let a = randInt(10,999), b = randInt(10,999);
-      if (b > a) { const t = a; a = b; b = t; }
-      return { q: `${a} − ${b}`, a: a - b };
+      const ans = randInt(1,99), b = randInt(10,900);
+      return { q: `${b+ans} − ${b}`, a: ans };
     } else if (op === '×') {
-      const a = randInt(2,25), b = randInt(2,12);
+      const a = randInt(2,9), b = randInt(2,11);
       return { q: `${a} × ${b}`, a: a * b };
     } else {
-      const b = randInt(2,12), qn = randInt(2,50);
+      const b = randInt(2,9), qn = randInt(2,99);
       return { q: `${b*qn} ÷ ${b}`, a: qn };
     }
   }
@@ -5354,7 +5366,7 @@
     clearInterval(sprintInterval);
     document.getElementById('sprint-timer').textContent = '00:60';
     document.getElementById('sprint-question').textContent = '—';
-    document.getElementById('sprint-progress').textContent = 'Correct: 0';
+    document.getElementById('sprint-progress').textContent = 'Score: 0';
     document.getElementById('sprint-input').value = '';
     document.getElementById('sprint-input').onkeydown = null;
   }
@@ -5378,12 +5390,21 @@
   }
 
   function submitSprintAnswer() {
-    const val = parseFloat(document.getElementById('sprint-input').value);
+    const input = document.getElementById('sprint-input');
+    const raw = input.value.trim();
+    if (raw === '') return; // no answer entered -- can't skip the problem this way
+    const val = parseFloat(raw);
     if (val === sprintCurrent.a) {
       sprintCorrect++;
-      document.getElementById('sprint-progress').textContent = `Correct: ${sprintCorrect}`;
+      document.getElementById('sprint-progress').textContent = `Score: ${sprintCorrect}`;
+      showSprintQuestion();
+    } else {
+      sprintCorrect = Math.max(0, sprintCorrect - 1);
+      document.getElementById('sprint-progress').textContent = `Score: ${sprintCorrect}`;
+      input.value = '';
+      input.classList.add('field-invalid');
+      setTimeout(() => input.classList.remove('field-invalid'), 300);
     }
-    showSprintQuestion();
   }
 
   function finishSprintDrill() {
