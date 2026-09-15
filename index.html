@@ -758,7 +758,8 @@
   .period-switch { display: flex; background: var(--surface-2); border-radius: 100px; padding: 3px; gap: 2px; }
   .period-btn { font-family: 'Work Sans'; font-size: 11.5px; font-weight: 600; padding: 5px 12px; border-radius: 100px; border: none; background: none; color: var(--text-muted); cursor: pointer; }
   .period-btn.active { background: var(--good); color: var(--bg); }
-  .league-card h4 { font-size: 18px; font-weight: 700; margin: 0 0 16px; font-family: 'Libre Baskerville'; text-align: center; }
+  .league-card h4 { font-size: 18px; font-weight: 700; margin: 0 0 16px; font-family: 'Libre Baskerville'; text-align: center; cursor: pointer; transition: color 0.15s; }
+  .league-card h4:hover { color: var(--good); }
 
   .league-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .league-arrow svg { width: 14px; height: 14px; }
@@ -766,7 +767,8 @@
   .league-arrow-left { left: 10px; }
   .league-arrow-right { right: 10px; }
 
-  .league-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 9px; }
+  .league-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 9px; cursor: pointer; transition: background 0.15s; }
+  .league-row:hover { background: var(--surface-2); }
   .league-row.you-gap { margin-top: 6px; border-top: 1px dashed var(--line); padding-top: 13px; }
   .league-rank { font-family: 'Work Sans'; font-weight: 800; font-size: 15px; width: 20px; color: var(--text-muted); text-align: center; }
   .league-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-family: 'Work Sans'; font-weight: 700; font-size: 11px; flex-shrink: 0; overflow: hidden; }
@@ -1285,12 +1287,12 @@
             <button class="period-btn" id="home-league-period-weekly" onclick="setHomeLeaguePeriod('weekly')">Weekly</button>
           </div>
         </div>
-        <h4 id="home-league-drill-name"></h4>
+        <h4 id="home-league-drill-name" onclick="playHomeLeagueDrill()"></h4>
         <div id="home-league-rows"></div>
         <div class="league-dots" id="home-league-dots"></div>
-        <a class="play-link" href="#" onclick="event.preventDefault(); playHomeLeagueDrill();">
-          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
-          <span id="home-league-play-text"></span>
+        <a class="play-link" href="#" onclick="event.preventDefault(); viewHomeLeagueLeaderboard();">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 01-10 0V4z"/><path d="M7 5H4a3 3 0 003 3M17 5h3a3 3 0 01-3 3"/></svg>
+          <span>View full leaderboard &rarr;</span>
         </a>
         <button class="league-arrow league-arrow-right" onclick="shiftHomeLeagueDrill(1)" aria-label="Next drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
       </div>
@@ -3060,10 +3062,10 @@
     }));
   }
 
-  function homeLeagueRowHtml({ rank, username, avatarUrl, score, extraClass }) {
+  function homeLeagueRowHtml({ rank, username, avatarUrl, score, extraClass, userId }) {
     const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
     const avatar = avatarUrl ? `<img src="${avatarUrl}" alt="">` : (username || '?').charAt(0).toUpperCase();
-    return `<div class="league-row ${rankClass} ${extraClass || ''}">
+    return `<div class="league-row ${rankClass} ${extraClass || ''}" onclick="goToProfileById('${userId}')">
       <div class="league-rank">${rank}</div>
       <div class="league-avatar">${avatar}</div>
       <div class="league-name">${username}</div>
@@ -3076,7 +3078,6 @@
     const data = homeLeagueCache[`${homeLeaguePeriod}:${key}`] || { top: [], myRank: null, myScore: null };
     const meta = drillMeta[key];
     document.getElementById('home-league-drill-name').textContent = meta.label;
-    document.getElementById('home-league-play-text').textContent = `Play ${meta.label} →`;
 
     const user = MockoAuth.getUser();
     const myUsername = (currentUserProfile && currentUserProfile.username) || 'You';
@@ -3091,15 +3092,16 @@
         avatarUrl: r.profile && r.profile.avatar_url,
         score: r.score,
         extraClass: isMe ? 'me' : '',
+        userId: r.user_id,
       });
     }).join('');
 
     const inTop = user && data.top.some(r => r.user_id === user.id);
     if (!inTop && user) {
       if (data.myRank != null) {
-        rowsHtml += homeLeagueRowHtml({ rank: data.myRank, username: `${myUsername} (you)`, avatarUrl: myAvatar, score: data.myScore, extraClass: 'me you-gap' });
+        rowsHtml += homeLeagueRowHtml({ rank: data.myRank, username: `${myUsername} (you)`, avatarUrl: myAvatar, score: data.myScore, extraClass: 'me you-gap', userId: user.id });
       } else {
-        rowsHtml += homeLeagueRowHtml({ rank: data.top.length + 1, username: `${myUsername} (you)`, avatarUrl: myAvatar, score: '—', extraClass: 'me unplayed you-gap' });
+        rowsHtml += homeLeagueRowHtml({ rank: data.top.length + 1, username: `${myUsername} (you)`, avatarUrl: myAvatar, score: '—', extraClass: 'me unplayed you-gap', userId: user.id });
       }
     }
 
@@ -3133,6 +3135,13 @@
     const key = homeDrillKeys[homeDrillIdx];
     switchTab('drills');
     startDrill(key);
+  }
+
+  function viewHomeLeagueLeaderboard() {
+    closeAccountMenu();
+    leaderboardReturnScreen = 'home';
+    syncUrl('/leaderboard');
+    renderLeaderboardScreen(homeDrillKeys[homeDrillIdx]);
   }
 
   function resumeFromContinueCard() {
