@@ -2754,32 +2754,40 @@
   // that call fires mid-flight must not be mistaken for an OAuth redirect
   // coming back, or it'd yank the user out of the wizard they're still filling in.
   let inAppAuthFlowActive = false;
-  // True once we've shown the post-OAuth onboarding wizard for this session,
-  // so a second auth-change event (e.g. a tab regaining focus) can't reopen it.
-  let oauthOnboardingHandled = false;
+  // Which signed-in user id we've already run the onboarding check for, so a
+  // second auth-change event for the SAME user (e.g. a tab regaining focus,
+  // or a token refresh) can't reopen the wizard. Keyed by user id rather than
+  // a plain boolean so that a sign-out followed by a different user signing
+  // in within the same tab session (no page reload in between) still gets
+  // checked -- a plain "handled once ever" flag would wrongly skip them.
+  let oauthOnboardingCheckedForUserId = null;
   window.addEventListener('mocko-auth-change', async (e) => {
     const user = e.detail;
     renderAccountArea(user);
     renderHomeAuthState(user);
 
+    if (!user) {
+      oauthOnboardingCheckedForUserId = null;
+      currentProfile = null;
+    }
+
     // A Google/LinkedIn sign-in redirects the whole page away and back, so
     // (unlike the in-page email wizard) there was never a chance to collect
-    // name/username/etc. first. Catch that here -- once, per session -- and
-    // send them through the same wizard steps before landing anywhere else.
-    if (user && !inAppAuthFlowActive && !oauthOnboardingHandled) {
+    // name/username/etc. first. Catch that here -- once per signed-in user --
+    // and send them through the same wizard steps before landing anywhere else.
+    if (user && !inAppAuthFlowActive && oauthOnboardingCheckedForUserId !== user.id) {
       let profile = null;
       try {
-        profile = currentProfile || await MockoProfile.getProfile();
+        profile = await MockoProfile.getProfile();
         currentProfile = profile;
       } catch (err) { console.error('Could not load profile for onboarding check:', err); }
+      oauthOnboardingCheckedForUserId = user.id;
       if (profile && profile.onboarding_completed === false) {
-        oauthOnboardingHandled = true;
         pendingAuthAction = null;
         startOAuthOnboarding(user, profile);
         if (!didInitialRoute) didInitialRoute = true;
         return;
       }
-      oauthOnboardingHandled = true;
     }
 
     if (user && pendingAuthAction) {
