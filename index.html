@@ -4280,11 +4280,13 @@
   function eduIconHtml(domain, sizePx) {
     if (!domain) return PROFILE_ICONS.grad;
     // Google's favicon cache has a great 128px+ icon for some schools and only a
-    // blurry 16px one for others (NYU, GWU, ...); DuckDuckGo's icon proxy covers
-    // the gaps the other way around. Try Google first, and upgrade once to
-    // DuckDuckGo's version if what came back is too small to look sharp.
-    const ddgUrl = `https://icons.duckduckgo.com/ip3/${encodeURIComponent(domain)}.ico`;
-    return `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128" alt="" onload="if (this.naturalWidth < 64 && !this.dataset.fallbackTried) { this.dataset.fallbackTried = '1'; this.src = '${ddgUrl}'; }" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">${PROFILE_ICONS.grad}</span>`;
+    // blurry 16px one for others (NYU, GWU, ...). DuckDuckGo's icon proxy was tried
+    // as a fallback for those, but it silently returns the same generic placeholder
+    // image (not a real logo, just badged as "found") for any domain it doesn't
+    // recognize -- worse than a small-but-real icon. So instead: if Google's icon
+    // comes back too small to look sharp, show our own clean fallback glyph rather
+    // than a blurry or fake one.
+    return `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128" alt="" onload="if (this.naturalWidth < 64) { this.style.display='none'; this.nextElementSibling.style.display='flex'; }" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">${PROFILE_ICONS.grad}</span>`;
   }
 
   function renderEducationView(entries) {
