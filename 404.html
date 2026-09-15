@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mocko</title>
+<script>
+  // GitHub Pages has no server-side routing, so a direct hit or refresh on a
+  // path like /drills lands here. Stash the intended URL and bounce to the
+  // real app, which restores it (see the matching script in index.html).
+  sessionStorage.setItem('mocko-redirect-path', location.pathname + location.search + location.hash);
+  location.replace('/');
+</script>
+</head>
+<body></body>
+</html>
