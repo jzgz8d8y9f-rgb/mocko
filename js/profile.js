@@ -16,6 +16,7 @@ async function updateProfile({
   username, bio, social_links, industry, phone_number, gender, full_name, location, education,
   is_public, show_industry, show_education, show_location, leaderboard_visible,
   notify_weekly_summary, notify_streak_reminders, notify_leaderboard_activity, notify_product_updates,
+  onboarding_completed,
 }) {
   const user = window.MockoAuth.getUser();
   if (!user) throw new Error('Not signed in');
@@ -23,6 +24,7 @@ async function updateProfile({
     username, bio, social_links, industry, phone_number, gender, full_name, location, education,
     is_public, show_industry, show_education, show_location, leaderboard_visible,
     notify_weekly_summary, notify_streak_reminders, notify_leaderboard_activity, notify_product_updates,
+    onboarding_completed,
   };
   Object.keys(fields).forEach((key) => { if (fields[key] === undefined) delete fields[key]; });
   const { data, error } = await supabase

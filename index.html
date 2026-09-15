@@ -2749,10 +2749,39 @@
 
   // --- Auth ---
   let didInitialRoute = false;
-  window.addEventListener('mocko-auth-change', (e) => {
+  // True while the in-page email signup/signin wizard is actively running its
+  // own supabase.auth call + follow-up updateProfile -- the auth-change event
+  // that call fires mid-flight must not be mistaken for an OAuth redirect
+  // coming back, or it'd yank the user out of the wizard they're still filling in.
+  let inAppAuthFlowActive = false;
+  // True once we've shown the post-OAuth onboarding wizard for this session,
+  // so a second auth-change event (e.g. a tab regaining focus) can't reopen it.
+  let oauthOnboardingHandled = false;
+  window.addEventListener('mocko-auth-change', async (e) => {
     const user = e.detail;
     renderAccountArea(user);
     renderHomeAuthState(user);
+
+    // A Google/LinkedIn sign-in redirects the whole page away and back, so
+    // (unlike the in-page email wizard) there was never a chance to collect
+    // name/username/etc. first. Catch that here -- once, per session -- and
+    // send them through the same wizard steps before landing anywhere else.
+    if (user && !inAppAuthFlowActive && !oauthOnboardingHandled) {
+      let profile = null;
+      try {
+        profile = currentProfile || await MockoProfile.getProfile();
+        currentProfile = profile;
+      } catch (err) { console.error('Could not load profile for onboarding check:', err); }
+      if (profile && profile.onboarding_completed === false) {
+        oauthOnboardingHandled = true;
+        pendingAuthAction = null;
+        startOAuthOnboarding(user, profile);
+        if (!didInitialRoute) didInitialRoute = true;
+        return;
+      }
+      oauthOnboardingHandled = true;
+    }
+
     if (user && pendingAuthAction) {
       const action = pendingAuthAction;
       pendingAuthAction = null;
@@ -3515,8 +3544,14 @@
 
   const AUTH_TOTAL_STEPS = 5;
   let authWizardStep = 1;
+  // True while the post-OAuth onboarding wizard (steps 2-5, no email/password
+  // step) is showing -- reuses the same signup-wizard steps and validation,
+  // just entered differently and submitted with a profile update instead of
+  // a fresh supabase.auth.signUp() call.
+  let oauthOnboardingMode = false;
 
   function setAuthMode(mode) {
+    oauthOnboardingMode = false;
     const isSignup = mode === 'signup';
     document.getElementById('auth-title').textContent = isSignup ? 'Create your account' : 'Sign in';
     document.getElementById('auth-sub').textContent = isSignup
@@ -3569,16 +3604,21 @@
       skipBtn.style.display = 'none';
       return;
     }
-    document.getElementById('auth-wizard-count').textContent = `Step ${step} of ${AUTH_TOTAL_STEPS}`;
-    document.getElementById('auth-wizard-dots').innerHTML = Array.from({ length: AUTH_TOTAL_STEPS }, (_, i) => {
+    // OAuth onboarding skips the email/password step entirely and starts at
+    // step 2, so its progress bar counts 4 steps (2-5) starting from 1, not 5.
+    const firstStep = oauthOnboardingMode ? 2 : 1;
+    const totalSteps = oauthOnboardingMode ? AUTH_TOTAL_STEPS - 1 : AUTH_TOTAL_STEPS;
+    const displayStep = step - firstStep + 1;
+    document.getElementById('auth-wizard-count').textContent = `Step ${displayStep} of ${totalSteps}`;
+    document.getElementById('auth-wizard-dots').innerHTML = Array.from({ length: totalSteps }, (_, i) => {
       const n = i + 1;
-      return `<span class="${n < step ? 'done' : n === step ? 'current' : ''}"></span>`;
+      return `<span class="${n < displayStep ? 'done' : n === displayStep ? 'current' : ''}"></span>`;
     }).join('');
-    backBtn.style.display = step > 1 ? '' : 'none';
+    backBtn.style.display = step > firstStep ? '' : 'none';
     backBtn.style.flex = '1';
-    submitBtn.style.width = step > 1 ? '' : '100%';
-    submitBtn.style.flex = step > 1 ? '1' : '';
-    submitBtn.textContent = step === AUTH_TOTAL_STEPS ? 'Create Account' : 'Continue';
+    submitBtn.style.width = step > firstStep ? '' : '100%';
+    submitBtn.style.flex = step > firstStep ? '1' : '';
+    submitBtn.textContent = step === AUTH_TOTAL_STEPS ? (oauthOnboardingMode ? 'Finish' : 'Create Account') : 'Continue';
     skipBtn.style.display = step >= 3 ? '' : 'none';
     skipBtn.textContent = step === AUTH_TOTAL_STEPS ? 'Skip for now' : 'Skip this step';
   }
@@ -3608,16 +3648,23 @@
       if (usernameError) { errorEl.textContent = usernameError; return; }
       if (!authSelectedGender) { errorEl.textContent = 'Please select a gender.'; return; }
     }
-    if (authWizardStep === AUTH_TOTAL_STEPS) { submitAuthForm(); return; }
+    if (authWizardStep === AUTH_TOTAL_STEPS) {
+      if (oauthOnboardingMode) finishOAuthOnboarding(); else submitAuthForm();
+      return;
+    }
     showAuthStep(authWizardStep + 1, true);
   }
 
   function authWizardBack() {
-    if (authWizardStep > 1) showAuthStep(authWizardStep - 1, true);
+    const floorStep = oauthOnboardingMode ? 2 : 1;
+    if (authWizardStep > floorStep) showAuthStep(authWizardStep - 1, true);
   }
 
   function authWizardSkip() {
-    if (authWizardStep === AUTH_TOTAL_STEPS) { submitAuthForm(); return; }
+    if (authWizardStep === AUTH_TOTAL_STEPS) {
+      if (oauthOnboardingMode) finishOAuthOnboarding(); else submitAuthForm();
+      return;
+    }
     showAuthStep(authWizardStep + 1, true);
   }
 
@@ -3804,6 +3851,7 @@
     errorEl.textContent = '';
 
     if (mode === 'signin') {
+      inAppAuthFlowActive = true;
       try {
         await MockoAuth.signIn(email, password);
         failedSignInAttempts = 0;
@@ -3815,6 +3863,8 @@
         if (failedSignInAttempts >= 3) {
           document.getElementById('auth-forgot-password').style.display = 'block';
         }
+      } finally {
+        inAppAuthFlowActive = false;
       }
       return;
     }
@@ -3839,10 +3889,12 @@
     }
     if (!authSelectedGender) { errorEl.textContent = 'Please select a gender.'; return; }
 
+    inAppAuthFlowActive = true;
     try {
       await MockoAuth.signUp(email, password);
     } catch (err) {
       errorEl.textContent = err.message || 'Something went wrong.';
+      inAppAuthFlowActive = false;
       return;
     }
 
@@ -3852,7 +3904,7 @@
     const education = schoolName ? [{ school: schoolName, domain: schoolDomain, major: '', graduation_year: '', location: '' }] : [];
 
     try {
-      await MockoProfile.updateProfile({ username, phone_number: phone, gender: authSelectedGender, full_name: fullName, industry, education });
+      await MockoProfile.updateProfile({ username, phone_number: phone, gender: authSelectedGender, full_name: fullName, industry, education, onboarding_completed: true });
     } catch (err) {
       if (err.code === '23505') {
         errorEl.textContent = 'Account created, but that username is taken. You can change it in Settings.';
@@ -3870,6 +3922,89 @@
         console.error('Resume upload at signup failed:', err);
       }
     }
+    inAppAuthFlowActive = false;
+  }
+
+  // Shown after a first-time Google/LinkedIn sign-in, once, instead of
+  // dropping the new user straight onto the dashboard with only the
+  // placeholder username the handle_new_user() trigger generated. Reuses the
+  // same auth-step-2..5 markup, validation, and pickers as the email signup
+  // wizard -- just entered at step 2 (no email/password step, already signed
+  // in) and submitted with a profile update rather than auth.signUp().
+  function startOAuthOnboarding(user, profile) {
+    oauthOnboardingMode = true;
+    document.getElementById('auth-title').textContent = 'Welcome to Mocko';
+    document.getElementById('auth-sub').textContent = "Just a couple things before you dive in.";
+    document.getElementById('auth-submit-btn').dataset.mode = 'signup';
+    document.getElementById('auth-switch').innerHTML = '';
+    document.getElementById('auth-error').textContent = '';
+    document.getElementById('auth-forgot-password').style.display = 'none';
+
+    const meta = user.user_metadata || {};
+    document.getElementById('auth-name').value = meta.full_name || meta.name || '';
+    document.getElementById('auth-username').value = (profile && profile.username) || '';
+    document.getElementById('auth-phone').value = '';
+    document.getElementById('auth-industry-search').value = '';
+    document.getElementById('auth-industry').value = '';
+    document.getElementById('auth-school-search').value = '';
+    document.getElementById('auth-school-domain').value = '';
+    pendingSignupResumeFile = null;
+    document.getElementById('auth-resume-filename').textContent = 'Upload PDF';
+    authSelectedGender = null;
+    document.querySelectorAll('#auth-gender-row .gender-option').forEach(el => el.classList.remove('selected'));
+
+    goTo('auth');
+    showAuthStep(2, true);
+  }
+
+  async function finishOAuthOnboarding() {
+    const errorEl = document.getElementById('auth-error');
+    errorEl.textContent = '';
+    const fullName = document.getElementById('auth-name').value.trim();
+    const username = document.getElementById('auth-username').value.trim();
+    const phone = document.getElementById('auth-phone').value.trim();
+
+    if (!fullName) { errorEl.textContent = 'Please enter your name.'; return; }
+    const usernameError = validateUsername(username);
+    if (usernameError) { errorEl.textContent = usernameError; return; }
+    const phoneError = validatePhone(phone);
+    if (phoneError) { errorEl.textContent = phoneError; return; }
+    if (!authSelectedGender) { errorEl.textContent = 'Please select a gender.'; return; }
+
+    const industry = document.getElementById('auth-industry').value || null;
+    const schoolName = document.getElementById('auth-school-search').value.trim();
+    const schoolDomain = document.getElementById('auth-school-domain').value || null;
+    const education = schoolName ? [{ school: schoolName, domain: schoolDomain, major: '', graduation_year: '', location: '' }] : [];
+
+    inAppAuthFlowActive = true;
+    try {
+      currentProfile = await MockoProfile.updateProfile({
+        username, phone_number: phone, gender: authSelectedGender, full_name: fullName,
+        industry, education, onboarding_completed: true,
+      });
+    } catch (err) {
+      if (err.code === '23505') {
+        errorEl.textContent = 'That username is taken -- try another.';
+      } else if (err.code === '23514') {
+        errorEl.textContent = "That username isn't allowed -- try another.";
+      } else {
+        errorEl.textContent = err.message || 'Something went wrong.';
+      }
+      inAppAuthFlowActive = false;
+      return;
+    }
+
+    if (pendingSignupResumeFile) {
+      try {
+        await MockoResume.uploadResume(pendingSignupResumeFile, pendingSignupResumeFile.name);
+      } catch (err) {
+        console.error('Resume upload at onboarding failed:', err);
+      }
+    }
+    inAppAuthFlowActive = false;
+    oauthOnboardingMode = false;
+    goToHome();
+    syncUrl('/');
   }
 
   async function sendPasswordReset() {
