@@ -17,20 +17,20 @@
   })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mocko: Finance Interview Practice, Mock Interviews & Drills</title>
-<meta name="description" content="Practice real finance interview questions, run mock interviews and on-camera reps, and drill the skills recruiters test. Free to start, no card required.">
+<title>Mocko: Interview Practice, Mock Interviews & Drills</title>
+<meta name="description" content="Practice real interview questions for any industry, run mock interviews and on-camera reps, and drill the skills recruiters test. Free to start, no card required.">
 <link rel="canonical" href="https://mocko.net/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mocko">
-<meta property="og:title" content="Mocko: Finance Interview Practice, Mock Interviews & Drills">
-<meta property="og:description" content="Practice real finance interview questions, run mock interviews and on-camera reps, and drill the skills recruiters test. Free to start, no card required.">
+<meta property="og:title" content="Mocko: Interview Practice, Mock Interviews & Drills">
+<meta property="og:description" content="Practice real interview questions for any industry, run mock interviews and on-camera reps, and drill the skills recruiters test. Free to start, no card required.">
 <meta property="og:url" content="https://mocko.net/">
 <meta property="og:image" content="https://mocko.net/img/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Mocko: Finance Interview Practice, Mock Interviews & Drills">
-<meta name="twitter:description" content="Practice real finance interview questions, run mock interviews and on-camera reps, and drill the skills recruiters test.">
+<meta name="twitter:title" content="Mocko: Interview Practice, Mock Interviews & Drills">
+<meta name="twitter:description" content="Practice real interview questions for any industry, run mock interviews and on-camera reps, and drill the skills recruiters test.">
 <meta name="twitter:image" content="https://mocko.net/img/og-image.png">
 <script type="application/ld+json">
 {
@@ -38,7 +38,7 @@
   "@type": "WebApplication",
   "name": "Mocko",
   "url": "https://mocko.net/",
-  "description": "Practice real finance interview questions, run mock interviews and on-camera reps, and drill the skills recruiters test.",
+  "description": "Practice real interview questions for any industry, run mock interviews and on-camera reps, and drill the skills recruiters test.",
   "applicationCategory": "EducationalApplication",
   "operatingSystem": "Any",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
@@ -949,6 +949,17 @@
   .pw-strength-seg { flex: 1; border-radius: 2px; background: var(--line); transition: background-color 0.15s; }
   .pw-strength-label { font-size: 12.5px; color: var(--text-muted); }
   .pw-strength-label b { font-weight: 700; }
+  .pw-strength-reqs { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+  .pw-strength-reqs li { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+  .pw-strength-reqs li svg { width: 12px; height: 12px; flex-shrink: 0; color: var(--line); }
+  .pw-strength-reqs li.met { color: var(--good); }
+  .pw-strength-reqs li.met svg { color: var(--good); }
+
+  .pw-input-wrap { position: relative; }
+  .pw-input-wrap input { padding-right: 42px; }
+  .pw-toggle-btn { position: absolute; right: 2px; top: 0; bottom: 0; width: 40px; background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .pw-toggle-btn:hover { color: var(--text); }
+  .pw-toggle-btn svg { width: 18px; height: 18px; }
 </style>
 </head>
 <body>
@@ -1316,7 +1327,13 @@
       </div>
       <div class="auth-field">
         <label>Password</label>
-        <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••" oninput="onAuthPasswordInput()">
+        <div class="pw-input-wrap">
+          <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••" oninput="onAuthPasswordInput()">
+          <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('auth-password', this)" aria-label="Show password">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
         <div class="pw-strength" id="pw-strength">
           <div class="pw-strength-track">
             <div class="pw-strength-seg" id="pw-seg-0"></div>
@@ -1324,11 +1341,23 @@
             <div class="pw-strength-seg" id="pw-seg-2"></div>
           </div>
           <div class="pw-strength-label" id="pw-strength-label"></div>
+          <ul class="pw-strength-reqs" id="pw-strength-reqs">
+            <li id="pw-req-length"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>9+ characters</li>
+            <li id="pw-req-letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A letter</li>
+            <li id="pw-req-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A number</li>
+            <li id="pw-req-special"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A special character</li>
+          </ul>
         </div>
       </div>
       <div class="auth-field" id="auth-confirm-field" style="display:none;">
         <label>Confirm Password</label>
-        <input type="password" id="auth-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onAuthConfirmInput()">
+        <div class="pw-input-wrap">
+          <input type="password" id="auth-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onAuthConfirmInput()">
+          <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('auth-password-confirm', this)" aria-label="Show password">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
       </div>
       <div class="auth-field" id="auth-gender-field" style="display:none;">
         <label>Gender</label>
@@ -1377,7 +1406,13 @@
     <div class="auth-panel">
       <div class="auth-field">
         <label>New Password</label>
-        <input type="password" id="reset-password" autocomplete="new-password" placeholder="••••••••" oninput="onResetPasswordInput()">
+        <div class="pw-input-wrap">
+          <input type="password" id="reset-password" autocomplete="new-password" placeholder="••••••••" oninput="onResetPasswordInput()">
+          <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('reset-password', this)" aria-label="Show password">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
         <div class="pw-strength" id="reset-pw-strength">
           <div class="pw-strength-track">
             <div class="pw-strength-seg" id="reset-pw-seg-0"></div>
@@ -1385,11 +1420,23 @@
             <div class="pw-strength-seg" id="reset-pw-seg-2"></div>
           </div>
           <div class="pw-strength-label" id="reset-pw-strength-label"></div>
+          <ul class="pw-strength-reqs" id="reset-pw-strength-reqs">
+            <li id="reset-pw-req-length"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>9+ characters</li>
+            <li id="reset-pw-req-letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A letter</li>
+            <li id="reset-pw-req-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A number</li>
+            <li id="reset-pw-req-special"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A special character</li>
+          </ul>
         </div>
       </div>
       <div class="auth-field">
         <label>Confirm New Password</label>
-        <input type="password" id="reset-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onResetConfirmInput()">
+        <div class="pw-input-wrap">
+          <input type="password" id="reset-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onResetConfirmInput()">
+          <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('reset-password-confirm', this)" aria-label="Show password">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
       </div>
       <div class="auth-error" id="reset-password-error"></div>
       <div class="btn-row">
@@ -1486,7 +1533,7 @@
     <!-- RESUMES -->
     <div class="auth-panel" id="profile-resumes-section" style="max-width:900px; margin-top:16px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-        <div style="font-size:15px; font-weight:700;">Resumes</div>
+        <div class="profile-section-title">Resumes</div>
         <label class="btn btn-secondary" style="cursor:pointer; font-size:14px; padding:8px 14px;">
           Upload
           <input type="file" accept=".pdf" id="resume-upload-input" style="display:none;" onchange="handleResumeUpload(event)">
@@ -1564,7 +1611,13 @@
         <div class="select-group-sub">Change your password.</div>
         <div class="auth-field">
           <label>New Password</label>
-          <input type="password" id="settings-new-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsPasswordInput()">
+          <div class="pw-input-wrap">
+            <input type="password" id="settings-new-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsPasswordInput()">
+            <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('settings-new-password', this)" aria-label="Show password">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
           <div class="pw-strength" id="settings-pw-strength">
             <div class="pw-strength-track">
               <div class="pw-strength-seg" id="settings-pw-seg-0"></div>
@@ -1572,11 +1625,23 @@
               <div class="pw-strength-seg" id="settings-pw-seg-2"></div>
             </div>
             <div class="pw-strength-label" id="settings-pw-strength-label"></div>
+            <ul class="pw-strength-reqs" id="settings-pw-strength-reqs">
+              <li id="settings-pw-req-length"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>9+ characters</li>
+              <li id="settings-pw-req-letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A letter</li>
+              <li id="settings-pw-req-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A number</li>
+              <li id="settings-pw-req-special"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A special character</li>
+            </ul>
           </div>
         </div>
         <div class="auth-field">
           <label>Confirm New Password</label>
-          <input type="password" id="settings-confirm-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsConfirmInput()">
+          <div class="pw-input-wrap">
+            <input type="password" id="settings-confirm-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsConfirmInput()">
+            <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('settings-confirm-password', this)" aria-label="Show password">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
         </div>
         <div class="auth-error" id="settings-password-error"></div>
         <div class="btn-row" style="justify-content:flex-end;">
@@ -2874,20 +2939,7 @@
   }
 
   function onSettingsPasswordInput() {
-    const meter = document.getElementById('settings-pw-strength');
-    const pw = document.getElementById('settings-new-password').value;
-    if (!pw) {
-      meter.classList.remove('active');
-    } else {
-      meter.classList.add('active');
-      const score = scorePasswordStrength(pw);
-      const tier = PW_STRENGTH_TIERS[score] || { label: '', color: 'var(--line)' };
-      for (let i = 0; i < 3; i++) {
-        document.getElementById('settings-pw-seg-' + i).style.background = i < score ? tier.color : 'var(--line)';
-      }
-      document.getElementById('settings-pw-strength-label').innerHTML = pw.length
-        ? `Password strength: <b style="color:${tier.color}">${tier.label}</b>` : '';
-    }
+    updatePasswordStrengthUI('settings-', document.getElementById('settings-new-password').value);
     onSettingsConfirmInput();
   }
 
@@ -2983,10 +3035,31 @@
     document.getElementById('auth-resume-filename').textContent = file ? file.name : 'Upload PDF';
   }
 
+  function passwordRequirements(pw) {
+    return {
+      length: pw.length > 8,
+      letter: /[a-z]/i.test(pw),
+      number: /[0-9]/.test(pw),
+      special: /[^A-Za-z0-9]/.test(pw),
+    };
+  }
+
   function validatePassword(pw) {
-    if (pw.length < 8) return 'Password must be at least 8 characters.';
-    if (!/[^A-Za-z0-9]/.test(pw)) return 'Password must include at least one special character.';
+    const r = passwordRequirements(pw);
+    if (!r.length) return 'Password must be more than 8 characters.';
+    if (!r.letter) return 'Password must include at least one letter.';
+    if (!r.number) return 'Password must include at least one number.';
+    if (!r.special) return 'Password must include at least one special character.';
     return null;
+  }
+
+  function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.querySelector('.eye-open').style.display = showing ? '' : 'none';
+    btn.querySelector('.eye-closed').style.display = showing ? 'none' : '';
+    btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
   }
 
   function validatePhone(raw) {
@@ -3000,15 +3073,10 @@
 
   function scorePasswordStrength(pw) {
     if (!pw) return 0;
-    let classes = 0;
-    if (/[a-z]/.test(pw)) classes++;
-    if (/[A-Z]/.test(pw)) classes++;
-    if (/[0-9]/.test(pw)) classes++;
-    if (/[^A-Za-z0-9]/.test(pw)) classes++;
-    if (pw.length >= 10 && classes >= 3) return 3;
-    if (pw.length >= 8 && classes >= 2) return 3;
-    if (pw.length >= 6 && classes >= 2) return 2;
-    if (pw.length >= 6) return 2;
+    const r = passwordRequirements(pw);
+    if (r.length && r.letter && r.number && r.special) return 3;
+    const metCount = [r.length, r.letter, r.number, r.special].filter(Boolean).length;
+    if (metCount >= 2) return 2;
     return 1;
   }
 
@@ -3018,22 +3086,33 @@
     3: { label: 'Strong', color: 'var(--good)' },
   };
 
+  // Shared by the signup, settings, and reset-password screens -- each has
+  // its own copy of the strength bar + requirement checklist, id-prefixed
+  // (e.g. "settings-pw-strength", "settings-pw-req-length").
+  function updatePasswordStrengthUI(prefix, pw) {
+    const meter = document.getElementById(prefix + 'pw-strength');
+    if (!pw) {
+      meter.classList.remove('active');
+      return;
+    }
+    meter.classList.add('active');
+    const r = passwordRequirements(pw);
+    const score = scorePasswordStrength(pw);
+    const tier = PW_STRENGTH_TIERS[score] || { label: '', color: 'var(--line)' };
+    for (let i = 0; i < 3; i++) {
+      document.getElementById(prefix + 'pw-seg-' + i).style.background = i < score ? tier.color : 'var(--line)';
+    }
+    document.getElementById(prefix + 'pw-strength-label').innerHTML = `Password strength: <b style="color:${tier.color}">${tier.label}</b>`;
+    document.getElementById(prefix + 'pw-req-length').classList.toggle('met', r.length);
+    document.getElementById(prefix + 'pw-req-letter').classList.toggle('met', r.letter);
+    document.getElementById(prefix + 'pw-req-number').classList.toggle('met', r.number);
+    document.getElementById(prefix + 'pw-req-special').classList.toggle('met', r.special);
+  }
+
   function onAuthPasswordInput() {
     const isSignup = (document.getElementById('auth-submit-btn').dataset.mode || 'signin') === 'signup';
-    const meter = document.getElementById('pw-strength');
     const pw = document.getElementById('auth-password').value;
-    if (!isSignup || !pw) {
-      meter.classList.remove('active');
-    } else {
-      meter.classList.add('active');
-      const score = scorePasswordStrength(pw);
-      const tier = PW_STRENGTH_TIERS[score] || { label: '', color: 'var(--line)' };
-      for (let i = 0; i < 3; i++) {
-        document.getElementById('pw-seg-' + i).style.background = i < score ? tier.color : 'var(--line)';
-      }
-      document.getElementById('pw-strength-label').innerHTML = pw.length
-        ? `Password strength: <b style="color:${tier.color}">${tier.label}</b>` : '';
-    }
+    updatePasswordStrengthUI('', isSignup ? pw : '');
     onAuthConfirmInput();
   }
 
@@ -3158,20 +3237,7 @@
   }
 
   function onResetPasswordInput() {
-    const meter = document.getElementById('reset-pw-strength');
-    const pw = document.getElementById('reset-password').value;
-    if (!pw) {
-      meter.classList.remove('active');
-    } else {
-      meter.classList.add('active');
-      const score = scorePasswordStrength(pw);
-      const tier = PW_STRENGTH_TIERS[score] || { label: '', color: 'var(--line)' };
-      for (let i = 0; i < 3; i++) {
-        document.getElementById('reset-pw-seg-' + i).style.background = i < score ? tier.color : 'var(--line)';
-      }
-      document.getElementById('reset-pw-strength-label').innerHTML = pw.length
-        ? `Password strength: <b style="color:${tier.color}">${tier.label}</b>` : '';
-    }
+    updatePasswordStrengthUI('reset-', document.getElementById('reset-password').value);
     onResetConfirmInput();
   }
 
@@ -4666,6 +4732,10 @@
     s = s.replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e')
          .replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't')
          .replace(/\$/g, 's').replace(/@/g, 'a');
+    // Drop anything left that isn't a letter (stray digits, underscores) --
+    // usernames can only contain letters/digits/underscores, so without this
+    // "b_i_t_c_h" or "fu9ck" would slip the blocklist's substring check.
+    s = s.replace(/[^a-z]/g, '');
     s = s.replace(/(.)\1+/g, '$1');
     return s;
   }
