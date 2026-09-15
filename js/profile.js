@@ -75,6 +75,13 @@ async function fetchAccountPercentile() {
   return data;
 }
 
+async function suggestSchool(name) {
+  const user = window.MockoAuth.getUser();
+  if (!user || !name) return;
+  const { error } = await supabase.from('pending_schools').insert({ name, requested_by: user.id });
+  if (error) console.error('Could not record school suggestion:', error);
+}
+
 async function getProfileById(userId) {
   const { data, error } = await supabase
     .from('profiles')
@@ -94,4 +101,4 @@ async function getProfilesByIds(userIds) {
   return data;
 }
 
-window.MockoProfile = { getProfile, updateProfile, uploadAvatar, uploadBanner, fetchAccountPercentile, getProfileById, getProfilesByIds };
+window.MockoProfile = { getProfile, updateProfile, uploadAvatar, uploadBanner, fetchAccountPercentile, suggestSchool, getProfileById, getProfilesByIds };
