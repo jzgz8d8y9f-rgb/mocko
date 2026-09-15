@@ -455,12 +455,39 @@
   .mic-btn:hover { background: #d02836; }
   .voice-timer { font-size: 13px; color: var(--text-muted); margin-top: 16px; }
 
-  .trend-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; margin-bottom: 36px; }
-  @media (max-width: 620px) { .trend-summary { grid-template-columns: 1fr; } }
-  .trend-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
-  .trend-card .tlabel { font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
-  .trend-card .tval { font-family: 'Work Sans'; font-size: 30px; font-weight: 800; color: var(--good); }
-  .trend-card .tsub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  /* Stats: interview practice is the hero, drills are a compact strip at the bottom */
+  .stats-hero-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px 30px; margin-bottom: 22px; }
+  .stats-hero-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 14px; }
+  .stats-hero-eyebrow { font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--good); font-weight: 700; margin-bottom: 6px; }
+  .stats-big-num { font-family: 'Libre Baskerville'; font-size: 46px; font-weight: 700; line-height: 1; }
+  .stats-big-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+  .stats-delta-row { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .stats-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; color: var(--good); background: rgba(34,195,182,0.12); padding: 6px 12px; border-radius: 100px; white-space: nowrap; }
+  .stats-improved-tag { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+  .chart-wrap { background: var(--bg); border-radius: 12px; padding: 16px 18px 8px; }
+
+  .mode-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px; }
+  @media (max-width: 620px) { .mode-cards { grid-template-columns: 1fr; } }
+  .mode-stat-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+  .mode-stat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .mode-stat-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .mode-stat-icon svg { width: 16px; height: 16px; }
+  .mode-stat-title { font-size: 15px; font-weight: 700; font-family: 'Libre Baskerville'; }
+  .mode-stat-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13.5px; border-top: 1px solid var(--line); }
+  .mode-stat-row:first-of-type { border-top: none; }
+  .mode-stat-row b { font-family: 'Work Sans'; font-weight: 800; }
+
+  .stats-section-head { display: flex; align-items: center; justify-content: space-between; margin: 30px 0 14px; }
+  .stats-section-head h3 { font-size: 17px; font-family: 'Libre Baskerville'; }
+
+  .drills-mini-section { margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .drills-mini-head { margin-bottom: 12px; }
+  .drills-mini-head h4 { font-size: 13.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+  .drills-mini-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+  .drill-mini-card { flex: 0 0 auto; width: 140px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; }
+  .drill-mini-name { font-size: 12.5px; font-weight: 700; margin-bottom: 6px; }
+  .drill-mini-score { font-family: 'Work Sans'; font-weight: 800; font-size: 16px; color: var(--warn); }
+  .drill-mini-sub { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
 
   .theme-section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
   .theme-section h4 { font-size: 17px; font-weight: 700; margin-bottom: 16px; }
@@ -504,11 +531,12 @@
   .crop-zoom-row { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
   .crop-zoom-row svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
   .crop-zoom-row input[type="range"] { flex: 1; accent-color: var(--good); }
-  .history-row { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
-  .history-left { display: flex; flex-direction: column; gap: 3px; }
+  .history-row { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; }
+  .history-left { display: flex; flex-direction: column; gap: 3px; flex: 1; }
   .history-title { font-size: 15px; font-weight: 600; }
   .history-meta { font-size: 12px; color: var(--text-muted); font-family: 'Work Sans'; }
   .history-score { font-family: 'Work Sans'; font-size: 22px; font-weight: 800; color: var(--good); }
+  .session-mode-tag { font-family: 'Work Sans'; font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 100px; letter-spacing: 0.03em; flex-shrink: 0; }
 
   /* Drills */
   .drill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
@@ -2270,21 +2298,38 @@
     <div class="step-label">Your Record</div>
     <div class="hero">
       <h1 class="display">History &amp; Trends</h1>
-      <p>Your past sessions and how your scores are trending.</p>
+      <p>Your interview practice, front and center. Drills further down.</p>
     </div>
 
-    <div class="trend-summary">
-      <div class="trend-card"><div class="tlabel">Sessions completed</div><div class="tval">7</div><div class="tsub">Finance track</div></div>
-      <div class="trend-card"><div class="tlabel">Average score</div><div class="tval">74</div><div class="tsub">+9 vs. first session</div></div>
-      <div class="trend-card"><div class="tlabel">Most improved</div><div class="tval">Eye Contact</div><div class="tsub">62% → 85%</div></div>
-      <div class="trend-card" id="trend-pace"><div class="tlabel">Avg. Pace</div><div class="tval">—</div><div class="tsub">words/min</div></div>
-      <div class="trend-card" id="trend-streak"><div class="tlabel">Practice Streak</div><div class="tval">—</div><div class="tsub">days</div></div>
+    <div class="stats-hero-card" id="stats-hero-card" style="display:none;">
+      <div class="stats-hero-top">
+        <div>
+          <div class="stats-hero-eyebrow">Average interview score</div>
+          <div class="stats-big-num" id="stats-avg-score">—</div>
+          <div class="stats-big-sub" id="stats-hero-sub"></div>
+        </div>
+        <div class="stats-delta-row">
+          <span class="stats-delta" id="stats-delta" style="display:none;"></span>
+          <span class="stats-improved-tag" id="stats-improved-tag" style="display:none;"></span>
+        </div>
+      </div>
+      <div class="chart-wrap" id="stats-chart-wrap" style="display:none;">
+        <svg viewBox="0 0 460 110" width="100%" height="110" preserveAspectRatio="none" id="stats-trend-svg"></svg>
+      </div>
     </div>
+    <p id="stats-empty-msg" style="color:var(--text-muted); font-size:14px;">Record your first session to see it here.</p>
 
+    <div class="mode-cards" id="stats-mode-cards"></div>
+
+    <div class="stats-section-head" id="stats-recent-head" style="display:none;">
+      <h3>Recent sessions</h3>
+    </div>
     <div class="history-list" id="history-list"></div>
 
-    <div class="step-label" style="margin-top:32px;">Drill Personal Bests</div>
-    <div class="history-list" id="drill-stats-list"></div>
+    <div class="drills-mini-section" id="drills-mini-section" style="display:none;">
+      <div class="drills-mini-head"><h4>Drill personal bests</h4></div>
+      <div class="drills-mini-strip" id="drill-stats-strip"></div>
+    </div>
   </div>
 
   <!-- DRILLS -->
@@ -4523,88 +4568,147 @@
     ['confidence_tone', 'Confidence & Tone'],
   ];
 
+  const STATS_MODE_META = {
+    record: { label: 'On-Air', color: 'warn', bg: 'rgba(233,162,59,0.15)', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>' },
+    voice: { label: 'Mock Interview', color: 'good', bg: 'rgba(34,195,182,0.15)', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>' },
+  };
+
+  // Stats leads with interview practice (hero score + trend chart, then a
+  // per-mode breakdown); drills are a compact strip at the very bottom,
+  // clearly secondary.
   async function loadHistory() {
     const listEl = document.getElementById('history-list');
-    const trendCards = document.querySelectorAll('#screen-history .trend-card');
-    listEl.innerHTML = '<p style="color:var(--text-muted);font-size:14px;">Loading...</p>';
+    const heroCard = document.getElementById('stats-hero-card');
+    const emptyMsg = document.getElementById('stats-empty-msg');
+    const recentHead = document.getElementById('stats-recent-head');
+    const modeCardsEl = document.getElementById('stats-mode-cards');
+    listEl.innerHTML = '';
+    modeCardsEl.innerHTML = '';
 
     let sessions;
     try {
       sessions = await MockoHistory.fetchSessions();
     } catch (err) {
       console.error(err);
-      listEl.innerHTML = '<p style="color:var(--text-muted);font-size:14px;">Could not load history.</p>';
+      heroCard.style.display = 'none';
+      emptyMsg.style.display = '';
+      emptyMsg.textContent = 'Could not load history.';
+      recentHead.style.display = 'none';
       return;
     }
 
     if (sessions.length === 0) {
-      trendCards[0].querySelector('.tval').textContent = '0';
-      trendCards[0].querySelector('.tsub').textContent = 'No sessions yet';
-      trendCards[1].style.display = 'none';
-      trendCards[2].style.display = 'none';
-      listEl.innerHTML = '<p style="color:var(--text-muted);font-size:14px;">Record your first session to see it here.</p>';
+      heroCard.style.display = 'none';
+      emptyMsg.style.display = '';
+      emptyMsg.textContent = 'Record your first session to see it here.';
+      recentHead.style.display = 'none';
     } else {
+      heroCard.style.display = '';
+      emptyMsg.style.display = 'none';
+      recentHead.style.display = '';
+
+      // fetchSessions() returns newest-first; the trend chart and the
+      // "since your first session" delta both need chronological order.
+      const chronological = [...sessions].reverse();
+      const first = chronological[0];
+      const latest = chronological[chronological.length - 1];
       const avgScore = Math.round(sessions.reduce((a, s) => a + s.overall_score, 0) / sessions.length);
-      const first = sessions[sessions.length - 1];
-      const latest = sessions[0];
 
-      trendCards[0].style.display = '';
-      trendCards[0].querySelector('.tval').textContent = sessions.length;
-      trendCards[0].querySelector('.tsub').textContent = 'Finance track';
+      document.getElementById('stats-avg-score').textContent = avgScore;
+      document.getElementById('stats-hero-sub').textContent =
+        `Across ${sessions.length} session${sessions.length === 1 ? '' : 's'} · last one ${timeAgoLabel(latest.created_at)}`;
 
-      trendCards[1].style.display = '';
-      trendCards[1].querySelector('.tval').textContent = avgScore;
-      const delta = avgScore - Math.round(first.overall_score);
-      trendCards[1].querySelector('.tsub').textContent = sessions.length > 1
-        ? `${delta >= 0 ? '+' : ''}${delta} vs. first session`
-        : 'First session';
-
+      const deltaEl = document.getElementById('stats-delta');
       if (sessions.length > 1) {
-        let best = null;
-        HISTORY_CATEGORIES.forEach(([key, label]) => {
-          const firstPct = Math.round((first.category_scores[key].score / first.category_scores[key].max) * 100);
-          const latestPct = Math.round((latest.category_scores[key].score / latest.category_scores[key].max) * 100);
-          const delta = latestPct - firstPct;
-          if (!best || delta > best.delta) best = { label, firstPct, latestPct, delta };
-        });
-        trendCards[2].style.display = '';
-        trendCards[2].querySelector('.tval').textContent = best.label;
-        trendCards[2].querySelector('.tsub').textContent = `${best.firstPct}% → ${best.latestPct}%`;
+        const delta = Math.round(latest.overall_score) - Math.round(first.overall_score);
+        deltaEl.style.display = '';
+        deltaEl.innerHTML = `${delta >= 0 ? '&uarr;' : '&darr;'} ${Math.abs(delta)} pts since your first session`;
       } else {
-        trendCards[2].style.display = 'none';
+        deltaEl.style.display = 'none';
       }
 
+      const improvedEl = document.getElementById('stats-improved-tag');
+      let best = null;
+      if (sessions.length > 1) {
+        try {
+          HISTORY_CATEGORIES.forEach(([key, label]) => {
+            const firstPct = Math.round((first.category_scores[key].score / first.category_scores[key].max) * 100);
+            const latestPct = Math.round((latest.category_scores[key].score / latest.category_scores[key].max) * 100);
+            const delta = latestPct - firstPct;
+            if (!best || delta > best.delta) best = { label, delta };
+          });
+        } catch (err) {
+          best = null;
+        }
+      }
+      if (best) {
+        improvedEl.style.display = '';
+        improvedEl.textContent = `Most improved: ${best.label}`;
+      } else {
+        improvedEl.style.display = 'none';
+      }
+
+      // --- Trend chart: score over time, oldest to newest ---
+      const chartWrap = document.getElementById('stats-chart-wrap');
+      if (chronological.length > 1) {
+        chartWrap.style.display = '';
+        const scores = chronological.map(s => s.overall_score);
+        const min = Math.min(...scores), max = Math.max(...scores);
+        const range = Math.max(max - min, 1);
+        const w = 460, h = 110, pad = 8;
+        const points = scores.map((score, i) => [
+          (i / (scores.length - 1)) * w,
+          h - pad - ((score - min) / range) * (h - pad * 2),
+        ]);
+        const pointsAttr = points.map(p => p.join(',')).join(' ');
+        const [lastX, lastY] = points[points.length - 1];
+        document.getElementById('stats-trend-svg').innerHTML = `
+          <polyline points="${pointsAttr}" fill="none" stroke="var(--good)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <polygon points="0,${h} ${pointsAttr} ${w},${h}" fill="var(--good)" opacity="0.08"/>
+          <circle cx="${lastX}" cy="${lastY}" r="4.5" fill="var(--good)"/>`;
+      } else {
+        chartWrap.style.display = 'none';
+      }
+
+      // --- Recent sessions ---
       listEl.innerHTML = sessions.map(s => {
         const date = new Date(s.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         const title = `${s.length} ${s.length === 'Quick' ? 'Round' : 'Session'} · ${s.format}`;
+        const meta = STATS_MODE_META[s.mode || 'record'];
         return `<div class="history-row">
+          <span class="session-mode-tag" style="background:${meta.bg}; color:var(--${meta.color});">${meta.label}</span>
           <div class="history-left">
-            <div class="history-title">${title}</div>
-            <div class="history-meta">${s.track} · ${date}</div>
+            <div class="history-title">${escapeHtml(title)}</div>
+            <div class="history-meta">${date}</div>
           </div>
           <div class="history-score">${Math.round(s.overall_score)}</div>
         </div>`;
       }).join('');
+
+      // --- Mode breakdown cards ---
+      modeCardsEl.innerHTML = ['record', 'voice'].map(modeKey => {
+        const modeSessions = sessions.filter(s => (s.mode || 'record') === modeKey);
+        if (!modeSessions.length) return '';
+        const meta = STATS_MODE_META[modeKey];
+        const mAvg = Math.round(modeSessions.reduce((a, s) => a + s.overall_score, 0) / modeSessions.length);
+        const mBest = Math.round(Math.max(...modeSessions.map(s => s.overall_score)));
+        const withWpm = modeSessions.filter(s => s.wpm != null);
+        const paceRow = withWpm.length
+          ? `<div class="mode-stat-row"><span>Avg. pace</span><b>${Math.round(withWpm.reduce((a, s) => a + s.wpm, 0) / withWpm.length)} wpm</b></div>`
+          : '';
+        return `<div class="mode-stat-card">
+          <div class="mode-stat-head"><span class="mode-stat-icon" style="background:${meta.bg}; color:var(--${meta.color});">${meta.icon}</span><span class="mode-stat-title">${meta.label}</span></div>
+          <div class="mode-stat-row"><span>Sessions</span><b>${modeSessions.length}</b></div>
+          <div class="mode-stat-row"><span>Avg. score</span><b>${mAvg}</b></div>
+          <div class="mode-stat-row"><span>Best score</span><b>${mBest}</b></div>
+          ${paceRow}
+        </div>`;
+      }).join('');
     }
 
-    // --- Pace / filler rate, from sessions.wpm / filler_count ---
-    const paceEl = document.getElementById('trend-pace');
-    const withWpm = sessions.filter(s => s.wpm != null);
-    if (withWpm.length) {
-      const avgWpm = Math.round(withWpm.reduce((a, s) => a + s.wpm, 0) / withWpm.length);
-      paceEl.style.display = '';
-      paceEl.querySelector('.tval').textContent = avgWpm;
-      const withFillers = sessions.filter(s => s.filler_count != null);
-      const avgFillers = withFillers.length
-        ? Math.round((withFillers.reduce((a, s) => a + s.filler_count, 0) / withFillers.length) * 10) / 10
-        : null;
-      paceEl.querySelector('.tsub').textContent = avgFillers != null ? `${avgFillers} filler words/session` : 'words/min';
-    } else {
-      paceEl.style.display = 'none';
-    }
-
-    // --- Drill personal bests ---
-    const drillListEl = document.getElementById('drill-stats-list');
+    // --- Drill personal bests, compact strip ---
+    const drillStripEl = document.getElementById('drill-stats-strip');
+    const drillsSection = document.getElementById('drills-mini-section');
     let drillScores = [];
     try {
       drillScores = await MockoHistory.fetchDrillStats();
@@ -4618,20 +4722,17 @@
       byDrill[r.drill_key].attempts++;
     });
     const drillKeys = Object.keys(byDrill);
-    drillListEl.innerHTML = drillKeys.length
-      ? drillKeys.map(k => `<div class="history-row">
-          <div class="history-left">
-            <div class="history-title">${(drillMeta[k] && drillMeta[k].label) || k}</div>
-            <div class="history-meta">${byDrill[k].attempts} attempt${byDrill[k].attempts === 1 ? '' : 's'}</div>
-          </div>
-          <div class="history-score">${byDrill[k].best}</div>
-        </div>`).join('')
-      : '<p style="color:var(--text-muted);font-size:14px;">No drills played yet.</p>';
-
-    // --- Practice streak, from combined session + drill_scores dates ---
-    const allDates = [...sessions.map(s => s.created_at), ...drillScores.map(s => s.created_at)]
-      .map(d => new Date(d).toISOString().slice(0, 10));
-    document.getElementById('trend-streak').querySelector('.tval').textContent = computeStreak(allDates);
+    if (drillKeys.length) {
+      drillsSection.style.display = '';
+      drillStripEl.innerHTML = drillKeys.map(k => `
+        <div class="drill-mini-card" onclick="startDrill('${k}')">
+          <div class="drill-mini-name">${escapeHtml((drillMeta[k] && drillMeta[k].label) || k)}</div>
+          <div class="drill-mini-score">${formatDrillScoreDisplay(k, byDrill[k].best)}</div>
+          <div class="drill-mini-sub">${byDrill[k].attempts} attempt${byDrill[k].attempts === 1 ? '' : 's'}</div>
+        </div>`).join('');
+    } else {
+      drillsSection.style.display = 'none';
+    }
   }
 
   function computeStreak(isoDateStrings) {
