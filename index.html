@@ -950,13 +950,30 @@
 
   .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--good); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 28px; font-family: 'Work Sans'; background-size: cover; background-position: center; flex-shrink: 0; }
 
-  .faq-item { border-bottom: 1px solid var(--line); padding: 14px 0; }
-  .faq-item:last-child { border-bottom: none; }
-  .faq-item summary { font-size: 15.5px; font-weight: 600; cursor: pointer; list-style: none; }
-  .faq-item summary::-webkit-details-marker { display: none; }
-  .faq-item summary::before { content: '+'; color: var(--good); margin-right: 10px; font-weight: 700; }
-  .faq-item[open] summary::before { content: '−'; }
-  .faq-item p { font-size: 14.5px; color: var(--text-muted); line-height: 1.6; margin-top: 10px; padding-left: 20px; }
+  .help-search { position: relative; max-width: 480px; margin: 0 auto 26px; }
+  .help-search svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--text-muted); }
+  .help-search input { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 100px; padding: 13px 16px 13px 44px; color: var(--text); font-family: 'Work Sans'; font-size: 14.5px; }
+  .help-search input:focus { outline: none; border-color: var(--good); }
+
+  .help-cats { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+  .help-cat-btn { font-family: 'Work Sans'; font-size: 13px; font-weight: 600; padding: 8px 15px; border-radius: 100px; border: 1px solid var(--line); background: var(--surface); color: var(--text-muted); cursor: pointer; }
+  .help-cat-btn:hover { color: var(--text); }
+  .help-cat-btn.active { background: var(--good-dim); border-color: var(--good); color: var(--good); }
+
+  .help-group { margin-bottom: 24px; }
+  .help-group-title { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; padding-left: 4px; }
+  .help-item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; overflow: hidden; }
+  .help-item summary { list-style: none; display: flex; align-items: center; gap: 12px; padding: 15px 18px; cursor: pointer; font-size: 14.5px; font-weight: 600; }
+  .help-item summary::-webkit-details-marker { display: none; }
+  .help-item-icon { width: 30px; height: 30px; border-radius: 8px; background: var(--surface-2); color: var(--good); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .help-item-icon svg { width: 15px; height: 15px; }
+  .help-chevron { margin-left: auto; width: 14px; height: 14px; color: var(--text-muted); transition: transform 0.15s; flex-shrink: 0; }
+  .help-item[open] .help-chevron { transform: rotate(180deg); }
+  .help-item p { padding: 0 18px 17px 60px; font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+  .help-contact { background: linear-gradient(135deg, var(--good-dim), var(--surface)); border: 1px solid var(--line); border-radius: 16px; padding: 26px 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 24px; flex-wrap: wrap; }
+  .help-contact h4 { font-size: 16px; margin-bottom: 4px; font-family: 'Libre Baskerville'; }
+  .help-contact p { font-size: 13px; color: var(--text-muted); margin: 0; }
 
   .auth-layout { display: flex; gap: 48px; align-items: flex-start; flex-wrap: wrap; }
   .auth-info { flex: 1 1 300px; display: flex; flex-direction: column; gap: 22px; padding-top: 6px; }
@@ -1842,33 +1859,70 @@
     <button class="back-btn" onclick="goToHome()">← Back</button>
     <div class="hero">
       <h1 class="display">Help</h1>
-      <p>Common questions about how Mocko works.</p>
+      <p>Search, or browse by topic.</p>
     </div>
-    <div class="theme-section">
-      <details class="faq-item">
-        <summary>What is Mocko?</summary>
-        <p>A practice tool for job interviews. Record mock answers and get an AI-scored breakdown, or run quick skill drills like arithmetic, sequences, and risk-based decision making.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Is my recording stored?</summary>
-        <p>Yes. Recordings are stored privately under your account so they can be transcribed and graded, and only you can access them.</p>
-      </details>
-      <details class="faq-item">
-        <summary>How is my answer graded?</summary>
-        <p>Your recording is transcribed, then scored against a rubric (content & structure, clarity, pace, and tone) using Claude, along with pace and filler-word stats pulled directly from the transcript.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Why do I need to log in?</summary>
-        <p>So your recordings and scores are saved to your account and you can track progress over time, instead of losing everything when you close the tab.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Can I delete my data?</summary>
-        <p>There's no self-serve delete yet, so reach out and we'll take care of it. Self-serve account deletion is on the roadmap.</p>
-      </details>
-      <details class="faq-item">
-        <summary>What's coming next?</summary>
-        <p>Full multi-question interviews, a live voice mock interview mode, more drills, and eventually friends and shared progress.</p>
-      </details>
+
+    <div class="help-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="help-search-input" placeholder="Search help articles..." oninput="filterHelp(this.value)">
+    </div>
+
+    <div class="help-cats" id="help-cats">
+      <button class="help-cat-btn active" data-cat="all" onclick="filterHelpCategory(this)">All</button>
+      <button class="help-cat-btn" data-cat="basics" onclick="filterHelpCategory(this)">Getting Started</button>
+      <button class="help-cat-btn" data-cat="interviews" onclick="filterHelpCategory(this)">Interviews &amp; Scoring</button>
+      <button class="help-cat-btn" data-cat="drills" onclick="filterHelpCategory(this)">Drills</button>
+      <button class="help-cat-btn" data-cat="account" onclick="filterHelpCategory(this)">Account &amp; Privacy</button>
+    </div>
+
+    <div id="help-groups">
+      <div class="help-group" data-cat="basics">
+        <div class="help-group-title">Getting Started</div>
+        <details class="help-item" open>
+          <summary><span class="help-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>What is Mocko?<svg class="help-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>A practice tool for job interviews, in any field. Record mock answers and get an AI-scored breakdown, or run quick skill drills like arithmetic, sequences, and risk-based decision making.</p>
+        </details>
+        <details class="help-item">
+          <summary><span class="help-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span>What's coming next?<svg class="help-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>Full multi-question interviews, more drills, and eventually friends and shared progress.</p>
+        </details>
+      </div>
+
+      <div class="help-group" data-cat="interviews">
+        <div class="help-group-title">Interviews &amp; Scoring</div>
+        <details class="help-item">
+          <summary><span class="help-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>How is my answer graded?<svg class="help-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>Your recording is transcribed, then scored against a rubric (content &amp; structure, clarity, pace, and tone) using Claude, along with pace and filler-word stats pulled directly from the transcript.</p>
+        </details>
+        <details class="help-item">
+          <summary><span class="help-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span>Is my recording stored?<svg class="help-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>Yes. Recordings are stored privately under your account so they can be transcribed and graded, and only you can access them.</p>
+        </details>
+      </div>
+
+      <div class="help-group" data-cat="drills">
+        <div class="help-group-title">Drills</div>
+        <details class="help-item">
+          <summary><span class="help-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span>What do the drills actually test?<svg class="help-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>Timed arithmetic, risk-based decisions, and pattern sequences: the fast reflexes that show up cold in gamified assessments like Pymetrics, not the kind of thing you'd rehearse for a normal interview.</p>
+        </details>
+      </div>
+
+      <div class="help-group" data-cat="account">
+        <div class="help-group-title">Account &amp; Privacy</div>
+        <details class="help-item">
+          <summary><span class="help-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>Why do I need to log in?<svg class="help-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>So your recordings and scores are saved to your account and you can track progress over time, instead of losing everything when you close the tab.</p>
+        </details>
+        <details class="help-item">
+          <summary><span class="help-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0110 0v3"/></svg></span>Can I delete my data?<svg class="help-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>Yes. Go to Settings → Delete Account. It permanently removes your profile, sessions, drill scores, resumes, and recordings right away, no waiting on a request.</p>
+        </details>
+      </div>
+    </div>
+
+    <div class="help-contact">
+      <div><h4>Still stuck?</h4><p>These are the common questions, not the only ones.</p></div>
     </div>
   </div>
 
@@ -3226,6 +3280,35 @@
     closeAccountMenu();
     goTo('help');
     syncUrl('/help');
+    document.getElementById('help-search-input').value = '';
+    filterHelpCategory(document.querySelector('#help-cats .help-cat-btn'));
+  }
+
+  // Category and search filter the same set of items together (a search
+  // term should still respect whichever category tab is active), so both
+  // funnel through one function rather than fighting over `display`.
+  function applyHelpFilters() {
+    const activeCat = document.querySelector('#help-cats .help-cat-btn.active')?.dataset.cat || 'all';
+    const q = document.getElementById('help-search-input').value.trim().toLowerCase();
+    document.querySelectorAll('.help-group').forEach(group => {
+      const catMatch = activeCat === 'all' || group.dataset.cat === activeCat;
+      let anyItemVisible = false;
+      group.querySelectorAll('.help-item').forEach(item => {
+        const visible = catMatch && (!q || item.textContent.toLowerCase().includes(q));
+        item.style.display = visible ? '' : 'none';
+        if (visible) anyItemVisible = true;
+      });
+      group.style.display = anyItemVisible ? '' : 'none';
+    });
+  }
+
+  function filterHelp() {
+    applyHelpFilters();
+  }
+
+  function filterHelpCategory(btn) {
+    document.querySelectorAll('#help-cats .help-cat-btn').forEach(b => b.classList.toggle('active', b === btn));
+    applyHelpFilters();
   }
 
   let failedSignInAttempts = 0;
