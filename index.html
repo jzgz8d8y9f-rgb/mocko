@@ -676,7 +676,6 @@
   .breakdown-table td { padding: 12px 0; border-top: 1px solid var(--line); text-align: right; font-size: 14px; }
   .breakdown-table td:first-child { text-align: left; font-weight: 600; }
   .mode-cell { display: flex; align-items: center; gap: 8px; }
-  .mode-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
   .breakdown-table .num { font-family: 'Work Sans'; font-weight: 800; font-size: 15.5px; }
   .breakdown-table .dash { color: var(--text-muted); }
   .btrend { font-family: 'Work Sans'; font-size: 11px; font-weight: 700; }
@@ -688,7 +687,7 @@
   .breakdown-table tr.clickable:hover td.chev { opacity: 1; }
   .breakdown-foot { display: block; text-align: right; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); font-family: 'Work Sans'; font-size: 12px; color: var(--good); text-decoration: none; }
 
-  .league-card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 46px; }
+  .league-card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px 46px; margin-bottom: 20px; }
   .league-eyebrow-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
   .league-eyebrow { font-family: 'Work Sans'; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
   .league-eyebrow svg { width: 13px; height: 13px; color: var(--warn); }
@@ -1128,28 +1127,6 @@
           </table>
           <a class="breakdown-foot" href="#" onclick="openStats(); return false;">View full history &amp; stats →</a>
         </div>
-
-        <div class="league-card" id="home-league-card" style="display:none;">
-          <button class="league-arrow league-arrow-left" onclick="shiftHomeLeagueDrill(-1)" aria-label="Previous drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-          <div class="league-eyebrow-row">
-            <div class="league-eyebrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 01-10 0V4z"/><path d="M7 5H4a3 3 0 003 3M17 5h3a3 3 0 01-3 3"/></svg>
-              Leaderboard
-            </div>
-            <div class="period-switch">
-              <button class="period-btn active" id="home-league-period-daily" onclick="setHomeLeaguePeriod('daily')">Daily</button>
-              <button class="period-btn" id="home-league-period-weekly" onclick="setHomeLeaguePeriod('weekly')">Weekly</button>
-            </div>
-          </div>
-          <h4 id="home-league-drill-name"></h4>
-          <div id="home-league-rows"></div>
-          <div class="league-dots" id="home-league-dots"></div>
-          <a class="play-link" href="#" onclick="event.preventDefault(); playHomeLeagueDrill();">
-            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
-            <span id="home-league-play-text"></span>
-          </a>
-          <button class="league-arrow league-arrow-right" onclick="shiftHomeLeagueDrill(1)" aria-label="Next drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
-        </div>
       </div>
 
       <div class="action-grid-2">
@@ -1169,6 +1146,28 @@
           <p>Twelve short games that drill the reflexes interviewers actually test: mental math under a clock, risk calls, pattern spotting, working memory.</p>
           <span class="go">Run a drill →</span>
         </div>
+      </div>
+
+      <div class="league-card" id="home-league-card" style="display:none;">
+        <button class="league-arrow league-arrow-left" onclick="shiftHomeLeagueDrill(-1)" aria-label="Previous drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="league-eyebrow-row">
+          <div class="league-eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 01-10 0V4z"/><path d="M7 5H4a3 3 0 003 3M17 5h3a3 3 0 01-3 3"/></svg>
+            Leaderboard
+          </div>
+          <div class="period-switch">
+            <button class="period-btn active" id="home-league-period-daily" onclick="setHomeLeaguePeriod('daily')">Daily</button>
+            <button class="period-btn" id="home-league-period-weekly" onclick="setHomeLeaguePeriod('weekly')">Weekly</button>
+          </div>
+        </div>
+        <h4 id="home-league-drill-name"></h4>
+        <div id="home-league-rows"></div>
+        <div class="league-dots" id="home-league-dots"></div>
+        <a class="play-link" href="#" onclick="event.preventDefault(); playHomeLeagueDrill();">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+          <span id="home-league-play-text"></span>
+        </a>
+        <button class="league-arrow league-arrow-right" onclick="shiftHomeLeagueDrill(1)" aria-label="Next drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
       </div>
 
       <div class="section-head">
@@ -1464,12 +1463,18 @@
         </div>
       </div>
 
-      <div class="profile-socials">
+      <div class="profile-section">
+        <div class="profile-section-head">
+          <span class="profile-section-title">Links</span>
+          <button class="profile-edit-btn" onclick="toggleProfileSection('socials')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Edit</button>
+        </div>
         <div id="socials-view" class="profile-socials-row"></div>
         <div id="socials-edit" style="display:none; max-width:420px;">
           <div class="auth-field"><label>LinkedIn</label><input type="text" id="profile-linkedin" placeholder="https://linkedin.com/in/..."></div>
           <div class="auth-field"><label>Twitter / X</label><input type="text" id="profile-twitter" placeholder="https://x.com/..."></div>
           <div class="auth-field"><label>Instagram</label><input type="text" id="profile-instagram" placeholder="https://instagram.com/..."></div>
+          <div id="custom-links-edit-rows"></div>
+          <button class="btn btn-secondary" style="margin-bottom:16px;" onclick="addCustomLinkRow()">+ Add a link</button>
           <div class="btn-row" style="justify-content:flex-end; gap:8px;">
             <button class="btn btn-secondary" onclick="toggleProfileSection('socials')">Cancel</button>
             <button class="btn btn-primary" onclick="saveSocials()">Save</button>
@@ -2499,8 +2504,8 @@
     const avg = arr => arr.length ? Math.round(arr.reduce((a, s) => a + s.overall_score, 0) / arr.length) : null;
 
     const modes = [
-      { key: 'record', label: 'On-Air', color: 'var(--warn)', action: "chooseMode('record')" },
-      { key: 'voice', label: 'Mock Interview', color: 'var(--good)', action: "chooseMode('voice')" },
+      { key: 'record', label: 'On-Air', action: "chooseMode('record')" },
+      { key: 'voice', label: 'Mock Interview', action: "chooseMode('voice')" },
     ];
 
     const rowsHtml = [];
@@ -2519,7 +2524,7 @@
           : `<span class="btrend ${delta > 0 ? 'up' : 'down'}">${delta > 0 ? '↑' : '↓'}${Math.abs(delta)}</span>`;
       }
       rowsHtml.push(`<tr class="clickable" onclick="${m.action}">
-        <td><div class="mode-cell"><span class="mode-dot" style="background:${m.color};"></span>${m.label}</div></td>
+        <td><div class="mode-cell">${m.label}</div></td>
         <td class="num">${thisWeek.length}</td>
         <td class="num">${thisAvg != null ? thisAvg : '<span class="dash">—</span>'}</td>
         <td>${trendHtml}</td>
@@ -4324,6 +4329,7 @@
     twitter: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.2 8.2L23 22h-6.6l-5.2-6.8L5 22H2l7.7-8.8L1.4 2H8l4.7 6.2L18.9 2z"/></svg>',
     instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>',
     pencil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.07 0l2.83-2.83a5 5 0 00-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 00-7.07 0L4.1 13.83a5 5 0 007.07 7.07l1.5-1.5"/></svg>',
   };
 
   function escapeHtml(s) {
@@ -4332,6 +4338,7 @@
 
   let profileReadOnly = false;
   let profileEducationDraft = [];
+  let profileLinksDraft = [];
 
   function triggerAvatarUpload() { if (!profileReadOnly) document.getElementById('profile-avatar-input').click(); }
   function triggerBannerUpload() { if (!profileReadOnly) document.getElementById('profile-banner-input').click(); }
@@ -4374,17 +4381,50 @@
     const el = document.getElementById('socials-view');
     const linkMeta = [['linkedin', 'linkedin'], ['twitter', 'twitter'], ['instagram', 'instagram']];
     const active = linkMeta.filter(([key]) => links[key]);
-    if (!active.length) {
+    const custom = (links.custom || []).filter(l => l && l.url);
+    if (!active.length && !custom.length) {
       el.innerHTML = '<span class="profile-socials-empty">No links added yet.</span>';
-    } else {
-      el.innerHTML = active.map(([key, iconKey]) => {
-        const handle = (links[key] || '').replace(/^https?:\/\/(www\.)?[^/]+\/(in\/)?/i, '').replace(/\/$/, '');
-        return `<a href="${links[key]}" target="_blank" rel="noopener" class="profile-social-line" style="text-decoration:none;">${PROFILE_ICONS[iconKey]}<span>${escapeHtml(handle || links[key])}</span></a>`;
-      }).join('');
+      return;
     }
-    if (!profileReadOnly) {
-      el.insertAdjacentHTML('beforeend', `<button class="icon-btn-plain" onclick="toggleProfileSection('socials')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;">${PROFILE_ICONS.pencil}</button>`);
-    }
+    const platformHtml = active.map(([key, iconKey]) => {
+      const handle = (links[key] || '').replace(/^https?:\/\/(www\.)?[^/]+\/(in\/)?/i, '').replace(/\/$/, '');
+      return `<a href="${escapeHtml(links[key])}" target="_blank" rel="noopener" class="profile-social-line" style="text-decoration:none;">${PROFILE_ICONS[iconKey]}<span>${escapeHtml(handle || links[key])}</span></a>`;
+    }).join('');
+    const customHtml = custom.map(l => `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener" class="profile-social-line" style="text-decoration:none;">${PROFILE_ICONS.link}<span>${escapeHtml(l.label || l.url)}</span></a>`).join('');
+    el.innerHTML = platformHtml + customHtml;
+  }
+
+  // Custom links accept any URL the user types -- restrict to http(s) (auto-
+  // prefixing a bare domain) so a javascript:/data: URI can't be saved and
+  // later clicked from someone else's browser when they view this profile.
+  function sanitizeProfileUrl(raw) {
+    const url = (raw || '').trim();
+    if (!url) return '';
+    if (/^https?:\/\//i.test(url)) return url;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(url)) return '';
+    return 'https://' + url;
+  }
+
+  function renderCustomLinksEditRows() {
+    const el = document.getElementById('custom-links-edit-rows');
+    el.innerHTML = profileLinksDraft.map((l, i) => `
+      <div class="edu-entry-edit">
+        <button class="edu-remove" onclick="removeCustomLinkRow(${i})">Remove</button>
+        <div class="edu-field-row" style="grid-template-columns: 1fr 1.6fr;">
+          <div class="auth-field"><label>Label</label><input value="${escapeHtml(l.label)}" placeholder="Portfolio" oninput="profileLinksDraft[${i}].label = this.value"></div>
+          <div class="auth-field"><label>URL</label><input value="${escapeHtml(l.url)}" placeholder="https://..." oninput="profileLinksDraft[${i}].url = this.value"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  function addCustomLinkRow() {
+    profileLinksDraft.push({ label: '', url: '' });
+    renderCustomLinksEditRows();
+  }
+
+  function removeCustomLinkRow(i) {
+    profileLinksDraft.splice(i, 1);
+    renderCustomLinksEditRows();
   }
 
   function renderProfileView(profile, readOnly) {
@@ -4430,6 +4470,8 @@
       document.getElementById('profile-linkedin').value = links.linkedin || '';
       document.getElementById('profile-twitter').value = links.twitter || '';
       document.getElementById('profile-instagram').value = links.instagram || '';
+      profileLinksDraft = JSON.parse(JSON.stringify(links.custom || []));
+      renderCustomLinksEditRows();
     }
     view.style.display = showEdit ? 'none' : '';
     edit.style.display = showEdit ? 'block' : 'none';
@@ -4571,12 +4613,16 @@
   async function saveSocials() {
     const errorEl = document.getElementById('profile-error');
     errorEl.textContent = '';
+    const custom = profileLinksDraft
+      .map(l => ({ label: l.label.trim(), url: sanitizeProfileUrl(l.url) }))
+      .filter(l => l.url);
     try {
       currentProfile = await MockoProfile.updateProfile({
         social_links: {
-          linkedin: document.getElementById('profile-linkedin').value.trim(),
-          twitter: document.getElementById('profile-twitter').value.trim(),
-          instagram: document.getElementById('profile-instagram').value.trim(),
+          linkedin: sanitizeProfileUrl(document.getElementById('profile-linkedin').value),
+          twitter: sanitizeProfileUrl(document.getElementById('profile-twitter').value),
+          instagram: sanitizeProfileUrl(document.getElementById('profile-instagram').value),
+          custom,
         },
       });
       renderSocialsView(currentProfile.social_links || {});
