@@ -493,11 +493,14 @@
   @media (max-width: 620px) { .drill-grid { grid-template-columns: 1fr; } }
   /* Logged-out landing: card carousel */
   .carousel-wrap { position: relative; margin: 0 -32px 56px; }
-  .carousel { display: flex; gap: 18px; overflow-x: auto; padding: 4px 32px 12px; scrollbar-width: none; }
-  .carousel::-webkit-scrollbar { display: none; }
-  .carousel-wrap .arrow { position: absolute; top: 42%; width: 40px; height: 40px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; }
-  .carousel-wrap .arrow.left { left: -4px; } .carousel-wrap .arrow.right { right: -4px; }
-  .carousel-wrap .arrow svg { width: 16px; height: 16px; }
+  .carousel {
+    display: flex; gap: 18px; overflow-x: auto; padding: 4px 32px 20px;
+    scrollbar-width: thin; scrollbar-color: var(--good) transparent;
+  }
+  .carousel::-webkit-scrollbar { height: 5px; }
+  .carousel::-webkit-scrollbar-track { background: var(--line); border-radius: 100px; }
+  .carousel::-webkit-scrollbar-thumb { background: var(--good); border-radius: 100px; }
+  .carousel::-webkit-scrollbar-thumb:hover { background: var(--good-dim); }
 
   .card { flex: 0 0 270px; height: 370px; border-radius: 20px; position: relative; overflow: hidden; padding: 26px 24px; display: flex; flex-direction: column; }
   .card h3 { font-family: 'Libre Baskerville', serif; font-size: 24px; font-weight: 700; color: #fff; margin: 0 0 8px; position: relative; z-index: 1; }
@@ -996,9 +999,6 @@
       </div>
 
       <div class="carousel-wrap">
-        <div class="arrow left" onclick="scrollLandingCarousel(-1)" aria-label="Previous">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </div>
         <div class="carousel" id="landing-carousel">
           <div class="card c1">
             <h3>Mock Interview</h3>
@@ -1045,9 +1045,6 @@
               <div class="peek-rank-row"><span class="n">3</span><span class="a"></span><span class="nm">priya_s</span><span class="sc">17</span></div>
             </div>
           </div>
-        </div>
-        <div class="arrow right" onclick="scrollLandingCarousel(1)" aria-label="Next">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </div>
 
@@ -3486,13 +3483,6 @@
       ready = !!state.length && !!state.type && !!state.difficulty;
     }
     document.getElementById('setup-next').disabled = !ready;
-  }
-
-  // Home landing: card carousel
-  function scrollLandingCarousel(dir) {
-    const el = document.getElementById('landing-carousel');
-    if (!el) return;
-    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' });
   }
 
   function switchTab(tab) {
