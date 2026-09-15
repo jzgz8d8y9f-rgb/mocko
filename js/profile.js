@@ -12,10 +12,18 @@ async function getProfile() {
   return data;
 }
 
-async function updateProfile({ username, bio, social_links, industry, phone_number, gender, full_name, location, education }) {
+async function updateProfile({
+  username, bio, social_links, industry, phone_number, gender, full_name, location, education,
+  is_public, show_industry, show_education, show_location, leaderboard_visible,
+  notify_weekly_summary, notify_streak_reminders, notify_leaderboard_activity, notify_product_updates,
+}) {
   const user = window.MockoAuth.getUser();
   if (!user) throw new Error('Not signed in');
-  const fields = { username, bio, social_links, industry, phone_number, gender, full_name, location, education };
+  const fields = {
+    username, bio, social_links, industry, phone_number, gender, full_name, location, education,
+    is_public, show_industry, show_education, show_location, leaderboard_visible,
+    notify_weekly_summary, notify_streak_reminders, notify_leaderboard_activity, notify_product_updates,
+  };
   Object.keys(fields).forEach((key) => { if (fields[key] === undefined) delete fields[key]; });
   const { data, error } = await supabase
     .from('profiles')
@@ -82,21 +90,18 @@ async function suggestSchool(name) {
   if (error) console.error('Could not record school suggestion:', error);
 }
 
+// Masked server-side by get_public_profile(): a private profile collapses
+// to just enough to say so, and industry/education/location are stripped
+// individually per that user's own show_* toggles -- unless userId is the
+// caller's own, in which case they always get the full row back.
 async function getProfileById(userId) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('user_id', userId)
-    .single();
+  const { data, error } = await supabase.rpc('get_public_profile', { target_user_id: userId });
   if (error) throw error;
   return data;
 }
 
 async function getProfilesByIds(userIds) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('user_id, username, avatar_url')
-    .in('user_id', userIds);
+  const { data, error } = await supabase.rpc('get_profile_basics', { user_ids: userIds });
   if (error) throw error;
   return data;
 }
