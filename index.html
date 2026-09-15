@@ -963,6 +963,19 @@
   .pw-toggle-btn { position: absolute; right: 2px; top: 0; bottom: 0; width: 40px; background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .pw-toggle-btn:hover { color: var(--text); }
   .pw-toggle-btn svg { width: 18px; height: 18px; }
+
+  /* Signup wizard: one step per screen instead of one long form */
+  .wizard-progress { text-align: center; margin-bottom: 20px; }
+  .wizard-progress-count { font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+  .wizard-progress-dots { display: flex; gap: 6px; justify-content: center; }
+  .wizard-progress-dots span { width: 26px; height: 4px; border-radius: 3px; background: var(--line); transition: background-color 0.15s; }
+  .wizard-progress-dots span.done { background: var(--good); }
+  .wizard-progress-dots span.current { background: var(--good); opacity: 0.5; }
+  .auth-step-heading { font-family: 'Libre Baskerville', serif; font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+  .auth-step-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+  .wizard-optional-label { font-size: 10.5px; font-weight: 700; text-transform: none; letter-spacing: 0; color: var(--text-muted); background: var(--surface-2); padding: 2px 7px; border-radius: 100px; margin-left: 6px; vertical-align: middle; }
+  .auth-skip-link { display: block; width: 100%; text-align: center; margin-top: 14px; font-size: 13.5px; color: var(--text-muted); background: none; border: none; cursor: pointer; }
+  .auth-skip-link:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -1285,108 +1298,152 @@
       </div>
     </div>
     <div class="auth-panel">
-      <div class="oauth-row" style="margin-bottom:20px;">
-        <button class="oauth-btn" onclick="oauthSignIn('google')" aria-label="Continue with Google" title="Continue with Google">
-          <svg width="20" height="20" viewBox="0 0 18 18">
-            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
-            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
-            <path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/>
-            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
-          </svg>
-        </button>
-        <button class="oauth-btn" onclick="oauthSignIn('linkedin')" aria-label="Continue with LinkedIn" title="Continue with LinkedIn">
-          <svg width="20" height="20" viewBox="0 0 18 18">
-            <rect width="18" height="18" rx="3" fill="#0A66C2"/>
-            <path fill="#fff" d="M5.68 6.87H3.32v7.6h2.36v-7.6zM4.5 5.83c.8 0 1.3-.53 1.3-1.2-.01-.68-.5-1.2-1.29-1.2-.78 0-1.3.52-1.3 1.2 0 .67.5 1.2 1.28 1.2h.01zM6.79 14.47h2.36v-4.24c0-.23.02-.45.08-.61.19-.45.6-.93 1.31-.93.92 0 1.29.7 1.29 1.73v4.05h2.36v-4.34c0-2.18-1.16-3.2-2.72-3.2-1.25 0-1.8.7-2.11 1.19h.02v-1.02H6.79c.03.66 0 7.37 0 7.37z"/>
-          </svg>
-        </button>
+      <div class="wizard-progress" id="auth-wizard-progress" style="display:none;">
+        <div class="wizard-progress-count" id="auth-wizard-count">Step 1 of 5</div>
+        <div class="wizard-progress-dots" id="auth-wizard-dots"></div>
       </div>
-      <div class="divider" style="display:flex; align-items:center; gap:10px; background:none; height:auto; margin-bottom:20px;">
-        <div style="flex:1; height:1px; background:var(--line);"></div>
-        <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em;">or</span>
-        <div style="flex:1; height:1px; background:var(--line);"></div>
-      </div>
-      <div class="auth-field" id="auth-name-field" style="display:none;">
-        <label>Name</label>
-        <input type="text" id="auth-name" maxlength="60" autocomplete="name" placeholder="Alex Chen">
-      </div>
-      <div class="auth-field" id="auth-username-field" style="display:none;">
-        <label>Username</label>
-        <input type="text" id="auth-username" maxlength="20" autocomplete="username" placeholder="yourname">
-      </div>
-      <div class="auth-field">
-        <label>Email</label>
-        <input type="email" id="auth-email" autocomplete="email" placeholder="you@example.com">
-      </div>
-      <div class="auth-field" id="auth-phone-field" style="display:none;">
-        <label>Phone Number</label>
-        <input type="tel" id="auth-phone" autocomplete="tel" placeholder="+1 555 123 4567">
-      </div>
-      <div class="auth-field">
-        <label>Password</label>
-        <div class="pw-input-wrap">
-          <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••" oninput="onAuthPasswordInput()">
-          <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('auth-password', this)" aria-label="Show password">
-            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+
+      <div class="auth-step" id="auth-step-1">
+        <div class="oauth-row" style="margin-bottom:20px;">
+          <button class="oauth-btn" onclick="oauthSignIn('google')" aria-label="Continue with Google" title="Continue with Google">
+            <svg width="20" height="20" viewBox="0 0 18 18">
+              <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+              <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+              <path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/>
+              <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+            </svg>
+          </button>
+          <button class="oauth-btn" onclick="oauthSignIn('linkedin')" aria-label="Continue with LinkedIn" title="Continue with LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 18 18">
+              <rect width="18" height="18" rx="3" fill="#0A66C2"/>
+              <path fill="#fff" d="M5.68 6.87H3.32v7.6h2.36v-7.6zM4.5 5.83c.8 0 1.3-.53 1.3-1.2-.01-.68-.5-1.2-1.29-1.2-.78 0-1.3.52-1.3 1.2 0 .67.5 1.2 1.28 1.2h.01zM6.79 14.47h2.36v-4.24c0-.23.02-.45.08-.61.19-.45.6-.93 1.31-.93.92 0 1.29.7 1.29 1.73v4.05h2.36v-4.34c0-2.18-1.16-3.2-2.72-3.2-1.25 0-1.8.7-2.11 1.19h.02v-1.02H6.79c.03.66 0 7.37 0 7.37z"/>
+            </svg>
           </button>
         </div>
-        <div class="pw-strength" id="pw-strength">
-          <div class="pw-strength-track">
-            <div class="pw-strength-seg" id="pw-seg-0"></div>
-            <div class="pw-strength-seg" id="pw-seg-1"></div>
-            <div class="pw-strength-seg" id="pw-seg-2"></div>
-          </div>
-          <div class="pw-strength-label" id="pw-strength-label"></div>
-          <ul class="pw-strength-reqs" id="pw-strength-reqs">
-            <li id="pw-req-length"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>9+ characters</li>
-            <li id="pw-req-letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A letter</li>
-            <li id="pw-req-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A number</li>
-            <li id="pw-req-special"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A special character</li>
-          </ul>
+        <div class="divider" style="display:flex; align-items:center; gap:10px; background:none; height:auto; margin-bottom:20px;">
+          <div style="flex:1; height:1px; background:var(--line);"></div>
+          <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em;">or</span>
+          <div style="flex:1; height:1px; background:var(--line);"></div>
         </div>
-      </div>
-      <div class="auth-field" id="auth-confirm-field" style="display:none;">
-        <label>Confirm Password</label>
-        <div class="pw-input-wrap">
-          <input type="password" id="auth-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onAuthConfirmInput()">
-          <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('auth-password-confirm', this)" aria-label="Show password">
-            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-          </button>
+        <div class="auth-field">
+          <label>Email</label>
+          <input type="email" id="auth-email" autocomplete="email" placeholder="you@example.com">
         </div>
-      </div>
-      <div class="auth-field" id="auth-gender-field" style="display:none;">
-        <label>Gender</label>
-        <div class="gender-row" id="auth-gender-row">
-          <div class="gender-option" data-gender="male" onclick="selectAuthGender('male')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="6"/><line x1="14.5" y1="9.5" x2="20" y2="4"/><polyline points="14 4 20 4 20 10"/></svg>
-            Male
+        <div class="auth-field">
+          <label>Password</label>
+          <div class="pw-input-wrap">
+            <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••" oninput="onAuthPasswordInput()">
+            <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('auth-password', this)" aria-label="Show password">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
           </div>
-          <div class="gender-option" data-gender="female" onclick="selectAuthGender('female')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="19" x2="16" y2="19"/></svg>
-            Female
-          </div>
-          <div class="gender-option" data-gender="other" onclick="selectAuthGender('other')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-            Other
+          <div class="pw-strength" id="pw-strength">
+            <div class="pw-strength-track">
+              <div class="pw-strength-seg" id="pw-seg-0"></div>
+              <div class="pw-strength-seg" id="pw-seg-1"></div>
+              <div class="pw-strength-seg" id="pw-seg-2"></div>
+            </div>
+            <div class="pw-strength-label" id="pw-strength-label"></div>
+            <ul class="pw-strength-reqs" id="pw-strength-reqs">
+              <li id="pw-req-length"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>9+ characters</li>
+              <li id="pw-req-letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A letter</li>
+              <li id="pw-req-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A number</li>
+              <li id="pw-req-special"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A special character</li>
+            </ul>
           </div>
         </div>
+        <div class="auth-field" id="auth-confirm-field" style="display:none;">
+          <label>Confirm Password</label>
+          <div class="pw-input-wrap">
+            <input type="password" id="auth-password-confirm" autocomplete="new-password" placeholder="••••••••" oninput="onAuthConfirmInput()">
+            <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('auth-password-confirm', this)" aria-label="Show password">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="auth-field" id="auth-resume-field" style="display:none;">
-        <label>Resume <span style="text-transform:none; font-weight:400; color:var(--text-muted);">(optional)</span></label>
-        <label class="btn btn-secondary" style="cursor:pointer; display:block; width:100%; text-align:center; box-sizing:border-box;">
-          <span id="auth-resume-filename">Upload PDF</span>
-          <input type="file" accept=".pdf" id="auth-resume-input" style="display:none;" onchange="onAuthResumeSelected(event)">
-        </label>
+
+      <div class="auth-step" id="auth-step-2" style="display:none;">
+        <div class="auth-step-heading">Tell us about you</div>
+        <div class="auth-step-sub">This is how you'll show up on leaderboards.</div>
+        <div class="auth-field">
+          <label>Name</label>
+          <input type="text" id="auth-name" maxlength="60" autocomplete="name" placeholder="Alex Chen">
+        </div>
+        <div class="auth-field">
+          <label>Username</label>
+          <input type="text" id="auth-username" maxlength="20" autocomplete="username" placeholder="yourname">
+        </div>
+        <div class="auth-field">
+          <label>Gender</label>
+          <div class="gender-row" id="auth-gender-row">
+            <div class="gender-option" data-gender="male" onclick="selectAuthGender('male')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="6"/><line x1="14.5" y1="9.5" x2="20" y2="4"/><polyline points="14 4 20 4 20 10"/></svg>
+              Male
+            </div>
+            <div class="gender-option" data-gender="female" onclick="selectAuthGender('female')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="19" x2="16" y2="19"/></svg>
+              Female
+            </div>
+            <div class="gender-option" data-gender="other" onclick="selectAuthGender('other')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              Other
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div class="auth-step" id="auth-step-3" style="display:none;">
+        <div class="auth-step-heading">What field are you interviewing for? <span class="wizard-optional-label">Optional</span></div>
+        <div class="auth-step-sub">Mocko tailors questions to it. Change it anytime in Settings.</div>
+        <div class="auth-field edu-school-field">
+          <label>Industry</label>
+          <input type="text" class="edu-school-search" id="auth-industry-search" placeholder="Search or add your industry..." autocomplete="off"
+            oninput="onAuthIndustryInput(this.value)" onfocus="onAuthIndustryInput(this.value)">
+          <input type="hidden" id="auth-industry">
+          <div class="edu-school-dropdown" id="auth-industry-dropdown" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="auth-step" id="auth-step-4" style="display:none;">
+        <div class="auth-step-heading">Where'd you go to school? <span class="wizard-optional-label">Optional</span></div>
+        <div class="auth-step-sub">Search from thousands of schools, or add your own.</div>
+        <div class="auth-field edu-school-field">
+          <label>School</label>
+          <input type="text" class="edu-school-search" id="auth-school-search" placeholder="Search for your school..." autocomplete="off"
+            oninput="onAuthSchoolInput(this.value)" onfocus="onAuthSchoolInput(this.value)">
+          <input type="hidden" id="auth-school-domain">
+          <div class="edu-school-dropdown" id="auth-school-dropdown" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="auth-step" id="auth-step-5" style="display:none;">
+        <div class="auth-step-heading">Almost there</div>
+        <div class="auth-step-sub">Both of these are optional.</div>
+        <div class="auth-field">
+          <label>Phone Number <span class="wizard-optional-label">Optional</span></label>
+          <input type="tel" id="auth-phone" autocomplete="tel" placeholder="+1 555 123 4567">
+        </div>
+        <div class="auth-field">
+          <label>Resume <span class="wizard-optional-label">Optional</span></label>
+          <label class="btn btn-secondary" style="cursor:pointer; display:block; width:100%; text-align:center; box-sizing:border-box;">
+            <span id="auth-resume-filename">Upload PDF</span>
+            <input type="file" accept=".pdf" id="auth-resume-input" style="display:none;" onchange="onAuthResumeSelected(event)">
+          </label>
+        </div>
+      </div>
+
       <div class="auth-error" id="auth-error"></div>
       <div class="auth-forgot" id="auth-forgot-password" style="display:none;">
         <a onclick="sendPasswordReset()">Forgot your password?</a>
       </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" id="auth-submit-btn" onclick="submitAuthForm()" style="width:100%">Sign In</button>
+      <div class="btn-row" id="auth-wizard-nav">
+        <button class="btn btn-secondary" id="auth-back-btn" onclick="authWizardBack()" style="display:none;">Back</button>
+        <button class="btn btn-primary" id="auth-submit-btn" onclick="authWizardNext()" style="width:100%">Sign In</button>
       </div>
+      <button class="auth-skip-link" id="auth-skip-btn" onclick="authWizardSkip()" style="display:none;">Skip this step</button>
       <div class="auth-switch" id="auth-switch">
         New here? <a onclick="setAuthMode('signup')">Create an account</a>
       </div>
@@ -2985,24 +3042,21 @@
   let pendingSignupResumeFile = null;
   let authSelectedGender = null;
 
+  const AUTH_TOTAL_STEPS = 5;
+  let authWizardStep = 1;
+
   function setAuthMode(mode) {
     const isSignup = mode === 'signup';
     document.getElementById('auth-title').textContent = isSignup ? 'Create your account' : 'Sign in';
     document.getElementById('auth-sub').textContent = isSignup
       ? 'Save your sessions and track progress over time.'
       : 'Sign in to record a session and save your progress.';
-    document.getElementById('auth-submit-btn').textContent = isSignup ? 'Create Account' : 'Sign In';
     document.getElementById('auth-submit-btn').dataset.mode = mode;
     document.getElementById('auth-switch').innerHTML = isSignup
       ? `Already have an account? <a onclick="setAuthMode('signin')">Sign in</a>`
       : `New here? <a onclick="setAuthMode('signup')">Create an account</a>`;
     document.getElementById('auth-error').textContent = '';
-    document.getElementById('auth-name-field').style.display = isSignup ? '' : 'none';
-    document.getElementById('auth-username-field').style.display = isSignup ? '' : 'none';
-    document.getElementById('auth-phone-field').style.display = isSignup ? '' : 'none';
     document.getElementById('auth-confirm-field').style.display = isSignup ? '' : 'none';
-    document.getElementById('auth-gender-field').style.display = isSignup ? '' : 'none';
-    document.getElementById('auth-resume-field').style.display = isSignup ? '' : 'none';
     document.getElementById('pw-strength').classList.remove('active');
     failedSignInAttempts = 0;
     document.getElementById('auth-forgot-password').style.display = 'none';
@@ -3013,10 +3067,87 @@
     document.getElementById('auth-name').value = '';
     document.getElementById('auth-username').value = '';
     document.getElementById('auth-phone').value = '';
+    document.getElementById('auth-industry-search').value = '';
+    document.getElementById('auth-industry').value = '';
+    document.getElementById('auth-school-search').value = '';
+    document.getElementById('auth-school-domain').value = '';
     pendingSignupResumeFile = null;
     document.getElementById('auth-resume-filename').textContent = 'Upload PDF';
     authSelectedGender = null;
     document.querySelectorAll('#auth-gender-row .gender-option').forEach(el => el.classList.remove('selected'));
+    showAuthStep(1, isSignup);
+  }
+
+  // Signup is a step-per-screen wizard (one thing at a time); sign-in stays
+  // a single plain screen -- showAuthStep(1, false) just makes step 1's
+  // fields (email/password) visible with no wizard chrome around them.
+  function showAuthStep(step, isSignup) {
+    authWizardStep = step;
+    for (let i = 1; i <= AUTH_TOTAL_STEPS; i++) {
+      document.getElementById('auth-step-' + i).style.display = i === step ? '' : 'none';
+    }
+    const backBtn = document.getElementById('auth-back-btn');
+    const submitBtn = document.getElementById('auth-submit-btn');
+    const skipBtn = document.getElementById('auth-skip-btn');
+    document.getElementById('auth-wizard-progress').style.display = isSignup ? '' : 'none';
+    if (!isSignup) {
+      backBtn.style.display = 'none';
+      submitBtn.style.width = '100%';
+      submitBtn.style.flex = '';
+      submitBtn.textContent = 'Sign In';
+      skipBtn.style.display = 'none';
+      return;
+    }
+    document.getElementById('auth-wizard-count').textContent = `Step ${step} of ${AUTH_TOTAL_STEPS}`;
+    document.getElementById('auth-wizard-dots').innerHTML = Array.from({ length: AUTH_TOTAL_STEPS }, (_, i) => {
+      const n = i + 1;
+      return `<span class="${n < step ? 'done' : n === step ? 'current' : ''}"></span>`;
+    }).join('');
+    backBtn.style.display = step > 1 ? '' : 'none';
+    backBtn.style.flex = '1';
+    submitBtn.style.width = step > 1 ? '' : '100%';
+    submitBtn.style.flex = step > 1 ? '1' : '';
+    submitBtn.textContent = step === AUTH_TOTAL_STEPS ? 'Create Account' : 'Continue';
+    skipBtn.style.display = step >= 3 ? '' : 'none';
+    skipBtn.textContent = step === AUTH_TOTAL_STEPS ? 'Skip for now' : 'Skip this step';
+  }
+
+  function authWizardNext() {
+    const mode = document.getElementById('auth-submit-btn').dataset.mode || 'signin';
+    if (mode === 'signin') { submitAuthForm(); return; }
+    const errorEl = document.getElementById('auth-error');
+    errorEl.textContent = '';
+    if (authWizardStep === 1) {
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const confirmPassword = document.getElementById('auth-password-confirm').value;
+      if (!email) { errorEl.textContent = 'Please enter your email.'; return; }
+      const passwordError = validatePassword(password);
+      if (passwordError) { errorEl.textContent = passwordError; return; }
+      if (password !== confirmPassword) {
+        document.getElementById('auth-password-confirm').classList.add('field-invalid');
+        errorEl.textContent = 'Passwords do not match.';
+        return;
+      }
+    } else if (authWizardStep === 2) {
+      const fullName = document.getElementById('auth-name').value.trim();
+      const username = document.getElementById('auth-username').value.trim();
+      if (!fullName) { errorEl.textContent = 'Please enter your name.'; return; }
+      const usernameError = validateUsername(username);
+      if (usernameError) { errorEl.textContent = usernameError; return; }
+      if (!authSelectedGender) { errorEl.textContent = 'Please select a gender.'; return; }
+    }
+    if (authWizardStep === AUTH_TOTAL_STEPS) { submitAuthForm(); return; }
+    showAuthStep(authWizardStep + 1, true);
+  }
+
+  function authWizardBack() {
+    if (authWizardStep > 1) showAuthStep(authWizardStep - 1, true);
+  }
+
+  function authWizardSkip() {
+    if (authWizardStep === AUTH_TOTAL_STEPS) { submitAuthForm(); return; }
+    showAuthStep(authWizardStep + 1, true);
   }
 
   function selectAuthGender(g) {
@@ -3030,6 +3161,55 @@
     const file = event.target.files[0];
     pendingSignupResumeFile = file || null;
     document.getElementById('auth-resume-filename').textContent = file ? file.name : 'Upload PDF';
+  }
+
+  // --- Signup wizard: industry + school pickers, same pattern as Settings/Profile ---
+  function onAuthIndustryInput(query) {
+    const dropdown = document.getElementById('auth-industry-dropdown');
+    if (!dropdown) return;
+    const q = query.trim().toLowerCase();
+    if (!q) document.getElementById('auth-industry').value = '';
+    const matches = (q ? CANONICAL_INDUSTRIES.filter(ind => ind.label.toLowerCase().includes(q)) : CANONICAL_INDUSTRIES).slice(0, 8);
+    const exactMatch = CANONICAL_INDUSTRIES.some(ind => ind.label.toLowerCase() === q);
+    let html = matches.map(ind => `
+      <div class="edu-school-option" data-key="${escapeHtml(ind.key)}" data-label="${escapeHtml(ind.label)}" onclick="handleAuthIndustryOptionClick(this)">${escapeHtml(ind.label)}</div>`).join('');
+    if (q && !exactMatch) {
+      html += `<div class="edu-school-option add-new" data-custom="1" data-label="${escapeHtml(query.trim())}" onclick="handleAuthIndustryOptionClick(this)">+ Can't find it? Add "${escapeHtml(query.trim())}"</div>`;
+    }
+    dropdown.innerHTML = html || '<div class="edu-school-option" style="cursor:default;">No matches</div>';
+    dropdown.style.display = 'block';
+  }
+
+  function handleAuthIndustryOptionClick(el) {
+    document.getElementById('auth-industry').value = el.dataset.custom ? el.dataset.label : el.dataset.key;
+    document.getElementById('auth-industry-search').value = el.dataset.label;
+    document.getElementById('auth-industry-dropdown').style.display = 'none';
+  }
+
+  function onAuthSchoolInput(query) {
+    const dropdown = document.getElementById('auth-school-dropdown');
+    if (!dropdown) return;
+    const q = query.trim().toLowerCase();
+    if (!q) document.getElementById('auth-school-domain').value = '';
+    const matches = (q ? CANONICAL_SCHOOLS.filter(s => s.name.toLowerCase().includes(q)) : CANONICAL_SCHOOLS).slice(0, 8);
+    const exactMatch = CANONICAL_SCHOOLS.some(s => s.name.toLowerCase() === q);
+    let html = matches.map(s => `
+      <div class="edu-school-option" data-name="${escapeHtml(s.name)}" data-domain="${escapeHtml(s.domain || '')}" onclick="handleAuthSchoolOptionClick(this)">
+        <div class="opt-icon">${eduIconHtml(s.domain, 24)}</div>${escapeHtml(s.name)}
+      </div>`).join('');
+    if (q && !exactMatch) {
+      html += `<div class="edu-school-option add-new" data-custom="1" data-name="${escapeHtml(query.trim())}" onclick="handleAuthSchoolOptionClick(this)">+ Can't find your school? Add "${escapeHtml(query.trim())}"</div>`;
+    }
+    dropdown.innerHTML = html || '<div class="edu-school-option" style="cursor:default;">No matches</div>';
+    dropdown.style.display = 'block';
+  }
+
+  function handleAuthSchoolOptionClick(el) {
+    // Not signed in yet at this step, so there's no user to attribute a
+    // suggestSchool() insert to -- just record the pick locally for now.
+    document.getElementById('auth-school-search').value = el.dataset.name;
+    document.getElementById('auth-school-domain').value = el.dataset.custom ? '' : (el.dataset.domain || '');
+    document.getElementById('auth-school-dropdown').style.display = 'none';
   }
 
   function passwordRequirements(pw) {
@@ -3195,8 +3375,13 @@
       return;
     }
 
+    const industry = document.getElementById('auth-industry').value || null;
+    const schoolName = document.getElementById('auth-school-search').value.trim();
+    const schoolDomain = document.getElementById('auth-school-domain').value || null;
+    const education = schoolName ? [{ school: schoolName, domain: schoolDomain, major: '', graduation_year: '', location: '' }] : [];
+
     try {
-      await MockoProfile.updateProfile({ username, phone_number: phone, gender: authSelectedGender, full_name: fullName });
+      await MockoProfile.updateProfile({ username, phone_number: phone, gender: authSelectedGender, full_name: fullName, industry, education });
     } catch (err) {
       if (err.code === '23505') {
         errorEl.textContent = 'Account created, but that username is taken. You can change it in Settings.';
@@ -3328,6 +3513,15 @@
     'risk-management': 'Risk Management', 'investor-relations': 'Investor Relations', accounting: 'Accounting / Audit',
     insurance: 'Insurance / Actuarial', fintech: 'Fintech', 'commercial-banking': 'Commercial / Retail Banking',
     'corporate-development': 'Corporate Development / M&A',
+    // Non-finance fields -- Mocko isn't finance-only, so the picker needs
+    // real coverage here too, not just a "General" catch-all.
+    'software-engineering': 'Software Engineering', 'product-management': 'Product Management',
+    'data-science': 'Data Science', marketing: 'Marketing', sales: 'Sales', design: 'Design',
+    operations: 'Operations', 'human-resources': 'Human Resources', law: 'Law',
+    healthcare: 'Healthcare / Medicine', education: 'Education', 'nonprofit-social-impact': 'Nonprofit / Social Impact',
+    'government-public-policy': 'Government / Public Policy', engineering: 'Engineering (non-software)',
+    'media-entertainment': 'Media / Entertainment', hospitality: 'Hospitality / Travel', retail: 'Retail',
+    'supply-chain-logistics': 'Supply Chain / Logistics',
   };
   const CANONICAL_INDUSTRIES = Object.entries(INDUSTRY_LABELS).map(([key, label]) => ({ key, label }));
 
