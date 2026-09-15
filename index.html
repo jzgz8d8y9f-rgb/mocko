@@ -241,6 +241,26 @@
   .select-group-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; }
   .divider { height: 1px; background: var(--line); margin-bottom: 28px; }
 
+  /* Settings: sidebar categories instead of one long scrolling form */
+  .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
+  .settings-nav { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px; position: sticky; top: 20px; }
+  .settings-nav-item { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 10px 12px; border-radius: 9px; border: none; background: none; color: var(--text-muted); font-size: 14px; font-weight: 600; margin-bottom: 2px; font-family: 'Work Sans'; cursor: pointer; }
+  .settings-nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .settings-nav-item:hover { background: var(--surface-2); color: var(--text); }
+  .settings-nav-item.active { background: var(--good-dim); color: var(--good); }
+  .settings-nav-divider { height: 1px; background: var(--line); margin: 8px 6px; }
+  .settings-nav-item.danger { color: var(--record); opacity: 0.85; }
+  .settings-nav-item.danger:hover { opacity: 1; background: rgba(230,57,70,0.1); }
+  .settings-pane { display: none; }
+  .settings-pane.active { display: block; }
+  .danger-card { border-color: rgba(230,57,70,0.35); }
+  @media (max-width: 720px) {
+    .settings-layout { grid-template-columns: 1fr; }
+    .settings-nav { position: static; display: flex; overflow-x: auto; gap: 4px; }
+    .settings-nav-item { flex: 0 0 auto; }
+    .settings-nav-divider { display: none; }
+  }
+
   .toggle-row { display: flex; gap: 10px; }
   .toggle-card { flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.15s; }
   .toggle-card.selected { border-color: var(--good); background: rgba(39,203,187,0.08); }
@@ -299,6 +319,8 @@
   .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--line); }
   .btn-secondary:hover { border-color: var(--text-muted); }
+  .btn-danger { background: none; border: 1px solid var(--record); color: var(--record); }
+  .btn-danger:hover { background: rgba(230,57,70,0.1); }
   .btn-record { background: var(--record); color: white; }
   .btn-record:hover { background: #d02836; }
   .btn-stop { background: var(--surface-2); color: var(--text); border: 1px solid var(--line); }
@@ -1604,111 +1626,188 @@
     <button class="back-btn" onclick="goToHome()">← Back</button>
     <div class="hero">
       <h1 class="display">Settings</h1>
-      <p>Manage your account details and how Mocko looks.</p>
+      <p>Manage your account, privacy, and how Mocko looks.</p>
     </div>
-    <div class="select-panel" style="max-width:460px;">
-      <div class="select-group">
-        <div class="select-group-label">Account</div>
-        <div class="select-group-sub">Your account details.</div>
-        <div class="auth-field">
-          <label>Name</label>
-          <input type="text" id="settings-name" maxlength="60" autocomplete="name" placeholder="Alex Chen">
-        </div>
-        <div class="auth-field">
-          <label>Username</label>
-          <input type="text" id="settings-username" maxlength="20">
-        </div>
-        <div class="auth-field">
-          <label>Location</label>
-          <input type="text" id="settings-location" placeholder="Chicago, IL">
-        </div>
-        <div class="auth-field edu-school-field">
-          <label>Industry</label>
-          <input type="text" class="edu-school-search" id="settings-industry-search" placeholder="Search or add your industry..." autocomplete="off"
-            oninput="onSettingsIndustryInput(this.value)" onfocus="onSettingsIndustryInput(this.value)">
-          <input type="hidden" id="settings-industry">
-          <div class="edu-school-dropdown" id="settings-industry-dropdown" style="display:none;"></div>
-        </div>
-        <div class="auth-field">
-          <label>Email</label>
-          <input type="email" id="settings-email" autocomplete="email">
-        </div>
-        <div class="auth-field">
-          <label>Phone Number</label>
-          <input type="tel" id="settings-phone" autocomplete="tel" placeholder="+1 555 123 4567">
-        </div>
-        <div class="auth-field">
-          <label>Gender</label>
-          <div class="gender-row" id="settings-gender-row">
-            <div class="gender-option" data-gender="male" onclick="selectSettingsGender('male')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="6"/><line x1="14.5" y1="9.5" x2="20" y2="4"/><polyline points="14 4 20 4 20 10"/></svg>
-              Male
-            </div>
-            <div class="gender-option" data-gender="female" onclick="selectSettingsGender('female')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="19" x2="16" y2="19"/></svg>
-              Female
-            </div>
-            <div class="gender-option" data-gender="other" onclick="selectSettingsGender('other')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-              Other
-            </div>
-          </div>
-        </div>
-        <div class="auth-error" id="settings-account-error"></div>
-        <div class="btn-row" style="justify-content:flex-end;">
-          <button class="btn btn-primary" onclick="saveAccountSettings()">Save</button>
-        </div>
+
+    <div class="settings-layout">
+      <div class="settings-nav" id="settings-nav">
+        <button class="settings-nav-item active" data-pane="settings-pane-account" onclick="switchSettingsPane(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Account
+        </button>
+        <button class="settings-nav-item" data-pane="settings-pane-career" onclick="switchSettingsPane(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V9l6-6 6 6v12M10 21v-6h4v6"/></svg>Career
+        </button>
+        <button class="settings-nav-item" data-pane="settings-pane-appearance" onclick="switchSettingsPane(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 000 18z" fill="currentColor" stroke="none"/></svg>Appearance
+        </button>
+        <button class="settings-nav-item" data-pane="settings-pane-security" onclick="switchSettingsPane(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Security
+        </button>
+        <div class="settings-nav-divider"></div>
+        <button class="settings-nav-item danger" data-pane="settings-pane-delete" onclick="switchSettingsPane(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>Delete Account
+        </button>
       </div>
 
-      <div class="select-group">
-        <div class="select-group-label">Password</div>
-        <div class="select-group-sub">Change your password.</div>
-        <div class="auth-field">
-          <label>New Password</label>
-          <div class="pw-input-wrap">
-            <input type="password" id="settings-new-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsPasswordInput()">
-            <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('settings-new-password', this)" aria-label="Show password">
-              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-            </button>
-          </div>
-          <div class="pw-strength" id="settings-pw-strength">
-            <div class="pw-strength-track">
-              <div class="pw-strength-seg" id="settings-pw-seg-0"></div>
-              <div class="pw-strength-seg" id="settings-pw-seg-1"></div>
-              <div class="pw-strength-seg" id="settings-pw-seg-2"></div>
+      <div class="settings-content">
+        <div class="settings-pane active" id="settings-pane-account">
+          <div class="select-panel">
+            <div class="select-group" style="margin-bottom:0;">
+              <div class="select-group-label">Account</div>
+              <div class="select-group-sub">Your name, handle, and contact info.</div>
+              <div class="auth-field">
+                <label>Name</label>
+                <input type="text" id="settings-name" maxlength="60" autocomplete="name" placeholder="Alex Chen">
+              </div>
+              <div class="auth-field">
+                <label>Username</label>
+                <input type="text" id="settings-username" maxlength="20">
+              </div>
+              <div class="auth-field">
+                <label>Location</label>
+                <input type="text" id="settings-location" placeholder="Chicago, IL">
+              </div>
+              <div class="auth-field">
+                <label>Email</label>
+                <input type="email" id="settings-email" autocomplete="email">
+              </div>
+              <div class="auth-field">
+                <label>Phone Number</label>
+                <input type="tel" id="settings-phone" autocomplete="tel" placeholder="+1 555 123 4567">
+              </div>
+              <div class="auth-field">
+                <label>Gender</label>
+                <div class="gender-row" id="settings-gender-row">
+                  <div class="gender-option" data-gender="male" onclick="selectSettingsGender('male')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="6"/><line x1="14.5" y1="9.5" x2="20" y2="4"/><polyline points="14 4 20 4 20 10"/></svg>
+                    Male
+                  </div>
+                  <div class="gender-option" data-gender="female" onclick="selectSettingsGender('female')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="8" y1="19" x2="16" y2="19"/></svg>
+                    Female
+                  </div>
+                  <div class="gender-option" data-gender="other" onclick="selectSettingsGender('other')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    Other
+                  </div>
+                </div>
+              </div>
+              <div class="auth-error" id="settings-account-error"></div>
+              <div class="btn-row" style="justify-content:flex-end;">
+                <button class="btn btn-primary" onclick="saveAccountSettings()">Save changes</button>
+              </div>
             </div>
-            <div class="pw-strength-label" id="settings-pw-strength-label"></div>
-            <ul class="pw-strength-reqs" id="settings-pw-strength-reqs">
-              <li id="settings-pw-req-length"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>9+ characters</li>
-              <li id="settings-pw-req-letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A letter</li>
-              <li id="settings-pw-req-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A number</li>
-              <li id="settings-pw-req-special"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A special character</li>
-            </ul>
           </div>
         </div>
-        <div class="auth-field">
-          <label>Confirm New Password</label>
-          <div class="pw-input-wrap">
-            <input type="password" id="settings-confirm-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsConfirmInput()">
-            <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('settings-confirm-password', this)" aria-label="Show password">
-              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="auth-error" id="settings-password-error"></div>
-        <div class="btn-row" style="justify-content:flex-end;">
-          <button class="btn btn-primary" onclick="saveNewPassword()">Update Password</button>
-        </div>
-      </div>
 
-      <div class="select-group" style="margin-bottom:0;">
-        <div class="select-group-label">Theme</div>
-        <div class="select-group-sub">Choose how Mocko looks.</div>
-        <div class="toggle-row">
-          <div class="toggle-card" id="theme-dark-card" onclick="setTheme('dark')"><h4>Dark</h4><p>Default</p></div>
-          <div class="toggle-card" id="theme-light-card" onclick="setTheme('light')"><h4>Light</h4><p>Easier in bright rooms</p></div>
+        <div class="settings-pane" id="settings-pane-career">
+          <div class="select-panel">
+            <div class="select-group" style="margin-bottom:0;">
+              <div class="select-group-label">Career</div>
+              <div class="select-group-sub">Used to tailor interview questions and shown on your profile.</div>
+              <div class="auth-field edu-school-field" style="margin-bottom:0;">
+                <label>Industry</label>
+                <input type="text" class="edu-school-search" id="settings-industry-search" placeholder="Search or add your industry..." autocomplete="off"
+                  oninput="onSettingsIndustryInput(this.value)" onfocus="onSettingsIndustryInput(this.value)">
+                <input type="hidden" id="settings-industry">
+                <div class="edu-school-dropdown" id="settings-industry-dropdown" style="display:none;"></div>
+              </div>
+              <div class="auth-error" id="settings-career-error"></div>
+              <div class="btn-row" style="justify-content:flex-end;">
+                <button class="btn btn-primary" onclick="saveAccountSettings()">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-pane" id="settings-pane-appearance">
+          <div class="select-panel">
+            <div class="select-group" style="margin-bottom:0;">
+              <div class="select-group-label">Theme</div>
+              <div class="select-group-sub">Choose how Mocko looks.</div>
+              <div class="toggle-row">
+                <div class="toggle-card" id="theme-dark-card" onclick="setTheme('dark')"><h4>Dark</h4><p>Default</p></div>
+                <div class="toggle-card" id="theme-light-card" onclick="setTheme('light')"><h4>Light</h4><p>Easier in bright rooms</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-pane" id="settings-pane-security">
+          <div class="select-panel">
+            <div class="select-group" style="margin-bottom:0;">
+              <div class="select-group-label">Password</div>
+              <div class="select-group-sub">Change your password.</div>
+              <div class="auth-field">
+                <label>New Password</label>
+                <div class="pw-input-wrap">
+                  <input type="password" id="settings-new-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsPasswordInput()">
+                  <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('settings-new-password', this)" aria-label="Show password">
+                    <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  </button>
+                </div>
+                <div class="pw-strength" id="settings-pw-strength">
+                  <div class="pw-strength-track">
+                    <div class="pw-strength-seg" id="settings-pw-seg-0"></div>
+                    <div class="pw-strength-seg" id="settings-pw-seg-1"></div>
+                    <div class="pw-strength-seg" id="settings-pw-seg-2"></div>
+                  </div>
+                  <div class="pw-strength-label" id="settings-pw-strength-label"></div>
+                  <ul class="pw-strength-reqs" id="settings-pw-strength-reqs">
+                    <li id="settings-pw-req-length"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>9+ characters</li>
+                    <li id="settings-pw-req-letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A letter</li>
+                    <li id="settings-pw-req-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A number</li>
+                    <li id="settings-pw-req-special"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A special character</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="auth-field">
+                <label>Confirm New Password</label>
+                <div class="pw-input-wrap">
+                  <input type="password" id="settings-confirm-password" autocomplete="new-password" placeholder="••••••••" oninput="onSettingsConfirmInput()">
+                  <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('settings-confirm-password', this)" aria-label="Show password">
+                    <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="auth-error" id="settings-password-error"></div>
+              <div class="btn-row" style="justify-content:flex-end;">
+                <button class="btn btn-primary" onclick="saveNewPassword()">Update Password</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-pane" id="settings-pane-delete">
+          <div class="select-panel danger-card">
+            <div class="select-group" style="margin-bottom:0;">
+              <div class="select-group-label" style="color:var(--record);">Delete account</div>
+              <div class="select-group-sub">Permanently deletes your profile, sessions, drill scores, resumes, and recordings. This can't be undone.</div>
+              <div id="delete-account-confirm" style="display:none;">
+                <div class="auth-field" id="delete-account-password-field">
+                  <label>Enter your password to confirm</label>
+                  <div class="pw-input-wrap">
+                    <input type="password" id="delete-account-password" autocomplete="current-password" placeholder="••••••••">
+                    <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('delete-account-password', this)" aria-label="Show password">
+                      <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                      <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a20.29 20.29 0 01-3.22 4.32M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="auth-field" id="delete-account-text-field" style="display:none;">
+                  <label>Type DELETE to confirm</label>
+                  <input type="text" id="delete-account-confirm-text" autocomplete="off" placeholder="DELETE">
+                </div>
+              </div>
+              <div class="auth-error" id="delete-account-error"></div>
+              <div class="btn-row" style="justify-content:flex-end; gap:10px;">
+                <button class="btn btn-secondary" id="delete-account-cancel-btn" onclick="cancelDeleteAccount()" style="display:none;">Cancel</button>
+                <button class="btn btn-danger" id="delete-account-btn" onclick="onDeleteAccountClick()">Delete my account</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2912,7 +3011,15 @@
     goTo('settings');
     syncUrl('/settings');
     updateThemeCards();
+    const firstNavItem = document.querySelector('#settings-nav .settings-nav-item');
+    if (firstNavItem) switchSettingsPane(firstNavItem);
+    cancelDeleteAccount();
     await loadSettingsAccountForm();
+  }
+
+  function switchSettingsPane(navItem) {
+    document.querySelectorAll('#settings-nav .settings-nav-item').forEach(b => b.classList.toggle('active', b === navItem));
+    document.querySelectorAll('.settings-pane').forEach(p => p.classList.toggle('active', p.id === navItem.dataset.pane));
   }
 
   async function loadSettingsAccountForm() {
@@ -2946,9 +3053,67 @@
     });
   }
 
-  async function saveAccountSettings() {
-    const errorEl = document.getElementById('settings-account-error');
+  // Delete account is a two-click confirm: the first click reveals a
+  // password field (or, for an OAuth-only account with no password, a
+  // "type DELETE" field) plus a Cancel button; the second click actually
+  // deletes. Keeps a single "are you sure" step without a separate modal.
+  let deleteAccountConfirmVisible = false;
+
+  function onDeleteAccountClick() {
+    document.getElementById('delete-account-error').textContent = '';
+    if (!deleteAccountConfirmVisible) {
+      deleteAccountConfirmVisible = true;
+      document.getElementById('delete-account-confirm').style.display = 'block';
+      const hasPassword = MockoAuth.hasPasswordIdentity();
+      document.getElementById('delete-account-password-field').style.display = hasPassword ? '' : 'none';
+      document.getElementById('delete-account-text-field').style.display = hasPassword ? 'none' : '';
+      document.getElementById('delete-account-cancel-btn').style.display = '';
+      document.getElementById('delete-account-btn').textContent = 'Confirm deletion';
+      return;
+    }
+    confirmDeleteAccount();
+  }
+
+  function cancelDeleteAccount() {
+    deleteAccountConfirmVisible = false;
+    document.getElementById('delete-account-confirm').style.display = 'none';
+    document.getElementById('delete-account-password').value = '';
+    document.getElementById('delete-account-confirm-text').value = '';
+    document.getElementById('delete-account-cancel-btn').style.display = 'none';
+    document.getElementById('delete-account-btn').textContent = 'Delete my account';
+    document.getElementById('delete-account-error').textContent = '';
+  }
+
+  async function confirmDeleteAccount() {
+    const errorEl = document.getElementById('delete-account-error');
     errorEl.textContent = '';
+    const btn = document.getElementById('delete-account-btn');
+    const password = document.getElementById('delete-account-password').value;
+    const confirmText = document.getElementById('delete-account-confirm-text').value;
+    btn.disabled = true;
+    try {
+      await MockoAuth.deleteAccount({ password, confirmText });
+      goToHome();
+    } catch (err) {
+      errorEl.textContent = err.message || 'Could not delete account.';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // Account and Career are two separate Settings panes but share one save
+  // path (and one underlying profile row), so a message from either needs
+  // to show regardless of which pane is currently visible.
+  function setAccountSettingsMessage(text, isSuccess) {
+    ['settings-account-error', 'settings-career-error'].forEach(id => {
+      const el = document.getElementById(id);
+      el.style.color = isSuccess ? 'var(--good)' : '';
+      el.textContent = text;
+    });
+  }
+
+  async function saveAccountSettings() {
+    setAccountSettingsMessage('');
     const fullName = document.getElementById('settings-name').value.trim();
     const username = document.getElementById('settings-username').value.trim();
     const email = document.getElementById('settings-email').value.trim();
@@ -2956,11 +3121,11 @@
     const location = document.getElementById('settings-location').value.trim();
     const industry = document.getElementById('settings-industry').value || null;
 
-    if (!fullName) { errorEl.textContent = 'Please enter your name.'; return; }
+    if (!fullName) { setAccountSettingsMessage('Please enter your name.'); return; }
     const usernameError = validateUsername(username);
-    if (usernameError) { errorEl.textContent = usernameError; return; }
+    if (usernameError) { setAccountSettingsMessage(usernameError); return; }
     const phoneError = validatePhone(phone);
-    if (phoneError) { errorEl.textContent = phoneError; return; }
+    if (phoneError) { setAccountSettingsMessage(phoneError); return; }
 
     try {
       currentProfile = await MockoProfile.updateProfile({
@@ -2969,9 +3134,9 @@
       updateHomeWelcome(currentProfile);
       updateAccountBadge(currentProfile);
     } catch (err) {
-      if (err.code === '23505') errorEl.textContent = 'That username is taken.';
-      else if (err.code === '23514') errorEl.textContent = "That username isn't allowed. Check length, characters, or content.";
-      else errorEl.textContent = err.message || 'Something went wrong.';
+      if (err.code === '23505') setAccountSettingsMessage('That username is taken.');
+      else if (err.code === '23514') setAccountSettingsMessage("That username isn't allowed. Check length, characters, or content.");
+      else setAccountSettingsMessage(err.message || 'Something went wrong.');
       return;
     }
 
@@ -2979,16 +3144,13 @@
     if (user && email && email !== user.email) {
       try {
         await MockoAuth.updateEmail(email);
-        errorEl.style.color = 'var(--good)';
-        errorEl.textContent = 'Saved. Check your new email to confirm the change.';
+        setAccountSettingsMessage('Saved. Check your new email to confirm the change.', true);
       } catch (err) {
-        errorEl.style.color = '';
-        errorEl.textContent = err.message || 'Could not update email.';
+        setAccountSettingsMessage(err.message || 'Could not update email.');
         return;
       }
     } else {
-      errorEl.style.color = 'var(--good)';
-      errorEl.textContent = 'Saved.';
+      setAccountSettingsMessage('Saved.', true);
     }
   }
 

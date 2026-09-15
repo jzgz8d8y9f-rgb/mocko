@@ -62,7 +62,43 @@ function getUser() {
   return currentUser;
 }
 
+function hasPasswordIdentity() {
+  return !!(currentUser?.identities || []).find((i) => i.provider === 'email');
+}
+
+// Deletes the signed-in user's account and all their data. Requires a
+// re-entered password first (or, for an OAuth-only account with no
+// password to check, typing "DELETE") so this destructive action can't be
+// triggered by a stray click. Storage objects aren't relational, so they're
+// removed here client-side before the DB row (and everything that cascades
+// from it -- profile, sessions, resumes, drill scores) is deleted server-side
+// by the delete_own_account() function.
+async function deleteAccount({ password, confirmText } = {}) {
+  const user = currentUser;
+  if (!user) throw new Error('Not signed in');
+
+  if (hasPasswordIdentity()) {
+    if (!password) throw new Error('Enter your password to confirm.');
+    const { error: reauthError } = await supabase.auth.signInWithPassword({ email: user.email, password });
+    if (reauthError) throw new Error('Incorrect password.');
+  } else if ((confirmText || '').trim().toUpperCase() !== 'DELETE') {
+    throw new Error('Type DELETE to confirm.');
+  }
+
+  const buckets = ['avatars', 'banners', 'resumes', 'recordings'];
+  for (const bucket of buckets) {
+    const { data: files } = await supabase.storage.from(bucket).list(user.id);
+    if (files && files.length) {
+      await supabase.storage.from(bucket).remove(files.map((f) => `${user.id}/${f.name}`));
+    }
+  }
+
+  const { error } = await supabase.rpc('delete_own_account');
+  if (error) throw error;
+  await supabase.auth.signOut();
+}
+
 window.MockoAuth = {
   signUp, signIn, signOut, getUser, signInWithGoogle, signInWithLinkedIn,
-  resetPassword, updatePassword, updateEmail,
+  resetPassword, updatePassword, updateEmail, hasPasswordIdentity, deleteAccount,
 };
