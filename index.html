@@ -1516,17 +1516,12 @@
           <label>Location</label>
           <input type="text" id="settings-location" placeholder="Chicago, IL">
         </div>
-        <div class="auth-field">
+        <div class="auth-field edu-school-field">
           <label>Industry</label>
-          <select id="settings-industry">
-            <option value="">Not set</option>
-            <option value="general">General</option>
-            <option value="finance">General Finance</option>
-            <option value="ib">Investment Banking</option>
-            <option value="consulting">Consulting</option>
-            <option value="pe">Private Equity</option>
-            <option value="quant">Quant</option>
-          </select>
+          <input type="text" class="edu-school-search" id="settings-industry-search" placeholder="Search or add your industry..." autocomplete="off"
+            oninput="onSettingsIndustryInput(this.value)" onfocus="onSettingsIndustryInput(this.value)">
+          <input type="hidden" id="settings-industry">
+          <div class="edu-school-dropdown" id="settings-industry-dropdown" style="display:none;"></div>
         </div>
         <div class="auth-field">
           <label>Email</label>
@@ -2808,6 +2803,7 @@
       document.getElementById('settings-username').value = profile.username || '';
       document.getElementById('settings-location').value = profile.location || '';
       document.getElementById('settings-industry').value = profile.industry || '';
+      document.getElementById('settings-industry-search').value = profile.industry ? (INDUSTRY_LABELS[profile.industry] || profile.industry) : '';
       document.getElementById('settings-phone').value = profile.phone_number || '';
       settingsSelectedGender = profile.gender || null;
       document.querySelectorAll('#settings-gender-row .gender-option').forEach(el => {
@@ -3252,7 +3248,20 @@
   // opens a dropdown of finance sub-industries (more top-level dropdowns,
   // e.g. Tech, land here later as the bank grows).
   const FINANCE_INDUSTRIES = ['finance', 'ib', 'consulting', 'pe', 'quant'];
-  const INDUSTRY_LABELS = { general: 'General', finance: 'General Finance', ib: 'Investment Banking', consulting: 'Consulting', pe: 'Private Equity', quant: 'Quant' };
+  // The interview-mode picker only offers the fixed set above (it maps straight
+  // to the question bank's industry tags). Your profile's industry field is a
+  // separate, broader, freely-searchable label -- these are its suggestions.
+  const INDUSTRY_LABELS = {
+    general: 'General', finance: 'General Finance', ib: 'Investment Banking', consulting: 'Consulting',
+    pe: 'Private Equity', quant: 'Quant',
+    'venture-capital': 'Venture Capital', 'hedge-fund': 'Hedge Fund', 'asset-management': 'Asset Management',
+    'wealth-management': 'Wealth Management', 'equity-research': 'Equity Research', 'sales-trading': 'Sales & Trading',
+    'corporate-finance': 'Corporate Finance', fpa: 'FP&A', 'real-estate': 'Real Estate',
+    'risk-management': 'Risk Management', 'investor-relations': 'Investor Relations', accounting: 'Accounting / Audit',
+    insurance: 'Insurance / Actuarial', fintech: 'Fintech', 'commercial-banking': 'Commercial / Retail Banking',
+    'corporate-development': 'Corporate Development / M&A',
+  };
+  const CANONICAL_INDUSTRIES = Object.entries(INDUSTRY_LABELS).map(([key, label]) => ({ key, label }));
 
   // Fixed list so the same school is stored identically for every user --
   // this is what makes a future "find people from your school" feature
@@ -4387,7 +4396,7 @@
     document.getElementById('profile-view-handle').textContent = `@${profile.username} · Joined ${joined}`;
 
     setProfileMetaLine('profile-view-location', profile.location, 'pin');
-    setProfileMetaLine('profile-view-industry', profile.industry && INDUSTRY_LABELS[profile.industry], 'briefcase');
+    setProfileMetaLine('profile-view-industry', profile.industry && (INDUSTRY_LABELS[profile.industry] || profile.industry), 'briefcase');
 
     document.getElementById('profile-view-bio').textContent = profile.bio || 'No bio yet.';
     renderEducationView(profile.education || []);
@@ -4505,6 +4514,33 @@
   function removeEducationRow(i) {
     profileEducationDraft.splice(i, 1);
     renderEducationEditRows();
+  }
+
+  // --- Settings: industry search/add picker, same pattern as the school picker above ---
+  function onSettingsIndustryInput(query) {
+    const dropdown = document.getElementById('settings-industry-dropdown');
+    if (!dropdown) return;
+    const q = query.trim().toLowerCase();
+    if (!q) document.getElementById('settings-industry').value = '';
+    const matches = (q ? CANONICAL_INDUSTRIES.filter(ind => ind.label.toLowerCase().includes(q)) : CANONICAL_INDUSTRIES).slice(0, 8);
+    const exactMatch = CANONICAL_INDUSTRIES.some(ind => ind.label.toLowerCase() === q);
+    let html = matches.map(ind => `
+      <div class="edu-school-option" data-key="${escapeHtml(ind.key)}" data-label="${escapeHtml(ind.label)}" onclick="handleSettingsIndustryOptionClick(this)">${escapeHtml(ind.label)}</div>`).join('');
+    if (q && !exactMatch) {
+      html += `<div class="edu-school-option add-new" data-custom="1" data-label="${escapeHtml(query.trim())}" onclick="handleSettingsIndustryOptionClick(this)">+ Can't find it? Add "${escapeHtml(query.trim())}"</div>`;
+    }
+    dropdown.innerHTML = html || '<div class="edu-school-option" style="cursor:default;">No matches</div>';
+    dropdown.style.display = 'block';
+  }
+
+  function handleSettingsIndustryOptionClick(el) {
+    selectSettingsIndustry(el.dataset.custom ? el.dataset.label : el.dataset.key, el.dataset.label);
+  }
+
+  function selectSettingsIndustry(value, label) {
+    document.getElementById('settings-industry').value = value;
+    document.getElementById('settings-industry-search').value = label;
+    document.getElementById('settings-industry-dropdown').style.display = 'none';
   }
 
   async function saveBio() {
