@@ -749,6 +749,15 @@
   .league-dots span.active { background: var(--good); }
   .league-empty { text-align: center; font-size: 13.5px; color: var(--text-muted); padding: 18px 0; }
 
+  /* Full-page leaderboard: arrow-flanked drill name instead of a <select> */
+  .lb-drill-switch { display: flex; align-items: center; justify-content: center; gap: 22px; margin-bottom: 6px; }
+  .lb-arrow { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+  .lb-arrow:hover { color: var(--text); border-color: var(--text-muted); }
+  .lb-arrow svg { width: 16px; height: 16px; }
+  .lb-dots { display: flex; justify-content: center; gap: 5px; margin-bottom: 22px; }
+  .lb-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--line); }
+  .lb-dots span.active { background: var(--good); width: 14px; border-radius: 4px; }
+
   .play-link { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13.5px; font-weight: 600; text-decoration: none; color: var(--good); }
   .play-link svg { width: 13px; height: 13px; }
 
@@ -2459,10 +2468,14 @@
   <!-- DRILL LEADERBOARD -->
   <div class="screen" id="screen-drill-leaderboard">
     <button class="back-btn" onclick="backFromLeaderboard()">← Back</button>
-    <div class="hero">
-      <h1 class="display" id="leaderboard-drill-title">Leaderboard</h1>
+    <div class="lb-drill-switch">
+      <button class="lb-arrow" onclick="shiftLeaderboardDrill(-1)" aria-label="Previous drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="hero" style="margin-bottom:0;">
+        <h1 class="display" id="leaderboard-drill-title">Leaderboard</h1>
+      </div>
+      <button class="lb-arrow" onclick="shiftLeaderboardDrill(1)" aria-label="Next drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
     </div>
-    <select class="resume-select" id="leaderboard-drill-select" style="max-width:280px; margin:0 auto 20px; display:block;" onchange="switchLeaderboardDrill(this.value)"></select>
+    <div class="lb-dots" id="leaderboard-dots"></div>
     <div class="pill-row" id="leaderboard-period-row" style="margin-bottom:20px;">
       <button class="pill-btn selected" data-period="daily">Today</button>
       <button class="pill-btn" data-period="weekly">Weekly</button>
@@ -6017,23 +6030,30 @@
   const ALL_DRILL_KEYS = ['arithmetic', 'arithmetic_hard', 'risk', 'sequence', 'digits', 'stop', 'cards', 'arrows', 'towers', 'magnitudes', 'shapes', 'nback'];
   let leaderboardReturnScreen = 'drill-result';
 
-  function populateLeaderboardDrillSelect(selectedKey) {
-    const select = document.getElementById('leaderboard-drill-select');
-    select.innerHTML = ALL_DRILL_KEYS.map((key) => `<option value="${key}">${drillMeta[key].label}</option>`).join('');
-    select.value = selectedKey;
+  function renderLeaderboardDots(selectedKey) {
+    const idx = ALL_DRILL_KEYS.indexOf(selectedKey);
+    document.getElementById('leaderboard-dots').innerHTML = ALL_DRILL_KEYS.map((_, i) =>
+      `<span class="${i === idx ? 'active' : ''}"></span>`).join('');
   }
 
   function switchLeaderboardDrill(drillKey) {
     currentDrill = drillKey;
     document.getElementById('leaderboard-drill-title').textContent = (drillMeta[drillKey] || {}).label || 'Leaderboard';
+    renderLeaderboardDots(drillKey);
     const period = document.querySelector('#leaderboard-period-row .pill-btn.selected').dataset.period;
     loadLeaderboard(drillKey, period);
   }
 
+  function shiftLeaderboardDrill(dir) {
+    const idx = ALL_DRILL_KEYS.indexOf(currentDrill);
+    const nextIdx = (idx + dir + ALL_DRILL_KEYS.length) % ALL_DRILL_KEYS.length;
+    switchLeaderboardDrill(ALL_DRILL_KEYS[nextIdx]);
+  }
+
   function renderLeaderboardScreen(drillKey) {
     currentDrill = drillKey;
-    populateLeaderboardDrillSelect(drillKey);
     document.getElementById('leaderboard-drill-title').textContent = (drillMeta[drillKey] || {}).label || 'Leaderboard';
+    renderLeaderboardDots(drillKey);
     document.querySelectorAll('#leaderboard-period-row .pill-btn').forEach(b => b.classList.toggle('selected', b.dataset.period === 'daily'));
     goTo('drill-leaderboard');
     loadLeaderboard(drillKey, 'daily');
