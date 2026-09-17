@@ -126,9 +126,17 @@ async function buildFullInterviewSet({ difficulty, category, industry, resumeQue
   return questions;
 }
 
-async function buildQuickRoundSet({ difficulty, category, industry }) {
+async function buildShortSessionSet({ difficulty, category, industry }) {
   const guideQuestions = await fetchQuestions({ difficulty, industry, count: 3, category });
   return guideQuestions.map((q, i) => ({ ...q, index: i, source: 'guide' }));
 }
 
-window.MockoQuestions = { fetchQuestions, fetchOpeners, fetchClosingQuestions, buildFullInterviewSet, buildQuickRoundSet };
+async function buildOneQuestionSet({ difficulty, category, industry }) {
+  const guideQuestions = await fetchQuestions({ difficulty, industry, count: 1, category });
+  return guideQuestions.map((q, i) => ({ ...q, index: i, source: 'guide' }));
+}
+
+window.MockoQuestions = {
+  fetchQuestions, fetchOpeners, fetchClosingQuestions,
+  buildFullInterviewSet, buildShortSessionSet, buildOneQuestionSet,
+};

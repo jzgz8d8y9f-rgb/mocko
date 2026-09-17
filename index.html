@@ -164,47 +164,6 @@
   @keyframes sprint-bob { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-3px) rotate(-6deg); } }
   @keyframes belt-scroll-reverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 6; } }
 
-  /* Toggle-card mascots: static by default, animate on hover. */
-  .mascot-toggle-card { display: flex; align-items: center; gap: 16px; }
-  .mascot-toggle-card .card-mascot { flex-shrink: 0; }
-  .mascot-toggle-card > div { flex: 1; }
-
-  .speed-mascot .leg-l, .speed-mascot .leg-r { transform-origin: 20px 23px; }
-  .speed-mascot .arm-l, .speed-mascot .arm-r { transform-origin: 20px 16px; }
-  .speed-mascot .shin-l-pivot { transform-origin: 18px 27px; }
-  .speed-mascot .shin-r-pivot { transform-origin: 22px 27px; }
-  .speed-mascot .forearm-l-pivot { transform-origin: 17px 19px; }
-  .speed-mascot .forearm-r-pivot { transform-origin: 23px 19px; }
-
-  /* Frozen pose at the apex of the stride -- both legs extended and
-     spread to their widest, scissor-like, rather than mid-recovery. */
-  .speed-mascot .sprint-body { transform: rotate(-10deg); }
-  .speed-mascot .leg-l { transform: rotate(-48deg); }
-  .speed-mascot .leg-r { transform: rotate(48deg); }
-  .speed-mascot .shin-l-pivot { transform: rotate(0deg); }
-  .speed-mascot .shin-r-pivot { transform: rotate(10deg); }
-  .speed-mascot .arm-l { transform: rotate(48deg); }
-  .speed-mascot .arm-r { transform: rotate(-48deg); }
-  .speed-mascot .forearm-l-pivot { transform: rotate(15deg); }
-  .speed-mascot .forearm-r-pivot { transform: rotate(15deg); }
-  .speed-mascot .belt { stroke: var(--text-muted); stroke-width: 1.1; stroke-dasharray: 2 3; opacity: 0.6; }
-
-  [data-len="Quick"]:hover .speed-mascot .leg-l { animation: sprint-leg-a .55s ease-in-out infinite; }
-  [data-len="Quick"]:hover .speed-mascot .leg-r { animation: sprint-leg-b .55s ease-in-out infinite; }
-  [data-len="Quick"]:hover .speed-mascot .arm-l { animation: sprint-arm-b .55s ease-in-out infinite; }
-  [data-len="Quick"]:hover .speed-mascot .arm-r { animation: sprint-arm-a .55s ease-in-out infinite; }
-  [data-len="Quick"]:hover .speed-mascot .shin-l-pivot { animation: sprint-knee-a .55s ease-in-out infinite; }
-  [data-len="Quick"]:hover .speed-mascot .shin-r-pivot { animation: sprint-knee-b .55s ease-in-out infinite; }
-  [data-len="Quick"]:hover .speed-mascot .forearm-l-pivot { animation: sprint-knee-b .55s ease-in-out infinite; }
-  [data-len="Quick"]:hover .speed-mascot .forearm-r-pivot { animation: sprint-knee-a .55s ease-in-out infinite; }
-  [data-len="Quick"]:hover .speed-mascot .sprint-body { animation: sprint-bob .55s ease-in-out infinite; }
-
-  /* Full Interview mascot: figure in front of a monitor, hands gesture on hover. */
-  .full-mascot .full-arm-l, .full-mascot .full-arm-r { transform-origin: 10px 14px; }
-  [data-len="Full"]:hover .full-mascot .full-arm-l { animation: talk-hand-a .5s ease-in-out infinite; }
-  [data-len="Full"]:hover .full-mascot .full-arm-r { animation: talk-hand-b .5s ease-in-out infinite; }
-  @keyframes talk-hand-a { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-22deg); } }
-  @keyframes talk-hand-b { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(22deg); } }
 
   /* Icon chips: colored-tint circular/rounded backgrounds behind SVG icons,
      reused for hub cards, drill cards (tinted by data-type), and the auth
@@ -262,10 +221,22 @@
   }
 
   .toggle-row { display: flex; gap: 10px; }
+  .toggle-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 480px) { .toggle-row-3 { grid-template-columns: 1fr; } }
   .toggle-card { flex: 1; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.15s; }
   .toggle-card.selected { border-color: var(--good); background: rgba(39,203,187,0.08); }
   .toggle-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
   .toggle-card p { font-size: 13.5px; color: var(--text-muted); }
+  .toggle-card-time { font-size: 12.5px; color: var(--text-muted); margin-top: 1px; }
+
+  .setup-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; align-items: start; }
+  .setup-side { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; position: sticky; top: 20px; }
+  .setup-side-title { font-family: 'Libre Baskerville', serif; font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+  .setup-side-row { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+  .setup-side-row:last-of-type { border-bottom: none; }
+  .setup-side-row span:first-child { color: var(--text-muted); flex-shrink: 0; }
+  .setup-side-row span:last-child { font-weight: 600; text-align: right; }
+  @media (max-width: 720px) { .setup-layout { grid-template-columns: 1fr; } .setup-side { position: static; } }
 
   .switch-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-top: 1px solid var(--line); }
   .switch-item:first-child { border-top: none; padding-top: 4px; }
@@ -282,12 +253,16 @@
     border: 1px solid var(--line); background: var(--surface-2); color: var(--text-muted); cursor: pointer; transition: all 0.15s;
   }
   .pill-btn.selected { background: var(--cue); color: var(--bg); border-color: var(--cue); }
+  .pill-btn:disabled { opacity: 0.35; cursor: not-allowed; }
   .industry-dropdown-wrap { position: relative; display: inline-block; }
   .industry-dropdown-wrap .pill-btn { display: inline-flex; align-items: center; gap: 6px; }
   .industry-dropdown-wrap .pill-chevron { transition: transform 0.15s; }
   .industry-dropdown-wrap .pill-btn.selected .pill-chevron { color: var(--bg); }
   .industry-dropdown { left: 0; right: auto; }
   .industry-dropdown button.selected { background: var(--surface-2); color: var(--good); font-weight: 700; }
+  .difficulty-pill-row .pill-btn[data-difficulty="easy"] { color: var(--good); border-color: rgba(34,195,182,0.35); }
+  .difficulty-pill-row .pill-btn[data-difficulty="medium"] { color: var(--warn); border-color: rgba(233,162,59,0.35); }
+  .difficulty-pill-row .pill-btn[data-difficulty="hard"] { color: var(--record); border-color: rgba(230,57,70,0.35); }
   .difficulty-pill-row .pill-btn[data-difficulty="easy"].selected { background: var(--good); border-color: var(--good); color: var(--bg); }
   .difficulty-pill-row .pill-btn[data-difficulty="medium"].selected { background: var(--warn); border-color: var(--warn); color: var(--bg); }
   .difficulty-pill-row .pill-btn[data-difficulty="hard"].selected { background: var(--record); border-color: var(--record); color: white; }
@@ -295,9 +270,6 @@
   .difficulty-tag[data-difficulty="easy"] { background: rgba(39,203,187,0.16); color: var(--good); }
   .difficulty-tag[data-difficulty="medium"] { background: rgba(233,162,59,0.18); color: var(--warn); }
   .difficulty-tag[data-difficulty="hard"] { background: rgba(230,57,70,0.16); color: var(--record); }
-  .count-select { font-family: 'Work Sans'; font-size: 15px; font-weight: 600; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer; }
-  .count-select:focus { outline: none; border-color: var(--text-muted); }
-  .count-estimate { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
   .pill-btn:hover:not(.selected) { border-color: var(--text-muted); color: var(--text); }
 
   .filter-dropdowns { display: flex; gap: 10px; margin-bottom: 20px; }
@@ -2096,6 +2068,8 @@
       <p id="setup-sub">Choose your format and difficulty to begin.</p>
     </div>
 
+    <div class="setup-layout">
+    <div class="setup-main">
     <div class="select-panel">
       <div class="select-group">
         <div class="select-group-label">Industry</div>
@@ -2140,38 +2114,11 @@
 
         <div class="select-group">
           <div class="select-group-label">Format</div>
-          <div class="select-group-sub">Speed Round is one question. Full Interview runs several.</div>
-          <div class="toggle-row" id="length-row">
-            <div class="toggle-card mascot-toggle-card" data-len="Quick">
-              <svg class="card-mascot speed-mascot" width="52" height="52" viewBox="0 0 40 40" fill="none">
-                <g class="sprint-body">
-                  <circle cx="20" cy="9" r="4" fill="none" stroke="var(--text)" stroke-width="2"/>
-                  <path d="M20,13 Q19,18 20,23" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round" fill="none"/>
-                  <g class="leg-l"><line x1="20" y1="23" x2="18" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-l-pivot"><line x1="18" y1="27" x2="17" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-                  <g class="leg-r"><line x1="20" y1="23" x2="22" y2="27" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="shin-r-pivot"><line x1="22" y1="27" x2="23" y2="31" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-                  <g class="arm-l"><line x1="20" y1="16" x2="17" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-l-pivot"><line x1="17" y1="19" x2="16" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-                  <g class="arm-r"><line x1="20" y1="16" x2="23" y2="19" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/><g class="forearm-r-pivot"><line x1="23" y1="19" x2="24" y2="22" stroke="var(--text)" stroke-width="1.9" stroke-linecap="round"/></g></g>
-                </g>
-                <line class="belt" x1="12" y1="32" x2="28" y2="32"/>
-              </svg>
-              <div><h4>Speed Round</h4><p>1 question</p></div>
-            </div>
-            <div class="toggle-card mascot-toggle-card" data-len="Full">
-              <svg class="card-mascot full-mascot" width="52" height="52" viewBox="0 0 40 40" fill="none">
-                <rect x="20" y="9" width="15" height="11" rx="1.5" fill="none" stroke="var(--text-muted)" stroke-width="1.3"/>
-                <line x1="27.5" y1="20" x2="27.5" y2="23" stroke="var(--text-muted)" stroke-width="1.3"/>
-                <line x1="23" y1="23" x2="32" y2="23" stroke="var(--text-muted)" stroke-width="1.3"/>
-                <g class="full-body">
-                  <circle cx="10" cy="9" r="3.5" fill="none" stroke="var(--text)" stroke-width="1.8"/>
-                  <path d="M10,12.5 Q9,17 10,21" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round" fill="none"/>
-                  <line x1="10" y1="21" x2="8" y2="26" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/>
-                  <line x1="10" y1="21" x2="12" y2="26" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/>
-                  <g class="full-arm-l"><line x1="10" y1="14" x2="6" y2="17" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/></g>
-                  <g class="full-arm-r"><line x1="10" y1="14" x2="14" y2="17" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round"/></g>
-                </g>
-              </svg>
-              <div><h4>Full Interview</h4><p>Multiple questions</p></div>
-            </div>
+          <div class="select-group-sub">Pick how many questions, from a quick warm-up to a full set.</div>
+          <div class="toggle-row toggle-row-3" id="length-row">
+            <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>1 question</p><p class="toggle-card-time">~3 min</p></div>
+            <div class="toggle-card" data-len="Short"><h4>Short Session</h4><p>3 questions</p><p class="toggle-card-time">~8 min</p></div>
+            <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions</p><p class="toggle-card-time">~15 min</p></div>
           </div>
         </div>
 
@@ -2187,32 +2134,17 @@
           </div>
         </div>
 
-        <div class="divider" id="count-divider" style="display:none;"></div>
-        <div class="select-group" id="count-group" style="display:none; margin-bottom:0;">
-          <div class="select-group-label">Number of Questions</div>
-          <select class="count-select" id="count-select">
-            <option value="">Choose a count...</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-          </select>
-          <div class="count-estimate" id="count-estimate"></div>
-        </div>
       </div>
 
       <!-- MOCK INTERVIEW controls -->
       <div id="setup-voice-block" style="display:none;">
         <div class="select-group">
           <div class="select-group-label">Length of Session</div>
-          <div class="select-group-sub">Quick Round is three fast questions. Full Interview runs a proper five-question set.</div>
-          <div class="toggle-row" id="voice-length-row">
-            <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>3 questions · ~5 min</p></div>
-            <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions · ~20 min</p></div>
+          <div class="select-group-sub">Pick how many questions, from a quick warm-up to a full set.</div>
+          <div class="toggle-row toggle-row-3" id="voice-length-row">
+            <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>1 question</p><p class="toggle-card-time">~2 min</p></div>
+            <div class="toggle-card" data-len="Short"><h4>Short Session</h4><p>3 questions</p><p class="toggle-card-time">~5 min</p></div>
+            <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions</p><p class="toggle-card-time">~20 min</p></div>
           </div>
         </div>
 
@@ -2259,9 +2191,16 @@
         </div>
       </div>
     </div>
+    </div>
 
-    <div class="btn-row" style="justify-content:flex-end">
-      <button class="btn btn-primary" id="setup-next" disabled onclick="beginSession()">Begin →</button>
+    <div class="setup-side">
+      <div class="setup-side-title">Your session</div>
+      <div class="setup-side-row"><span>Industry</span><span id="setup-summary-industry">General</span></div>
+      <div class="setup-side-row"><span id="setup-summary-length-label">Length</span><span id="setup-summary-length">—</span></div>
+      <div class="setup-side-row" id="setup-summary-type-row" style="display:none;"><span>Format</span><span id="setup-summary-type">—</span></div>
+      <div class="setup-side-row"><span>Difficulty</span><span id="setup-summary-difficulty">—</span></div>
+      <button class="btn btn-primary" id="setup-next" disabled onclick="beginSession()" style="width:100%; margin-top:16px;">Begin →</button>
+    </div>
     </div>
   </div>
 
@@ -2794,7 +2733,7 @@
 <script type="module" src="js/voice.js"></script>
 <script type="module" src="js/auth.js"></script>
 <script>
-  const state = { type: null, length: null, mode: null, difficulty: null, questionCount: null, industry: null };
+  const state = { type: null, length: null, mode: null, difficulty: null, industry: null };
   let pendingAuthAction = null;
   let currentUserProfile = null;
 
@@ -4133,42 +4072,53 @@
     document.querySelectorAll('#length-row .toggle-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     state.length = el.dataset.len;
-    const isFull = state.length === 'Full';
-    document.getElementById('count-divider').style.display = isFull ? '' : 'none';
-    document.getElementById('count-group').style.display = isFull ? '' : 'none';
     checkSetupReady();
+    updateSetupSummary();
   }));
   document.querySelectorAll('#voice-length-row .toggle-card').forEach(el => el.addEventListener('click', () => {
     document.querySelectorAll('#voice-length-row .toggle-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     state.length = el.dataset.len;
     checkSetupReady();
+    updateSetupSummary();
   }));
   document.querySelectorAll('#type-row .pill-btn').forEach(el => el.addEventListener('click', () => {
     document.querySelectorAll('#type-row .pill-btn').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     state.type = el.dataset.type;
     checkSetupReady();
+    updateSetupSummary();
   }));
   document.querySelectorAll('#difficulty-row .pill-btn').forEach(el => el.addEventListener('click', () => {
     document.querySelectorAll('#difficulty-row .pill-btn').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     state.difficulty = el.dataset.difficulty;
     checkSetupReady();
+    updateSetupSummary();
   }));
   document.querySelectorAll('#voice-difficulty-row .pill-btn').forEach(el => el.addEventListener('click', () => {
     document.querySelectorAll('#voice-difficulty-row .pill-btn').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     state.difficulty = el.dataset.difficulty;
     checkSetupReady();
+    updateSetupSummary();
   }));
-  document.getElementById('count-select').addEventListener('change', (e) => {
-    const n = parseInt(e.target.value, 10);
-    state.questionCount = n || null;
-    const estimateEl = document.getElementById('count-estimate');
-    estimateEl.textContent = n ? `Takes about ${Math.round(n * 2.5)} minutes.` : '';
-    checkSetupReady();
-  });
+
+  // Live "Your session" sidebar summary -- mirrors whatever's currently
+  // selected so Begin never feels like a leap into the unknown.
+  const LENGTH_CARD_LABELS = { Quick: 'Quick Round', Short: 'Short Session', Full: 'Full Interview' };
+  const TYPE_SUMMARY_LABELS = { Behavioral: 'Behavioral only', Technical: 'Technical only', Both: 'Both' };
+  function updateSetupSummary() {
+    const isRecord = state.mode === 'record';
+    document.getElementById('setup-summary-industry').textContent = INDUSTRY_LABELS[state.industry] || 'General';
+    document.getElementById('setup-summary-length-label').textContent = isRecord ? 'Format' : 'Length';
+    document.getElementById('setup-summary-length').textContent = state.length ? LENGTH_CARD_LABELS[state.length] : '—';
+    document.getElementById('setup-summary-type-row').style.display = isRecord ? 'none' : '';
+    if (!isRecord) document.getElementById('setup-summary-type').textContent = TYPE_SUMMARY_LABELS[state.type] || '—';
+    const diffEl = document.getElementById('setup-summary-difficulty');
+    diffEl.textContent = state.difficulty ? state.difficulty[0].toUpperCase() + state.difficulty.slice(1) : '—';
+    diffEl.style.color = { easy: 'var(--good)', medium: 'var(--warn)', hard: 'var(--record)' }[state.difficulty] || '';
+  }
   // Industry picker: a flat "General" pill plus a "Finance" pill that
   // opens a dropdown of finance sub-industries (more top-level dropdowns,
   // e.g. Tech, land here later as the bank grows).
@@ -4301,18 +4251,22 @@
 
     // General is behavioral-only for now -- Technical/Both need a real
     // technical question bank, which only the Finance sub-industries have.
+    // Shown greyed-out and disabled rather than hidden, so it's clear
+    // *why* they're unavailable instead of them just vanishing.
     const generalOnly = state.industry === 'general';
     const technicalBtn = document.querySelector('#type-row .pill-btn[data-type="Technical"]');
     const bothBtn = document.querySelector('#type-row .pill-btn[data-type="Both"]');
     const behavioralBtn = document.querySelector('#type-row .pill-btn[data-type="Behavioral"]');
-    if (technicalBtn) technicalBtn.style.display = generalOnly ? 'none' : '';
-    if (bothBtn) bothBtn.style.display = generalOnly ? 'none' : '';
+    const noTechnicalReason = 'Pick a Finance industry to unlock technical questions';
+    if (technicalBtn) { technicalBtn.disabled = generalOnly; technicalBtn.title = generalOnly ? noTechnicalReason : ''; }
+    if (bothBtn) { bothBtn.disabled = generalOnly; bothBtn.title = generalOnly ? noTechnicalReason : ''; }
     if (generalOnly && state.type !== 'Behavioral' && behavioralBtn) {
       document.querySelectorAll('#type-row .pill-btn').forEach(c => c.classList.remove('selected'));
       behavioralBtn.classList.add('selected');
       state.type = 'Behavioral';
       checkSetupReady();
     }
+    updateSetupSummary();
   }
 
   function selectIndustry(el) {
@@ -4344,7 +4298,7 @@
   function checkSetupReady() {
     let ready;
     if (state.mode === 'record') {
-      ready = !!state.length && !!state.difficulty && (state.length !== 'Full' || !!state.questionCount);
+      ready = !!state.length && !!state.difficulty;
     } else {
       ready = !!state.length && !!state.type && !!state.difficulty;
     }
@@ -4475,6 +4429,17 @@
     }
     hideResumePrompt();
 
+    // Length/Format/Difficulty are per-mode choices -- switching modes
+    // shouldn't carry a stale selection into the new mode's (unselected)
+    // cards while the live summary sidebar claims it's still chosen.
+    if (state.mode !== mode) {
+      state.length = null;
+      state.type = null;
+      state.difficulty = null;
+      document.querySelectorAll(
+        '#length-row .toggle-card, #voice-length-row .toggle-card, #type-row .pill-btn, #difficulty-row .pill-btn, #voice-difficulty-row .pill-btn'
+      ).forEach(c => c.classList.remove('selected'));
+    }
     state.mode = mode;
     document.getElementById('setup-record-block').style.display = mode === 'record' ? 'block' : 'none';
     document.getElementById('setup-voice-block').style.display = mode === 'voice' ? 'block' : 'none';
@@ -4505,6 +4470,7 @@
     }
 
     checkSetupReady();
+    updateSetupSummary();
     const seenField = mode === 'record' ? 'seen_record_tutorial' : 'seen_voice_tutorial';
     if (currentUserProfile && currentUserProfile[seenField] === false) {
       showInterviewCarousel(mode, 'auto');
@@ -4776,8 +4742,12 @@
   let sessionQuestionIndex = 0;
   let sessionResults = [];
 
+  // Fixed count per length tier now (Quick/Short/Full = 1/3/5) -- no more
+  // manual "choose a count" picker for the Full tier.
+  const RECORD_LENGTH_COUNTS = { Quick: 1, Short: 3, Full: 5 };
+
   async function prepareRecordQuestions() {
-    const count = state.length === 'Full' ? (state.questionCount || 3) : 1;
+    const count = RECORD_LENGTH_COUNTS[state.length] || 1;
     const useResume = document.getElementById('resume-tailor-checkbox').checked;
     if (useResume) {
       const primary = await MockoResume.getPrimaryResume();
@@ -4790,7 +4760,7 @@
       sessionQuestions = data.questions;
     } else {
       let qs;
-      if (state.length === 'Full' && count > 1) {
+      if (count > 1) {
         const [opener] = await MockoQuestions.fetchOpeners(1);
         const guideQs = await MockoQuestions.fetchQuestions({ difficulty: state.difficulty, industry: state.industry, count: count - 1 });
         qs = opener ? [opener, ...guideQs] : guideQs;
@@ -5969,7 +5939,9 @@
 
     const questions = isFull
       ? await MockoQuestions.buildFullInterviewSet({ difficulty: state.difficulty, category, industry: state.industry, resumeQuestions })
-      : await MockoQuestions.buildQuickRoundSet({ difficulty: state.difficulty, category, industry: state.industry });
+      : state.length === 'Short'
+        ? await MockoQuestions.buildShortSessionSet({ difficulty: state.difficulty, category, industry: state.industry })
+        : await MockoQuestions.buildOneQuestionSet({ difficulty: state.difficulty, category, industry: state.industry });
 
     const session = await MockoVoiceSession.insertSession({
       difficulty: state.difficulty, format: state.type, length: state.length, firstQuestionText: questions[0].text,
