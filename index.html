@@ -352,7 +352,9 @@
   .mode-icon svg { width: 24px; height: 24px; }
   .mode-heading { flex: 1; min-width: 0; }
   .mode-eyebrow { font-size: 12px; letter-spacing: 0.12em; color: var(--mode-accent); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
-  .mode-card h3 { font-family: 'Libre Baskerville', serif; font-size: 23px; font-weight: 700; margin: 0; }
+  .mode-card h3 { font-family: 'Libre Baskerville', serif; font-size: 23px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 9px; }
+  .mode-help-btn { width: 21px; height: 21px; border-radius: 50%; border: 1px solid var(--text-muted); background: none; color: var(--text-muted); font-family: 'Work Sans'; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.15s, color 0.15s; }
+  .mode-help-btn:hover { color: var(--text); border-color: var(--text); }
   .mode-card p.mode-desc { color: var(--text-muted); font-size: 15px; line-height: 1.6; max-width: 56ch; margin: 0 0 18px; }
   .mode-card p.mode-desc b { color: var(--text); font-weight: 600; }
 
@@ -425,13 +427,33 @@
   .pointers.good li::before { content: '+'; position: absolute; left: 0; color: var(--good); font-weight: 700; }
   .pointers.work li::before { content: '—'; position: absolute; left: 0; color: var(--warn); }
 
-  .tutorial-steps { list-style: none; counter-reset: step; text-align: left; max-width: 440px; margin: 0 auto; }
-  .tutorial-steps li { position: relative; padding-left: 36px; margin-bottom: 15px; font-size: 14.5px; line-height: 1.55; color: var(--text); }
-  .tutorial-steps li::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 0; width: 23px; height: 23px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); color: var(--text-muted); font-size: 12.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-  .interview-tutorial-demo { display: flex; align-items: center; justify-content: center; min-height: 120px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; margin: 0 auto 24px; padding: 18px; max-width: 340px; }
-  .interview-tutorial-demo .voice-orb { width: 76px; height: 76px; margin: 0; }
-  .interview-tutorial-demo .voice-orb-core { width: 50px; height: 50px; }
-  .interview-tutorial-demo .onair-badge { font-size: 14px; }
+  /* Interview tutorial: click-through carousel shown before setup */
+  .ic-frame { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; min-height: 480px; }
+  .ic-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .ic-skip { background: none; border: none; color: var(--text-muted); font-family: 'Work Sans'; font-size: 13px; cursor: pointer; text-decoration: underline; padding: 0; }
+  .ic-skip:hover { color: var(--text); }
+  .ic-count { font-family: 'Work Sans'; font-size: 12.5px; font-weight: 700; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .ic-hero { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px 0; min-height: 160px; }
+  .ic-orb { width: 140px; height: 140px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 35% 30%, rgba(34,195,182,0.3), rgba(34,195,182,0.05) 70%); border: 1px solid rgba(34,195,182,0.3); }
+  .ic-orb svg { width: 50px; height: 50px; color: var(--good); }
+  .ic-content { text-align: center; padding: 0 14px; }
+  .ic-heading { font-family: 'Libre Baskerville', serif; font-size: 24px; font-weight: 700; margin: 10px 0 8px; text-wrap: balance; }
+  .ic-body { font-size: 14.5px; line-height: 1.6; color: var(--text-muted); max-width: 320px; margin: 0 auto; }
+  .ic-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; }
+  .ic-back { background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; font-family: 'Work Sans'; padding: 0; }
+  .ic-back:hover { color: var(--text); }
+  .ic-dots { display: flex; gap: 7px; }
+  .ic-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--line); transition: background 0.2s, width 0.2s; }
+  .ic-dots span.current { background: var(--cue); width: 18px; border-radius: 4px; }
+  .ic-next { width: 46px; height: 46px; border-radius: 50%; background: var(--cue); color: var(--bg); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 18px; transition: transform 0.1s; }
+  .ic-next:hover { opacity: 0.9; }
+  .ic-next:active { transform: scale(0.94); }
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes icStepIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes icIconPop { from { opacity: 0; transform: scale(0.75); } to { opacity: 1; transform: scale(1); } }
+    .ic-content, .ic-orb { animation: icStepIn 0.32s cubic-bezier(.2,.7,.3,1) both; }
+    .ic-orb { animation-name: icIconPop; }
+  }
 
   .qresult-card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 20px; margin-bottom: 14px; text-align: left; }
   .qresult-card.toughest { border-color: var(--warn); }
@@ -1340,7 +1362,7 @@
           <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
           <div class="mode-heading">
             <div class="mode-eyebrow">Live · Voice</div>
-            <h3>Mock Interview</h3>
+            <h3>Mock Interview <button class="mode-help-btn" onclick="event.stopPropagation(); showInterviewCarousel('voice', 'manual')" aria-label="How Mock Interview works" title="How it works">?</button></h3>
           </div>
         </div>
         <p class="mode-desc">A real, spoken back-and-forth with an AI interviewer. It asks a question out loud, listens to your answer, and <b>follows up naturally</b> when there's more worth digging into. No typing, no scripts to read from.</p>
@@ -1352,7 +1374,7 @@
           <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg></div>
           <div class="mode-heading">
             <div class="mode-eyebrow">Async · Scored</div>
-            <h3>On-Air Practice</h3>
+            <h3>On-Air Practice <button class="mode-help-btn" onclick="event.stopPropagation(); showInterviewCarousel('record', 'manual')" aria-label="How On-Air Practice works" title="How it works">?</button></h3>
           </div>
         </div>
         <p class="mode-desc">Record your answer on camera, one question at a time, then get a <b>scored breakdown</b> of your structure, clarity, pace, and tone: the same one-question, on-camera format used by real async video screens.</p>
@@ -2243,17 +2265,25 @@
     </div>
   </div>
 
-  <!-- INTERVIEW TUTORIAL -->
+  <!-- INTERVIEW TUTORIAL (click-through, shown before setup) -->
   <div class="screen" id="screen-interview-tutorial">
-    <button class="back-btn" onclick="goTo('setup')">← Back</button>
-    <div class="hero">
-      <div class="step-label" id="interview-tutorial-eyebrow">Mock Interview</div>
-      <h1 class="display" id="interview-tutorial-title">How it works</h1>
-    </div>
-    <div class="interview-tutorial-demo" id="interview-tutorial-demo"></div>
-    <ul class="tutorial-steps" id="interview-tutorial-steps"></ul>
-    <div class="btn-row" style="justify-content:center; margin-top:10px;">
-      <button class="btn btn-primary" id="interview-tutorial-start" onclick="beginInterviewFromTutorial()">Start →</button>
+    <button class="back-btn" onclick="leaveInterviewCarousel()">← Back</button>
+    <div class="ic-frame">
+      <div class="ic-top">
+        <button class="ic-skip" id="ic-skip-btn" onclick="skipInterviewCarousel()">Skip</button>
+        <div class="ic-count" id="ic-count"></div>
+      </div>
+      <div class="ic-hero"><div class="ic-orb" id="ic-orb"></div></div>
+      <div class="ic-content">
+        <div class="step-label" id="ic-eyebrow"></div>
+        <h1 class="ic-heading" id="ic-heading"></h1>
+        <p class="ic-body" id="ic-body"></p>
+      </div>
+      <div class="ic-foot">
+        <button class="ic-back" id="ic-back-btn" onclick="interviewCarouselBack()">← Back</button>
+        <div class="ic-dots" id="ic-dots"></div>
+        <button class="ic-next" id="ic-next-btn" onclick="interviewCarouselNext()" aria-label="Next"></button>
+      </div>
     </div>
   </div>
 
@@ -4475,7 +4505,12 @@
     }
 
     checkSetupReady();
-    goTo('setup');
+    const seenField = mode === 'record' ? 'seen_record_tutorial' : 'seen_voice_tutorial';
+    if (currentUserProfile && currentUserProfile[seenField] === false) {
+      showInterviewCarousel(mode, 'auto');
+    } else {
+      goTo('setup');
+    }
   }
 
   async function toggleVoiceResumePanel() {
@@ -4574,41 +4609,8 @@
   }
 
   async function beginSession() {
-    showInterviewTutorial();
-  }
-
-  const INTERVIEW_TUTORIAL_STEPS = {
-    record: [
-      'You\'ll see your question and a live camera preview.',
-      'A short "Get ready" countdown gives you a moment to compose yourself.',
-      'Recording starts automatically. Answer out loud, on camera.',
-      'Stop recording yourself, or it\'ll stop on its own.',
-      'You\'ll get a scored breakdown: structure, clarity, pace, and tone, plus your transcript.',
-    ],
-    voice: [
-      'Jordan, your AI interviewer, asks a question out loud.',
-      'Answer naturally when you\'re ready to talk. No script to read from.',
-      'Jordan may ask a quick follow-up if there\'s more worth digging into.',
-      'Tap Done when you\'ve finished answering. No mic access? You can type instead.',
-      'At the end, you\'ll get an overall score and a breakdown for every question.',
-    ],
-  };
-
-  function showInterviewTutorial() {
-    const mode = state.mode;
-    document.getElementById('interview-tutorial-eyebrow').textContent = mode === 'record' ? 'On-Air Practice' : 'Mock Interview';
-    document.getElementById('interview-tutorial-title').textContent = mode === 'record' ? 'How On-Air Practice works' : 'How Mock Interview works';
-    document.getElementById('interview-tutorial-demo').innerHTML = mode === 'record'
-      ? '<div class="onair-badge" style="color:var(--record);"><div class="dot"></div> ON AIR</div>'
-      : '<div class="voice-orb ai-talking"><div class="voice-orb-core"></div></div>';
-    const steps = INTERVIEW_TUTORIAL_STEPS[mode] || INTERVIEW_TUTORIAL_STEPS.record;
-    document.getElementById('interview-tutorial-steps').innerHTML = steps.map((s) => `<li>${s}</li>`).join('');
-    goTo('interview-tutorial');
-  }
-
-  async function beginInterviewFromTutorial() {
     if (state.mode === 'record') {
-      const btn = document.getElementById('interview-tutorial-start');
+      const btn = document.getElementById('setup-next');
       btn.disabled = true;
       btn.textContent = 'Loading questions...';
       try {
@@ -4619,11 +4621,101 @@
         alert('Could not load questions. Please try again.');
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Start →';
+        btn.textContent = 'Begin →';
       }
     } else {
       startVoice();
     }
+  }
+
+  // --- Interview tutorial: click-through carousel, shown before setup the
+  // first time someone tries a mode (or on demand via the "?" next to the
+  // mode name). Each mode's first step previews the setup screen that
+  // follows; the rest cover the session mechanics.
+  const ICON_PATHS = {
+    sliders: '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+    mic: '<path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/>',
+    chat: '<path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>',
+    bars: '<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+    camera: '<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  };
+  function icTutorialIcon(key) { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[key]}</svg>`; }
+
+  const INTERVIEW_TUTORIAL_STEPS = {
+    voice: [
+      { icon: 'sliders', eyebrow: 'Before you start', heading: 'Set up your session next', body: "You'll pick your industry, session length, question type, and difficulty. It's saved to your profile so it's remembered next time." },
+      { icon: 'mic', eyebrow: 'How it works · 1 of 3', heading: 'Jordan asks, you answer', body: "Your AI interviewer asks a question out loud. Answer naturally, then tap Done when you're finished — no mic access? You can type instead." },
+      { icon: 'chat', eyebrow: 'How it works · 2 of 3', heading: 'Follows up when it matters', body: 'If your answer leaves something worth digging into, Jordan asks a quick natural follow-up before moving on.' },
+      { icon: 'bars', eyebrow: 'How it works · 3 of 3', heading: 'Get your breakdown', body: "When you're done, you'll get an overall score and a category breakdown for every question." },
+    ],
+    record: [
+      { icon: 'sliders', eyebrow: 'Before you start', heading: 'Set up your session next', body: 'Same setup screen — industry, session length, question type, and difficulty, saved to your profile for next time.' },
+      { icon: 'camera', eyebrow: 'How it works · 1 of 3', heading: 'One question, on camera', body: "You'll see your question and a live camera preview before each one." },
+      { icon: 'clock', eyebrow: 'How it works · 2 of 3', heading: 'Get ready, then go', body: "A short countdown gives you a moment to compose yourself, then recording starts automatically — stop it yourself when you're done, or it'll stop on its own." },
+      { icon: 'bars', eyebrow: 'How it works · 3 of 3', heading: 'Scored on delivery', body: "Stop whenever you're done — you'll get a score on structure, clarity, pace, and tone, plus your transcript." },
+    ],
+  };
+
+  let icCarouselMode = 'voice';
+  let icCarouselOrigin = 'auto'; // 'auto': reached via chooseMode, continues to setup when finished. 'manual': reached via the "?" icon, returns to the mode-choice screen instead.
+  let icCarouselStep = 0;
+
+  function showInterviewCarousel(mode, origin) {
+    icCarouselMode = mode;
+    icCarouselOrigin = origin;
+    icCarouselStep = 0;
+    renderInterviewCarouselStep();
+    goTo('interview-tutorial');
+  }
+
+  function renderInterviewCarouselStep() {
+    const steps = INTERVIEW_TUTORIAL_STEPS[icCarouselMode] || INTERVIEW_TUTORIAL_STEPS.voice;
+    const total = steps.length;
+    const s = steps[icCarouselStep];
+    document.getElementById('ic-count').textContent = `${icCarouselStep + 1} / ${total}`;
+    document.getElementById('ic-orb').innerHTML = icTutorialIcon(s.icon);
+    document.getElementById('ic-eyebrow').textContent = s.eyebrow;
+    document.getElementById('ic-heading').textContent = s.heading;
+    document.getElementById('ic-body').textContent = s.body;
+    document.getElementById('ic-back-btn').style.visibility = icCarouselStep > 0 ? 'visible' : 'hidden';
+    document.getElementById('ic-dots').innerHTML = steps.map((_, i) =>
+      `<span class="${i === icCarouselStep ? 'current' : ''}"></span>`).join('');
+    document.getElementById('ic-next-btn').innerHTML = icCarouselStep === total - 1 ? '&check;' : '&rarr;';
+  }
+
+  function interviewCarouselNext() {
+    const steps = INTERVIEW_TUTORIAL_STEPS[icCarouselMode] || INTERVIEW_TUTORIAL_STEPS.voice;
+    if (icCarouselStep === steps.length - 1) { finishInterviewCarousel(); return; }
+    icCarouselStep++;
+    renderInterviewCarouselStep();
+  }
+
+  function interviewCarouselBack() {
+    if (icCarouselStep === 0) return;
+    icCarouselStep--;
+    renderInterviewCarouselStep();
+  }
+
+  function skipInterviewCarousel() { finishInterviewCarousel(); }
+
+  async function finishInterviewCarousel() {
+    const field = icCarouselMode === 'record' ? 'seen_record_tutorial' : 'seen_voice_tutorial';
+    if (currentUserProfile) currentUserProfile[field] = true;
+    MockoProfile.updateProfile({ [field]: true }).catch((err) => console.error('Could not save tutorial state:', err));
+    if (icCarouselOrigin === 'manual') {
+      goTo('interview');
+    } else {
+      goTo('setup');
+    }
+  }
+
+  // Backing out entirely (not skipping/finishing) leaves the "seen" flag
+  // alone, so it's offered again next time -- only Skip or reaching the end
+  // counts as having actually seen it. Always returns to mode-choice, not
+  // setup, since the carousel now runs before setup either way.
+  function leaveInterviewCarousel() {
+    goTo('interview');
   }
 
   async function retryRecordSession() {
