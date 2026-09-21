@@ -497,6 +497,15 @@
   .qresult-score { font-family: 'Work Sans'; font-size: 14px; color: var(--good); }
   .qresult-note { font-size: 13.5px; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
   .qresult-transcript { font-size: 14px; color: var(--text-muted); line-height: 1.6; background: var(--surface-2); border-radius: 8px; padding: 12px 14px; }
+  .qa-section-title { font-family: 'Libre Baskerville', serif; font-size: 20px; font-weight: 700; margin: 30px 0 6px; text-align: left; }
+  .qa-section-sub { font-size: 14px; color: var(--text-muted); line-height: 1.55; margin-bottom: 16px; text-align: left; }
+  .qa-verdict { font-family: 'Work Sans'; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
+  .qa-verdict.strong { background: rgba(34,195,182,0.16); color: var(--good); }
+  .qa-verdict.solid { background: rgba(233,162,59,0.18); color: var(--warn); }
+  .qa-verdict.weak { background: rgba(230,57,70,0.16); color: var(--record); }
+  .qa-feedback { font-size: 14px; line-height: 1.55; margin-bottom: 10px; }
+  .qa-detail { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; background: var(--surface-2); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+  .qa-detail b { color: var(--text); font-weight: 600; }
   .toughest-tag { font-family: 'Work Sans'; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; background: rgba(233,162,59,0.18); color: var(--warn); }
 
   .transcript-toggle { font-size: 13px; color: var(--text-muted); cursor: pointer; text-decoration: underline; margin: 12px 0 8px; display: inline-block; }
@@ -2237,6 +2246,16 @@
 
         <div class="divider"></div>
 
+        <div class="select-group">
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+            <input type="checkbox" id="voice-ask-toggle" onchange="updateSetupSummary()">
+            Let me ask Jordan questions at the end
+          </label>
+          <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, Jordan turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
+        </div>
+
+        <div class="divider"></div>
+
         <div class="select-group" style="margin-bottom:0;">
           <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
             <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
@@ -2262,6 +2281,7 @@
       <div class="setup-side-row"><span id="setup-summary-length-label">Length</span><span id="setup-summary-length">—</span></div>
       <div class="setup-side-row" id="setup-summary-type-row" style="display:none;"><span>Format</span><span id="setup-summary-type">—</span></div>
       <div class="setup-side-row"><span>Difficulty</span><span id="setup-summary-difficulty">—</span></div>
+      <div class="setup-side-row" id="setup-summary-ask-row" style="display:none;"><span>Your questions</span><span id="setup-summary-ask">Off</span></div>
       <button class="btn btn-primary" id="setup-next" disabled onclick="beginSession()" style="width:100%; margin-top:16px;">Begin →</button>
       <div class="ip-error" id="setup-error" role="alert"><div class="ip-error-title"></div><div class="ip-error-fix"></div><button class="btn btn-secondary ip-error-retry" onclick="retryIpError(this)">Try again</button></div>
     </div>
@@ -2407,6 +2427,9 @@
 
       <button class="mic-btn" id="mic-btn" onclick="toggleMic()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></button>
       <div class="voice-timer mono" id="voice-timer">00:00</div>
+      <div class="btn-row" id="voice-qa-done-row" style="display:none; margin-top:14px; justify-content:center;">
+        <button class="btn btn-secondary" onclick="finishCandidateQA()">That's all my questions</button>
+      </div>
 
       <div id="voice-text-fallback" style="display:none; margin-top:20px; text-align:left;">
         <textarea id="voice-text-input" placeholder="Type your answer here..." style="width:100%; min-height:90px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:14.5px; resize:vertical;"></textarea>
@@ -4183,6 +4206,8 @@
     document.getElementById('setup-summary-length-label').textContent = isRecord ? 'Format' : 'Length';
     document.getElementById('setup-summary-length').textContent = state.length ? LENGTH_CARD_LABELS[state.length] : '—';
     document.getElementById('setup-summary-type-row').style.display = isRecord ? 'none' : '';
+    document.getElementById('setup-summary-ask-row').style.display = isRecord ? 'none' : '';
+    document.getElementById('setup-summary-ask').textContent = document.getElementById('voice-ask-toggle').checked ? 'On' : 'Off';
     if (!isRecord) document.getElementById('setup-summary-type').textContent = TYPE_SUMMARY_LABELS[state.type] || '—';
     const diffEl = document.getElementById('setup-summary-difficulty');
     diffEl.textContent = state.difficulty ? state.difficulty[0].toUpperCase() + state.difficulty.slice(1) : '—';
@@ -6067,6 +6092,8 @@
 
   function resetVoiceUI() {
     setVoiceLoading(false);
+    stopAiVoice();
+    document.getElementById('voice-qa-done-row').style.display = 'none';
     clearIpError('voice-error');
     document.getElementById('mic-btn').style.display = 'inline-flex';
     document.getElementById('mic-btn').innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
@@ -6145,14 +6172,19 @@
       followUpCountThisQuestion: 0, followUpCountSession: 0, inFollowUp: false,
       mainTranscript: null, mainDuration: 0, followUpTranscript: null, followUpDuration: 0,
       pendingNote: null, pendingTransitionLine: null, results: [], finalOverallScore: 0, toughestId: null,
+      askQuestions: document.getElementById('voice-ask-toggle').checked, inQA: false, candidateQuestions: [], candidateResult: null,
     };
     document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (state.type || 'Behavioral');
   }
 
   async function exitVoiceSession() {
-    if (voiceSession && voiceSession.phase !== 'done' && voiceSession.currentIndex < voiceSession.questions.length) {
+    if (voiceSession && voiceSession.inQA) {
+      voiceSession.inQA = false;
+      stopAiVoice();
+      try { await computeAndPersistAggregate(); } catch (err) { console.error(err); }
+    } else if (voiceSession && voiceSession.phase !== 'done' && voiceSession.currentIndex < voiceSession.questions.length) {
       try {
-        await MockoVoiceSession.saveSessionState(voiceSession.id, { questions: voiceSession.questions });
+        await MockoVoiceSession.saveSessionState(voiceSession.id, { questions: voiceSession.questions, askQuestions: voiceSession.askQuestions });
       } catch (err) {
         console.error('Could not save interview progress:', err);
       }
@@ -6181,6 +6213,7 @@
         followUpCountThisQuestion: 0, followUpCountSession: results.filter(r => r.follow_up_asked).length, inFollowUp: false,
         mainTranscript: null, mainDuration: 0, followUpTranscript: null, followUpDuration: 0,
         pendingNote: null, pendingTransitionLine: null, results, finalOverallScore: 0, toughestId: null,
+        askQuestions: !!row.saved_state.askQuestions, inQA: false, candidateQuestions: [], candidateResult: null,
       };
       document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (state.type || 'Behavioral');
       document.getElementById('voice-caption').textContent = "Welcome back. Tap the mic to pick up where you left off.";
@@ -6197,6 +6230,7 @@
   function toggleMic() {
     if (!voiceSession) return;
     if (voiceSession.phase === 'idle') {
+      primeAiAudio();
       document.getElementById('mic-btn').style.display = 'none';
       askCurrentQuestion();
     } else if (voiceSession.phase === 'listening') {
@@ -6221,13 +6255,71 @@
     return [text.slice(0, splitAt + 1), text.slice(splitAt + 2)];
   }
 
-  function speakText(text, onDone) {
-    setVoiceLoading(false);
-    document.getElementById('voice-caption').textContent = text;
-    document.getElementById('voice-orb').className = 'voice-orb ai-talking';
-    document.getElementById('voice-state').textContent = 'Jordan is speaking';
+  // The interviewer's voice: Deepgram's neural voices via the `speak` edge
+  // function, so Jordan sounds like a person. If that's unavailable for any
+  // reason (network, quota, autoplay blocked) it quietly falls back to the
+  // browser's built-in voice below, so the interview never stalls on it.
+  const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+  let aiAudio = null;
+  let aiPlayResolve = null;
+  let speechToken = 0;
+  const speechCache = new Map();
+
+  // Safari only lets an <audio> element play later if it was started during
+  // a tap, so unlock one on the first mic tap and reuse it for every line.
+  function primeAiAudio() {
+    if (aiAudio) return;
+    aiAudio = new Audio();
+    aiAudio.src = SILENT_WAV;
+    aiAudio.play().catch(() => {});
+  }
+
+  function stopAiVoice() {
+    speechToken++;
+    if (aiAudio) { try { aiAudio.pause(); } catch (e) {} }
+    if (aiPlayResolve) { aiPlayResolve(); aiPlayResolve = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+
+  async function getSpeechUrl(text) {
+    if (speechCache.has(text)) return speechCache.get(text);
+    const blob = await MockoVoiceSession.synthesizeSpeech(text);
+    const url = URL.createObjectURL(blob);
+    speechCache.set(text, url);
+    if (speechCache.size > 24) {
+      const oldest = speechCache.keys().next().value;
+      URL.revokeObjectURL(speechCache.get(oldest));
+      speechCache.delete(oldest);
+    }
+    return url;
+  }
+
+  // Resolves 'done' (played to the end), 'superseded' (something newer took
+  // over or the session was reset), or 'failed' (couldn't start playing).
+  async function speakViaAiVoice(text, token) {
+    try {
+      const url = await getSpeechUrl(text);
+      if (token !== speechToken) return 'superseded';
+      if (!aiAudio) aiAudio = new Audio();
+      const a = aiAudio;
+      await new Promise((resolve, reject) => {
+        let started = false;
+        aiPlayResolve = resolve;
+        a.onplaying = () => { started = true; };
+        a.onended = () => { aiPlayResolve = null; resolve(); };
+        a.onerror = () => { aiPlayResolve = null; started ? resolve() : reject(new Error('Audio playback failed')); };
+        a.src = url;
+        a.play().catch((err) => { aiPlayResolve = null; reject(err); });
+      });
+      return token === speechToken ? 'done' : 'superseded';
+    } catch (err) {
+      console.warn('AI voice unavailable, using the browser voice instead:', err);
+      return token === speechToken ? 'failed' : 'superseded';
+    }
+  }
+
+  function speakWithBrowserVoice(text, onDone, isActive = () => true) {
     if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-      document.getElementById('voice-orb').className = 'voice-orb';
       onDone();
       return;
     }
@@ -6235,20 +6327,46 @@
     const parts = text.length > 180 ? splitForBreath(text) : [text];
     let i = 0;
     function speakNext() {
-      if (i >= parts.length) {
-        document.getElementById('voice-orb').className = 'voice-orb';
-        onDone();
-        return;
-      }
+      if (!isActive()) return;
+      if (i >= parts.length) { onDone(); return; }
       const utter = new SpeechSynthesisUtterance(parts[i]);
       if (voice) utter.voice = voice;
       utter.rate = 0.97;
       utter.pitch = 1.0;
-      utter.onend = () => { i++; setTimeout(speakNext, i < parts.length ? 250 : 0); };
-      utter.onerror = () => { i++; speakNext(); };
+      // Some browsers never fire onend (backgrounded tabs, certain voices),
+      // which would leave the interview stuck on "Jordan is speaking".
+      let advanced = false;
+      const advance = (delay) => {
+        if (advanced) return;
+        advanced = true;
+        clearTimeout(watchdog);
+        i++;
+        setTimeout(speakNext, delay);
+      };
+      const watchdog = setTimeout(() => { window.speechSynthesis.cancel(); advance(0); }, 4000 + parts[i].length * 110);
+      utter.onend = () => advance(i + 1 < parts.length ? 250 : 0);
+      utter.onerror = () => advance(0);
       window.speechSynthesis.speak(utter);
     }
     speakNext();
+  }
+
+  function speakText(text, onDone) {
+    setVoiceLoading(false);
+    const token = ++speechToken;
+    const finish = () => {
+      if (token !== speechToken) return;
+      document.getElementById('voice-orb').className = 'voice-orb';
+      onDone();
+    };
+    document.getElementById('voice-caption').textContent = text;
+    document.getElementById('voice-orb').className = 'voice-orb ai-talking';
+    document.getElementById('voice-state').textContent = 'Jordan is speaking';
+    speakViaAiVoice(text, token).then((result) => {
+      if (result === 'superseded' || token !== speechToken) return;
+      if (result === 'done') { finish(); return; }
+      speakWithBrowserVoice(text, finish, () => token === speechToken);
+    });
   }
 
   function askCurrentQuestion() {
@@ -6264,7 +6382,7 @@
     voiceSession.transcriptBuffer = '';
     voiceSession.manualStop = false;
     voiceSession.questionStartTs = Date.now();
-    document.getElementById('voice-state').textContent = 'Your turn, speak now';
+    document.getElementById('voice-state').textContent = voiceSession.inQA ? 'Your turn, ask a question' : 'Your turn, speak now';
     document.getElementById('voice-timer').textContent = '00:00';
     clearInterval(voiceTimerInterval);
     let seconds = 0;
@@ -6282,8 +6400,8 @@
       document.getElementById('mic-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>';
       startRecognition(SR);
     } else {
-      document.getElementById('voice-caption').textContent = 'Type your answer below.';
-      document.getElementById('voice-state').textContent = 'Your turn, type your answer';
+      document.getElementById('voice-caption').textContent = voiceSession.inQA ? 'Type your question below.' : 'Type your answer below.';
+      document.getElementById('voice-state').textContent = voiceSession.inQA ? 'Your turn, type a question' : 'Your turn, type your answer';
       if (!SR && !voiceSession.sttNotified) {
         voiceSession.sttNotified = true;
         showIpError('voice-error', { name: 'SpeechUnsupported' });
@@ -6367,6 +6485,7 @@
   }
 
   async function processAnswer(transcript, durationSec) {
+    if (voiceSession.inQA) { await handleCandidateQuestion(transcript); return; }
     if (!transcript) transcript = '(No answer given.)';
     voiceSession.phase = 'thinking';
     clearIpError('voice-error');
@@ -6475,9 +6594,103 @@
 
     if (voiceSession.currentIndex < voiceSession.questions.length) {
       askCurrentQuestion();
+    } else if (voiceSession.askQuestions) {
+      startCandidateQA();
     } else {
       await finishVoiceSession();
     }
+  }
+
+  // Ask-the-interviewer: after the last question Jordan turns it over to the
+  // candidate. Each question gets an in-character reply; the full set is
+  // graded once at the end and shown alongside the normal results.
+  const MAX_CANDIDATE_QUESTIONS = 3;
+  const QA_DONE_PATTERN = /^(no|nope|nah|nothing|not really|that'?s (all|it)|i'?m (good|all set|done)|all set|we'?re good)\b/i;
+
+  function qaContext() {
+    return {
+      industry: INDUSTRY_LABELS[state.industry] || 'General',
+      format: voiceSession.format || 'Behavioral',
+      interviewQuestions: voiceSession.questions.map((q) => q.text),
+    };
+  }
+
+  function startCandidateQA() {
+    voiceSession.inQA = true;
+    voiceSession.candidateQuestions = [];
+    voiceSession.phase = 'asking';
+    document.getElementById('voice-qa-done-row').style.display = 'flex';
+    speakText("That's everything from me. Now it's your turn. What questions do you have for me?", enterListenState);
+  }
+
+  async function handleCandidateQuestion(transcript) {
+    const text = (transcript || '').trim();
+    clearIpError('voice-error');
+    if (!text) {
+      voiceSession.phase = 'asking';
+      speakText("Sorry, I didn't catch a question there. Go ahead whenever you're ready, or tap that's all if you're set.", enterListenState);
+      return;
+    }
+    if (text.split(/\s+/).length <= 8 && QA_DONE_PATTERN.test(text)) {
+      await finishCandidateQA();
+      return;
+    }
+
+    voiceSession.phase = 'thinking';
+    document.getElementById('voice-state').textContent = 'Jordan is thinking';
+    document.getElementById('voice-caption').textContent = 'Thinking...';
+    setVoiceLoading(true);
+    let replyText;
+    try {
+      replyText = (await MockoVoiceSession.candidateReply({ question: text, ...qaContext() })).reply;
+    } catch (err) {
+      console.error('candidate-questions reply failed:', err);
+      if (!classifyInterviewError(err).ours) showIpError('voice-error', err);
+      replyText = "That's a good question, and honestly the answer depends on the team. It's worth asking the people you'd work with directly.";
+    }
+    voiceSession.candidateQuestions.push({ text, reply: replyText });
+
+    voiceSession.phase = 'asking';
+    if (voiceSession.candidateQuestions.length < MAX_CANDIDATE_QUESTIONS) {
+      speakText(replyText + ' Any other questions?', enterListenState);
+    } else {
+      speakText(replyText + " I think that's all the time we have.", () => finishCandidateQA());
+    }
+  }
+
+  async function finishCandidateQA() {
+    if (!voiceSession || !voiceSession.inQA) return;
+    voiceSession.inQA = false;
+    voiceSession.manualStop = true;
+    stopAiVoice();
+    if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} }
+    clearInterval(voiceTimerInterval);
+    document.getElementById('voice-qa-done-row').style.display = 'none';
+    document.getElementById('voice-rec-indicator').style.display = 'none';
+    document.getElementById('mic-btn').style.display = 'none';
+    document.getElementById('voice-text-fallback').style.display = 'none';
+    document.getElementById('voice-orb').className = 'voice-orb';
+
+    const asked = voiceSession.candidateQuestions;
+    if (!asked.length) {
+      voiceSession.candidateResult = null;
+      await finishVoiceSession();
+      return;
+    }
+    voiceSession.phase = 'thinking';
+    document.getElementById('voice-state').textContent = 'Scoring your questions';
+    document.getElementById('voice-caption').textContent = 'Reviewing the questions you asked...';
+    setVoiceLoading(true);
+    try {
+      const graded = await MockoVoiceSession.gradeCandidateQuestions({ questions: asked.map((q) => q.text), ...qaContext() });
+      graded.questions.forEach((q, i) => { q.reply = asked[i] ? asked[i].reply : ''; });
+      voiceSession.candidateResult = graded;
+    } catch (err) {
+      console.error('Grading candidate questions failed:', err);
+      voiceSession.candidateResult = { error: true, questions: asked.map((q) => ({ text: q.text, reply: q.reply })) };
+      if (!classifyInterviewError(err).ours) showIpError('voice-error', err);
+    }
+    await finishVoiceSession();
   }
 
   async function computeAndPersistAggregate() {
@@ -6510,7 +6723,8 @@
     }
 
     try {
-      await MockoVoiceSession.updateSession(voiceSession.id, { overallScore, categoryScores, pointersGood, pointersWork, transcript });
+      const candidateQuestions = voiceSession.candidateResult && !voiceSession.candidateResult.error ? voiceSession.candidateResult : undefined;
+      await MockoVoiceSession.updateSession(voiceSession.id, { overallScore, categoryScores, pointersGood, pointersWork, transcript, candidateQuestions });
     } catch (err) { console.error(err); }
 
     voiceSession.finalOverallScore = overallScore;
@@ -6542,7 +6756,7 @@
       container.innerHTML = '';
       return;
     }
-    container.innerHTML = voiceSession.results
+    const questionCards = voiceSession.results
       .slice()
       .sort((a, b) => a.question_index - b.question_index)
       .map(r => {
@@ -6562,6 +6776,40 @@
           ${isToughest ? '<div class="btn-row" style="margin-top:12px;"><button class="btn btn-secondary" onclick="retryToughestQuestion()">↻ Retry this question</button></div>' : ''}
         </div>`;
       }).join('');
+    container.innerHTML = questionCards + renderCandidateQuestionsResults();
+  }
+
+  // "Questions you asked" -- only present when the ask-the-interviewer
+  // setting was on. Everything here comes from the candidate or the model,
+  // so it's escaped before going into the page.
+  function renderCandidateQuestionsResults() {
+    const r = voiceSession && voiceSession.candidateResult;
+    if (!voiceSession || !voiceSession.askQuestions) return '';
+    if (!r) {
+      return `<div class="qa-section-title">Questions you asked</div>
+        <div class="qa-section-sub">You didn't ask any questions this time. Asking a couple of thoughtful ones is one of the easiest ways to stand out at the end of a real interview.</div>`;
+    }
+    const cards = (r.questions || []).map((q) => {
+      const verdict = q.verdict ? String(q.verdict).toLowerCase() : '';
+      return `<div class="qresult-card">
+        <div class="qresult-top">
+          ${verdict ? `<span class="qa-verdict ${escapeHtml(verdict)}">${escapeHtml(q.verdict)}</span>` : '<span></span>'}
+          ${typeof q.score === 'number' ? `<span class="qresult-score">${Math.round(q.score)}/100</span>` : ''}
+        </div>
+        <div class="qresult-question">${escapeHtml(q.text)}</div>
+        ${q.feedback ? `<div class="qa-feedback">${escapeHtml(q.feedback)}</div>` : ''}
+        ${q.stronger ? `<div class="qa-detail"><b>Sharper version:</b> ${escapeHtml(q.stronger)}</div>` : ''}
+        ${q.reply ? `<div class="qa-detail"><b>Jordan's answer:</b> ${escapeHtml(q.reply)}</div>` : ''}
+      </div>`;
+    }).join('');
+    if (r.error) {
+      return `<div class="qa-section-title">Questions you asked</div>
+        <div class="qa-section-sub">We couldn't grade your questions this time, but here's what you asked.</div>${cards}`;
+    }
+    const pts = (label, arr) => (arr && arr.length ? `<div class="qa-detail"><b>${label}:</b> ${arr.map(escapeHtml).join(' · ')}</div>` : '');
+    return `<div class="qa-section-title">Questions you asked <span class="qresult-score" style="margin-left:8px;">${Math.round(r.overall_score || 0)}/100</span></div>
+      ${r.summary ? `<div class="qa-section-sub">${escapeHtml(r.summary)}</div>` : ''}
+      ${cards}${pts('Did well', r.pointers_good)}${pts('Work on', r.pointers_work)}`;
   }
 
   function retryToughestQuestion() {

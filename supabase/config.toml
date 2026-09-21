@@ -446,3 +446,15 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/tailor-resume-questions/deno.json"
 entrypoint = "./functions/tailor-resume-questions/index.ts"
+
+[functions.speak]
+enabled = true
+verify_jwt = false
+import_map = "./functions/speak/deno.json"
+entrypoint = "./functions/speak/index.ts"
+
+[functions.candidate-questions]
+enabled = true
+verify_jwt = false
+import_map = "./functions/candidate-questions/deno.json"
+entrypoint = "./functions/candidate-questions/index.ts"
