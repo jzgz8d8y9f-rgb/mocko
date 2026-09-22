@@ -1086,6 +1086,104 @@
   .wizard-optional-label { font-size: 10.5px; font-weight: 700; text-transform: none; letter-spacing: 0; color: var(--text-muted); background: var(--surface-2); padding: 2px 7px; border-radius: 100px; margin-left: 6px; vertical-align: middle; }
   .auth-skip-link { display: block; width: 100%; text-align: center; margin-top: 14px; font-size: 13.5px; color: var(--text-muted); background: none; border: none; cursor: pointer; }
   .auth-skip-link:hover { color: var(--text); }
+
+  /* Social */
+  .soc-sec { margin-bottom: 34px; }
+  .soc-sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .soc-sec-title { font-family: 'Libre Baskerville', serif; font-size: 20px; font-weight: 700; margin: 0; }
+  .soc-sec-title small { font-family: 'Work Sans'; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-left: 8px; }
+  .soc-sec-sub { font-size: 13px; color: var(--text-muted); margin: 3px 0 0; }
+  .soc-link { background: none; border: none; color: var(--good); font-family: 'Work Sans'; font-size: 13.5px; font-weight: 600; cursor: pointer; padding: 0; }
+  .soc-link:hover { text-decoration: underline; }
+  .soc-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+  .soc-stack { display: flex; flex-direction: column; gap: 12px; }
+  .soc-empty { color: var(--text-muted); font-size: 13.5px; line-height: 1.55; padding: 18px; border: 1px dashed var(--line); border-radius: 14px; text-align: center; }
+  .soc-empty a { color: var(--good); cursor: pointer; text-decoration: underline; }
+
+  .soc-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; color: #0B0C0F; flex-shrink: 0; position: relative; background-size: cover; background-position: center; }
+  .soc-avatar.sm { width: 28px; height: 28px; font-size: 11.5px; }
+  .soc-avatar.md { width: 48px; height: 48px; font-size: 18px; }
+  .soc-avatar.lg { width: 64px; height: 64px; font-size: 24px; }
+  .soc-avatar.xl { width: 84px; height: 84px; font-size: 32px; }
+  .soc-avatar.live { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5.5px var(--good); }
+  .soc-modal .soc-avatar.live { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5.5px var(--good); }
+  .soc-flame { position: absolute; right: -6px; bottom: -4px; display: flex; align-items: center; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 100px; padding: 1px 7px 1px 5px; font-size: 11px; font-weight: 800; color: var(--warn); }
+  .soc-flame svg { width: 10px; height: 10px; }
+
+  .soc-scroller { display: flex; gap: 14px; overflow-x: auto; padding: 8px 4px 14px; margin: -8px -4px -6px; scroll-snap-type: x proximity; scrollbar-width: thin; scrollbar-color: var(--surface-2) transparent; }
+  .soc-scroller::-webkit-scrollbar { height: 6px; }
+  .soc-scroller::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 10px; }
+  .soc-ftile { flex: 0 0 116px; scroll-snap-align: start; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 10px 14px; text-align: center; cursor: pointer; transition: border-color 0.15s, transform 0.15s; color: inherit; font-family: 'Work Sans'; }
+  .soc-ftile:hover { border-color: var(--text-muted); transform: translateY(-2px); }
+  .soc-ftile .soc-avatar { margin: 0 auto 12px; }
+  .soc-fname { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .soc-fsub { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; min-height: 14px; }
+  .soc-fsub.on { color: var(--good); font-weight: 600; }
+  .soc-ftile.add, .soc-ftile.all { background: none; border-style: dashed; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+  .soc-ftile.add:hover, .soc-ftile.all:hover { color: var(--text); }
+  .soc-plus { width: 48px; height: 48px; border-radius: 50%; border: 1.5px dashed var(--text-muted); display: flex; align-items: center; justify-content: center; }
+  .soc-plus svg { width: 18px; height: 18px; }
+
+  .soc-scard { flex: 0 0 214px; scroll-snap-align: start; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px 18px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .soc-scard-who { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; max-width: 100%; }
+  .soc-scard .soc-avatar { margin-bottom: 12px; }
+  .soc-sname { font-weight: 700; font-size: 15px; max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .soc-shandle { font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px; }
+  .soc-why { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 12px; min-height: 26px; }
+  .soc-chip { font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 100px; background: var(--surface-2); border: 1px solid var(--line); color: var(--text-muted); }
+  .soc-chip.good { color: var(--good); border-color: rgba(34,195,182,0.35); background: rgba(34,195,182,0.08); }
+  .soc-chip.gold { color: var(--gold); border-color: rgba(232,197,71,0.35); background: rgba(232,197,71,0.08); }
+  .soc-mutual { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; min-height: 16px; }
+  .soc-scard .btn { width: 100%; margin-top: auto; font-size: 13px; padding: 9px 14px; }
+  .soc-x { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; border-radius: 50%; border: none; background: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .soc-x:hover { background: var(--surface-2); color: var(--text); }
+  .soc-x svg { width: 12px; height: 12px; }
+
+  .soc-post-head { display: flex; align-items: center; gap: 12px; }
+  .soc-post-who { font-size: 14.5px; line-height: 1.4; }
+  .soc-post-time { font-size: 12px; color: var(--text-muted); }
+  .soc-post-body { margin: 12px 0 0 60px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .soc-like { display: inline-flex; align-items: center; gap: 6px; font-family: 'Work Sans'; font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 100px; border: 1px solid var(--line); background: none; color: var(--text-muted); cursor: pointer; }
+  .soc-like svg { width: 15px; height: 15px; }
+  .soc-like:hover { color: var(--text); border-color: var(--text-muted); }
+  .soc-like.on { color: var(--good); border-color: var(--good); background: rgba(34,195,182,0.1); }
+  .soc-like.on svg { fill: currentColor; }
+
+  .soc-req-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .soc-req-row:first-of-type { border-top: none; }
+  .soc-req-row .grow { flex: 1; min-width: 0; }
+  .soc-req-row .btn { font-size: 13px; padding: 8px 15px; }
+
+  .soc-toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+  .soc-search { flex: 1 1 240px; font-family: 'Work Sans'; font-size: 14px; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); }
+  .soc-search:focus { outline: none; border-color: var(--text-muted); }
+  .soc-search::placeholder { color: var(--text-muted); }
+  .soc-select { font-family: 'Work Sans'; font-size: 13.5px; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); }
+  .soc-frow { display: flex; align-items: center; gap: 14px; padding: 14px 4px; border-top: 1px solid var(--line); }
+  .soc-frow:first-child { border-top: none; }
+  .soc-frow .grow { flex: 1; min-width: 0; cursor: pointer; }
+  .soc-frow .name { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .soc-frow .name:hover { text-decoration: underline; }
+  .soc-frow .sub { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+  .soc-frow .stats { display: flex; gap: 22px; text-align: center; }
+  .soc-stat b { display: block; font-size: 16px; font-variant-numeric: tabular-nums; }
+  .soc-stat span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  @media (max-width: 640px) { .soc-frow .stats { display: none; } .soc-post-body { margin-left: 0; } }
+
+  .soc-modal { max-width: 380px; text-align: center; position: relative; padding: 30px 26px 24px; }
+  .soc-modal .soc-avatar { margin: 0 auto 14px; }
+  .soc-modal h3 { font-family: 'Libre Baskerville', serif; font-size: 22px; margin: 0 0 3px; }
+  .soc-modal .soc-handle { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; }
+  .soc-modal .soc-why { margin-bottom: 18px; }
+  .soc-mstats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+  .soc-mstats div { background: var(--surface-2); border-radius: 12px; padding: 12px 6px; }
+  .soc-mstats b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; }
+  .soc-mstats span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .soc-hidden-note { font-size: 13px; color: var(--text-muted); background: var(--surface-2); border-radius: 12px; padding: 14px; margin-bottom: 20px; }
+  .soc-mact { display: flex; gap: 10px; }
+  .soc-mact .btn { flex: 1; }
+  .soc-rm { background: none; border: none; color: var(--text-muted); font-family: 'Work Sans'; font-size: 12.5px; margin-top: 14px; cursor: pointer; }
+  .soc-rm:hover { color: var(--record); }
 </style>
 </head>
 <body>
@@ -1103,6 +1201,7 @@
       <button class="nav-tab active" id="tab-home" onclick="switchTab('home')">Home</button>
       <button class="nav-tab" id="tab-interview" onclick="switchTab('interview')">Interview Practice</button>
       <button class="nav-tab" id="tab-drills" onclick="switchTab('drills')">Drills</button>
+      <button class="nav-tab" id="tab-social" onclick="switchTab('social')">Social</button>
     </div>
     <div id="account-area"></div>
   </div>
@@ -1307,6 +1406,46 @@
       </div>
       <div class="activity-list" id="home-activity-list"></div>
     </div>
+  </div>
+
+  <!-- SOCIAL -->
+  <div class="screen" id="screen-social">
+    <div class="hero">
+      <h1 class="display">Social</h1>
+      <p>Practice is easier with people to practice against.</p>
+    </div>
+    <div id="social-requests"></div>
+    <div class="soc-sec">
+      <div class="soc-sec-head">
+        <h2 class="soc-sec-title">Friends <small id="social-friends-count"></small></h2>
+        <button class="soc-link" onclick="openAllFriends()">See all &rarr;</button>
+      </div>
+      <div class="soc-scroller" id="social-friends-strip"></div>
+    </div>
+    <div id="social-suggestions"></div>
+    <div class="soc-sec">
+      <div class="soc-sec-head"><h2 class="soc-sec-title">Activity</h2></div>
+      <div class="soc-stack" id="social-activity"></div>
+    </div>
+  </div>
+
+  <!-- ALL FRIENDS -->
+  <div class="screen" id="screen-friends">
+    <button class="back-btn" onclick="switchTab('social')">&larr; Social</button>
+    <div class="hero">
+      <h1 class="display">Friends</h1>
+      <p id="friends-page-sub"></p>
+    </div>
+    <div class="soc-toolbar">
+      <input class="soc-search" id="friends-search" placeholder="Search friends by name, school, or industry" oninput="setFriendsQuery(this.value)">
+      <select class="soc-select" id="friends-sort" onchange="setFriendsSort(this.value)">
+        <option value="active">Most active</option>
+        <option value="streak">Longest streak</option>
+        <option value="az">A to Z</option>
+      </select>
+    </div>
+    <div class="pill-row" id="friends-filters" style="margin-bottom:18px;"></div>
+    <div class="soc-card" id="friends-list" style="padding:6px 18px;"></div>
   </div>
 
   <!-- INTERVIEW PRACTICE (mode choice) -->
@@ -1885,6 +2024,13 @@
               <div class="switch-item">
                 <div class="switch-item-label">Appear on leaderboards</div>
                 <div class="switch" id="switch-leaderboard_visible" onclick="toggleSettingsSwitch(this)"></div>
+              </div>
+              <div class="switch-item">
+                <div>
+                  <div class="switch-item-label">Share my activity with friends</div>
+                  <div class="switch-item-sub">Friends can see your streak and the sessions and drills you finish.</div>
+                </div>
+                <div class="switch" id="switch-show_activity" onclick="toggleSettingsSwitch(this)"></div>
               </div>
               <div class="auth-error" id="settings-privacy-error" style="margin-top:14px;"></div>
               <div class="btn-row" style="justify-content:flex-end; margin-top:6px;">
@@ -2680,6 +2826,10 @@
 
 </div>
 
+<div class="modal-overlay" id="friend-card-overlay" onclick="closeFriendCard()">
+  <div class="modal-card soc-modal" onclick="event.stopPropagation()" id="friend-card-body"></div>
+</div>
+
 <div class="modal-overlay" id="resume-upload-modal">
   <div class="modal-card">
     <h4>Add resume</h4>
@@ -2731,6 +2881,7 @@
 <script type="module" src="js/resume.js"></script>
 <script type="module" src="js/drills.js"></script>
 <script type="module" src="js/voice.js"></script>
+<script type="module" src="js/social.js"></script>
 <script type="module" src="js/auth.js"></script>
 <script>
   const state = { type: null, length: null, mode: null, difficulty: null, industry: null };
@@ -3297,7 +3448,7 @@
       });
 
       ['notify_weekly_summary', 'notify_streak_reminders', 'notify_leaderboard_activity', 'notify_product_updates',
-       'show_industry', 'show_education', 'show_location', 'leaderboard_visible'].forEach(field => {
+       'show_industry', 'show_education', 'show_location', 'leaderboard_visible', 'show_activity'].forEach(field => {
         setSettingsSwitch('switch-' + field, profile[field] !== false);
       });
       document.querySelectorAll('#privacy-visibility-row .toggle-card').forEach(el => {
@@ -3351,6 +3502,7 @@
         show_education: document.getElementById('switch-show_education').classList.contains('on'),
         show_location: document.getElementById('switch-show_location').classList.contains('on'),
         leaderboard_visible: document.getElementById('switch-leaderboard_visible').classList.contains('on'),
+        show_activity: document.getElementById('switch-show_activity').classList.contains('on'),
       });
       errorEl.style.color = 'var(--good)';
       errorEl.textContent = 'Saved.';
@@ -4305,12 +4457,319 @@
     document.getElementById('setup-next').disabled = !ready;
   }
 
+  // --- Social ---
+  const socialState = {
+    uid: null, loaded: false, friends: [], requests: [], suggestions: [], sentIds: new Set(), activity: [],
+    me: { city: '', school: '', industry: '', industryLabel: '' },
+    query: '', filter: 'all', sort: 'active',
+  };
+  const SOC_COLORS = ['#22C3B6', '#E9A23B', '#7C9EF2', '#C77DE0', '#E8814A', '#4ECDA0', '#E8C547', '#F27C9E'];
+  const SOC_X_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+  const SOC_THUMB_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>';
+  const SOC_FLAME_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s5 4.5 5 9.5a5 5 0 01-10 0c0-1.7.7-3 1.6-4C9 9 10 9.5 10.5 10 10 7 12 2 12 2z"/></svg>';
+
+  function socColor(id) { let n = 0; for (const c of String(id)) n = (n + c.charCodeAt(0)) % SOC_COLORS.length; return SOC_COLORS[n]; }
+  const socName = (p) => p.full_name || p.username;
+  const socFirst = (p) => socName(p).split(' ')[0];
+  const socCity = (loc) => (loc || '').split(',')[0].trim();
+
+  function socAvatar(p, size, live, flame) {
+    const url = p.avatar_url ? String(p.avatar_url).replace(/['"()\\]/g, '') : '';
+    const style = url ? `background-image:url('${url}')` : `background:${socColor(p.user_id)}`;
+    const badge = flame && p.streak >= 3 ? `<span class="soc-flame">${SOC_FLAME_ICON}${p.streak}</span>` : '';
+    return `<span class="soc-avatar ${size || ''} ${live && p.practiced_today ? 'live' : ''}" style="${style}">${url ? '' : escapeHtml(socName(p)[0].toUpperCase())}${badge}</span>`;
+  }
+
+  function socDismissedKey() { return 'mocko-social-dismissed-' + socialState.uid; }
+  function socDismissed() { try { return new Set(JSON.parse(localStorage.getItem(socDismissedKey()) || '[]')); } catch (e) { return new Set(); } }
+  function socDismiss(id) {
+    const s = socDismissed(); s.add(id);
+    try { localStorage.setItem(socDismissedKey(), JSON.stringify([...s])); } catch (e) { /* private mode: dismissal just won't persist */ }
+    renderSocialSuggestions();
+  }
+
+  async function loadSocial() {
+    const user = MockoAuth.getUser();
+    if (!user) return;
+    if (socialState.uid !== user.id) {
+      Object.assign(socialState, { uid: user.id, loaded: false, friends: [], requests: [], suggestions: [], sentIds: new Set(), activity: [] });
+    }
+    renderSocial();
+    try {
+      const [profile, friends, requests, suggestions, sent, activity] = await Promise.all([
+        MockoProfile.getProfile().catch(() => currentUserProfile),
+        MockoSocial.getFriends(), MockoSocial.getFriendRequests(), MockoSocial.getFriendSuggestions(),
+        MockoSocial.getSentRequestIds(), MockoSocial.getFriendActivity(40),
+      ]);
+      const edu = profile && Array.isArray(profile.education) ? profile.education : [];
+      socialState.me = {
+        city: socCity(profile && profile.location),
+        school: (edu[0] && edu[0].school) || '',
+        industry: (profile && profile.industry) || '',
+        industryLabel: (profile && profile.industry && (INDUSTRY_LABELS[profile.industry] || profile.industry)) || '',
+      };
+      Object.assign(socialState, { friends, requests, suggestions, sentIds: new Set(sent), activity, loaded: true });
+    } catch (err) {
+      console.error('Could not load social:', err);
+      document.getElementById('social-activity').innerHTML = '<div class="soc-empty">Could not load your social feed. Refresh to try again.</div>';
+      return;
+    }
+    renderSocial();
+    if (document.getElementById('screen-friends').classList.contains('active')) renderFriendsPage();
+  }
+
+  function renderSocial() {
+    renderSocialRequests();
+    renderSocialFriends();
+    renderSocialSuggestions();
+    renderSocialActivity();
+  }
+
+  function renderSocialRequests() {
+    const el = document.getElementById('social-requests');
+    const reqs = socialState.requests;
+    if (!reqs.length) { el.innerHTML = ''; return; }
+    el.innerHTML = `<div class="soc-sec"><div class="soc-sec-head"><h2 class="soc-sec-title">Friend requests <small>${reqs.length}</small></h2></div>
+      <div class="soc-card">${reqs.map((r) => `<div class="soc-req-row">${socAvatar(r, 'md')}
+        <div class="grow"><div style="font-weight:700;font-size:14.5px">${escapeHtml(socName(r))}</div><div class="soc-post-time">@${escapeHtml(r.username)} &middot; ${timeAgoLabel(r.requested_at)}</div></div>
+        <button class="btn btn-primary" onclick="respondFriendRequest('${r.user_id}', true)">Accept</button>
+        <button class="btn btn-secondary" onclick="respondFriendRequest('${r.user_id}', false)">Decline</button></div>`).join('')}</div></div>`;
+  }
+
+  function renderSocialFriends() {
+    const fr = socialState.friends;
+    document.getElementById('social-friends-count').textContent = fr.length || '';
+    const addTile = `<button class="soc-ftile add" onclick="document.getElementById('social-suggestions').scrollIntoView({behavior:'smooth',block:'start'})"><span class="soc-plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>Add friends</button>`;
+    const allTile = `<button class="soc-ftile all" onclick="openAllFriends()"><span class="soc-plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>See all</button>`;
+    const tiles = fr.slice(0, 8).map((p) => {
+      let sub = '', on = '';
+      if (!p.activity_hidden) {
+        if (p.practiced_today) { sub = 'Practiced today'; on = 'on'; }
+        else sub = p.streak ? `${p.streak}-day streak` : 'Rest day';
+      }
+      return `<button class="soc-ftile" onclick="openFriendCard('${p.user_id}')">${socAvatar(p, 'lg', true, true)}
+        <div class="soc-fname">${escapeHtml(socFirst(p))}</div><div class="soc-fsub ${on}">${sub}</div></button>`;
+    }).join('');
+    document.getElementById('social-friends-strip').innerHTML = addTile + tiles + (fr.length ? allTile : '');
+  }
+
+  function socSuggestCard(p) {
+    const asked = socialState.sentIds.has(p.user_id);
+    const me = socialState.me;
+    const chips = [];
+    if (p.location) chips.push([socCity(p.location), p.same_location]);
+    if (p.same_school && me.school) chips.push([me.school, true]);
+    else if (p.school) chips.push([p.school, false]);
+    if (p.industry) chips.push([INDUSTRY_LABELS[p.industry] || p.industry, p.same_industry]);
+    chips.sort((a, b) => b[1] - a[1]);
+    return `<div class="soc-scard"><button class="soc-x" aria-label="Dismiss" onclick="socDismiss('${p.user_id}')">${SOC_X_ICON}</button>
+      <button class="soc-scard-who" onclick="openFriendCard('${p.user_id}')">${socAvatar(p, 'lg')}
+        <div class="soc-sname">${escapeHtml(socName(p))}</div><div class="soc-shandle">@${escapeHtml(p.username)}</div></button>
+      <div class="soc-why">${chips.slice(0, 2).map(([t, good]) => `<span class="soc-chip ${good ? 'good' : ''}">${escapeHtml(t)}</span>`).join('')}</div>
+      <div class="soc-mutual">${p.mutual_count ? `${p.mutual_count} mutual friend${p.mutual_count > 1 ? 's' : ''}` : ''}</div>
+      <button class="btn ${asked ? 'btn-secondary' : 'btn-primary'}" ${asked ? 'disabled' : `onclick="addFriendFromSuggestion('${p.user_id}')"`}>${asked ? 'Requested' : 'Add friend'}</button></div>`;
+  }
+
+  function socSuggestSection(title, sub, list) {
+    return `<div class="soc-sec"><div class="soc-sec-head"><div><h2 class="soc-sec-title">${escapeHtml(title)} <small>${list.length || ''}</small></h2><p class="soc-sec-sub">${sub}</p></div></div>
+      ${list.length ? `<div class="soc-scroller">${list.slice(0, 15).map(socSuggestCard).join('')}</div>`
+        : '<div class="soc-empty">No one to suggest here yet. Check back as more people join.</div>'}</div>`;
+  }
+
+  function renderSocialSuggestions() {
+    const el = document.getElementById('social-suggestions');
+    if (!socialState.loaded) { el.innerHTML = ''; return; }
+    const me = socialState.me, dismissed = socDismissed();
+    const pool = socialState.suggestions.filter((p) => !dismissed.has(p.user_id));
+    const prompt = (what) => `<div class="soc-sec"><div class="soc-empty">Add your ${what} in <a onclick="goToSettings()">Settings</a> to see people who match.</div></div>`;
+    let html = '';
+    html += me.city ? socSuggestSection('Near ' + me.city, 'People practicing in your area.', pool.filter((p) => p.same_location)) : prompt('location');
+    if (me.school) html += socSuggestSection('From ' + me.school, 'Classmates and teammates already practicing here.', pool.filter((p) => p.same_school));
+    html += me.industry ? socSuggestSection('In ' + me.industryLabel, 'Recruiting for the same roles you are.', pool.filter((p) => p.same_industry)) : prompt('industry');
+    el.innerHTML = html;
+  }
+
+  function socActivityText(a) {
+    const d = a.detail || {};
+    if (a.kind === 'drill') {
+      const label = (drillMeta[d.drill_key] && drillMeta[d.drill_key].label) || d.drill_key;
+      const scoreLabel = d.drill_key === 'towers' ? 'Time' : 'Score';
+      return { text: `played <b>${escapeHtml(label)}</b>`, chips: [`<span class="soc-chip good">${scoreLabel} ${escapeHtml(String(formatDrillScoreDisplay(d.drill_key, d.score)))}</span>`] };
+    }
+    const mode = { record: 'On-Air Practice', voice: 'Mock Interview' }[d.mode] || 'session';
+    const len = { Quick: 'Quick Round', Short: 'Short Session', Full: 'Full Interview' }[d.length];
+    const score = Math.round(Number(d.score));
+    const chips = [`<span class="soc-chip ${score >= 85 ? 'gold' : score >= 70 ? 'good' : ''}">Score ${score}</span>`];
+    if (d.difficulty) chips.push(`<span class="difficulty-tag" data-difficulty="${escapeHtml(String(d.difficulty).toLowerCase())}">${escapeHtml(String(d.difficulty))}</span>`);
+    return { text: len ? `finished a <b>${len}</b> ${mode}` : `finished a <b>${mode}</b>`, chips };
+  }
+
+  function renderSocialActivity() {
+    const el = document.getElementById('social-activity');
+    if (!socialState.loaded) { el.innerHTML = '<div class="soc-empty">Loading...</div>'; return; }
+    if (!socialState.activity.length) {
+      el.innerHTML = socialState.friends.length
+        ? '<div class="soc-empty">Nothing yet. When friends finish a session or drill, it shows up here.</div>'
+        : '<div class="soc-empty">Add a few friends and you\'ll see what they\'re practicing here.</div>';
+      return;
+    }
+    el.innerHTML = socialState.activity.map((a, i) => {
+      const { text, chips } = socActivityText(a);
+      return `<div class="soc-card"><div class="soc-post-head">${socAvatar(a, 'md')}
+        <div><div class="soc-post-who"><b style="cursor:pointer" onclick="openFriendCard('${a.user_id}')">${escapeHtml(socName(a))}</b> ${text}</div><div class="soc-post-time">${timeAgoLabel(a.created_at)}</div></div></div>
+        <div class="soc-post-body">${chips.join('')}
+          <button class="soc-like ${a.liked_by_me ? 'on' : ''}" aria-label="${a.liked_by_me ? 'Remove like' : 'Like'}" onclick="toggleActivityLike(${i})">${SOC_THUMB_ICON}${a.like_count || ''}</button></div></div>`;
+    }).join('');
+  }
+
+  async function toggleActivityLike(i) {
+    const a = socialState.activity[i];
+    if (!a) return;
+    a.liked_by_me = !a.liked_by_me;
+    a.like_count += a.liked_by_me ? 1 : -1;
+    renderSocialActivity();
+    try {
+      const res = await MockoSocial.toggleActivityLike(a.event_key);
+      a.liked_by_me = res.liked; a.like_count = res.like_count;
+    } catch (err) {
+      console.error(err);
+      a.liked_by_me = !a.liked_by_me;
+      a.like_count += a.liked_by_me ? 1 : -1;
+    }
+    renderSocialActivity();
+  }
+
+  async function addFriendFromSuggestion(id) {
+    socialState.sentIds.add(id);
+    renderSocialSuggestions();
+    const card = document.getElementById('friend-card-overlay').classList.contains('open');
+    if (card) openFriendCard(id);
+    try {
+      await MockoSocial.sendFriendRequest(id);
+    } catch (err) {
+      console.error(err);
+      socialState.sentIds.delete(id);
+      renderSocialSuggestions();
+      if (card) openFriendCard(id);
+      alert('Could not send that request. Please try again.');
+    }
+  }
+
+  async function respondFriendRequest(id, accept) {
+    try {
+      if (accept) await MockoSocial.acceptFriendRequest(id); else await MockoSocial.removeFriendship(id);
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong. Please try again.');
+      return;
+    }
+    await loadSocial();
+  }
+
+  function socFindPerson(id) {
+    return socialState.friends.find((p) => p.user_id === id)
+      || socialState.suggestions.find((p) => p.user_id === id)
+      || socialState.activity.find((p) => p.user_id === id)
+      || socialState.requests.find((p) => p.user_id === id);
+  }
+
+  function openFriendCard(id) {
+    const p = socFindPerson(id);
+    if (!p) return;
+    const friend = socialState.friends.find((f) => f.user_id === id);
+    const asked = socialState.sentIds.has(id);
+    const school = p.school, chips = [];
+    if (p.location) chips.push(`<span class="soc-chip">${escapeHtml(p.location)}</span>`);
+    if (school) chips.push(`<span class="soc-chip">${escapeHtml(school)}</span>`);
+    if (p.industry) chips.push(`<span class="soc-chip">${escapeHtml(INDUSTRY_LABELS[p.industry] || p.industry)}</span>`);
+    let stats = '';
+    if (friend) {
+      stats = friend.activity_hidden
+        ? `<div class="soc-hidden-note">${escapeHtml(socFirst(p))} keeps their activity private.</div>`
+        : `<div class="soc-mstats"><div><b>${friend.streak}</b><span>Streak</span></div><div><b>${friend.week_count}</b><span>This week</span></div><div><b>${friend.practiced_today ? 'Yes' : 'No'}</b><span>Today</span></div></div>`;
+    }
+    const primary = friend ? '' : `<button class="btn ${asked ? 'btn-secondary' : 'btn-primary'}" ${asked ? 'disabled' : `onclick="addFriendFromSuggestion('${id}')"`}>${asked ? 'Requested' : 'Add friend'}</button>`;
+    document.getElementById('friend-card-body').innerHTML = `
+      <button class="soc-x" aria-label="Close" onclick="closeFriendCard()">${SOC_X_ICON}</button>
+      ${socAvatar(friend ? { ...p, ...friend } : p, 'xl', true)}
+      <h3>${escapeHtml(socName(p))}</h3><div class="soc-handle">@${escapeHtml(p.username)}</div>
+      <div class="soc-why">${chips.join('')}</div>${stats}
+      <div class="soc-mact">${primary}<button class="btn btn-secondary" onclick="closeFriendCard(); goToProfileById('${id}')">View profile</button></div>
+      ${friend ? `<button class="soc-rm" onclick="removeFriend('${id}')">Remove friend</button>` : ''}`;
+    document.getElementById('friend-card-overlay').classList.add('open');
+  }
+
+  function closeFriendCard() { document.getElementById('friend-card-overlay').classList.remove('open'); }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFriendCard(); });
+
+  async function removeFriend(id) {
+    const p = socFindPerson(id);
+    if (!confirm(`Remove ${p ? socName(p) : 'this friend'} from your friends?`)) return;
+    try { await MockoSocial.removeFriendship(id); } catch (err) { console.error(err); alert('Could not remove that friend. Please try again.'); return; }
+    closeFriendCard();
+    await loadSocial();
+  }
+
+  // --- All friends ---
+  async function openAllFriends() {
+    if (!requireAuth(openAllFriends)) return;
+    closeAccountMenu();
+    ['home', 'interview', 'drills'].forEach((t) => document.getElementById('tab-' + t).classList.remove('active'));
+    document.getElementById('tab-social').classList.add('active');
+    goTo('friends');
+    syncUrl('/social/friends');
+    document.getElementById('friends-search').value = socialState.query;
+    document.getElementById('friends-sort').value = socialState.sort;
+    if (socialState.loaded && socialState.uid === MockoAuth.getUser().id) renderFriendsPage(); else await loadSocial();
+  }
+
+  function setFriendsQuery(v) { socialState.query = v; renderFriendsList(); }
+  function setFriendsSort(v) { socialState.sort = v; renderFriendsList(); }
+  function setFriendsFilter(k) { socialState.filter = k; renderFriendsPage(); }
+
+  function renderFriendsPage() {
+    document.getElementById('friends-page-sub').textContent = `${socialState.friends.length} ${socialState.friends.length === 1 ? 'person' : 'people'} in your circle`;
+    const filters = [['all', 'All'], ['today', 'Practiced today'], ['location', 'Same area'], ['school', 'Same school'], ['industry', 'Same industry']];
+    document.getElementById('friends-filters').innerHTML = filters.map(([k, l]) =>
+      `<button class="pill-btn ${socialState.filter === k ? 'selected' : ''}" onclick="setFriendsFilter('${k}')">${l}</button>`).join('');
+    renderFriendsList();
+  }
+
+  function renderFriendsList() {
+    const me = socialState.me, q = socialState.query.trim().toLowerCase();
+    const low = (s) => String(s || '').trim().toLowerCase();
+    let list = socialState.friends.filter((p) => !q || `${socName(p)} ${p.username} ${p.school || ''} ${p.industry || ''}`.toLowerCase().includes(q));
+    if (socialState.filter === 'today') list = list.filter((p) => p.practiced_today);
+    if (socialState.filter === 'location') list = list.filter((p) => me.city && low(socCity(p.location)) === low(me.city));
+    if (socialState.filter === 'school') list = list.filter((p) => me.school && low(p.school) === low(me.school));
+    if (socialState.filter === 'industry') list = list.filter((p) => me.industry && low(p.industry) === low(me.industry));
+    const sorts = {
+      active: (a, b) => (b.practiced_today - a.practiced_today) || (b.week_count || 0) - (a.week_count || 0),
+      streak: (a, b) => (b.streak || 0) - (a.streak || 0),
+      az: (a, b) => socName(a).localeCompare(socName(b)),
+    };
+    list.sort(sorts[socialState.sort]);
+    document.getElementById('friends-list').innerHTML = list.length ? list.map((p) => `<div class="soc-frow">${socAvatar(p, 'md', true)}
+      <div class="grow" onclick="openFriendCard('${p.user_id}')"><div class="name">${escapeHtml(socName(p))}${p.practiced_today ? '<span class="soc-chip good">Practiced today</span>' : ''}</div>
+        <div class="sub">${[p.location && socCity(p.location), p.school, p.industry && (INDUSTRY_LABELS[p.industry] || p.industry)].filter(Boolean).map(escapeHtml).join(' &middot; ') || '@' + escapeHtml(p.username)}</div></div>
+      ${p.activity_hidden ? '' : `<div class="stats"><div class="soc-stat"><b>${p.streak}</b><span>Streak</span></div><div class="soc-stat"><b>${p.week_count}</b><span>This week</span></div></div>`}
+      <button class="btn btn-secondary" style="font-size:13px;padding:8px 15px" onclick="goToProfileById('${p.user_id}')">Profile</button></div>`).join('')
+      : `<div class="soc-empty" style="border:none">${socialState.friends.length ? 'No friends match that.' : 'No friends yet. Find people on the Social page.'}</div>`;
+  }
+
   function switchTab(tab) {
+    if (tab === 'social' && !requireAuth(() => switchTab('social'))) return;
     document.getElementById('tab-home').classList.toggle('active', tab === 'home');
     document.getElementById('tab-interview').classList.toggle('active', tab === 'interview');
     document.getElementById('tab-drills').classList.toggle('active', tab === 'drills');
+    document.getElementById('tab-social').classList.toggle('active', tab === 'social');
     if (tab !== 'home') clearInterval(homeLeagueCycleTimer);
-    if (tab === 'drills') {
+    if (tab === 'social') {
+      closeAccountMenu();
+      goTo('social');
+      syncUrl('/social');
+      loadSocial();
+    } else if (tab === 'drills') {
       goTo('drills');
       syncUrl('/drills');
       loadDrillsBestTags();
@@ -4714,6 +5173,8 @@
     const profileMatch = path.match(/^\/profile\/([^/]+)$/);
     if (path === '/interview') switchTab('interview');
     else if (path === '/drills') switchTab('drills');
+    else if (path === '/social') switchTab('social');
+    else if (path === '/social/friends') openAllFriends();
     else if (path === '/profile') goToProfile();
     else if (profileMatch) goToProfileById(decodeURIComponent(profileMatch[1]));
     else if (path === '/history') openStats();
