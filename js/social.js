@@ -36,6 +36,24 @@ async function getSentRequestIds() {
   return (data || []).map((r) => r.addressee_id);
 }
 
+// Reads the friendships row for a specific pair directly (RLS lets either
+// side see it), so a profile page can show the right button -- Add,
+// Requested, Accept/Decline, or Friends -- without loading the whole list.
+async function getFriendshipStatus(otherId) {
+  const user = window.MockoAuth.getUser();
+  if (!user) return 'none';
+  if (user.id === otherId) return 'self';
+  const { data, error } = await supabase
+    .from('friendships')
+    .select('requester_id, status')
+    .or(`and(requester_id.eq.${user.id},addressee_id.eq.${otherId}),and(requester_id.eq.${otherId},addressee_id.eq.${user.id})`)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return 'none';
+  if (data.status === 'accepted') return 'friends';
+  return data.requester_id === user.id ? 'requested' : 'incoming';
+}
+
 async function sendFriendRequest(targetId) {
   const user = requireUser();
   const { error } = await supabase
@@ -67,6 +85,6 @@ async function removeFriendship(otherId) {
 }
 
 window.MockoSocial = {
-  getFriends, getFriendRequests, getFriendSuggestions, getFriendActivity, toggleActivityLike,
+  getFriends, getFriendRequests, getFriendSuggestions, getFriendActivity, toggleActivityLike, getFriendshipStatus,
   getSentRequestIds, sendFriendRequest, acceptFriendRequest, removeFriendship,
 };
