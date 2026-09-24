@@ -16,6 +16,7 @@ const getFriends = () => rpc('get_friends');
 const getFriendRequests = () => rpc('get_friend_requests');
 const getFriendSuggestions = () => rpc('get_friend_suggestions');
 const getFriendActivity = (limit = 40) => rpc('get_friend_activity', { p_limit: limit });
+const searchPeople = (query) => rpc('search_people', { p_query: query });
 
 async function toggleActivityLike(eventKey) {
   const { data, error } = await supabase.rpc('toggle_activity_like', { p_event_key: eventKey });
@@ -86,5 +87,5 @@ async function removeFriendship(otherId) {
 
 window.MockoSocial = {
   getFriends, getFriendRequests, getFriendSuggestions, getFriendActivity, toggleActivityLike, getFriendshipStatus,
-  getSentRequestIds, sendFriendRequest, acceptFriendRequest, removeFriendship,
+  getSentRequestIds, sendFriendRequest, acceptFriendRequest, removeFriendship, searchPeople,
 };

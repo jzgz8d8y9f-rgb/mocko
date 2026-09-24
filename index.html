@@ -525,6 +525,10 @@
   .modal-checkbox { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; margin-bottom: 18px; }
 
   .crop-modal-card { max-width: 480px; }
+  .add-friend-card { max-width: 440px; }
+  .add-friend-card .soc-search { width: 100%; margin-bottom: 4px; }
+  .add-friend-results { max-height: 340px; overflow-y: auto; margin-top: 8px; }
+  .add-friend-results .soc-empty { padding: 20px 4px; }
   .crop-stage { position: relative; width: 100%; aspect-ratio: 1 / 1; background: #000; overflow: hidden; border-radius: 12px; margin: 16px 0 10px; cursor: grab; touch-action: none; }
   .crop-stage:active { cursor: grabbing; }
   .crop-stage.banner { aspect-ratio: 3.2 / 1; border-radius: 12px; }
@@ -1435,6 +1439,7 @@
         <option value="streak">Longest streak</option>
         <option value="az">A to Z</option>
       </select>
+      <button class="btn btn-primary" onclick="openAddFriendModal()">+ Add friend</button>
     </div>
     <div class="pill-row" id="friends-filters" style="margin-bottom:18px;"></div>
     <div class="soc-card" id="friends-list" style="padding:6px 18px;"></div>
@@ -2835,6 +2840,17 @@
     <div class="btn-row" style="justify-content:flex-end; gap:10px;">
       <button class="btn btn-secondary" onclick="closeResumeUploadModal()">Cancel</button>
       <button class="btn btn-primary" id="resume-upload-modal-submit" onclick="submitResumeUploadModal()">Add resume</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="add-friend-overlay">
+  <div class="modal-card add-friend-card">
+    <h4>Add friend</h4>
+    <input class="soc-search" id="add-friend-input" placeholder="Search by name or @username" oninput="onAddFriendInput(this.value)" autocomplete="off">
+    <div class="add-friend-results" id="add-friend-results"></div>
+    <div class="btn-row" style="justify-content:flex-end; margin-top:16px;">
+      <button class="btn btn-secondary" onclick="closeAddFriendModal()">Close</button>
     </div>
   </div>
 </div>
@@ -4532,7 +4548,7 @@
   function renderSocialFriends() {
     const fr = socialState.friends;
     document.getElementById('social-friends-count').textContent = fr.length || '';
-    const addTile = `<button class="soc-ftile add" onclick="document.getElementById('social-suggestions').scrollIntoView({behavior:'smooth',block:'start'})"><span class="soc-plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>Add friends</button>`;
+    const addTile = `<button class="soc-ftile add" onclick="openAddFriendModal()"><span class="soc-plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>Add friends</button>`;
     const allTile = `<button class="soc-ftile all" onclick="openAllFriends()"><span class="soc-plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>See all</button>`;
     const tiles = fr.slice(0, 8).map((p) => {
       let sub = '', on = '';
@@ -4654,6 +4670,97 @@
       return;
     }
     await loadSocial();
+  }
+
+  // --- Add friend search ---
+  let addFriendResults = [];
+  let addFriendSearchTimer = null;
+
+  function openAddFriendModal() {
+    if (!requireAuth(openAddFriendModal)) return;
+    addFriendResults = [];
+    document.getElementById('add-friend-input').value = '';
+    document.getElementById('add-friend-results').innerHTML = '<div class="soc-empty">Search by name or @username.</div>';
+    document.getElementById('add-friend-overlay').classList.add('open');
+    document.getElementById('add-friend-input').focus();
+  }
+
+  function closeAddFriendModal() {
+    document.getElementById('add-friend-overlay').classList.remove('open');
+    clearTimeout(addFriendSearchTimer);
+  }
+
+  function onAddFriendInput(v) {
+    clearTimeout(addFriendSearchTimer);
+    const q = v.trim();
+    const el = document.getElementById('add-friend-results');
+    if (!q) { el.innerHTML = '<div class="soc-empty">Search by name or @username.</div>'; return; }
+    el.innerHTML = '<div class="soc-empty">Searching...</div>';
+    addFriendSearchTimer = setTimeout(() => runAddFriendSearch(q), 300);
+  }
+
+  async function runAddFriendSearch(q) {
+    let results = [];
+    try { results = await MockoSocial.searchPeople(q); } catch (err) { console.error(err); }
+    if (document.getElementById('add-friend-input').value.trim() !== q) return; // superseded by a newer keystroke
+    addFriendResults = results;
+    renderAddFriendResults();
+  }
+
+  function addFriendActionHtml(p) {
+    const checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    if (p.status === 'friends') return `<button class="btn btn-secondary profile-friend-btn on" disabled>${checkIcon}Friends</button>`;
+    if (p.status === 'requested') return `<button class="btn btn-secondary" onclick="addFriendCancel('${p.user_id}')">Requested</button>`;
+    if (p.status === 'incoming') return `<button class="btn btn-primary" onclick="addFriendAccept('${p.user_id}')">Accept</button>`;
+    return `<button class="btn btn-primary" onclick="addFriendSend('${p.user_id}')">Add</button>`;
+  }
+
+  function renderAddFriendResults() {
+    const el = document.getElementById('add-friend-results');
+    if (!addFriendResults.length) { el.innerHTML = '<div class="soc-empty">No one found.</div>'; return; }
+    el.innerHTML = addFriendResults.map((p) => `<div class="soc-req-row">
+      <div class="grow" onclick="closeAddFriendModal(); goToProfileById('${p.user_id}')" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
+        ${socAvatar(p, 'md')}
+        <div><div style="font-weight:700;font-size:14.5px">${escapeHtml(socName(p))}</div><div class="soc-post-time">@${escapeHtml(p.username)}</div></div>
+      </div>
+      ${addFriendActionHtml(p)}</div>`).join('');
+  }
+
+  function addFriendSend(id) {
+    const p = addFriendResults.find((x) => x.user_id === id);
+    if (p) p.status = 'requested';
+    renderAddFriendResults();
+    socialState.sentIds.add(id);
+    MockoSocial.sendFriendRequest(id).catch((err) => {
+      console.error(err);
+      if (p) p.status = 'none';
+      socialState.sentIds.delete(id);
+      renderAddFriendResults();
+      alert('Could not send that request. Please try again.');
+    });
+  }
+
+  function addFriendCancel(id) {
+    const p = addFriendResults.find((x) => x.user_id === id);
+    if (p) p.status = 'none';
+    renderAddFriendResults();
+    socialState.sentIds.delete(id);
+    MockoSocial.removeFriendship(id).catch((err) => {
+      console.error(err);
+      if (p) p.status = 'requested';
+      renderAddFriendResults();
+    });
+  }
+
+  function addFriendAccept(id) {
+    const p = addFriendResults.find((x) => x.user_id === id);
+    if (p) p.status = 'friends';
+    renderAddFriendResults();
+    MockoSocial.acceptFriendRequest(id).then(() => { if (socialState.loaded) loadSocial(); }).catch((err) => {
+      console.error(err);
+      if (p) p.status = 'incoming';
+      renderAddFriendResults();
+    });
   }
 
   function socFindPerson(id) {
