@@ -4686,9 +4686,11 @@
     const pool = socialState.suggestions.filter((p) => !dismissed.has(p.user_id));
     const prompt = (what) => `<div class="soc-sec"><div class="soc-empty">Add your ${what} in <a onclick="goToSettings()">Settings</a> to see people who match.</div></div>`;
     let html = '';
-    html += me.city ? socSuggestSection('Near ' + me.city, 'People practicing in your area.', pool.filter((p) => p.same_location)) : prompt('location');
-    if (me.school) html += socSuggestSection('From ' + me.school, 'Classmates and teammates already practicing here.', pool.filter((p) => p.same_school));
-    html += me.industry ? socSuggestSection('In ' + me.industryLabel, 'Recruiting for the same roles you are.', pool.filter((p) => p.same_industry)) : prompt('industry');
+    const byMutuals = (list) => list.slice().sort((a, b) => (b.mutual_count || 0) - (a.mutual_count || 0));
+    html += me.city ? socSuggestSection('Near ' + me.city, 'People practicing in your area.', byMutuals(pool.filter((p) => p.same_location))) : prompt('location');
+    if (me.school) html += socSuggestSection('From ' + me.school, 'Classmates and teammates already practicing here.', byMutuals(pool.filter((p) => p.same_school)));
+    if (me.industry === 'general') html += socSuggestSection('People you may know', 'Friends of your friends, most mutuals first.', byMutuals(pool.filter((p) => p.mutual_count > 0)));
+    else html += me.industry ? socSuggestSection('In ' + me.industryLabel, 'Recruiting for the same roles you are.', byMutuals(pool.filter((p) => p.same_industry))) : prompt('industry');
     el.innerHTML = html;
   }
 
@@ -4768,15 +4770,33 @@
 
   // --- Add friend search ---
   let addFriendResults = [];
+  let addFriendHeading = '';
   let addFriendSearchTimer = null;
 
   function openAddFriendModal() {
     if (!requireAuth(openAddFriendModal)) return;
-    addFriendResults = [];
     document.getElementById('add-friend-input').value = '';
-    document.getElementById('add-friend-results').innerHTML = '<div class="soc-empty">Search by name or @username.</div>';
+    renderAddFriendSuggested();
     document.getElementById('add-friend-overlay').classList.add('open');
     document.getElementById('add-friend-input').focus();
+    if (!socialState.loaded) loadSocial().then(() => { if (!document.getElementById('add-friend-input').value.trim()) renderAddFriendSuggested(); });
+  }
+
+  // Default modal content: people who share your school, industry, or area.
+  function renderAddFriendSuggested() {
+    const dismissed = socDismissed();
+    const rank = (p) => (p.same_school ? 4 : 0) + (p.same_industry && socialState.me.industry !== 'general' ? 2 : 0) + (p.same_location ? 1 : 0);
+    addFriendResults = socialState.suggestions
+      .filter((p) => !dismissed.has(p.user_id))
+      .sort((a, b) => (b.mutual_count || 0) - (a.mutual_count || 0) || rank(b) - rank(a))
+      .slice(0, 12)
+      .map((p) => ({ ...p, status: socialState.sentIds.has(p.user_id) ? 'requested' : 'none' }));
+    addFriendHeading = addFriendResults.length ? 'People you may know' : '';
+    if (!addFriendResults.length) {
+      document.getElementById('add-friend-results').innerHTML = `<div class="soc-empty">${socialState.loaded ? 'Search by name or @username.' : 'Loading suggestions...'}</div>`;
+      return;
+    }
+    renderAddFriendResults();
   }
 
   function closeAddFriendModal() {
@@ -4788,7 +4808,7 @@
     clearTimeout(addFriendSearchTimer);
     const q = v.trim();
     const el = document.getElementById('add-friend-results');
-    if (!q) { el.innerHTML = '<div class="soc-empty">Search by name or @username.</div>'; return; }
+    if (!q) { renderAddFriendSuggested(); return; }
     el.innerHTML = '<div class="soc-empty">Searching...</div>';
     addFriendSearchTimer = setTimeout(() => runAddFriendSearch(q), 300);
   }
@@ -4798,6 +4818,7 @@
     try { results = await MockoSocial.searchPeople(q); } catch (err) { console.error(err); }
     if (document.getElementById('add-friend-input').value.trim() !== q) return; // superseded by a newer keystroke
     addFriendResults = results;
+    addFriendHeading = '';
     renderAddFriendResults();
   }
 
@@ -4812,12 +4833,24 @@
   function renderAddFriendResults() {
     const el = document.getElementById('add-friend-results');
     if (!addFriendResults.length) { el.innerHTML = '<div class="soc-empty">No one found.</div>'; return; }
-    el.innerHTML = addFriendResults.map((p) => `<div class="soc-req-row">
+    const me = socialState.me || {};
+    const rows = addFriendResults.map((p) => {
+      const chips = [];
+      const sameSchool = p.same_school !== undefined ? p.same_school : (p.school && me.school && p.school.toLowerCase() === me.school.toLowerCase());
+      const sameIndustry = p.same_industry !== undefined ? p.same_industry : (p.industry && me.industry && p.industry === me.industry);
+      if (p.school) chips.push([sameSchool ? 'Your school \u00b7 ' + p.school : p.school, sameSchool]);
+      if (p.industry) chips.push([INDUSTRY_LABELS[p.industry] || p.industry, sameIndustry]);
+      if (p.location && chips.length < 2) chips.push([socCity(p.location), p.same_location]);
+      chips.sort((a, b) => b[1] - a[1]);
+      return `<div class="soc-req-row">
       <div class="grow" onclick="closeAddFriendModal(); goToProfileById('${p.user_id}')" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
         ${socAvatar(p, 'md')}
-        <div><div style="font-weight:700;font-size:14.5px">${escapeHtml(socName(p))}</div><div class="soc-post-time">@${escapeHtml(p.username)}</div></div>
+        <div style="min-width:0"><div style="font-weight:700;font-size:14.5px">${escapeHtml(socName(p))}</div><div class="soc-post-time">@${escapeHtml(p.username)}${p.mutual_count ? ` &middot; ${p.mutual_count} mutual` : ''}</div>
+        ${chips.length ? `<div class="soc-why" style="justify-content:flex-start; margin:4px 0 0; min-height:0;">${chips.slice(0, 2).map(([t, good]) => `<span class="soc-chip ${good ? 'good' : ''}">${escapeHtml(t)}</span>`).join('')}</div>` : ''}</div>
       </div>
-      ${addFriendActionHtml(p)}</div>`).join('');
+      ${addFriendActionHtml(p)}</div>`;
+    }).join('');
+    el.innerHTML = (addFriendHeading ? `<div class="soc-post-time" style="padding:6px 0 2px;font-weight:700;">${addFriendHeading}</div>` : '') + rows;
   }
 
   function addFriendSend(id) {
