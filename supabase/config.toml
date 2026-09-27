@@ -458,3 +458,9 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/candidate-questions/deno.json"
 entrypoint = "./functions/candidate-questions/index.ts"
+
+[functions.send-weekly-summary]
+enabled = true
+verify_jwt = false
+import_map = "./functions/send-weekly-summary/deno.json"
+entrypoint = "./functions/send-weekly-summary/index.ts"
