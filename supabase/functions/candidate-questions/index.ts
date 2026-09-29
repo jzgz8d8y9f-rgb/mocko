@@ -4,7 +4,7 @@
 // Interview, where the candidate gets to ask their own questions at the end,
 // like a real interview.
 //
-//   mode: "reply" -- Jordan (the AI interviewer) answers one candidate
+//   mode: "reply" -- MockBot (the AI interviewer) answers one candidate
 //                    question in character, in a couple of spoken sentences.
 //   mode: "grade" -- grades the full list of questions the candidate asked,
 //                    at the end of the session.
@@ -82,7 +82,7 @@ async function reply(body: Record<string, unknown>) {
     ? body.interviewQuestions.slice(0, 6).map((q) => clean(q, 200)).filter(Boolean)
     : [];
 
-  const prompt = `You are Jordan, a friendly, experienced interviewer running a mock interview on Mocko, an interview-practice app. The interview itself is over and the candidate is now asking you their own questions, like the end of a real interview.
+  const prompt = `You are MockBot, a friendly, experienced interviewer running a mock interview on Mocko, an interview-practice app. The interview itself is over and the candidate is now asking you their own questions, like the end of a real interview.
 
 Setting: ${industry} interview, ${format} format.
 Questions you asked them earlier: ${JSON.stringify(asked)}

@@ -2275,9 +2275,9 @@
           <div class="select-group">
             <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
               <input type="checkbox" id="voice-ask-toggle" onchange="updateSetupSummary()">
-              Let me ask Jordan questions at the end
+              Let me ask MockBot questions at the end
             </label>
-            <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, Jordan turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
+            <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, MockBot turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
           </div>
 
           <div class="divider"></div>
@@ -2305,7 +2305,7 @@
               <input type="checkbox" id="voice-role-toggle" onchange="toggleVoiceRolePanel()">
               Tailor a question or two to a specific role
             </label>
-            <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and Jordan will work in a question or two about it.</div>
+            <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and MockBot will work in a question or two about it.</div>
             <div id="voice-role-panel" style="display:none; margin-top:14px;">
               <textarea id="voice-role-textarea" placeholder="Paste the job description here..." maxlength="6000" oninput="handleVoiceRoleInput()" style="width:100%; min-height:110px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:13.5px; resize:vertical;"></textarea>
               <div id="voice-role-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
@@ -2450,7 +2450,7 @@
   <div class="screen" id="screen-voice">
     <button class="back-btn" onclick="exitVoiceSession()">← Save &amp; exit</button>
     <div class="voice-shell">
-      <div class="voice-header"><div class="interviewer-avatar">J</div><div class="interviewer-name">Jordan · AI Interviewer</div></div>
+      <div class="voice-header"><div class="interviewer-avatar">M</div><div class="interviewer-name">MockBot · AI Interviewer</div></div>
       <div class="interviewer-role" id="voice-role">General &middot; Behavioral</div>
 
       <div id="voice-loader" style="display:none; margin: 0 auto 24px; height:140px; align-items:center; justify-content:center;"><div class="mocko-loader" role="status" aria-label="Loading">
@@ -4787,8 +4787,8 @@
   const INTERVIEW_TUTORIAL_STEPS = {
     voice: [
       { icon: 'sliders', eyebrow: 'Before you start', heading: 'Set up your session next', body: "You'll pick your industry, session length, question type, and difficulty. It's saved to your profile so it's remembered next time." },
-      { icon: 'mic', eyebrow: 'How it works · 1 of 3', heading: 'Jordan asks, you answer', body: "Your AI interviewer asks a question out loud. Answer naturally, then tap Done when you're finished — no mic access? You can type instead." },
-      { icon: 'chat', eyebrow: 'How it works · 2 of 3', heading: 'Follows up when it matters', body: 'If your answer leaves something worth digging into, Jordan asks a quick natural follow-up before moving on.' },
+      { icon: 'mic', eyebrow: 'How it works · 1 of 3', heading: 'MockBot asks, you answer', body: "Your AI interviewer asks a question out loud. Answer naturally, then tap Done when you're finished — no mic access? You can type instead." },
+      { icon: 'chat', eyebrow: 'How it works · 2 of 3', heading: 'Follows up when it matters', body: 'If your answer leaves something worth digging into, MockBot asks a quick natural follow-up before moving on.' },
       { icon: 'bars', eyebrow: 'How it works · 3 of 3', heading: 'Get your breakdown', body: "When you're done, you'll get an overall score and a category breakdown for every question." },
     ],
     record: [
@@ -6352,7 +6352,7 @@
   }
 
   // The interviewer's voice: Deepgram's neural voices via the `speak` edge
-  // function, so Jordan sounds like a person. If that's unavailable for any
+  // function, so MockBot sounds like a person. If that's unavailable for any
   // reason (network, quota, autoplay blocked) it quietly falls back to the
   // browser's built-in voice below, so the interview never stalls on it.
   const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
@@ -6430,7 +6430,7 @@
       utter.rate = 0.97;
       utter.pitch = 1.0;
       // Some browsers never fire onend (backgrounded tabs, certain voices),
-      // which would leave the interview stuck on "Jordan is speaking".
+      // which would leave the interview stuck on "MockBot is speaking".
       let advanced = false;
       const advance = (delay) => {
         if (advanced) return;
@@ -6457,7 +6457,7 @@
     };
     document.getElementById('voice-caption').textContent = text;
     document.getElementById('voice-orb').className = 'voice-orb ai-talking';
-    document.getElementById('voice-state').textContent = 'Jordan is speaking';
+    document.getElementById('voice-state').textContent = 'MockBot is speaking';
     speakViaAiVoice(text, token).then((result) => {
       if (result === 'superseded' || token !== speechToken) return;
       if (result === 'done') { finish(); return; }
@@ -6697,7 +6697,7 @@
     }
   }
 
-  // Ask-the-interviewer: after the last question Jordan turns it over to the
+  // Ask-the-interviewer: after the last question MockBot turns it over to the
   // candidate. Each question gets an in-character reply; the full set is
   // graded once at the end and shown alongside the normal results.
   const MAX_CANDIDATE_QUESTIONS = 3;
@@ -6733,7 +6733,7 @@
     }
 
     voiceSession.phase = 'thinking';
-    document.getElementById('voice-state').textContent = 'Jordan is thinking';
+    document.getElementById('voice-state').textContent = 'MockBot is thinking';
     document.getElementById('voice-caption').textContent = 'Thinking...';
     setVoiceLoading(true);
     let replyText;
@@ -6895,7 +6895,7 @@
         <div class="qresult-question">${escapeHtml(q.text)}</div>
         ${q.feedback ? `<div class="qa-feedback">${escapeHtml(q.feedback)}</div>` : ''}
         ${q.stronger ? `<div class="qa-detail"><b>Sharper version:</b> ${escapeHtml(q.stronger)}</div>` : ''}
-        ${q.reply ? `<div class="qa-detail"><b>Jordan's answer:</b> ${escapeHtml(q.reply)}</div>` : ''}
+        ${q.reply ? `<div class="qa-detail"><b>MockBot's answer:</b> ${escapeHtml(q.reply)}</div>` : ''}
       </div>`;
     }).join('');
     if (r.error) {

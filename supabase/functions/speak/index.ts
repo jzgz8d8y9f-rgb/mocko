@@ -1,7 +1,7 @@
 // Edge Function: speak
 //
 // Text-to-speech for the Mock Interview's AI interviewer. Sends a line of
-// text to Deepgram's Aura neural voices and streams back an MP3, so Jordan
+// text to Deepgram's Aura neural voices and streams back an MP3, so MockBot
 // sounds like a person instead of the browser's built-in robotic voice.
 // Requires a signed-in user so it can't be used as a free public TTS proxy.
 //
