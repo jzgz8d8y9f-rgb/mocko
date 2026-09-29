@@ -1065,7 +1065,7 @@
   .account-name { font-size: 14px; color: var(--text); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .account-caret { font-size: 11px; color: var(--text-muted); }
   .account-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 6px; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); z-index: 10; }
-  .account-dropdown button { display: block; width: 100%; text-align: left; background: none; border: none; padding: 9px 12px; border-radius: 6px; font-family: 'Work Sans'; font-size: 14.5px; color: var(--text); cursor: pointer; }
+  .account-dropdown button { display: block; width: 100%; text-align: left; background: none; border: none; padding: 9px 12px; border-radius: 6px; font-family: 'Work Sans'; font-size: 14.5px; color: var(--text); cursor: pointer; overflow-wrap: break-word; }
   .account-dropdown button:hover { background: var(--surface-2); }
   .account-dropdown-divider { height: 1px; background: var(--line); margin: 6px 4px; }
 
@@ -2313,7 +2313,7 @@
             </button>
             <div class="account-dropdown industry-dropdown" id="pharma-dropdown" style="display:none;">
               <button data-industry="pharma-rd" onclick="selectIndustry(this)">Research &amp; Development</button>
-              <button data-industry="pharma-mfg-quality" onclick="selectIndustry(this)">Manufacturing/Quality</button>
+              <button data-industry="pharma-mfg-quality" onclick="selectIndustry(this)">Manufacturing / Quality</button>
             </div>
           </div>
           <div class="industry-dropdown-wrap">
@@ -2323,7 +2323,7 @@
             </button>
             <div class="account-dropdown industry-dropdown" id="medtech-dropdown" style="display:none;">
               <button data-industry="medtech-rd" onclick="selectIndustry(this)">Research &amp; Development</button>
-              <button data-industry="medtech-mfg-quality" onclick="selectIndustry(this)">Manufacturing/Quality</button>
+              <button data-industry="medtech-mfg-quality" onclick="selectIndustry(this)">Manufacturing / Quality</button>
             </div>
           </div>
         </div>
