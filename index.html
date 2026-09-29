@@ -525,7 +525,14 @@
 
   .voice-shell { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 40px; text-align: center; }
   .voice-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 6px; }
-  .interviewer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--good); display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Work Sans'; color: var(--bg); }
+  .interviewer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--good); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .interviewer-avatar svg { display: block; }
+  .avatar-mouth { transform-box: fill-box; transform-origin: center; }
+  .interviewer-avatar.talking .avatar-mouth { animation: avatar-talk 0.32s ease-in-out infinite; }
+  @keyframes avatar-talk { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(2.4); } }
+  @media (prefers-reduced-motion: reduce) {
+    .interviewer-avatar.talking .avatar-mouth { animation: none; transform: scaleY(1.6); }
+  }
   .interviewer-name { font-size: 15px; font-weight: 600; }
   .interviewer-role { font-size: 13px; color: var(--text-muted); margin-bottom: 30px; }
 
@@ -2450,7 +2457,18 @@
   <div class="screen" id="screen-voice">
     <button class="back-btn" onclick="exitVoiceSession()">← Save &amp; exit</button>
     <div class="voice-shell">
-      <div class="voice-header"><div class="interviewer-avatar">M</div><div class="interviewer-name">MockBot · AI Interviewer</div></div>
+      <div class="voice-header">
+        <div class="interviewer-avatar" id="voice-avatar">
+          <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <line x1="20" y1="7" x2="20" y2="3" stroke="var(--bg)" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="20" cy="2.4" r="1.4" fill="var(--bg)"/>
+            <circle cx="14" cy="19" r="2.4" fill="var(--bg)"/>
+            <circle cx="26" cy="19" r="2.4" fill="var(--bg)"/>
+            <rect class="avatar-mouth" x="14" y="26" width="12" height="3" rx="1.5" fill="var(--bg)"/>
+          </svg>
+        </div>
+        <div class="interviewer-name">MockBot · AI Interviewer</div>
+      </div>
       <div class="interviewer-role" id="voice-role">General &middot; Behavioral</div>
 
       <div id="voice-loader" style="display:none; margin: 0 auto 24px; height:140px; align-items:center; justify-content:center;"><div class="mocko-loader" role="status" aria-label="Loading">
@@ -6166,6 +6184,14 @@
     document.getElementById('voice-orb').style.display = on ? 'none' : '';
   }
 
+  // Toggles the orb pulse and the avatar's mouth-move animation together --
+  // the single source of truth for whether MockBot is currently speaking.
+  function setAiTalking(on) {
+    document.getElementById('voice-orb').className = on ? 'voice-orb ai-talking' : 'voice-orb';
+    const avatar = document.getElementById('voice-avatar');
+    if (avatar) avatar.classList.toggle('talking', on);
+  }
+
   function resetVoiceUI() {
     setVoiceLoading(false);
     stopAiVoice();
@@ -6175,7 +6201,7 @@
     document.getElementById('mic-btn').innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
     document.getElementById('mic-btn').disabled = false;
     document.getElementById('voice-state').textContent = 'Ready';
-    document.getElementById('voice-orb').className = 'voice-orb';
+    setAiTalking(false);
     document.getElementById('voice-retry-row').style.display = 'none';
     document.getElementById('voice-rec-indicator').style.display = 'none';
     document.getElementById('voice-text-fallback').style.display = 'none';
@@ -6452,11 +6478,11 @@
     const token = ++speechToken;
     const finish = () => {
       if (token !== speechToken) return;
-      document.getElementById('voice-orb').className = 'voice-orb';
+      setAiTalking(false);
       onDone();
     };
     document.getElementById('voice-caption').textContent = text;
-    document.getElementById('voice-orb').className = 'voice-orb ai-talking';
+    setAiTalking(true);
     document.getElementById('voice-state').textContent = 'MockBot is speaking';
     speakViaAiVoice(text, token).then((result) => {
       if (result === 'superseded' || token !== speechToken) return;
@@ -6765,7 +6791,7 @@
     document.getElementById('voice-rec-indicator').style.display = 'none';
     document.getElementById('mic-btn').style.display = 'none';
     document.getElementById('voice-text-fallback').style.display = 'none';
-    document.getElementById('voice-orb').className = 'voice-orb';
+    setAiTalking(false);
 
     const asked = voiceSession.candidateQuestions;
     if (!asked.length) {
@@ -6830,7 +6856,7 @@
   async function finishVoiceSession() {
     voiceSession.phase = 'done';
     setVoiceLoading(false);
-    document.getElementById('voice-orb').className = 'voice-orb';
+    setAiTalking(false);
     document.getElementById('voice-caption').textContent = "That's a wrap, nice work.";
     document.getElementById('voice-state').textContent = 'Session complete';
     document.getElementById('mic-btn').style.display = 'none';
