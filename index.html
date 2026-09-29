@@ -263,6 +263,17 @@
   .select-group-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; }
   .divider { height: 1px; background: var(--line); margin-bottom: 28px; }
 
+  /* Mock Interview setup: a two-step wizard (Basics, then optional
+     Personalize) instead of one long scrolling form. Begin stays
+     available from either step, so Personalize is always skippable. */
+  .wizard-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .wizard-seg { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+  .wizard-seg.done { background: var(--good); }
+  .wizard-back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-muted); cursor: pointer; margin-bottom: 18px; }
+  .wizard-back-link:hover { color: var(--text); }
+  .wizard-continue-row { display: flex; align-items: center; gap: 16px; margin-top: 30px; }
+  .wizard-skip-hint { font-size: 12.5px; color: var(--text-muted); }
+
   /* Settings: sidebar categories instead of one long scrolling form */
   .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
   .settings-nav { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px; position: sticky; top: 20px; }
@@ -2210,81 +2221,98 @@
 
       <!-- MOCK INTERVIEW controls -->
       <div id="setup-voice-block" style="display:none;">
-        <div class="select-group">
-          <div class="select-group-label">Length of Session</div>
-          <div class="select-group-sub">Pick how many questions, from a quick warm-up to a full set.</div>
-          <div class="toggle-row toggle-row-3" id="voice-length-row">
-            <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>1 question</p><p class="toggle-card-time">~2 min</p></div>
-            <div class="toggle-card" data-len="Short"><h4>Short Session</h4><p>3 questions</p><p class="toggle-card-time">~5 min</p></div>
-            <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions</p><p class="toggle-card-time">~20 min</p></div>
+
+        <div class="wizard-progress">
+          <div class="wizard-seg done" id="wizard-seg-1"></div>
+          <div class="wizard-seg" id="wizard-seg-2"></div>
+        </div>
+        <div class="step-label" id="wizard-step-label">Step 1 of 2 &middot; Basics</div>
+
+        <div id="voice-step-basics">
+          <div class="select-group">
+            <div class="select-group-label">Length of Session</div>
+            <div class="select-group-sub">Pick how many questions, from a quick warm-up to a full set.</div>
+            <div class="toggle-row toggle-row-3" id="voice-length-row">
+              <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>1 question</p><p class="toggle-card-time">~2 min</p></div>
+              <div class="toggle-card" data-len="Short"><h4>Short Session</h4><p>3 questions</p><p class="toggle-card-time">~5 min</p></div>
+              <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions</p><p class="toggle-card-time">~20 min</p></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="select-group">
+            <div class="select-group-label">Format</div>
+            <div class="select-group-sub">You can combine question types within a single session.</div>
+            <div class="pill-row" id="type-row">
+              <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
+              <button class="pill-btn" data-type="Technical">Technical only</button>
+              <button class="pill-btn" data-type="Both">Both</button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="select-group" style="margin-bottom:0;">
+            <div class="select-group-label">Difficulty</div>
+            <div class="select-group-sub">Easy is broader and forgiving. Hard is high-specificity and less room for a generic answer.</div>
+            <div class="pill-row difficulty-pill-row" id="voice-difficulty-row">
+              <button class="pill-btn" data-difficulty="easy">Easy</button>
+              <button class="pill-btn" data-difficulty="medium">Medium</button>
+              <button class="pill-btn" data-difficulty="hard">Hard</button>
+            </div>
+          </div>
+
+          <div class="wizard-continue-row">
+            <button class="btn btn-secondary" onclick="goToVoiceWizardStep(2)">Continue to Personalize &rarr;</button>
+            <span class="wizard-skip-hint">Optional &mdash; or just hit Begin whenever you&rsquo;re ready.</span>
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div id="voice-step-personalize" style="display:none;">
+          <div class="wizard-back-link" onclick="goToVoiceWizardStep(1)">&larr; Back to Basics</div>
 
-        <div class="select-group">
-          <div class="select-group-label">Format</div>
-          <div class="select-group-sub">You can combine question types within a single session.</div>
-          <div class="pill-row" id="type-row">
-            <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
-            <button class="pill-btn" data-type="Technical">Technical only</button>
-            <button class="pill-btn" data-type="Both">Both</button>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="select-group">
-          <div class="select-group-label">Difficulty</div>
-          <div class="select-group-sub">Easy is broader and forgiving. Hard is high-specificity and less room for a generic answer.</div>
-          <div class="pill-row difficulty-pill-row" id="voice-difficulty-row">
-            <button class="pill-btn" data-difficulty="easy">Easy</button>
-            <button class="pill-btn" data-difficulty="medium">Medium</button>
-            <button class="pill-btn" data-difficulty="hard">Hard</button>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="select-group">
-          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-            <input type="checkbox" id="voice-ask-toggle" onchange="updateSetupSummary()">
-            Let me ask Jordan questions at the end
-          </label>
-          <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, Jordan turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="select-group" style="margin-bottom:0;">
-          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-            <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
-            Tailor a question or two to my resume
-          </label>
-          <div id="voice-resume-panel" style="display:none; margin-top:14px;">
-            <div id="voice-resume-picker-empty" class="resume-picker-empty" style="display:none;">No saved resumes yet. Upload one to tailor questions to it.</div>
-            <select class="resume-select" id="voice-resume-select" style="display:none;"></select>
-            <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:13.5px; padding:8px 14px;">
-              + Upload new resume
-              <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
+          <div class="select-group">
+            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+              <input type="checkbox" id="voice-ask-toggle" onchange="updateSetupSummary()">
+              Let me ask Jordan questions at the end
             </label>
-            <div id="voice-resume-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+            <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, Jordan turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="select-group" style="margin-bottom:0;">
+            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+              <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
+              Tailor a question or two to my resume
+            </label>
+            <div id="voice-resume-panel" style="display:none; margin-top:14px;">
+              <div id="voice-resume-picker-empty" class="resume-picker-empty" style="display:none;">No saved resumes yet. Upload one to tailor questions to it.</div>
+              <select class="resume-select" id="voice-resume-select" style="display:none;"></select>
+              <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:13.5px; padding:8px 14px;">
+                + Upload new resume
+                <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
+              </label>
+              <div id="voice-resume-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="select-group" style="margin-bottom:0;">
+            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+              <input type="checkbox" id="voice-role-toggle" onchange="toggleVoiceRolePanel()">
+              Tailor a question or two to a specific role
+            </label>
+            <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and Jordan will work in a question or two about it.</div>
+            <div id="voice-role-panel" style="display:none; margin-top:14px;">
+              <textarea id="voice-role-textarea" placeholder="Paste the job description here..." maxlength="6000" oninput="handleVoiceRoleInput()" style="width:100%; min-height:110px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:13.5px; resize:vertical;"></textarea>
+              <div id="voice-role-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+            </div>
           </div>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="select-group" style="margin-bottom:0;">
-          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-            <input type="checkbox" id="voice-role-toggle" onchange="toggleVoiceRolePanel()">
-            Tailor a question or two to a specific role
-          </label>
-          <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and Jordan will work in a question or two about it.</div>
-          <div id="voice-role-panel" style="display:none; margin-top:14px;">
-            <textarea id="voice-role-textarea" placeholder="Paste the job description here..." maxlength="6000" oninput="handleVoiceRoleInput()" style="width:100%; min-height:110px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:13.5px; resize:vertical;"></textarea>
-            <div id="voice-role-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
-          </div>
-        </div>
       </div>
     </div>
     </div>
@@ -4578,6 +4606,7 @@
         const savedRole = localStorage.getItem('mocko-role-description');
         if (savedRole) document.getElementById('voice-role-textarea').value = savedRole;
       } catch (e) {}
+      goToVoiceWizardStep(1);
     }
 
     if (currentUserProfile && currentUserProfile.industry) {
@@ -4593,6 +4622,19 @@
     } else {
       goTo('setup');
     }
+  }
+
+  // Mock Interview setup is a two-step wizard (Basics, then optional
+  // Personalize). Begin (in the sidebar) stays enabled and reachable from
+  // either step, so nothing here ever blocks starting without visiting
+  // step 2 -- this only controls which step's content is shown.
+  function goToVoiceWizardStep(step) {
+    document.getElementById('voice-step-basics').style.display = step === 1 ? 'block' : 'none';
+    document.getElementById('voice-step-personalize').style.display = step === 2 ? 'block' : 'none';
+    document.getElementById('wizard-seg-1').classList.add('done');
+    document.getElementById('wizard-seg-2').classList.toggle('done', step === 2);
+    document.getElementById('wizard-step-label').textContent = step === 2 ? 'Step 2 of 2 · Personalize (optional)' : 'Step 1 of 2 · Basics';
+    document.getElementById('setup-voice-block').scrollIntoView({ block: 'nearest' });
   }
 
   async function toggleVoiceResumePanel() {
