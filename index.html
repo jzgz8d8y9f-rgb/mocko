@@ -263,6 +263,17 @@
   .select-group-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; }
   .divider { height: 1px; background: var(--line); margin-bottom: 28px; }
 
+  /* Mock Interview setup: a two-step wizard (Basics, then optional
+     Personalize) instead of one long scrolling form. Begin stays
+     available from either step, so Personalize is always skippable. */
+  .wizard-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .wizard-seg { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+  .wizard-seg.done { background: var(--good); }
+  .wizard-back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-muted); cursor: pointer; margin-bottom: 18px; }
+  .wizard-back-link:hover { color: var(--text); }
+  .wizard-continue-row { display: flex; align-items: center; gap: 16px; margin-top: 30px; }
+  .wizard-skip-hint { font-size: 12.5px; color: var(--text-muted); }
+
   /* Settings: sidebar categories instead of one long scrolling form */
   .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
   .settings-nav { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px; position: sticky; top: 20px; }
@@ -514,7 +525,14 @@
 
   .voice-shell { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 40px; text-align: center; }
   .voice-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 6px; }
-  .interviewer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--good); display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Work Sans'; color: var(--bg); }
+  .interviewer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--good); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .interviewer-avatar svg { display: block; }
+  .avatar-mouth { transform-box: fill-box; transform-origin: center; }
+  .interviewer-avatar.talking .avatar-mouth { animation: avatar-talk 0.32s ease-in-out infinite; }
+  @keyframes avatar-talk { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(2.4); } }
+  @media (prefers-reduced-motion: reduce) {
+    .interviewer-avatar.talking .avatar-mouth { animation: none; transform: scaleY(1.6); }
+  }
   .interviewer-name { font-size: 15px; font-weight: 600; }
   .interviewer-role { font-size: 13px; color: var(--text-muted); margin-bottom: 30px; }
 
@@ -2375,81 +2393,98 @@
 
       <!-- MOCK INTERVIEW controls -->
       <div id="setup-voice-block" style="display:none;">
-        <div class="select-group">
-          <div class="select-group-label">Length of Session</div>
-          <div class="select-group-sub">Pick how many questions, from a quick warm-up to a full set.</div>
-          <div class="toggle-row toggle-row-3" id="voice-length-row">
-            <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>1 question</p><p class="toggle-card-time">~2 min</p></div>
-            <div class="toggle-card" data-len="Short"><h4>Short Session</h4><p>3 questions</p><p class="toggle-card-time">~5 min</p></div>
-            <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions</p><p class="toggle-card-time">~20 min</p></div>
+
+        <div class="wizard-progress">
+          <div class="wizard-seg done" id="wizard-seg-1"></div>
+          <div class="wizard-seg" id="wizard-seg-2"></div>
+        </div>
+        <div class="step-label" id="wizard-step-label">Step 1 of 2 &middot; Basics</div>
+
+        <div id="voice-step-basics">
+          <div class="select-group">
+            <div class="select-group-label">Length of Session</div>
+            <div class="select-group-sub">Pick how many questions, from a quick warm-up to a full set.</div>
+            <div class="toggle-row toggle-row-3" id="voice-length-row">
+              <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>1 question</p><p class="toggle-card-time">~2 min</p></div>
+              <div class="toggle-card" data-len="Short"><h4>Short Session</h4><p>3 questions</p><p class="toggle-card-time">~5 min</p></div>
+              <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions</p><p class="toggle-card-time">~20 min</p></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="select-group">
+            <div class="select-group-label">Format</div>
+            <div class="select-group-sub">You can combine question types within a single session.</div>
+            <div class="pill-row" id="type-row">
+              <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
+              <button class="pill-btn" data-type="Technical">Technical only</button>
+              <button class="pill-btn" data-type="Both">Both</button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="select-group" style="margin-bottom:0;">
+            <div class="select-group-label">Difficulty</div>
+            <div class="select-group-sub">Easy is broader and forgiving. Hard is high-specificity and less room for a generic answer.</div>
+            <div class="pill-row difficulty-pill-row" id="voice-difficulty-row">
+              <button class="pill-btn" data-difficulty="easy">Easy</button>
+              <button class="pill-btn" data-difficulty="medium">Medium</button>
+              <button class="pill-btn" data-difficulty="hard">Hard</button>
+            </div>
+          </div>
+
+          <div class="wizard-continue-row">
+            <button class="btn btn-secondary" onclick="goToVoiceWizardStep(2)">Continue to Personalize &rarr;</button>
+            <span class="wizard-skip-hint">Optional &mdash; or just hit Begin whenever you&rsquo;re ready.</span>
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div id="voice-step-personalize" style="display:none;">
+          <div class="wizard-back-link" onclick="goToVoiceWizardStep(1)">&larr; Back to Basics</div>
 
-        <div class="select-group">
-          <div class="select-group-label">Format</div>
-          <div class="select-group-sub">You can combine question types within a single session.</div>
-          <div class="pill-row" id="type-row">
-            <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
-            <button class="pill-btn" data-type="Technical">Technical only</button>
-            <button class="pill-btn" data-type="Both">Both</button>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="select-group">
-          <div class="select-group-label">Difficulty</div>
-          <div class="select-group-sub">Easy is broader and forgiving. Hard is high-specificity and less room for a generic answer.</div>
-          <div class="pill-row difficulty-pill-row" id="voice-difficulty-row">
-            <button class="pill-btn" data-difficulty="easy">Easy</button>
-            <button class="pill-btn" data-difficulty="medium">Medium</button>
-            <button class="pill-btn" data-difficulty="hard">Hard</button>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="select-group">
-          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-            <input type="checkbox" id="voice-ask-toggle" onchange="updateSetupSummary()">
-            Let me ask Jordan questions at the end
-          </label>
-          <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, Jordan turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="select-group" style="margin-bottom:0;">
-          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-            <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
-            Tailor a question or two to my resume
-          </label>
-          <div id="voice-resume-panel" style="display:none; margin-top:14px;">
-            <div id="voice-resume-picker-empty" class="resume-picker-empty" style="display:none;">No saved resumes yet. Upload one to tailor questions to it.</div>
-            <select class="resume-select" id="voice-resume-select" style="display:none;"></select>
-            <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:13.5px; padding:8px 14px;">
-              + Upload new resume
-              <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
+          <div class="select-group">
+            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+              <input type="checkbox" id="voice-ask-toggle" onchange="updateSetupSummary()">
+              Let me ask MockBot questions at the end
             </label>
-            <div id="voice-resume-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+            <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, MockBot turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="select-group" style="margin-bottom:0;">
+            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+              <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
+              Tailor a question or two to my resume
+            </label>
+            <div id="voice-resume-panel" style="display:none; margin-top:14px;">
+              <div id="voice-resume-picker-empty" class="resume-picker-empty" style="display:none;">No saved resumes yet. Upload one to tailor questions to it.</div>
+              <select class="resume-select" id="voice-resume-select" style="display:none;"></select>
+              <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:13.5px; padding:8px 14px;">
+                + Upload new resume
+                <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
+              </label>
+              <div id="voice-resume-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="select-group" style="margin-bottom:0;">
+            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+              <input type="checkbox" id="voice-role-toggle" onchange="toggleVoiceRolePanel()">
+              Tailor a question or two to a specific role
+            </label>
+            <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and MockBot will work in a question or two about it.</div>
+            <div id="voice-role-panel" style="display:none; margin-top:14px;">
+              <textarea id="voice-role-textarea" placeholder="Paste the job description here..." maxlength="6000" oninput="handleVoiceRoleInput()" style="width:100%; min-height:110px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:13.5px; resize:vertical;"></textarea>
+              <div id="voice-role-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+            </div>
           </div>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="select-group" style="margin-bottom:0;">
-          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-            <input type="checkbox" id="voice-role-toggle" onchange="toggleVoiceRolePanel()">
-            Tailor a question or two to a specific role
-          </label>
-          <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and Jordan will work in a question or two about it.</div>
-          <div id="voice-role-panel" style="display:none; margin-top:14px;">
-            <textarea id="voice-role-textarea" placeholder="Paste the job description here..." maxlength="6000" oninput="handleVoiceRoleInput()" style="width:100%; min-height:110px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:13.5px; resize:vertical;"></textarea>
-            <div id="voice-role-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
-          </div>
-        </div>
       </div>
     </div>
     </div>
@@ -2587,7 +2622,18 @@
   <div class="screen" id="screen-voice">
     <button class="back-btn" onclick="exitVoiceSession()">← Save &amp; exit</button>
     <div class="voice-shell">
-      <div class="voice-header"><div class="interviewer-avatar">J</div><div class="interviewer-name">Jordan · AI Interviewer</div></div>
+      <div class="voice-header">
+        <div class="interviewer-avatar" id="voice-avatar">
+          <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+            <line x1="20" y1="7" x2="20" y2="3" stroke="var(--bg)" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="20" cy="2.4" r="1.4" fill="var(--bg)"/>
+            <circle cx="14" cy="19" r="2.4" fill="var(--bg)"/>
+            <circle cx="26" cy="19" r="2.4" fill="var(--bg)"/>
+            <rect class="avatar-mouth" x="14" y="26" width="12" height="3" rx="1.5" fill="var(--bg)"/>
+          </svg>
+        </div>
+        <div class="interviewer-name">MockBot · AI Interviewer</div>
+      </div>
       <div class="interviewer-role" id="voice-role">General &middot; Behavioral</div>
 
       <div id="voice-loader" style="display:none; margin: 0 auto 24px; height:140px; align-items:center; justify-content:center;"><div class="mocko-loader" role="status" aria-label="Loading">
@@ -5181,6 +5227,7 @@
         const savedRole = localStorage.getItem('mocko-role-description');
         if (savedRole) document.getElementById('voice-role-textarea').value = savedRole;
       } catch (e) {}
+      goToVoiceWizardStep(1);
     }
 
     if (currentUserProfile && currentUserProfile.industry) {
@@ -5196,6 +5243,19 @@
     } else {
       goTo('setup');
     }
+  }
+
+  // Mock Interview setup is a two-step wizard (Basics, then optional
+  // Personalize). Begin (in the sidebar) stays enabled and reachable from
+  // either step, so nothing here ever blocks starting without visiting
+  // step 2 -- this only controls which step's content is shown.
+  function goToVoiceWizardStep(step) {
+    document.getElementById('voice-step-basics').style.display = step === 1 ? 'block' : 'none';
+    document.getElementById('voice-step-personalize').style.display = step === 2 ? 'block' : 'none';
+    document.getElementById('wizard-seg-1').classList.add('done');
+    document.getElementById('wizard-seg-2').classList.toggle('done', step === 2);
+    document.getElementById('wizard-step-label').textContent = step === 2 ? 'Step 2 of 2 · Personalize (optional)' : 'Step 1 of 2 · Basics';
+    document.getElementById('setup-voice-block').scrollIntoView({ block: 'nearest' });
   }
 
   async function toggleVoiceResumePanel() {
@@ -5348,8 +5408,8 @@
   const INTERVIEW_TUTORIAL_STEPS = {
     voice: [
       { icon: 'sliders', eyebrow: 'Before you start', heading: 'Set up your session next', body: "You'll pick your industry, session length, question type, and difficulty. It's saved to your profile so it's remembered next time." },
-      { icon: 'mic', eyebrow: 'How it works · 1 of 3', heading: 'Jordan asks, you answer', body: "Your AI interviewer asks a question out loud. Answer naturally, then tap Done when you're finished — no mic access? You can type instead." },
-      { icon: 'chat', eyebrow: 'How it works · 2 of 3', heading: 'Follows up when it matters', body: 'If your answer leaves something worth digging into, Jordan asks a quick natural follow-up before moving on.' },
+      { icon: 'mic', eyebrow: 'How it works · 1 of 3', heading: 'MockBot asks, you answer', body: "Your AI interviewer asks a question out loud. Answer naturally, then tap Done when you're finished — no mic access? You can type instead." },
+      { icon: 'chat', eyebrow: 'How it works · 2 of 3', heading: 'Follows up when it matters', body: 'If your answer leaves something worth digging into, MockBot asks a quick natural follow-up before moving on.' },
       { icon: 'bars', eyebrow: 'How it works · 3 of 3', heading: 'Get your breakdown', body: "When you're done, you'll get an overall score and a category breakdown for every question." },
     ],
     record: [
@@ -6797,6 +6857,14 @@
     document.getElementById('voice-orb').style.display = on ? 'none' : '';
   }
 
+  // Toggles the orb pulse and the avatar's mouth-move animation together --
+  // the single source of truth for whether MockBot is currently speaking.
+  function setAiTalking(on) {
+    document.getElementById('voice-orb').className = on ? 'voice-orb ai-talking' : 'voice-orb';
+    const avatar = document.getElementById('voice-avatar');
+    if (avatar) avatar.classList.toggle('talking', on);
+  }
+
   function resetVoiceUI() {
     setVoiceLoading(false);
     stopAiVoice();
@@ -6806,7 +6874,7 @@
     document.getElementById('mic-btn').innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
     document.getElementById('mic-btn').disabled = false;
     document.getElementById('voice-state').textContent = 'Ready';
-    document.getElementById('voice-orb').className = 'voice-orb';
+    setAiTalking(false);
     document.getElementById('voice-retry-row').style.display = 'none';
     document.getElementById('voice-rec-indicator').style.display = 'none';
     document.getElementById('voice-text-fallback').style.display = 'none';
@@ -6983,7 +7051,7 @@
   }
 
   // The interviewer's voice: Deepgram's neural voices via the `speak` edge
-  // function, so Jordan sounds like a person. If that's unavailable for any
+  // function, so MockBot sounds like a person. If that's unavailable for any
   // reason (network, quota, autoplay blocked) it quietly falls back to the
   // browser's built-in voice below, so the interview never stalls on it.
   const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
@@ -7061,7 +7129,7 @@
       utter.rate = 0.97;
       utter.pitch = 1.0;
       // Some browsers never fire onend (backgrounded tabs, certain voices),
-      // which would leave the interview stuck on "Jordan is speaking".
+      // which would leave the interview stuck on "MockBot is speaking".
       let advanced = false;
       const advance = (delay) => {
         if (advanced) return;
@@ -7083,12 +7151,12 @@
     const token = ++speechToken;
     const finish = () => {
       if (token !== speechToken) return;
-      document.getElementById('voice-orb').className = 'voice-orb';
+      setAiTalking(false);
       onDone();
     };
     document.getElementById('voice-caption').textContent = text;
-    document.getElementById('voice-orb').className = 'voice-orb ai-talking';
-    document.getElementById('voice-state').textContent = 'Jordan is speaking';
+    setAiTalking(true);
+    document.getElementById('voice-state').textContent = 'MockBot is speaking';
     speakViaAiVoice(text, token).then((result) => {
       if (result === 'superseded' || token !== speechToken) return;
       if (result === 'done') { finish(); return; }
@@ -7328,7 +7396,7 @@
     }
   }
 
-  // Ask-the-interviewer: after the last question Jordan turns it over to the
+  // Ask-the-interviewer: after the last question MockBot turns it over to the
   // candidate. Each question gets an in-character reply; the full set is
   // graded once at the end and shown alongside the normal results.
   const MAX_CANDIDATE_QUESTIONS = 3;
@@ -7364,7 +7432,7 @@
     }
 
     voiceSession.phase = 'thinking';
-    document.getElementById('voice-state').textContent = 'Jordan is thinking';
+    document.getElementById('voice-state').textContent = 'MockBot is thinking';
     document.getElementById('voice-caption').textContent = 'Thinking...';
     setVoiceLoading(true);
     let replyText;
@@ -7396,7 +7464,7 @@
     document.getElementById('voice-rec-indicator').style.display = 'none';
     document.getElementById('mic-btn').style.display = 'none';
     document.getElementById('voice-text-fallback').style.display = 'none';
-    document.getElementById('voice-orb').className = 'voice-orb';
+    setAiTalking(false);
 
     const asked = voiceSession.candidateQuestions;
     if (!asked.length) {
@@ -7461,7 +7529,7 @@
   async function finishVoiceSession() {
     voiceSession.phase = 'done';
     setVoiceLoading(false);
-    document.getElementById('voice-orb').className = 'voice-orb';
+    setAiTalking(false);
     document.getElementById('voice-caption').textContent = "That's a wrap, nice work.";
     document.getElementById('voice-state').textContent = 'Session complete';
     document.getElementById('mic-btn').style.display = 'none';
@@ -7526,7 +7594,7 @@
         <div class="qresult-question">${escapeHtml(q.text)}</div>
         ${q.feedback ? `<div class="qa-feedback">${escapeHtml(q.feedback)}</div>` : ''}
         ${q.stronger ? `<div class="qa-detail"><b>Sharper version:</b> ${escapeHtml(q.stronger)}</div>` : ''}
-        ${q.reply ? `<div class="qa-detail"><b>Jordan's answer:</b> ${escapeHtml(q.reply)}</div>` : ''}
+        ${q.reply ? `<div class="qa-detail"><b>MockBot's answer:</b> ${escapeHtml(q.reply)}</div>` : ''}
       </div>`;
     }).join('');
     if (r.error) {
