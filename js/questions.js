@@ -93,30 +93,31 @@ function weightedSample(pool, count) {
 }
 
 // Assembles a 5-question Full Interview set: opener, two guide questions,
-// a fourth slot (resume-tailored when available, else another guide
-// question), and a closing-biased question. `resumeQuestions` (from
-// tailor-resume-questions) is optional and capped at 2, never two from
-// the same anchor type -- when present it replaces the middle guide
-// slots (Q3, Q4) rather than the opener/closing.
-async function buildFullInterviewSet({ difficulty, category, industry, resumeQuestions = [] }) {
+// a fourth slot (tailored when available, else another guide question),
+// and a closing-biased question. `tailoredQuestions` (from
+// tailor-resume-questions and/or tailor-role-questions, each item already
+// tagged with its own `source`: 'resume' | 'role') is optional and capped
+// at 2 combined, never two from the same anchor type -- when present it
+// replaces the middle guide slots (Q3, Q4) rather than the opener/closing.
+async function buildFullInterviewSet({ difficulty, category, industry, tailoredQuestions = [] }) {
   const [opener] = await fetchOpeners(1);
   const closing = (await fetchClosingQuestions({ difficulty, industry, count: 1 }))[0];
 
   const seenAnchorTypes = new Set();
   const tailored = [];
-  for (const q of resumeQuestions) {
+  for (const q of tailoredQuestions) {
     if (tailored.length >= 2) break;
     if (q.anchorType && seenAnchorTypes.has(q.anchorType)) continue;
     if (q.anchorType) seenAnchorTypes.add(q.anchorType);
-    tailored.push({ text: q.text, category, difficulty, industries: [industry || 'general'], id: null, source: 'resume', anchorType: q.anchorType });
+    tailored.push({ text: q.text, category, difficulty, industries: [industry || 'general'], id: null, source: q.source || 'resume', anchorType: q.anchorType });
   }
 
-  const guideNeeded = 3 - tailored.length; // fills the Q2/Q3/Q4 middle slots not covered by resume-tailored ones
+  const guideNeeded = 3 - tailored.length; // fills the Q2/Q3/Q4 middle slots not covered by tailored ones
   const guideQuestions = await fetchQuestions({ difficulty, industry, count: guideNeeded, category });
 
   const middle = [...guideQuestions.slice(0, Math.max(0, 3 - tailored.length)), ...tailored];
-  // Keep resume-tailored slots toward the back (Q3/Q4 region) rather than immediately after the opener.
-  middle.sort((a, b) => (a.source === 'resume' ? 1 : 0) - (b.source === 'resume' ? 1 : 0));
+  // Keep tailored slots toward the back (Q3/Q4 region) rather than immediately after the opener.
+  middle.sort((a, b) => (a.source ? 1 : 0) - (b.source ? 1 : 0));
 
   const questions = [opener, ...middle, closing].filter(Boolean).map((q, i) => ({
     ...q,

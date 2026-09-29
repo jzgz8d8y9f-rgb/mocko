@@ -2271,6 +2271,20 @@
             <div id="voice-resume-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
           </div>
         </div>
+
+        <div class="divider"></div>
+
+        <div class="select-group" style="margin-bottom:0;">
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+            <input type="checkbox" id="voice-role-toggle" onchange="toggleVoiceRolePanel()">
+            Tailor a question or two to a specific role
+          </label>
+          <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and Jordan will work in a question or two about it.</div>
+          <div id="voice-role-panel" style="display:none; margin-top:14px;">
+            <textarea id="voice-role-textarea" placeholder="Paste the job description here..." maxlength="6000" oninput="handleVoiceRoleInput()" style="width:100%; min-height:110px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:13.5px; resize:vertical;"></textarea>
+            <div id="voice-role-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+          </div>
+        </div>
       </div>
     </div>
     </div>
@@ -4557,6 +4571,13 @@
       document.getElementById('voice-resume-panel').style.display = 'none';
       document.getElementById('voice-resume-status').textContent = '';
       voiceResumePickerList = [];
+      document.getElementById('voice-role-toggle').checked = false;
+      document.getElementById('voice-role-panel').style.display = 'none';
+      document.getElementById('voice-role-status').textContent = '';
+      try {
+        const savedRole = localStorage.getItem('mocko-role-description');
+        if (savedRole) document.getElementById('voice-role-textarea').value = savedRole;
+      } catch (e) {}
     }
 
     if (currentUserProfile && currentUserProfile.industry) {
@@ -4578,6 +4599,19 @@
     const checked = document.getElementById('voice-resume-toggle').checked;
     document.getElementById('voice-resume-panel').style.display = checked ? 'block' : 'none';
     if (checked) await loadVoiceResumePicker();
+  }
+
+  function toggleVoiceRolePanel() {
+    const checked = document.getElementById('voice-role-toggle').checked;
+    document.getElementById('voice-role-panel').style.display = checked ? 'block' : 'none';
+    document.getElementById('voice-role-status').textContent = '';
+  }
+
+  // Pasted job descriptions are only cached client-side, as a convenience
+  // so people don't have to retype one every session -- never saved to
+  // their profile or the DB.
+  function handleVoiceRoleInput() {
+    try { localStorage.setItem('mocko-role-description', document.getElementById('voice-role-textarea').value); } catch (e) {}
   }
 
   // Saved resumes with extracted text, cached here so setupVoiceSession()
@@ -6136,26 +6170,46 @@
   async function setupVoiceSession() {
     const category = state.type === 'Technical' ? 'technical' : 'behavioral';
     const isFull = state.length === 'Full';
-    let resumeQuestions = [];
+    const tailoringTasks = [];
+
     const selectedResumeId = document.getElementById('voice-resume-toggle').checked
       ? document.getElementById('voice-resume-select').value
       : null;
     const selectedResume = selectedResumeId && voiceResumePickerList.find((r) => r.id === selectedResumeId);
     if (isFull && selectedResume) {
       const resumeText = selectedResume.extracted_text.trim();
-      const wordCount = resumeText.split(/\s+/).filter(Boolean).length;
-      if (wordCount >= 50) {
-        try {
-          const tailored = await MockoVoiceSession.tailorResumeQuestions({ resumeText, difficulty: state.difficulty, industry: state.industry });
-          resumeQuestions = tailored.questions || [];
-        } catch (err) {
-          console.error('Resume tailoring failed, falling back to guide questions:', err);
-        }
+      if (resumeText.split(/\s+/).filter(Boolean).length >= 50) {
+        tailoringTasks.push(
+          MockoVoiceSession.tailorResumeQuestions({ resumeText, difficulty: state.difficulty, industry: state.industry })
+            .then((r) => (r.questions || []).map((q) => ({ ...q, source: 'resume' })))
+            .catch((err) => { console.error('Resume tailoring failed, falling back to guide questions:', err); return []; })
+        );
       }
     }
 
+    const roleDescription = document.getElementById('voice-role-toggle').checked
+      ? document.getElementById('voice-role-textarea').value.trim()
+      : '';
+    if (isFull && roleDescription) {
+      if (roleDescription.split(/\s+/).filter(Boolean).length >= 25) {
+        tailoringTasks.push(
+          MockoVoiceSession.tailorRoleQuestions({ roleDescription, difficulty: state.difficulty, industry: state.industry, category })
+            .then((r) => (r.questions || []).map((q) => ({ ...q, source: 'role' })))
+            .catch((err) => {
+              console.error('Role tailoring failed, falling back to guide questions:', err);
+              document.getElementById('voice-role-status').textContent = "Couldn't tailor from that description -- using standard questions instead.";
+              return [];
+            })
+        );
+      } else {
+        document.getElementById('voice-role-status').textContent = 'A bit more detail helps -- paste more of the description.';
+      }
+    }
+
+    const tailoredQuestions = (await Promise.all(tailoringTasks)).flat();
+
     const questions = isFull
-      ? await MockoQuestions.buildFullInterviewSet({ difficulty: state.difficulty, category, industry: state.industry, resumeQuestions })
+      ? await MockoQuestions.buildFullInterviewSet({ difficulty: state.difficulty, category, industry: state.industry, tailoredQuestions })
       : state.length === 'Short'
         ? await MockoQuestions.buildShortSessionSet({ difficulty: state.difficulty, category, industry: state.industry })
         : await MockoQuestions.buildOneQuestionSet({ difficulty: state.difficulty, category, industry: state.industry });
