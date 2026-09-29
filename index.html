@@ -2234,6 +2234,8 @@
               <button data-industry="quant" onclick="selectIndustry(this)">Quant</button>
             </div>
           </div>
+          <button class="pill-btn" data-industry="pharma" onclick="selectIndustry(this)">Pharma</button>
+          <button class="pill-btn" data-industry="medtech" onclick="selectIndustry(this)">MedTech</button>
         </div>
       </div>
 
@@ -4293,6 +4295,7 @@
     'risk-management': 'Risk Management', 'investor-relations': 'Investor Relations', accounting: 'Accounting / Audit',
     insurance: 'Insurance / Actuarial', fintech: 'Fintech', 'commercial-banking': 'Commercial / Retail Banking',
     'corporate-development': 'Corporate Development / M&A',
+    pharma: 'Pharma', medtech: 'MedTech',
     // Non-finance fields -- Mocko isn't finance-only, so the picker needs
     // real coverage here too, not just a "General" catch-all.
     'software-engineering': 'Software Engineering', 'product-management': 'Product Management',
@@ -4400,6 +4403,8 @@
     const isFinance = FINANCE_INDUSTRIES.includes(state.industry);
     if (generalBtn) generalBtn.classList.toggle('selected', state.industry === 'general');
     if (financeBtn) financeBtn.classList.toggle('selected', isFinance);
+    document.querySelectorAll('#industry-row > .pill-btn[data-industry="pharma"], #industry-row > .pill-btn[data-industry="medtech"]').forEach(b =>
+      b.classList.toggle('selected', b.dataset.industry === state.industry));
     document.querySelectorAll('#finance-dropdown button').forEach(b =>
       b.classList.toggle('selected', b.dataset.industry === state.industry));
     if (financeLabelEl) {
@@ -6596,7 +6601,7 @@
       mainTranscript: null, mainDuration: 0, followUpTranscript: null, followUpDuration: 0,
       pendingNote: null, pendingTransitionLine: null, results: [], finalOverallScore: 0, toughestId: null,
     };
-    document.getElementById('voice-role').textContent = 'Finance · ' + (state.type || 'Behavioral');
+    document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (state.type || 'Behavioral');
   }
 
   async function exitVoiceSession() {
@@ -6631,7 +6636,7 @@
         mainTranscript: null, mainDuration: 0, followUpTranscript: null, followUpDuration: 0,
         pendingNote: null, pendingTransitionLine: null, results, finalOverallScore: 0, toughestId: null,
       };
-      document.getElementById('voice-role').textContent = 'Finance · ' + (state.type || 'Behavioral');
+      document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (state.type || 'Behavioral');
       document.getElementById('voice-caption').textContent = "Welcome back. Tap the mic to pick up where you left off.";
       document.getElementById('mic-btn').disabled = false;
     } catch (err) {
@@ -7011,7 +7016,7 @@
 
     goTo('voice');
     resetVoiceUI();
-    document.getElementById('voice-role').textContent = 'Finance · ' + (voiceSession.format || 'Behavioral');
+    document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (voiceSession.format || 'Behavioral');
     document.getElementById('voice-caption').textContent = "Tap the mic to retry this question.";
   }
 
