@@ -2306,6 +2306,8 @@
               <button data-industry="quant" onclick="selectIndustry(this)">Quant</button>
             </div>
           </div>
+          <button class="pill-btn" data-industry="pharma" onclick="selectIndustry(this)">Pharma</button>
+          <button class="pill-btn" data-industry="medtech" onclick="selectIndustry(this)">MedTech</button>
         </div>
       </div>
 
@@ -4387,6 +4389,7 @@
     'risk-management': 'Risk Management', 'investor-relations': 'Investor Relations', accounting: 'Accounting / Audit',
     insurance: 'Insurance / Actuarial', fintech: 'Fintech', 'commercial-banking': 'Commercial / Retail Banking',
     'corporate-development': 'Corporate Development / M&A',
+    pharma: 'Pharma', medtech: 'MedTech',
     // Non-finance fields -- Mocko isn't finance-only, so the picker needs
     // real coverage here too, not just a "General" catch-all.
     'software-engineering': 'Software Engineering', 'product-management': 'Product Management',
@@ -4494,6 +4497,8 @@
     const isFinance = FINANCE_INDUSTRIES.includes(state.industry);
     if (generalBtn) generalBtn.classList.toggle('selected', state.industry === 'general');
     if (financeBtn) financeBtn.classList.toggle('selected', isFinance);
+    document.querySelectorAll('#industry-row > .pill-btn[data-industry="pharma"], #industry-row > .pill-btn[data-industry="medtech"]').forEach(b =>
+      b.classList.toggle('selected', b.dataset.industry === state.industry));
     document.querySelectorAll('#finance-dropdown button').forEach(b =>
       b.classList.toggle('selected', b.dataset.industry === state.industry));
     if (financeLabelEl) {
