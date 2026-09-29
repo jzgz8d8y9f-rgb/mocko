@@ -151,6 +151,19 @@ async function tailorResumeQuestions({ resumeText, difficulty, industry }) {
   return body;
 }
 
+async function tailorRoleQuestions({ roleDescription, difficulty, industry, category }) {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const token = sessionData?.session?.access_token;
+  const res = await fetch('https://exiiyhlyhtoxmpjecper.supabase.co/functions/v1/tailor-role-questions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ roleDescription, difficulty, industry, category }),
+  });
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error || 'Role tailoring failed.');
+  return body;
+}
+
 const FUNCTIONS_URL = 'https://exiiyhlyhtoxmpjecper.supabase.co/functions/v1';
 
 async function accessToken() {
@@ -195,6 +208,6 @@ function gradeCandidateQuestions({ questions, industry, format, interviewQuestio
 window.MockoVoiceSession = {
   synthesizeSpeech, candidateReply, gradeCandidateQuestions,
   insertSession, updateSession, gradeAnswer, updateSessionQuestion, deleteSessionQuestion,
-  fetchSessionQuestions, analyzeAnswer, tailorResumeQuestions,
+  fetchSessionQuestions, analyzeAnswer, tailorResumeQuestions, tailorRoleQuestions,
   saveSessionState, discardSavedState, fetchResumableSession,
 };
