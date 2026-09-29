@@ -2306,8 +2306,26 @@
               <button data-industry="quant" onclick="selectIndustry(this)">Quant</button>
             </div>
           </div>
-          <button class="pill-btn" data-industry="pharma" onclick="selectIndustry(this)">Pharma</button>
-          <button class="pill-btn" data-industry="medtech" onclick="selectIndustry(this)">MedTech</button>
+          <div class="industry-dropdown-wrap">
+            <button class="pill-btn" id="pharma-pill-btn" onclick="toggleIndustryDropdown(event, 'pharma-dropdown')">
+              <span id="pharma-pill-label">Pharma</span>
+              <svg class="pill-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="account-dropdown industry-dropdown" id="pharma-dropdown" style="display:none;">
+              <button data-industry="pharma-rd" onclick="selectIndustry(this)">Research &amp; Development</button>
+              <button data-industry="pharma-mfg-quality" onclick="selectIndustry(this)">Manufacturing/Quality</button>
+            </div>
+          </div>
+          <div class="industry-dropdown-wrap">
+            <button class="pill-btn" id="medtech-pill-btn" onclick="toggleIndustryDropdown(event, 'medtech-dropdown')">
+              <span id="medtech-pill-label">MedTech</span>
+              <svg class="pill-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="account-dropdown industry-dropdown" id="medtech-dropdown" style="display:none;">
+              <button data-industry="medtech-rd" onclick="selectIndustry(this)">Research &amp; Development</button>
+              <button data-industry="medtech-mfg-quality" onclick="selectIndustry(this)">Manufacturing/Quality</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -4387,10 +4405,8 @@
     diffEl.textContent = state.difficulty ? state.difficulty[0].toUpperCase() + state.difficulty.slice(1) : '—';
     diffEl.style.color = { easy: 'var(--good)', medium: 'var(--warn)', hard: 'var(--record)' }[state.difficulty] || '';
   }
-  // Industry picker: a flat "General" pill plus a "Finance" pill that
-  // opens a dropdown of finance sub-industries (more top-level dropdowns,
-  // e.g. Tech, land here later as the bank grows).
-  const FINANCE_INDUSTRIES = ['finance', 'ib', 'consulting', 'pe', 'quant'];
+  // Industry picker: a flat "General" pill plus dropdown pills (Finance,
+  // Pharma, MedTech) that each open a dropdown of sub-industries.
   // The interview-mode picker only offers the fixed set above (it maps straight
   // to the question bank's industry tags). Your profile's industry field is a
   // separate, broader, freely-searchable label -- these are its suggestions.
@@ -4403,7 +4419,8 @@
     'risk-management': 'Risk Management', 'investor-relations': 'Investor Relations', accounting: 'Accounting / Audit',
     insurance: 'Insurance / Actuarial', fintech: 'Fintech', 'commercial-banking': 'Commercial / Retail Banking',
     'corporate-development': 'Corporate Development / M&A',
-    pharma: 'Pharma', medtech: 'MedTech',
+    'pharma-rd': 'Pharma R&D', 'pharma-mfg-quality': 'Pharma Mfg/Quality',
+    'medtech-rd': 'MedTech R&D', 'medtech-mfg-quality': 'MedTech Mfg/Quality',
     // Non-finance fields -- Mocko isn't finance-only, so the picker needs
     // real coverage here too, not just a "General" catch-all.
     'software-engineering': 'Software Engineering', 'product-management': 'Product Management',
@@ -4504,31 +4521,36 @@
     { name: 'High School', domain: null },
   ];
 
+  // Shared by the Finance, Pharma, and MedTech industry-picker dropdowns:
+  // highlights the group pill when one of its sub-industries is selected,
+  // shows the sub-industry's own name on the pill instead of the group
+  // name, and marks the matching row inside the dropdown itself.
+  function syncIndustryDropdown(pillId, labelId, dropdownId, fallbackLabel) {
+    const pillBtn = document.getElementById(pillId);
+    const labelEl = document.getElementById(labelId);
+    const dd = document.getElementById(dropdownId);
+    const sub = dd && dd.querySelector(`button[data-industry="${state.industry}"]`);
+    if (pillBtn) pillBtn.classList.toggle('selected', !!sub);
+    if (dd) dd.querySelectorAll('button').forEach((b) => b.classList.toggle('selected', b.dataset.industry === state.industry));
+    if (labelEl) labelEl.textContent = sub ? sub.textContent : fallbackLabel;
+  }
+
   function syncIndustrySelection() {
     const generalBtn = document.querySelector('#industry-row .pill-btn[data-industry="general"]');
-    const financeBtn = document.getElementById('finance-pill-btn');
-    const financeLabelEl = document.getElementById('finance-pill-label');
-    const isFinance = FINANCE_INDUSTRIES.includes(state.industry);
     if (generalBtn) generalBtn.classList.toggle('selected', state.industry === 'general');
-    if (financeBtn) financeBtn.classList.toggle('selected', isFinance);
-    document.querySelectorAll('#industry-row > .pill-btn[data-industry="pharma"], #industry-row > .pill-btn[data-industry="medtech"]').forEach(b =>
-      b.classList.toggle('selected', b.dataset.industry === state.industry));
-    document.querySelectorAll('#finance-dropdown button').forEach(b =>
-      b.classList.toggle('selected', b.dataset.industry === state.industry));
-    if (financeLabelEl) {
-      const sub = isFinance && document.querySelector(`#finance-dropdown button[data-industry="${state.industry}"]`);
-      financeLabelEl.textContent = sub ? sub.textContent : 'Finance';
-    }
+    syncIndustryDropdown('finance-pill-btn', 'finance-pill-label', 'finance-dropdown', 'Finance');
+    syncIndustryDropdown('pharma-pill-btn', 'pharma-pill-label', 'pharma-dropdown', 'Pharma');
+    syncIndustryDropdown('medtech-pill-btn', 'medtech-pill-label', 'medtech-dropdown', 'MedTech');
 
     // General is behavioral-only for now -- Technical/Both need a real
-    // technical question bank, which only the Finance sub-industries have.
+    // technical question bank, which only the specific sub-industries have.
     // Shown greyed-out and disabled rather than hidden, so it's clear
     // *why* they're unavailable instead of them just vanishing.
     const generalOnly = state.industry === 'general';
     const technicalBtn = document.querySelector('#type-row .pill-btn[data-type="Technical"]');
     const bothBtn = document.querySelector('#type-row .pill-btn[data-type="Both"]');
     const behavioralBtn = document.querySelector('#type-row .pill-btn[data-type="Behavioral"]');
-    const noTechnicalReason = 'Pick a Finance industry to unlock technical questions';
+    const noTechnicalReason = 'Pick a specific industry to unlock technical questions';
     if (technicalBtn) { technicalBtn.disabled = generalOnly; technicalBtn.title = generalOnly ? noTechnicalReason : ''; }
     if (bothBtn) { bothBtn.disabled = generalOnly; bothBtn.title = generalOnly ? noTechnicalReason : ''; }
     if (generalOnly && state.type !== 'Behavioral' && behavioralBtn) {
@@ -4543,7 +4565,7 @@
   function selectIndustry(el) {
     state.industry = el.dataset.industry;
     syncIndustrySelection();
-    closeFinanceDropdown();
+    closeAllIndustryDropdowns();
     if (window.MockoProfile && window.MockoAuth.getUser()) {
       MockoProfile.updateProfile({
         username: currentUserProfile ? currentUserProfile.username : undefined,
@@ -4555,16 +4577,21 @@
     checkSetupReady();
   }
 
-  function toggleFinanceDropdown(e) {
+  function toggleIndustryDropdown(e, ddId) {
     e.stopPropagation();
-    const dd = document.getElementById('finance-dropdown');
-    dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+    const dd = document.getElementById(ddId);
+    const wasOpen = dd.style.display === 'block';
+    closeAllIndustryDropdowns();
+    dd.style.display = wasOpen ? 'none' : 'block';
   }
-  function closeFinanceDropdown() {
-    const dd = document.getElementById('finance-dropdown');
-    if (dd) dd.style.display = 'none';
+  function toggleFinanceDropdown(e) { toggleIndustryDropdown(e, 'finance-dropdown'); }
+  function closeAllIndustryDropdowns() {
+    ['finance-dropdown', 'pharma-dropdown', 'medtech-dropdown'].forEach((id) => {
+      const dd = document.getElementById(id);
+      if (dd) dd.style.display = 'none';
+    });
   }
-  document.addEventListener('click', closeFinanceDropdown);
+  document.addEventListener('click', closeAllIndustryDropdowns);
 
   function checkSetupReady() {
     let ready;
