@@ -263,16 +263,19 @@
   .select-group-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; }
   .divider { height: 1px; background: var(--line); margin-bottom: 28px; }
 
-  /* Mock Interview setup: a two-step wizard (Basics, then optional
-     Personalize) instead of one long scrolling form. Begin stays
-     available from either step, so Personalize is always skippable. */
-  .wizard-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .wizard-seg { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
-  .wizard-seg.done { background: var(--good); }
-  .wizard-back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-muted); cursor: pointer; margin-bottom: 18px; }
-  .wizard-back-link:hover { color: var(--text); }
-  .wizard-continue-row { display: flex; align-items: center; gap: 16px; margin-top: 30px; }
-  .wizard-skip-hint { font-size: 12.5px; color: var(--text-muted); }
+  /* Mock Interview setup: an accordion of collapsible rows (Length & Format,
+     Difficulty, Personalize) instead of a fixed wizard -- tap a row to edit
+     it, and its current value stays visible in the header when collapsed. */
+  .acc-row { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+  .acc-row:last-child { margin-bottom: 0; }
+  .acc-row-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; cursor: pointer; }
+  .acc-row-title { font-size: 14.5px; font-weight: 700; margin-bottom: 2px; }
+  .acc-row-value { font-size: 12.5px; color: var(--text-muted); }
+  .acc-row-value.set { color: var(--good); font-weight: 600; }
+  .acc-chevron { color: var(--text-muted); flex-shrink: 0; transition: transform 0.15s; }
+  .acc-row.expanded .acc-chevron { transform: rotate(180deg); }
+  .acc-row-body { display: none; padding: 4px 20px 22px; border-top: 1px solid var(--line); }
+  .acc-row.expanded .acc-row-body { display: block; padding-top: 18px; }
 
   /* Settings: sidebar categories instead of one long scrolling form */
   .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
@@ -539,44 +542,37 @@
   .transcript { display: none; font-family: 'Work Sans'; font-size: 13.5px; color: var(--text-muted); line-height: 1.6; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
   .transcript.show { display: block; }
 
-  /* Mock Interview: a session-overview layout -- a question list on the
-     left (future questions hidden, only numbered), the current question
-     or your live transcript on the right. No avatar, no call-style orb;
-     a question is read aloud, a short countdown gives you a beat to get
-     ready, then it's replaced by your own transcript while you answer. */
-  .voice-layout { display: grid; grid-template-columns: 210px 1fr; gap: 18px; align-items: start; }
-  @media (max-width: 640px) { .voice-layout { grid-template-columns: 1fr; } }
+  /* Mock Interview: no side question list, no avatar, no call-style orb.
+     A centered row of question NUMBERS sits above the panel (no text --
+     future questions stay a secret). A question is read aloud and stays
+     on screen with a short countdown underneath it to get ready, then
+     it's replaced by your own transcript while you answer. Listening
+     state lives on the mic button itself (a pulsing ring) instead of a
+     separate duplicate badge. */
+  .voice-progress-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+  .voice-progress-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700; flex-shrink: 0; background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--line); }
+  .voice-progress-num.done { background: var(--good); color: var(--bg); border-color: var(--good); }
+  .voice-progress-num.current { background: var(--cue); color: var(--bg); border-color: var(--cue); width: 30px; height: 30px; font-size: 12.5px; }
+  .voice-progress-num.qa { margin-left: 6px; border-left: 1px dashed var(--line); padding-left: 16px; }
 
-  .voice-qlist { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
-  .voice-qlist-title { font-family: 'Libre Baskerville', serif; font-size: 14px; font-weight: 700; margin: 0 0 12px; padding: 0 4px; }
-  .qitem { display: flex; align-items: center; gap: 9px; padding: 9px 6px; border-radius: 8px; }
-  .qitem.current { background: rgba(39,203,187,0.1); }
-  .qitem.locked { opacity: 0.5; }
-  .qitem.qa { border-top: 1px dashed var(--line); margin-top: 4px; padding-top: 13px; border-radius: 0; }
-  .qnum { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 700; flex-shrink: 0; background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--line); }
-  .qnum.done { background: var(--good); color: var(--bg); border-color: var(--good); }
-  .qnum.current { background: var(--cue); color: var(--bg); border-color: var(--cue); }
-  .qtext { font-size: 12px; color: var(--text-muted); line-height: 1.35; }
-  .qitem.current .qtext { color: var(--text); font-weight: 600; }
-  .qscore { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--good); flex-shrink: 0; }
-  .lock-icon { margin-left: auto; color: var(--text-muted); flex-shrink: 0; }
-
-  .voice-main { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 32px; }
-  .voice-meta-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .voice-main { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 32px; max-width: 640px; margin: 0 auto; }
+  .voice-meta-row { display: flex; align-items: center; justify-content: center; margin-bottom: 22px; }
   .voice-meta-tag { font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
-  .voice-progress { font-size: 12.5px; color: var(--text-muted); }
 
-  .voice-content { position: relative; min-height: 130px; margin-bottom: 22px; }
-  .voice-caption { font-size: 20px; font-family: 'Libre Baskerville', serif; font-weight: 700; line-height: 1.4; color: var(--text); transition: opacity 0.15s ease; }
-  .voice-caption.is-answer { font-size: 16px; font-weight: 400; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; min-height: 140px; }
-  .voice-content.dimmed .voice-caption { opacity: 0.3; }
-  .voice-countdown { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
-  .voice-countdown-num { font-family: 'Libre Baskerville', serif; font-size: 48px; font-weight: 700; color: var(--good); }
+  .voice-content { min-height: 130px; margin-bottom: 14px; text-align: center; }
+  .voice-caption { font-size: 20px; font-family: 'Libre Baskerville', serif; font-weight: 700; line-height: 1.4; color: var(--text); }
+  .voice-caption.is-answer { font-size: 16px; font-weight: 400; text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; min-height: 140px; }
+  .voice-countdown { display: none; align-items: center; justify-content: center; gap: 10px; margin: 4px 0 22px; }
+  .voice-countdown-num { font-family: 'Libre Baskerville', serif; font-size: 26px; font-weight: 700; color: var(--good); }
   .voice-countdown-label { font-size: 12.5px; color: var(--text-muted); }
 
   .voice-state-label { font-size: 13px; color: var(--text-muted); letter-spacing: 0.02em; }
   .voice-control-row { display: flex; align-items: center; gap: 14px; border-top: 1px solid var(--line); padding-top: 20px; }
-  .mic-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: var(--record); color: white; font-size: 20px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .mic-btn-wrap { position: relative; flex-shrink: 0; }
+  .mic-btn-ring { position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--record); opacity: 0; }
+  .mic-btn-wrap.listening .mic-btn-ring { opacity: 0.5; animation: mic-ring-pulse 1.4s ease-out infinite; }
+  @keyframes mic-ring-pulse { 0% { transform: scale(0.85); opacity: 0.6; } 100% { transform: scale(1.35); opacity: 0; } }
+  .mic-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: var(--record); color: white; font-size: 20px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; position: relative; }
   .mic-btn:hover { background: #d02836; }
   .voice-control-mid { flex: 1; }
   .voice-timer { font-size: 13px; color: var(--text-muted); }
@@ -2425,96 +2421,101 @@
 
       </div>
 
-      <!-- MOCK INTERVIEW controls -->
+      <!-- MOCK INTERVIEW controls: an accordion instead of a wizard --
+           tap a row to edit it, its current value stays visible when collapsed. -->
       <div id="setup-voice-block" style="display:none;">
 
-        <div class="wizard-progress">
-          <div class="wizard-seg done" id="wizard-seg-1"></div>
-          <div class="wizard-seg" id="wizard-seg-2"></div>
-        </div>
-        <div class="step-label" id="wizard-step-label">Step 1 of 2 &middot; Basics</div>
-
-        <div id="voice-step-basics">
-          <div class="select-group">
-            <div class="select-group-label">Length of Session</div>
-            <div class="select-group-sub">Pick how many questions, from a quick warm-up to a full set.</div>
-            <div class="toggle-row toggle-row-3" id="voice-length-row">
-              <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>1 question</p><p class="toggle-card-time">~2 min</p></div>
-              <div class="toggle-card" data-len="Short"><h4>Short Session</h4><p>3 questions</p><p class="toggle-card-time">~5 min</p></div>
-              <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions</p><p class="toggle-card-time">~20 min</p></div>
-            </div>
+        <div class="acc-row expanded" id="acc-row-basics">
+          <div class="acc-row-head" onclick="toggleAccRow('basics')">
+            <div><div class="acc-row-title">Length &amp; Format</div><div class="acc-row-value" id="acc-value-basics">Not set</div></div>
+            <svg class="acc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </div>
-
-          <div class="divider"></div>
-
-          <div class="select-group">
-            <div class="select-group-label">Format</div>
-            <div class="select-group-sub">You can combine question types within a single session.</div>
-            <div class="pill-row" id="type-row">
-              <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
-              <button class="pill-btn" data-type="Technical">Technical only</button>
-              <button class="pill-btn" data-type="Both">Both</button>
+          <div class="acc-row-body">
+            <div class="select-group">
+              <div class="select-group-label">Length of Session</div>
+              <div class="select-group-sub">Pick how many questions, from a quick warm-up to a full set.</div>
+              <div class="toggle-row toggle-row-3" id="voice-length-row">
+                <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>1 question</p><p class="toggle-card-time">~2 min</p></div>
+                <div class="toggle-card" data-len="Short"><h4>Short Session</h4><p>3 questions</p><p class="toggle-card-time">~5 min</p></div>
+                <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions</p><p class="toggle-card-time">~20 min</p></div>
+              </div>
             </div>
-          </div>
 
-          <div class="divider"></div>
+            <div class="divider"></div>
 
-          <div class="select-group" style="margin-bottom:0;">
-            <div class="select-group-label">Difficulty</div>
-            <div class="select-group-sub">Easy is broader and forgiving. Hard is high-specificity and less room for a generic answer.</div>
-            <div class="pill-row difficulty-pill-row" id="voice-difficulty-row">
-              <button class="pill-btn" data-difficulty="easy">Easy</button>
-              <button class="pill-btn" data-difficulty="medium">Medium</button>
-              <button class="pill-btn" data-difficulty="hard">Hard</button>
+            <div class="select-group" style="margin-bottom:0;">
+              <div class="select-group-label">Format</div>
+              <div class="select-group-sub">You can combine question types within a single session.</div>
+              <div class="pill-row" id="type-row">
+                <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
+                <button class="pill-btn" data-type="Technical">Technical only</button>
+                <button class="pill-btn" data-type="Both">Both</button>
+              </div>
             </div>
-          </div>
-
-          <div class="wizard-continue-row">
-            <button class="btn btn-secondary" onclick="goToVoiceWizardStep(2)">Continue to Personalize &rarr;</button>
-            <span class="wizard-skip-hint">Optional &mdash; or just hit Begin whenever you&rsquo;re ready.</span>
           </div>
         </div>
 
-        <div id="voice-step-personalize" style="display:none;">
-          <div class="wizard-back-link" onclick="goToVoiceWizardStep(1)">&larr; Back to Basics</div>
-
-          <div class="select-group">
-            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-              <input type="checkbox" id="voice-ask-toggle" onchange="updateSetupSummary()">
-              Let me ask MockBot questions at the end
-            </label>
-            <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, MockBot turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
+        <div class="acc-row" id="acc-row-difficulty">
+          <div class="acc-row-head" onclick="toggleAccRow('difficulty')">
+            <div><div class="acc-row-title">Difficulty</div><div class="acc-row-value" id="acc-value-difficulty">Not set</div></div>
+            <svg class="acc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </div>
+          <div class="acc-row-body">
+            <div class="select-group" style="margin-bottom:0;">
+              <div class="select-group-sub" style="margin-bottom:14px;">Easy is broader and forgiving. Hard is high-specificity and less room for a generic answer.</div>
+              <div class="pill-row difficulty-pill-row" id="voice-difficulty-row">
+                <button class="pill-btn" data-difficulty="easy">Easy</button>
+                <button class="pill-btn" data-difficulty="medium">Medium</button>
+                <button class="pill-btn" data-difficulty="hard">Hard</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <div class="divider"></div>
-
-          <div class="select-group" style="margin-bottom:0;">
-            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-              <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
-              Tailor a question or two to my resume
-            </label>
-            <div id="voice-resume-panel" style="display:none; margin-top:14px;">
-              <div id="voice-resume-picker-empty" class="resume-picker-empty" style="display:none;">No saved resumes yet. Upload one to tailor questions to it.</div>
-              <select class="resume-select" id="voice-resume-select" style="display:none;"></select>
-              <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:13.5px; padding:8px 14px;">
-                + Upload new resume
-                <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
+        <div class="acc-row" id="acc-row-personalize">
+          <div class="acc-row-head" onclick="toggleAccRow('personalize')">
+            <div><div class="acc-row-title">Personalize</div><div class="acc-row-value" id="acc-value-personalize">Optional</div></div>
+            <svg class="acc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div class="acc-row-body">
+            <div class="select-group">
+              <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+                <input type="checkbox" id="voice-ask-toggle" onchange="updateSetupSummary()">
+                Let me ask MockBot questions at the end
               </label>
-              <div id="voice-resume-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+              <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, MockBot turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
             </div>
-          </div>
 
-          <div class="divider"></div>
+            <div class="divider"></div>
 
-          <div class="select-group" style="margin-bottom:0;">
-            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-              <input type="checkbox" id="voice-role-toggle" onchange="toggleVoiceRolePanel()">
-              Tailor a question or two to a specific role
-            </label>
-            <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and MockBot will work in a question or two about it.</div>
-            <div id="voice-role-panel" style="display:none; margin-top:14px;">
-              <textarea id="voice-role-textarea" placeholder="Paste the job description here..." maxlength="6000" oninput="handleVoiceRoleInput()" style="width:100%; min-height:110px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:13.5px; resize:vertical;"></textarea>
-              <div id="voice-role-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+            <div class="select-group">
+              <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+                <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
+                Tailor a question or two to my resume
+              </label>
+              <div id="voice-resume-panel" style="display:none; margin-top:14px;">
+                <div id="voice-resume-picker-empty" class="resume-picker-empty" style="display:none;">No saved resumes yet. Upload one to tailor questions to it.</div>
+                <select class="resume-select" id="voice-resume-select" style="display:none;"></select>
+                <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:13.5px; padding:8px 14px;">
+                  + Upload new resume
+                  <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
+                </label>
+                <div id="voice-resume-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="select-group" style="margin-bottom:0;">
+              <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
+                <input type="checkbox" id="voice-role-toggle" onchange="toggleVoiceRolePanel()">
+                Tailor a question or two to a specific role
+              </label>
+              <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and MockBot will work in a question or two about it.</div>
+              <div id="voice-role-panel" style="display:none; margin-top:14px;">
+                <textarea id="voice-role-textarea" placeholder="Paste the job description here..." maxlength="6000" oninput="handleVoiceRoleInput()" style="width:100%; min-height:110px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:13.5px; resize:vertical;"></textarea>
+                <div id="voice-role-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -2655,59 +2656,51 @@
   <!-- VOICE MOCK INTERVIEW -->
   <div class="screen" id="screen-voice">
     <button class="back-btn" onclick="exitVoiceSession()">← Save &amp; exit</button>
-    <div class="voice-layout">
-      <div class="voice-qlist">
-        <div class="voice-qlist-title">This session</div>
-        <div id="voice-qlist-items"></div>
+
+    <div class="voice-progress-row" id="voice-progress-row"></div>
+
+    <div class="voice-main">
+      <div class="voice-meta-row">
+        <div class="voice-meta-tag" id="voice-role">General &middot; Behavioral</div>
       </div>
 
-      <div class="voice-main">
-        <div class="voice-meta-row">
-          <div class="voice-meta-tag" id="voice-role">General &middot; Behavioral</div>
-          <div class="voice-progress" id="voice-progress">Question 1 of 1</div>
-        </div>
+      <div id="voice-loader" style="display:none; height:130px; align-items:center; justify-content:center; margin-bottom:22px;"><div class="mocko-loader" role="status" aria-label="Loading">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <g class="ml-bubble l"><g transform="rotate(-8 40 58)"><path d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#27CBBB"/></g></g>
+              <g class="ml-bubble r"><g transform="rotate(8 61 42)"><path d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#268691"/></g></g>
+            </svg>
+            <div class="ml-dots"><span></span><span></span><span></span></div>
+          </div></div>
 
-        <div id="voice-loader" style="display:none; height:130px; align-items:center; justify-content:center; margin-bottom:22px;"><div class="mocko-loader" role="status" aria-label="Loading">
-              <svg viewBox="0 0 100 100" aria-hidden="true">
-                <g class="ml-bubble l"><g transform="rotate(-8 40 58)"><path d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#27CBBB"/></g></g>
-                <g class="ml-bubble r"><g transform="rotate(8 61 42)"><path d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#268691"/></g></g>
-              </svg>
-              <div class="ml-dots"><span></span><span></span><span></span></div>
-            </div></div>
+      <div class="ip-error" id="voice-error" role="alert" style="margin-bottom:18px;"><div class="ip-error-title"></div><div class="ip-error-fix"></div><button class="btn btn-secondary ip-error-retry" onclick="retryIpError(this)">Try again</button></div>
 
-        <div class="ip-error" id="voice-error" role="alert" style="margin-bottom:18px;"><div class="ip-error-title"></div><div class="ip-error-fix"></div><button class="btn btn-secondary ip-error-retry" onclick="retryIpError(this)">Try again</button></div>
+      <div class="voice-content" id="voice-content">
+        <div class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</div>
+      </div>
 
-        <div class="voice-content" id="voice-content">
-          <div class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</div>
-          <div class="voice-countdown" id="voice-countdown">
-            <div class="voice-countdown-num" id="voice-countdown-num">3</div>
-            <div class="voice-countdown-label">Get ready&hellip;</div>
-          </div>
-        </div>
+      <div class="voice-countdown" id="voice-countdown">
+        <div class="voice-countdown-num" id="voice-countdown-num">3</div>
+        <div class="voice-countdown-label">Get ready&hellip;</div>
+      </div>
 
-        <div class="onair-badge" id="voice-rec-indicator" style="display:none; margin-bottom:14px; color:var(--record);"><div class="dot"></div> Listening</div>
-
-        <div class="voice-control-row">
+      <div class="voice-control-row">
+        <div class="mic-btn-wrap" id="mic-btn-wrap">
+          <div class="mic-btn-ring"></div>
           <button class="mic-btn" id="mic-btn" onclick="toggleMic()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></button>
-          <div class="voice-control-mid">
-            <div class="voice-state-label" id="voice-state">Ready</div>
-          </div>
-          <div class="voice-timer mono" id="voice-timer">00:00</div>
         </div>
-
-        <div class="btn-row" id="voice-qa-done-row" style="display:none; margin-top:14px;">
-          <button class="btn btn-secondary" onclick="finishCandidateQA()">That's all my questions</button>
+        <div class="voice-control-mid">
+          <div class="voice-state-label" id="voice-state">Ready</div>
         </div>
+        <div class="voice-timer mono" id="voice-timer">00:00</div>
+      </div>
 
-        <details class="pointers" id="voice-notes-card" style="display:none; text-align:left; margin-top:24px;">
-          <summary style="cursor:pointer; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);">Interviewer notes</summary>
-          <ul id="voice-notes-list" style="list-style:none; margin-top:12px;"></ul>
-        </details>
+      <div class="btn-row" id="voice-qa-done-row" style="display:none; margin-top:14px;">
+        <button class="btn btn-secondary" onclick="finishCandidateQA()">That's all my questions</button>
+      </div>
 
-        <div class="btn-row" id="voice-retry-row" style="display:none; margin-top:26px;">
-          <button class="btn btn-secondary" onclick="startVoice()">↻ Retry this session</button>
-          <button class="btn btn-primary" onclick="goToVoiceResults()">View evaluation →</button>
-        </div>
+      <div class="btn-row" id="voice-retry-row" style="display:none; margin-top:26px;">
+        <button class="btn btn-secondary" onclick="startVoice()">↻ Retry this session</button>
+        <button class="btn btn-primary" onclick="goToVoiceResults()">View evaluation →</button>
       </div>
     </div>
   </div>
@@ -4612,6 +4605,31 @@
     const diffEl = document.getElementById('setup-summary-difficulty');
     diffEl.textContent = state.difficulty ? state.difficulty[0].toUpperCase() + state.difficulty.slice(1) : '—';
     diffEl.style.color = { easy: 'var(--good)', medium: 'var(--warn)', hard: 'var(--record)' }[state.difficulty] || '';
+
+    // Mock Interview accordion row headers mirror the same state, so each
+    // row's current value stays visible even while it's collapsed.
+    const accBasics = document.getElementById('acc-value-basics');
+    if (accBasics) {
+      const lenLabel = state.length ? LENGTH_CARD_LABELS[state.length] : null;
+      const fmtLabel = state.type ? TYPE_SUMMARY_LABELS[state.type] : null;
+      const text = [lenLabel, fmtLabel].filter(Boolean).join(' · ');
+      accBasics.textContent = text || 'Not set';
+      accBasics.classList.toggle('set', !!text);
+    }
+    const accDifficulty = document.getElementById('acc-value-difficulty');
+    if (accDifficulty) {
+      accDifficulty.textContent = state.difficulty ? state.difficulty[0].toUpperCase() + state.difficulty.slice(1) : 'Not set';
+      accDifficulty.classList.toggle('set', !!state.difficulty);
+    }
+    const accPersonalize = document.getElementById('acc-value-personalize');
+    if (accPersonalize) {
+      const bits = [];
+      if (document.getElementById('voice-ask-toggle').checked) bits.push('Ask your own questions');
+      if (document.getElementById('voice-resume-toggle').checked) bits.push('Tailored to resume');
+      if (document.getElementById('voice-role-toggle').checked) bits.push('Tailored to a role');
+      accPersonalize.textContent = bits.length ? bits.join(' · ') : 'Optional';
+      accPersonalize.classList.toggle('set', bits.length > 0);
+    }
   }
   // Industry picker: a flat "General" pill plus dropdown pills (Finance,
   // Pharma, MedTech) that each open a dropdown of sub-industries.
@@ -5708,7 +5726,7 @@
         const savedRole = localStorage.getItem('mocko-role-description');
         if (savedRole) document.getElementById('voice-role-textarea').value = savedRole;
       } catch (e) {}
-      goToVoiceWizardStep(1);
+      resetSetupAccordion();
     }
 
     if (currentUserProfile && currentUserProfile.industry) {
@@ -5726,29 +5744,36 @@
     }
   }
 
-  // Mock Interview setup is a two-step wizard (Basics, then optional
-  // Personalize). Begin (in the sidebar) stays enabled and reachable from
-  // either step, so nothing here ever blocks starting without visiting
-  // step 2 -- this only controls which step's content is shown.
-  function goToVoiceWizardStep(step) {
-    document.getElementById('voice-step-basics').style.display = step === 1 ? 'block' : 'none';
-    document.getElementById('voice-step-personalize').style.display = step === 2 ? 'block' : 'none';
-    document.getElementById('wizard-seg-1').classList.add('done');
-    document.getElementById('wizard-seg-2').classList.toggle('done', step === 2);
-    document.getElementById('wizard-step-label').textContent = step === 2 ? 'Step 2 of 2 · Personalize (optional)' : 'Step 1 of 2 · Basics';
-    document.getElementById('setup-voice-block').scrollIntoView({ block: 'nearest' });
+  // Mock Interview setup is an accordion of rows (Length & Format,
+  // Difficulty, Personalize) -- Begin (in the sidebar) stays enabled and
+  // reachable regardless of which row is open, so nothing here ever blocks
+  // starting; this only controls which row's content is shown.
+  function toggleAccRow(name) {
+    const el = document.getElementById('acc-row-' + name);
+    if (!el) return;
+    const wasExpanded = el.classList.contains('expanded');
+    document.querySelectorAll('#setup-voice-block .acc-row').forEach(r => r.classList.remove('expanded'));
+    if (!wasExpanded) el.classList.add('expanded');
+  }
+
+  function resetSetupAccordion() {
+    document.querySelectorAll('#setup-voice-block .acc-row').forEach(r => r.classList.remove('expanded'));
+    const basics = document.getElementById('acc-row-basics');
+    if (basics) basics.classList.add('expanded');
   }
 
   async function toggleVoiceResumePanel() {
     const checked = document.getElementById('voice-resume-toggle').checked;
     document.getElementById('voice-resume-panel').style.display = checked ? 'block' : 'none';
     if (checked) await loadVoiceResumePicker();
+    updateSetupSummary();
   }
 
   function toggleVoiceRolePanel() {
     const checked = document.getElementById('voice-role-toggle').checked;
     document.getElementById('voice-role-panel').style.display = checked ? 'block' : 'none';
     document.getElementById('voice-role-status').textContent = '';
+    updateSetupSummary();
   }
 
   // Pasted job descriptions are only cached client-side, as a convenience
@@ -7352,12 +7377,9 @@
     document.getElementById('mic-btn').disabled = false;
     document.getElementById('voice-state').textContent = 'Ready';
     document.getElementById('voice-retry-row').style.display = 'none';
-    document.getElementById('voice-rec-indicator').style.display = 'none';
-    document.getElementById('voice-notes-card').style.display = 'none';
-    document.getElementById('voice-notes-list').innerHTML = '';
+    document.getElementById('mic-btn-wrap').classList.remove('listening');
     document.getElementById('voice-timer').textContent = '00:00';
     document.getElementById('voice-caption').classList.remove('is-answer');
-    document.getElementById('voice-content').classList.remove('dimmed');
     document.getElementById('voice-countdown').style.display = 'none';
     clearInterval(voiceTimerInterval);
     clearInterval(countdownInterval);
@@ -7366,58 +7388,38 @@
     if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
 
-  // Renders the left-hand "This session" list and the "Question X of Y"
-  // counter from voiceSession's current state. Deliberately never shows the
-  // text of a question that hasn't been reached yet -- only its number --
-  // so nothing gives away what's coming. Answered questions show their
-  // text back (you already answered it) plus its score.
+  // Renders the centered row of question numbers from voiceSession's
+  // current state. Deliberately never shows a question's text or its
+  // number's meaning beyond position -- future questions stay a secret.
+  // Answered ones show a checkmark; the current one is the only one
+  // visually emphasized.
   function renderVoiceQuestionList() {
-    const listEl = document.getElementById('voice-qlist-items');
-    const progressEl = document.getElementById('voice-progress');
+    const listEl = document.getElementById('voice-progress-row');
     if (!voiceSession || !listEl) { if (listEl) listEl.innerHTML = ''; return; }
 
     const total = voiceSession.questions.length;
     const isDone = voiceSession.phase === 'done';
     const resultByIndex = new Map(voiceSession.results.map((r) => [r.question_index, r]));
-    const lockIcon = '<svg class="lock-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
 
     let html = '';
     for (let i = 0; i < total; i++) {
-      const result = resultByIndex.get(i);
       const isCurrent = !isDone && !voiceSession.inQA && i === voiceSession.currentIndex;
-      if (isCurrent) {
-        html += `<div class="qitem current"><div class="qnum current">${i + 1}</div><div class="qtext">Current question</div></div>`;
-      } else if (result) {
-        const score = result.category_scores
-          ? Object.values(result.category_scores).reduce((a, c) => a + c.score, 0)
-          : (result.mini_score || 0);
-        const text = (result.question_text || '').length > 46 ? result.question_text.slice(0, 46) + '…' : result.question_text;
-        html += `<div class="qitem"><div class="qnum done">&#10003;</div><div class="qtext">${escapeHtml(text)}</div><div class="qscore">${Math.round(score)}</div></div>`;
-      } else {
-        html += `<div class="qitem locked"><div class="qnum">${i + 1}</div><div class="qtext">Question ${i + 1}</div>${lockIcon}</div>`;
-      }
+      const isAnswered = resultByIndex.has(i);
+      const cls = isCurrent ? 'voice-progress-num current' : isAnswered ? 'voice-progress-num done' : 'voice-progress-num';
+      const label = isCurrent ? (i + 1) : isAnswered ? '&#10003;' : (i + 1);
+      html += `<div class="${cls}">${label}</div>`;
     }
 
     if (voiceSession.askQuestions) {
       const qaGraded = isDone && voiceSession.candidateResult && !voiceSession.candidateResult.error;
+      const qaAnswered = isDone || qaGraded;
       const qaCurrent = !isDone && voiceSession.inQA;
-      if (qaCurrent) {
-        html += `<div class="qitem qa current"><div class="qnum current">?</div><div class="qtext">Ask your own questions</div></div>`;
-      } else if (qaGraded) {
-        html += `<div class="qitem qa"><div class="qnum done">&#10003;</div><div class="qtext">Ask your own questions</div><div class="qscore">${Math.round(voiceSession.candidateResult.overall_score || 0)}</div></div>`;
-      } else if (isDone) {
-        html += `<div class="qitem qa"><div class="qnum done">&#10003;</div><div class="qtext">Ask your own questions</div></div>`;
-      } else {
-        html += `<div class="qitem qa locked"><div class="qnum">?</div><div class="qtext">Ask your own questions</div>${lockIcon}</div>`;
-      }
+      const cls = 'voice-progress-num qa' + (qaCurrent ? ' current' : qaAnswered ? ' done' : '');
+      const label = qaCurrent ? '?' : qaAnswered ? '&#10003;' : '?';
+      html += `<div class="${cls}">${label}</div>`;
     }
 
     listEl.innerHTML = html;
-    if (progressEl) {
-      progressEl.textContent = isDone ? 'Session complete'
-        : voiceSession.inQA ? 'Your questions'
-        : `Question ${voiceSession.currentIndex + 1} of ${total}`;
-    }
   }
 
   async function startVoice() {
@@ -7689,7 +7691,6 @@
       if (token !== speechToken) return;
       onDone();
     };
-    document.getElementById('voice-content').classList.remove('dimmed');
     document.getElementById('voice-caption').classList.remove('is-answer');
     document.getElementById('voice-caption').textContent = text;
     document.getElementById('voice-state').textContent = 'Reading…';
@@ -7717,7 +7718,6 @@
     if (!voiceSession) return;
     voiceSession.phase = 'countdown';
     document.getElementById('voice-state').textContent = 'Get ready…';
-    document.getElementById('voice-content').classList.add('dimmed');
     const numEl = document.getElementById('voice-countdown-num');
     const countdownEl = document.getElementById('voice-countdown');
     let n = COUNTDOWN_SECONDS;
@@ -7730,7 +7730,6 @@
         clearInterval(countdownInterval);
         countdownInterval = null;
         countdownEl.style.display = 'none';
-        document.getElementById('voice-content').classList.remove('dimmed');
         enterListenState();
         return;
       }
@@ -7756,7 +7755,7 @@
     document.getElementById('voice-caption').textContent = 'Listening...';
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (voiceSession.sttAvailable && SR) {
-      document.getElementById('voice-rec-indicator').style.display = 'flex';
+      document.getElementById('mic-btn-wrap').classList.add('listening');
       document.getElementById('mic-btn').style.display = 'inline-flex';
       document.getElementById('mic-btn').innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="white" stroke="none"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>';
       startRecognition(SR);
@@ -7769,7 +7768,7 @@
         voiceSession.sttNotified = true;
         showIpError('voice-error', { name: 'SpeechUnsupported' });
       }
-      document.getElementById('voice-rec-indicator').style.display = 'none';
+      document.getElementById('mic-btn-wrap').classList.remove('listening');
       document.getElementById('mic-btn').style.display = 'none';
       clearInterval(voiceTimerInterval);
     }
@@ -7822,19 +7821,10 @@
     voiceSession.manualStop = true;
     if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} }
     clearInterval(voiceTimerInterval);
-    document.getElementById('voice-rec-indicator').style.display = 'none';
+    document.getElementById('mic-btn-wrap').classList.remove('listening');
     document.getElementById('mic-btn').style.display = 'none';
     const durationSec = Math.max(1, Math.round((Date.now() - voiceSession.questionStartTs) / 1000));
     processAnswer(voiceSession.transcriptBuffer.trim(), durationSec);
-  }
-
-  function appendNote(questionText, note) {
-    const card = document.getElementById('voice-notes-card');
-    card.style.display = 'block';
-    const li = document.createElement('li');
-    li.style.marginBottom = '10px';
-    li.innerHTML = `<div style="font-size:13px; color:var(--text-muted); margin-bottom:2px;">${questionText}</div><div style="font-size:14px;">${note}</div>`;
-    document.getElementById('voice-notes-list').appendChild(li);
   }
 
   async function processAnswer(transcript, durationSec) {
@@ -7942,7 +7932,6 @@
     }
 
     voiceSession.results.push(newRow);
-    if (newRow.note) appendNote(q.text, newRow.note);
     voiceSession.currentIndex++;
 
     if (voiceSession.currentIndex < voiceSession.questions.length) {
@@ -8020,7 +8009,7 @@
     if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} }
     clearInterval(voiceTimerInterval);
     document.getElementById('voice-qa-done-row').style.display = 'none';
-    document.getElementById('voice-rec-indicator').style.display = 'none';
+    document.getElementById('mic-btn-wrap').classList.remove('listening');
     document.getElementById('mic-btn').style.display = 'none';
 
     const asked = voiceSession.candidateQuestions;
@@ -8086,11 +8075,11 @@
   async function finishVoiceSession() {
     voiceSession.phase = 'done';
     setVoiceLoading(false);
-    document.getElementById('voice-content').classList.remove('dimmed');
     document.getElementById('voice-caption').classList.remove('is-answer');
     document.getElementById('voice-caption').textContent = "That's a wrap, nice work.";
     document.getElementById('voice-state').textContent = 'Session complete';
     document.getElementById('mic-btn').style.display = 'none';
+    document.getElementById('mic-btn-wrap').classList.remove('listening');
     clearInterval(voiceTimerInterval);
     await computeAndPersistAggregate();
     renderVoiceQuestionList();
