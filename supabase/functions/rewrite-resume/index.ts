@@ -84,7 +84,7 @@ First, score how well the ORIGINAL (untailored) resume matches this specific job
 
 Never use an em dash (the "—" character) anywhere in your response, including inside the tailored resume text. Use a period, comma, or colon instead.
 
-Respond with ONLY valid JSON (no markdown fences, no commentary) matching this exact shape:
+Respond with ONLY compact, single-line valid JSON (no markdown fences, no line breaks or indentation inside the JSON, no commentary) matching this exact shape:
 {
   "matchScoreBefore": <integer 0-100>,
   "matchReasons": [
@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
     }
 
     const result = extractJson(
-      await callClaude(REWRITE_PROMPT(resume.extracted_text, jobTitle, company || "", jobDescription), 4000),
+      await callClaude(REWRITE_PROMPT(resume.extracted_text, jobTitle, company || "", jobDescription), 6000),
     );
 
     return new Response(JSON.stringify(result), {

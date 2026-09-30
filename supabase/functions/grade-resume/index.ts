@@ -85,7 +85,7 @@ Flags: find 4 to 7 specific, concrete problems. Each flag must quote a short exa
 
 Never use an em dash (the "—" character) anywhere in your response. Use a period, comma, or colon instead.
 
-Respond with ONLY valid JSON (no markdown fences, no commentary) matching this exact shape:
+Respond with ONLY compact, single-line valid JSON (no markdown fences, no line breaks or indentation inside the JSON, no commentary) matching this exact shape:
 {
   "overallScore": <integer 0-100, the weighted sum of your category scores>,
   "categories": [{"name": "<section name>", "weight": <integer, all weights sum to 100>, "score": <integer 0 to weight>, "grade": "<letter grade>", "comment": "<one harsh, specific sentence>"}],
@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
       throw new Error("Couldn't read text from this resume. Try re-uploading it as a text-based (not scanned-image) PDF.");
     }
 
-    const graded = extractJson(await callClaude(GRADE_PROMPT(resume.extracted_text), 3000));
+    const graded = extractJson(await callClaude(GRADE_PROMPT(resume.extracted_text), 4096));
 
     const { data: review, error: insertErr } = await supabase
       .from("resume_reviews")
