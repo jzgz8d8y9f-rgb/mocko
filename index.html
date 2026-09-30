@@ -3070,6 +3070,7 @@
       <div class="select-group">
         <div class="select-group-label">Grading</div>
         <select class="rl-select" id="grade-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px;"></select>
+        <label class="btn btn-secondary" style="display:inline-block; margin-top:10px; cursor:pointer;">+ Upload new resume<input type="file" accept=".pdf" style="display:none;" onchange="handleResumeLabUpload(event, 'grade-resume-select')"></label>
       </div>
       <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6; margin:0 0 22px;">Scores impact and quantification, clarity, and formatting/ATS details. We'll mark up specific phrases so you see exactly where. Want it scored against a specific job instead? Use <a href="#" onclick="event.preventDefault(); switchTab('resume-rewrite-setup')" style="color:var(--tag-communication); text-decoration:underline;">Rewrite for a role</a>.</p>
       <div id="grade-setup-error" class="auth-error" style="min-height:0; margin-bottom:10px;"></div>
@@ -3092,7 +3093,8 @@
     <div class="select-panel" style="max-width:640px;">
       <div class="select-group">
         <div class="select-group-label">Using resume</div>
-        <select id="rewrite-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;"></select>
+        <select id="rewrite-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:10px;"></select>
+        <label class="btn btn-secondary" style="display:inline-block; margin-bottom:16px; cursor:pointer;">+ Upload new resume<input type="file" accept=".pdf" style="display:none;" onchange="handleResumeLabUpload(event, 'rewrite-resume-select')"></label>
         <div class="select-group-label">Job title</div>
         <input type="text" id="rewrite-job-title" placeholder="e.g. Investment Banking Analyst" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;">
         <div class="select-group-label">Company</div>
@@ -3119,7 +3121,8 @@
     <div class="select-panel" id="cl-form" style="max-width:640px;">
       <div class="select-group">
         <div class="select-group-label">Using resume</div>
-        <select id="cl-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;"></select>
+        <select id="cl-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:10px;"></select>
+        <label class="btn btn-secondary" style="display:inline-block; margin-bottom:16px; cursor:pointer;">+ Upload new resume<input type="file" accept=".pdf" style="display:none;" onchange="handleResumeLabUpload(event, 'cl-resume-select')"></label>
         <div class="select-group-label">Job title</div>
         <input type="text" id="cl-job-title" placeholder="e.g. Investment Banking Analyst" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;">
         <div class="select-group-label">Company</div>
@@ -5272,17 +5275,37 @@
 
   // --- Resume Lab: grade / rewrite / cover letter ---
 
+  function handleResumeLabUpload(event, targetSelectId) {
+    const file = event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      alert('Please upload a PDF for now.');
+      return;
+    }
+    openResumeUploadModal(file, 'resumelab:' + targetSelectId);
+  }
+
+  const RESUME_LAB_ACTION_BTN = {
+    'grade-resume-select': 'grade-resume-btn',
+    'rewrite-resume-select': 'rewrite-resume-btn',
+    'cl-resume-select': 'cl-generate-btn',
+  };
+
   async function populateResumeSelect(selectId, preferId) {
     const select = document.getElementById(selectId);
+    const actionBtn = document.getElementById(RESUME_LAB_ACTION_BTN[selectId]);
     select.innerHTML = '<option>Loading...</option>';
     try {
       const resumes = await MockoResume.listResumes();
       if (resumes.length === 0) {
-        select.innerHTML = '<option value="">No resumes yet. Add one in Settings.</option>';
+        select.innerHTML = '<option value="">No resumes yet, upload one below</option>';
         select.disabled = true;
+        if (actionBtn) actionBtn.disabled = true;
         return;
       }
       select.disabled = false;
+      if (actionBtn) actionBtn.disabled = false;
       select.innerHTML = resumes.map((r) =>
         `<option value="${r.id}">${escapeHtml(r.label)}${r.is_primary ? ' (Primary)' : ''}</option>`
       ).join('');
@@ -6729,6 +6752,7 @@
       if (context === 'settings') await loadResumes();
       else if (context === 'onair') await loadResumePicker();
       else if (context === 'voice') await loadVoiceResumePicker(resume.id);
+      else if (context && context.startsWith('resumelab:')) await populateResumeSelect(context.split(':')[1], resume.id);
     } catch (err) {
       console.error(err);
       errorEl.textContent = err.message || 'Upload failed.';
