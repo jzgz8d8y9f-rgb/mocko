@@ -473,6 +473,22 @@
   .pointers.good li::before { content: '+'; position: absolute; left: 0; color: var(--good); font-weight: 700; }
   .pointers.work li::before { content: '—'; position: absolute; left: 0; color: var(--warn); }
 
+  /* Resume Lab */
+  .rl-action-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 30px; }
+  @media (max-width: 620px) { .rl-action-grid { grid-template-columns: 1fr; } }
+  .rl-flag { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 50%; background: var(--record); color: #fff; font-size: 10px; font-weight: 700; margin-left: 4px; flex-shrink: 0; vertical-align: middle; }
+  .rl-edit-badge { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: var(--tag-communication); color: #fff; font-size: 9.5px; font-weight: 700; margin-left: 4px; flex-shrink: 0; vertical-align: middle; }
+  .rl-legend-item { display: flex; gap: 10px; font-size: 13.5px; line-height: 1.55; margin-bottom: 10px; }
+  .rl-legend-item:last-child { margin-bottom: 0; }
+  .rl-legend-item .rl-flag, .rl-legend-item .rl-edit-badge { margin-left: 0; margin-top: 2px; }
+  .rl-resume-doc { background: var(--cue); border-radius: 14px; padding: 32px; color: var(--bg); white-space: pre-wrap; font-size: 13px; line-height: 1.6; font-family: 'Work Sans'; }
+  .rl-length-toggle { display: inline-flex; background: var(--bg); border: 1px solid var(--line); border-radius: 100px; padding: 4px; }
+  .rl-length-toggle button { font-family: 'Work Sans'; font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 100px; cursor: pointer; border: none; background: transparent; color: var(--text-muted); }
+  .rl-length-toggle button.selected { background: var(--good); color: var(--bg); }
+  .rl-match-score { display: flex; align-items: center; gap: 26px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 26px; margin-bottom: 22px; }
+  .rl-match-score .num { font-family: 'Work Sans'; font-size: 42px; font-weight: 800; color: var(--warn); line-height: 1; flex-shrink: 0; text-align: center; }
+  .rl-history-row { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+
   /* Interview tutorial: click-through carousel shown before setup */
   .ic-frame { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; min-height: 480px; }
   .ic-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
@@ -1288,6 +1304,7 @@
       <button class="nav-tab" id="tab-interview" onclick="switchTab('interview')">Interview Practice</button>
       <button class="nav-tab" id="tab-social" onclick="switchTab('social')">Social</button>
       <button class="nav-tab" id="tab-drills" onclick="switchTab('drills')">Drills</button>
+      <button class="nav-tab" id="tab-resume" onclick="switchTab('resume')">Resume</button>
     </div>
     <div id="account-area"></div>
   </div>
@@ -2995,6 +3012,127 @@
     <div class="leaderboard-list" id="leaderboard-list"></div>
   </div>
 
+  <!-- RESUME LAB -->
+  <div class="screen" id="screen-resume">
+    <div class="step-label">Resume Lab</div>
+    <div class="hero">
+      <h1 class="display">Sharpen your resume, tailor your pitch</h1>
+      <p>Get a scored breakdown of a resume, or generate a cover letter tailored to a specific job, using the resumes you already uploaded.</p>
+    </div>
+    <div class="rl-action-grid">
+      <div class="action-card" onclick="switchTab('resume-grade-setup')">
+        <h4>Grade this resume</h4>
+        <p>Graded harshly, section by section, marked up right on your resume. No participation trophies.</p>
+        <div class="go">Grade &rarr;</div>
+      </div>
+      <div class="action-card" onclick="switchTab('resume-rewrite-setup')">
+        <h4>Rewrite for a role</h4>
+        <p>See your role-fit score, then get bullets rewritten to match it. Same one-page layout.</p>
+        <div class="go">Tailor &rarr;</div>
+      </div>
+      <div class="action-card" onclick="switchTab('resume-cover-letter')">
+        <h4>Write a cover letter</h4>
+        <p>Paste a job description and get a first draft built from your actual experience.</p>
+        <div class="go">Write &rarr;</div>
+      </div>
+    </div>
+    <div class="select-group-label" style="margin-bottom:12px;">Recent</div>
+    <div id="rl-recent-list"><p style="color:var(--text-muted); font-size:14px;">Loading...</p></div>
+  </div>
+
+  <div class="screen" id="screen-resume-grade-setup">
+    <button class="back-btn" onclick="switchTab('resume')">&larr; Back to Resume Lab</button>
+    <div class="step-label">Grade a Resume</div>
+    <div class="hero">
+      <h1 class="display">General quality check</h1>
+    </div>
+    <div class="select-panel" style="max-width:520px;">
+      <div class="select-group">
+        <div class="select-group-label">Grading</div>
+        <select class="rl-select" id="grade-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px;"></select>
+      </div>
+      <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6; margin:0 0 22px;">Scores impact and quantification, clarity, and formatting/ATS details. We'll mark up specific phrases so you see exactly where. Want it scored against a specific job instead? Use <a href="#" onclick="event.preventDefault(); switchTab('resume-rewrite-setup')" style="color:var(--tag-communication); text-decoration:underline;">Rewrite for a role</a>.</p>
+      <div id="grade-setup-error" class="auth-error" style="min-height:0; margin-bottom:10px;"></div>
+      <button class="btn btn-primary" id="grade-resume-btn" style="width:100%;" onclick="startResumeGrade()">Grade resume &rarr;</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-resume-grade-result">
+    <button class="back-btn" onclick="switchTab('resume-grade-setup')">&larr; Back</button>
+    <div class="studio-panel" id="rl-grade-result"></div>
+  </div>
+
+  <div class="screen" id="screen-resume-rewrite-setup">
+    <button class="back-btn" onclick="switchTab('resume')">&larr; Back to Resume Lab</button>
+    <div class="step-label">Rewrite for a Role</div>
+    <div class="hero">
+      <h1 class="display">Tailor a resume to a job</h1>
+      <p>We'll score how this resume matches the role, then rewrite bullets to emphasize what it cares about. Your underlying experience doesn't change, only how it's framed. The layout always stays one page.</p>
+    </div>
+    <div class="select-panel" style="max-width:640px;">
+      <div class="select-group">
+        <div class="select-group-label">Using resume</div>
+        <select id="rewrite-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;"></select>
+        <div class="select-group-label">Job title</div>
+        <input type="text" id="rewrite-job-title" placeholder="e.g. Investment Banking Analyst" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;">
+        <div class="select-group-label">Company</div>
+        <input type="text" id="rewrite-company" placeholder="e.g. Goldman Sachs" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;">
+        <div class="select-group-label">Job description</div>
+        <textarea id="rewrite-job-description" placeholder="Paste it in" style="width:100%; min-height:100px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px; resize:vertical;"></textarea>
+      </div>
+      <div id="rewrite-setup-error" class="auth-error" style="min-height:0; margin-bottom:10px;"></div>
+      <button class="btn btn-primary" id="rewrite-resume-btn" style="width:100%; background:var(--tag-communication);" onclick="startResumeRewrite()">Check fit &amp; tailor &rarr;</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-resume-rewrite-result">
+    <button class="back-btn" onclick="switchTab('resume-rewrite-setup')">&larr; Back</button>
+    <div id="rl-rewrite-result"></div>
+  </div>
+
+  <div class="screen" id="screen-resume-cover-letter">
+    <button class="back-btn" onclick="switchTab('resume')">&larr; Back to Resume Lab</button>
+    <div class="step-label">Cover Letter</div>
+    <div class="hero">
+      <h1 class="display">Write a cover letter</h1>
+    </div>
+    <div class="select-panel" id="cl-form" style="max-width:640px;">
+      <div class="select-group">
+        <div class="select-group-label">Using resume</div>
+        <select id="cl-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;"></select>
+        <div class="select-group-label">Job title</div>
+        <input type="text" id="cl-job-title" placeholder="e.g. Investment Banking Analyst" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;">
+        <div class="select-group-label">Company</div>
+        <input type="text" id="cl-company" placeholder="e.g. Goldman Sachs" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;">
+        <div class="select-group-label">Job description</div>
+        <textarea id="cl-job-description" placeholder="Paste it in" style="width:100%; min-height:90px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px; resize:vertical;"></textarea>
+        <div class="select-group-label">Anything else to include? <span style="color:var(--text-muted); text-transform:none; font-weight:400;">(optional)</span></div>
+        <textarea id="cl-additional-info" placeholder="e.g. Mention that I'm relocating to NYC already" style="width:100%; min-height:60px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px; resize:vertical;"></textarea>
+        <div class="select-group-label">Word Length</div>
+        <div class="rl-length-toggle" id="cl-length-toggle" style="margin-bottom:16px;">
+          <button type="button" data-len="short" onclick="setCoverLetterLength('short')">Short &middot; ~150w</button>
+          <button type="button" data-len="recommended" class="selected" onclick="setCoverLetterLength('recommended')">Recommended &middot; ~250w</button>
+          <button type="button" data-len="long" onclick="setCoverLetterLength('long')">Long &middot; ~350w</button>
+        </div>
+      </div>
+      <div id="cl-error" class="auth-error" style="min-height:0; margin-bottom:10px;"></div>
+      <button class="btn btn-primary" id="cl-generate-btn" style="width:100%;" onclick="startCoverLetter()">Generate cover letter &rarr;</button>
+    </div>
+
+    <div id="cl-result-wrap" style="display:none;">
+      <div class="rl-resume-doc" id="cl-letter-text" style="margin-bottom:10px;"></div>
+      <div class="btn-row" style="justify-content:space-between; margin-bottom:40px;">
+        <button class="back-btn" style="margin-bottom:0;" onclick="document.getElementById('cl-form').scrollIntoView({behavior:'smooth'})">&larr; Edit settings</button>
+        <div class="btn-row" style="margin-bottom:0;">
+          <button class="btn btn-secondary" onclick="copyCoverLetter()">Copy text</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="select-group-label" style="margin-bottom:12px;">Past cover letters</div>
+    <div id="cl-history-list"><p style="color:var(--text-muted); font-size:14px;">Loading...</p></div>
+  </div>
+
 </div>
 
 <div class="modal-overlay" id="resume-upload-modal">
@@ -3057,6 +3195,7 @@
 <script type="module" src="js/profile.js"></script>
 <script type="module" src="js/questions.js"></script>
 <script type="module" src="js/resume.js"></script>
+<script type="module" src="js/resume-lab.js"></script>
 <script type="module" src="js/drills.js"></script>
 <script type="module" src="js/voice.js"></script>
 <script type="module" src="js/social.js"></script>
@@ -5055,12 +5194,16 @@
       : `<div class="soc-empty" style="border:none">${socialState.friends.length ? 'No friends match that.' : 'No friends yet. Find people on the Social page.'}</div>`;
   }
 
+  const RESUME_LAB_SCREENS = ['resume', 'resume-grade-setup', 'resume-grade-result', 'resume-rewrite-setup', 'resume-rewrite-result', 'resume-cover-letter'];
+
   function switchTab(tab) {
     if (tab === 'social' && !requireAuth(() => switchTab('social'))) return;
+    if (RESUME_LAB_SCREENS.includes(tab) && !requireAuth(() => switchTab(tab))) return;
     document.getElementById('tab-home').classList.toggle('active', tab === 'home');
     document.getElementById('tab-interview').classList.toggle('active', tab === 'interview');
     document.getElementById('tab-drills').classList.toggle('active', tab === 'drills');
     document.getElementById('tab-social').classList.toggle('active', tab === 'social');
+    document.getElementById('tab-resume').classList.toggle('active', RESUME_LAB_SCREENS.includes(tab));
     if (tab !== 'home') clearInterval(homeLeagueCycleTimer);
     if (tab === 'social') {
       closeAccountMenu();
@@ -5076,6 +5219,13 @@
       goTo('interview');
       syncUrl('/interview');
       loadModeCardStates();
+    } else if (RESUME_LAB_SCREENS.includes(tab)) {
+      goTo(tab);
+      syncUrl(tab === 'resume' ? '/resume' : `/resume/${tab.slice(7)}`);
+      if (tab === 'resume') loadResumeLabHome();
+      else if (tab === 'resume-grade-setup') populateResumeSelect('grade-resume-select');
+      else if (tab === 'resume-rewrite-setup') populateResumeSelect('rewrite-resume-select');
+      else if (tab === 'resume-cover-letter') { populateResumeSelect('cl-resume-select'); loadCoverLetterHistory(); }
     } else {
       goTo('home');
       syncUrl('/');
@@ -5098,6 +5248,294 @@
   function hideResumePrompt() {
     pendingResumeRow = null;
     document.getElementById('resume-prompt-panel').style.display = 'none';
+  }
+
+  // --- Resume Lab: grade / rewrite / cover letter ---
+
+  async function populateResumeSelect(selectId, preferId) {
+    const select = document.getElementById(selectId);
+    select.innerHTML = '<option>Loading...</option>';
+    try {
+      const resumes = await MockoResume.listResumes();
+      if (resumes.length === 0) {
+        select.innerHTML = '<option value="">No resumes yet. Add one in Settings.</option>';
+        select.disabled = true;
+        return;
+      }
+      select.disabled = false;
+      select.innerHTML = resumes.map((r) =>
+        `<option value="${r.id}">${escapeHtml(r.label)}${r.is_primary ? ' (Primary)' : ''}</option>`
+      ).join('');
+      const preferred = preferId || (resumes.find((r) => r.is_primary) || resumes[0]).id;
+      select.value = preferred;
+    } catch (err) {
+      console.error(err);
+      select.innerHTML = '<option value="">Could not load resumes</option>';
+    }
+  }
+
+  async function loadResumeLabHome() {
+    const listEl = document.getElementById('rl-recent-list');
+    listEl.innerHTML = '<p style="color:var(--text-muted); font-size:14px;">Loading...</p>';
+    try {
+      const [reviews, letters] = await Promise.all([
+        MockoResumeLab.listResumeReviews(),
+        MockoResumeLab.listCoverLetters(),
+      ]);
+      const items = [
+        ...reviews.map((r) => ({ type: 'grade', at: r.created_at, label: r.resumes ? r.resumes.label : 'Resume', score: Math.round(r.overall_score) })),
+        ...letters.map((l) => ({ type: 'letter', at: l.created_at, label: `${l.company}, ${l.job_title}` })),
+      ].sort((a, b) => new Date(b.at) - new Date(a.at)).slice(0, 5);
+      if (items.length === 0) {
+        listEl.innerHTML = '<p style="color:var(--text-muted); font-size:14px;">Nothing yet. Grade a resume or write a cover letter to see it here.</p>';
+        return;
+      }
+      listEl.innerHTML = items.map((it) => {
+        const when = new Date(it.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        if (it.type === 'grade') {
+          return `<div class="rl-history-row"><div><div style="font-size:14px; font-weight:600;">Resume grade, ${escapeHtml(it.label)}</div><div style="font-size:11.5px; color:var(--text-muted);">${when}</div></div><div style="font-family:'Work Sans'; font-size:20px; font-weight:700; color:${it.score < 60 ? 'var(--record)' : 'var(--good)'};">${it.score}</div></div>`;
+        }
+        return `<div class="rl-history-row"><div><div style="font-size:14px; font-weight:600;">Cover letter, ${escapeHtml(it.label)}</div><div style="font-size:11.5px; color:var(--text-muted);">${when}</div></div></div>`;
+      }).join('');
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '<p style="color:var(--text-muted); font-size:14px;">Could not load recent activity.</p>';
+    }
+  }
+
+  async function startResumeGrade() {
+    const resumeId = document.getElementById('grade-resume-select').value;
+    const errorEl = document.getElementById('grade-setup-error');
+    errorEl.textContent = '';
+    if (!resumeId) { errorEl.textContent = 'Choose a resume first.'; return; }
+    const btn = document.getElementById('grade-resume-btn');
+    btn.disabled = true;
+    btn.textContent = 'Grading...';
+    try {
+      const review = await MockoResumeLab.gradeResume(resumeId);
+      renderResumeGrade(review);
+      switchTab('resume-grade-result');
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = err.message || 'Could not grade this resume.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Grade resume →';
+    }
+  }
+
+  let lastGradeReview = null;
+
+  function renderResumeGrade(review) {
+    lastGradeReview = review;
+    const score = Math.round(review.overall_score);
+    const scoreColor = score < 60 ? 'var(--record)' : score < 80 ? 'var(--warn)' : 'var(--good)';
+    const categories = review.categories || [];
+    const catHtml = categories.map((c) => {
+      const pct = Math.round((c.score / c.weight) * 100);
+      const barColor = pct < 60 ? 'var(--record)' : pct < 80 ? 'var(--warn)' : 'var(--good)';
+      return `<div class="cat-row">
+        <div class="cat-row-top"><span class="cat-row-name">${escapeHtml(c.name)} <span class="cat-row-weight">(${c.weight}%)</span></span>
+        <span class="cat-row-score" style="color:${barColor};">${c.score} / ${c.weight} &middot; ${escapeHtml(c.grade)}</span></div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%; background:${barColor};"></div></div>
+        <div style="font-size:12.5px; color:var(--text-muted); line-height:1.5; margin-top:6px;">${escapeHtml(c.comment)}</div>
+      </div>`;
+    }).join('');
+
+    const flagsHtml = (review.flags || []).map((f, i) => `
+      <div class="rl-legend-item"><span class="rl-flag">${i + 1}</span><span><i>"${escapeHtml(f.quote)}"</i>, ${escapeHtml(f.comment)}</span></div>
+    `).join('');
+
+    const goodHtml = (review.good_points || []).map((p) => `<li>${escapeHtml(p)}</li>`).join('');
+    const suggestionsHtml = (review.suggestions || []).map((s) => `<li>${escapeHtml(s)}</li>`).join('');
+
+    document.getElementById('rl-grade-result').innerHTML = `
+      <div class="overall-score">
+        <div class="num" style="color:${scoreColor};">${score}<span class="of100" style="font-size:22px;">/100</span></div>
+        <div class="label">Overall Score</div>
+        ${score < 60 ? '<div style="font-size:13px; color:var(--record); margin-top:10px; font-weight:600;">This would not survive a first-round screen. Graded harshly, on purpose.</div>' : ''}
+      </div>
+      <div class="cat-row-name" style="display:block; margin-bottom:14px;">Grade by section</div>
+      ${catHtml}
+      <div class="pointers work" style="margin-top:30px;">
+        <h4 style="color:var(--record);">What we flagged</h4>
+        ${flagsHtml || '<p style="font-size:13.5px; color:var(--text-muted);">Nothing specific flagged.</p>'}
+      </div>
+      ${goodHtml ? `<div class="pointers good"><h4>What's working</h4><ul>${goodHtml}</ul></div>` : ''}
+      <div class="pointers" style="margin-bottom:28px;">
+        <h4 style="color:var(--tag-communication);">Suggestions</h4>
+        <ul>${suggestionsHtml}</ul>
+      </div>
+      <div class="btn-row" style="flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="switchTab('resume-grade-setup')">Grade a different resume</button>
+        <button class="btn btn-primary" style="background:var(--tag-communication);" onclick="switchTab('resume-rewrite-setup')">Tailor this resume to a role →</button>
+        <button class="btn btn-secondary" onclick="downloadResumeReviewReport()">Download report</button>
+      </div>
+    `;
+  }
+
+  function downloadResumeReviewReport() {
+    const review = lastGradeReview;
+    if (!review) return;
+    const lines = [`Resume grade: ${Math.round(review.overall_score)}/100`, ''];
+    (review.categories || []).forEach((c) => lines.push(`${c.name} (${c.weight}%): ${c.score}/${c.weight}, ${c.grade}. ${c.comment}`));
+    lines.push('', 'Flagged:');
+    (review.flags || []).forEach((f, i) => lines.push(`${i + 1}. "${f.quote}", ${f.comment}`));
+    lines.push('', 'Suggestions:');
+    (review.suggestions || []).forEach((s) => lines.push(`- ${s}`));
+    triggerTextDownload(lines.join('\n'), 'resume-grade-report.txt');
+  }
+
+  function triggerTextDownload(text, filename) {
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function startResumeRewrite() {
+    const resumeId = document.getElementById('rewrite-resume-select').value;
+    const jobTitle = document.getElementById('rewrite-job-title').value.trim();
+    const company = document.getElementById('rewrite-company').value.trim();
+    const jobDescription = document.getElementById('rewrite-job-description').value.trim();
+    const errorEl = document.getElementById('rewrite-setup-error');
+    errorEl.textContent = '';
+    if (!resumeId) { errorEl.textContent = 'Choose a resume first.'; return; }
+    if (!jobTitle || !jobDescription) { errorEl.textContent = 'Job title and job description are required.'; return; }
+    const btn = document.getElementById('rewrite-resume-btn');
+    btn.disabled = true;
+    btn.textContent = 'Tailoring...';
+    try {
+      const result = await MockoResumeLab.rewriteResume({ resumeId, jobTitle, company, jobDescription });
+      renderResumeRewrite(result, jobTitle, company);
+      switchTab('resume-rewrite-result');
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = err.message || 'Could not tailor this resume.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Check fit & tailor →';
+    }
+  }
+
+  function renderResumeRewrite(result, jobTitle, company) {
+    lastRewriteResult = result;
+    const score = Math.round(result.matchScoreBefore);
+    const scoreColor = score < 60 ? 'var(--record)' : score < 80 ? 'var(--warn)' : 'var(--good)';
+    const reasonsHtml = (result.matchReasons || []).map((r) =>
+      `<div style="margin-bottom:6px;"><span style="font-size:12px; font-weight:700; color:${r.verdict === 'Good' ? 'var(--good)' : 'var(--warn)'};">${escapeHtml(r.label)}: ${escapeHtml(r.verdict)}.</span> <span style="font-size:12.5px; color:var(--text-muted);">${escapeHtml(r.detail)}</span></div>`
+    ).join('');
+    const editsHtml = (result.edits || []).map((e, i) =>
+      `<div class="rl-legend-item"><span class="rl-edit-badge">${i + 1}</span><span><i>"${escapeHtml(e.original)}"</i> &rarr; "${escapeHtml(e.tailored)}". ${escapeHtml(e.comment)}</span></div>`
+    ).join('');
+
+    document.getElementById('rl-rewrite-result').innerHTML = `
+      <div class="step-label">Tailored for ${escapeHtml(jobTitle)}${company ? ', ' + escapeHtml(company) : ''}</div>
+      <div class="hero"><h1 class="display">Your rewritten resume</h1></div>
+      <div class="rl-match-score">
+        <div><div class="num" style="color:${scoreColor};">${score}<span style="font-size:15px; color:var(--text-muted); font-weight:400;">/100</span></div><div style="font-size:10.5px; color:var(--text-muted); letter-spacing:0.05em; text-transform:uppercase; margin-top:4px; text-align:center;">Role Fit, before</div></div>
+        <div style="flex-grow:1;">${reasonsHtml}</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-muted); margin-bottom:22px;">Format preserved. Same one-page layout as the original, only wording changed.</div>
+      <div class="pointers" style="margin-bottom:22px;">
+        <h4 style="color:var(--tag-communication);">Suggestions</h4>
+        ${editsHtml}
+        <div style="font-size:12px; color:var(--text-muted); margin-top:14px; padding-top:14px; border-top:1px solid var(--line);">Nothing was invented. Every claim and number above is from your original resume, only reworded.</div>
+      </div>
+      <div style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">The tailored resume below is clean text, ready to copy or download, no markup included.</div>
+      <div class="rl-resume-doc" style="margin-bottom:14px;">${escapeHtml(result.tailoredResumeText)}</div>
+      <div class="btn-row" style="justify-content:flex-end; flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="copyRewrittenResume()">Copy text</button>
+        <button class="btn btn-primary" onclick="downloadRewrittenResume()">Download resume →</button>
+      </div>
+    `;
+  }
+
+  let lastRewriteResult = null;
+
+  function copyRewrittenResume() {
+    if (lastRewriteResult) navigator.clipboard.writeText(lastRewriteResult.tailoredResumeText);
+  }
+
+  function downloadRewrittenResume() {
+    if (lastRewriteResult) triggerTextDownload(lastRewriteResult.tailoredResumeText, 'tailored-resume.txt');
+  }
+
+  let coverLetterLength = 'recommended';
+  let lastCoverLetter = null;
+
+  function setCoverLetterLength(len) {
+    coverLetterLength = len;
+    document.querySelectorAll('#cl-length-toggle button').forEach((b) => b.classList.toggle('selected', b.dataset.len === len));
+  }
+
+  async function startCoverLetter() {
+    const resumeId = document.getElementById('cl-resume-select').value;
+    const jobTitle = document.getElementById('cl-job-title').value.trim();
+    const company = document.getElementById('cl-company').value.trim();
+    const jobDescription = document.getElementById('cl-job-description').value.trim();
+    const additionalInfo = document.getElementById('cl-additional-info').value.trim();
+    const errorEl = document.getElementById('cl-error');
+    errorEl.textContent = '';
+    if (!resumeId) { errorEl.textContent = 'Choose a resume first.'; return; }
+    if (!jobTitle || !jobDescription) { errorEl.textContent = 'Job title and job description are required.'; return; }
+    const btn = document.getElementById('cl-generate-btn');
+    btn.disabled = true;
+    btn.textContent = 'Writing...';
+    try {
+      const letter = await MockoResumeLab.writeCoverLetter({
+        resumeId, jobTitle, company, jobDescription, additionalInfo, wordLength: coverLetterLength,
+      });
+      lastCoverLetter = letter;
+      document.getElementById('cl-letter-text').textContent = letter.letter_text;
+      document.getElementById('cl-result-wrap').style.display = 'block';
+      document.getElementById('cl-result-wrap').scrollIntoView({ behavior: 'smooth' });
+      loadCoverLetterHistory();
+    } catch (err) {
+      console.error(err);
+      errorEl.textContent = err.message || 'Could not write this cover letter.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Generate cover letter →';
+    }
+  }
+
+  function copyCoverLetter() {
+    if (lastCoverLetter) navigator.clipboard.writeText(lastCoverLetter.letter_text);
+  }
+
+  let coverLetterHistoryCache = [];
+
+  async function loadCoverLetterHistory() {
+    const listEl = document.getElementById('cl-history-list');
+    listEl.innerHTML = '<p style="color:var(--text-muted); font-size:14px;">Loading...</p>';
+    try {
+      const letters = await MockoResumeLab.listCoverLetters();
+      coverLetterHistoryCache = letters;
+      if (letters.length === 0) {
+        listEl.innerHTML = '<p style="color:var(--text-muted); font-size:14px;">No cover letters yet.</p>';
+        return;
+      }
+      listEl.innerHTML = letters.map((l, i) => {
+        const when = new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return `<div class="rl-history-row"><div><div style="font-size:14px; font-weight:600;">${escapeHtml(l.company)}, ${escapeHtml(l.job_title)}</div><div style="font-size:11.5px; color:var(--text-muted);">${when}${l.resumes ? ' &middot; ' + escapeHtml(l.resumes.label) : ''}</div></div><button class="btn btn-secondary" onclick="viewPastCoverLetter(${i})">View</button></div>`;
+      }).join('');
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '<p style="color:var(--text-muted); font-size:14px;">Could not load past cover letters.</p>';
+    }
+  }
+
+  function viewPastCoverLetter(index) {
+    const letter = coverLetterHistoryCache[index];
+    if (!letter) return;
+    lastCoverLetter = letter;
+    document.getElementById('cl-letter-text').textContent = letter.letter_text;
+    document.getElementById('cl-result-wrap').style.display = 'block';
+    document.getElementById('cl-result-wrap').scrollIntoView({ behavior: 'smooth' });
   }
 
   // Mode-choice cards: signed-out visitors see what each mode offers,
@@ -5585,6 +6023,8 @@
     if (path === '/interview') switchTab('interview');
     else if (path === '/drills') switchTab('drills');
     else if (path === '/social') switchTab('social');
+    else if (path === '/resume') switchTab('resume');
+    else if (path.match(/^\/resume\/(grade-setup|grade-result|rewrite-setup|rewrite-result|cover-letter)$/)) switchTab('resume-' + path.slice(8));
     else if (path === '/social/friends') openAllFriends();
     else if (path === '/profile') goToProfile();
     else if (profileMatch) goToProfileById(decodeURIComponent(profileMatch[1]));

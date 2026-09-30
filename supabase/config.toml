@@ -470,3 +470,36 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/send-weekly-summary/deno.json"
 entrypoint = "./functions/send-weekly-summary/index.ts"
+
+[functions.grade-resume]
+enabled = true
+verify_jwt = false
+import_map = "./functions/grade-resume/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/grade-resume/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/grade-resume/*.html" ]
+
+[functions.rewrite-resume]
+enabled = true
+verify_jwt = false
+import_map = "./functions/rewrite-resume/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/rewrite-resume/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/rewrite-resume/*.html" ]
+
+[functions.write-cover-letter]
+enabled = true
+verify_jwt = false
+import_map = "./functions/write-cover-letter/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/write-cover-letter/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/write-cover-letter/*.html" ]
