@@ -523,30 +523,47 @@
   .transcript { display: none; font-family: 'Work Sans'; font-size: 13.5px; color: var(--text-muted); line-height: 1.6; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
   .transcript.show { display: block; }
 
-  .voice-shell { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 40px; text-align: center; }
-  .voice-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 6px; }
-  .interviewer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--good); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .interviewer-avatar svg { display: block; }
-  .avatar-mouth { transform-box: fill-box; transform-origin: center; }
-  .interviewer-avatar.talking .avatar-mouth { animation: avatar-talk 0.32s ease-in-out infinite; }
-  @keyframes avatar-talk { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(2.4); } }
-  @media (prefers-reduced-motion: reduce) {
-    .interviewer-avatar.talking .avatar-mouth { animation: none; transform: scaleY(1.6); }
-  }
-  .interviewer-name { font-size: 15px; font-weight: 600; }
-  .interviewer-role { font-size: 13px; color: var(--text-muted); margin-bottom: 30px; }
+  /* Mock Interview: a session-overview layout -- a question list on the
+     left (future questions hidden, only numbered), the current question
+     or your live transcript on the right. No avatar, no call-style orb;
+     a question is read aloud, a short countdown gives you a beat to get
+     ready, then it's replaced by your own transcript while you answer. */
+  .voice-layout { display: grid; grid-template-columns: 210px 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 640px) { .voice-layout { grid-template-columns: 1fr; } }
 
-  .voice-orb { width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 24px; position: relative; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(39,203,187,0.25), transparent 70%); }
-  .voice-orb-core { width: 90px; height: 90px; border-radius: 50%; background: var(--good); opacity: 0.85; transition: transform 0.15s ease; }
-  .voice-orb.listening .voice-orb-core { animation: orb-pulse 1.4s ease-in-out infinite; }
-  .voice-orb.ai-talking .voice-orb-core { background: var(--cue); animation: orb-pulse 0.9s ease-in-out infinite; }
-  @keyframes orb-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+  .voice-qlist { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .voice-qlist-title { font-family: 'Libre Baskerville', serif; font-size: 14px; font-weight: 700; margin: 0 0 12px; padding: 0 4px; }
+  .qitem { display: flex; align-items: center; gap: 9px; padding: 9px 6px; border-radius: 8px; }
+  .qitem.current { background: rgba(39,203,187,0.1); }
+  .qitem.locked { opacity: 0.5; }
+  .qitem.qa { border-top: 1px dashed var(--line); margin-top: 4px; padding-top: 13px; border-radius: 0; }
+  .qnum { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 700; flex-shrink: 0; background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--line); }
+  .qnum.done { background: var(--good); color: var(--bg); border-color: var(--good); }
+  .qnum.current { background: var(--cue); color: var(--bg); border-color: var(--cue); }
+  .qtext { font-size: 12px; color: var(--text-muted); line-height: 1.35; }
+  .qitem.current .qtext { color: var(--text); font-weight: 600; }
+  .qscore { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--good); flex-shrink: 0; }
+  .lock-icon { margin-left: auto; color: var(--text-muted); flex-shrink: 0; }
 
-  .voice-caption { font-size: 15px; line-height: 1.5; max-width: 460px; margin: 0 auto 8px; min-height: 46px; color: var(--text); }
-  .voice-state-label { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; letter-spacing: 0.04em; }
-  .mic-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: var(--record); color: white; font-size: 20px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .voice-main { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 32px; }
+  .voice-meta-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .voice-meta-tag { font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
+  .voice-progress { font-size: 12.5px; color: var(--text-muted); }
+
+  .voice-content { position: relative; min-height: 130px; margin-bottom: 22px; }
+  .voice-caption { font-size: 20px; font-family: 'Libre Baskerville', serif; font-weight: 700; line-height: 1.4; color: var(--text); transition: opacity 0.15s ease; }
+  .voice-caption.is-answer { font-size: 16px; font-weight: 400; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; min-height: 140px; }
+  .voice-content.dimmed .voice-caption { opacity: 0.3; }
+  .voice-countdown { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
+  .voice-countdown-num { font-family: 'Libre Baskerville', serif; font-size: 48px; font-weight: 700; color: var(--good); }
+  .voice-countdown-label { font-size: 12.5px; color: var(--text-muted); }
+
+  .voice-state-label { font-size: 13px; color: var(--text-muted); letter-spacing: 0.02em; }
+  .voice-control-row { display: flex; align-items: center; gap: 14px; border-top: 1px solid var(--line); padding-top: 20px; }
+  .mic-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: var(--record); color: white; font-size: 20px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
   .mic-btn:hover { background: #d02836; }
-  .voice-timer { font-size: 13px; color: var(--text-muted); margin-top: 16px; }
+  .voice-control-mid { flex: 1; }
+  .voice-timer { font-size: 13px; color: var(--text-muted); }
 
   /* Stats: interview practice is the hero, drills are a compact strip at the bottom */
   .stats-hero-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px 30px; margin-bottom: 22px; }
@@ -2621,56 +2638,59 @@
   <!-- VOICE MOCK INTERVIEW -->
   <div class="screen" id="screen-voice">
     <button class="back-btn" onclick="exitVoiceSession()">← Save &amp; exit</button>
-    <div class="voice-shell">
-      <div class="voice-header">
-        <div class="interviewer-avatar" id="voice-avatar">
-          <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
-            <line x1="20" y1="7" x2="20" y2="3" stroke="var(--bg)" stroke-width="1.6" stroke-linecap="round"/>
-            <circle cx="20" cy="2.4" r="1.4" fill="var(--bg)"/>
-            <circle cx="14" cy="19" r="2.4" fill="var(--bg)"/>
-            <circle cx="26" cy="19" r="2.4" fill="var(--bg)"/>
-            <rect class="avatar-mouth" x="14" y="26" width="12" height="3" rx="1.5" fill="var(--bg)"/>
-          </svg>
+    <div class="voice-layout">
+      <div class="voice-qlist">
+        <div class="voice-qlist-title">This session</div>
+        <div id="voice-qlist-items"></div>
+      </div>
+
+      <div class="voice-main">
+        <div class="voice-meta-row">
+          <div class="voice-meta-tag" id="voice-role">General &middot; Behavioral</div>
+          <div class="voice-progress" id="voice-progress">Question 1 of 1</div>
         </div>
-        <div class="interviewer-name">MockBot · AI Interviewer</div>
-      </div>
-      <div class="interviewer-role" id="voice-role">General &middot; Behavioral</div>
 
-      <div id="voice-loader" style="display:none; margin: 0 auto 24px; height:140px; align-items:center; justify-content:center;"><div class="mocko-loader" role="status" aria-label="Loading">
-            <svg viewBox="0 0 100 100" aria-hidden="true">
-              <g class="ml-bubble l"><g transform="rotate(-8 40 58)"><path d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#27CBBB"/></g></g>
-              <g class="ml-bubble r"><g transform="rotate(8 61 42)"><path d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#268691"/></g></g>
-            </svg>
-            <div class="ml-dots"><span></span><span></span><span></span></div>
-          </div></div>
-      <div class="voice-orb" id="voice-orb"><div class="voice-orb-core"></div></div>
-      <div class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</div>
-      <div class="voice-state-label" id="voice-state">Ready</div>
-      <div class="ip-error" id="voice-error" role="alert" style="max-width:520px; margin-left:auto; margin-right:auto; margin-bottom:18px;"><div class="ip-error-title"></div><div class="ip-error-fix"></div><button class="btn btn-secondary ip-error-retry" onclick="retryIpError(this)">Try again</button></div>
+        <div id="voice-loader" style="display:none; height:130px; align-items:center; justify-content:center; margin-bottom:22px;"><div class="mocko-loader" role="status" aria-label="Loading">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g class="ml-bubble l"><g transform="rotate(-8 40 58)"><path d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#27CBBB"/></g></g>
+                <g class="ml-bubble r"><g transform="rotate(8 61 42)"><path d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#268691"/></g></g>
+              </svg>
+              <div class="ml-dots"><span></span><span></span><span></span></div>
+            </div></div>
 
-      <div class="onair-badge" id="voice-rec-indicator" style="display:none; justify-content:center; margin-bottom:14px; color:var(--record);"><div class="dot"></div> Listening</div>
+        <div class="ip-error" id="voice-error" role="alert" style="margin-bottom:18px;"><div class="ip-error-title"></div><div class="ip-error-fix"></div><button class="btn btn-secondary ip-error-retry" onclick="retryIpError(this)">Try again</button></div>
 
-      <button class="mic-btn" id="mic-btn" onclick="toggleMic()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></button>
-      <div class="voice-timer mono" id="voice-timer">00:00</div>
-      <div class="btn-row" id="voice-qa-done-row" style="display:none; margin-top:14px; justify-content:center;">
-        <button class="btn btn-secondary" onclick="finishCandidateQA()">That's all my questions</button>
-      </div>
-
-      <div id="voice-text-fallback" style="display:none; margin-top:20px; text-align:left;">
-        <textarea id="voice-text-input" placeholder="Type your answer here..." style="width:100%; min-height:90px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:14.5px; resize:vertical;"></textarea>
-        <div class="btn-row" style="margin-top:10px;">
-          <button class="btn btn-primary" onclick="submitTextAnswer()">Done →</button>
+        <div class="voice-content" id="voice-content">
+          <div class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</div>
+          <div class="voice-countdown" id="voice-countdown">
+            <div class="voice-countdown-num" id="voice-countdown-num">3</div>
+            <div class="voice-countdown-label">Get ready&hellip;</div>
+          </div>
         </div>
-      </div>
 
-      <details class="pointers" id="voice-notes-card" style="display:none; text-align:left; margin-top:24px;">
-        <summary style="cursor:pointer; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);">Interviewer notes</summary>
-        <ul id="voice-notes-list" style="list-style:none; margin-top:12px;"></ul>
-      </details>
+        <div class="onair-badge" id="voice-rec-indicator" style="display:none; margin-bottom:14px; color:var(--record);"><div class="dot"></div> Listening</div>
 
-      <div class="btn-row" id="voice-retry-row" style="display:none; margin-top:26px;">
-        <button class="btn btn-secondary" onclick="startVoice()">↻ Retry this session</button>
-        <button class="btn btn-primary" onclick="goToVoiceResults()">View evaluation →</button>
+        <div class="voice-control-row">
+          <button class="mic-btn" id="mic-btn" onclick="toggleMic()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></button>
+          <div class="voice-control-mid">
+            <div class="voice-state-label" id="voice-state">Ready</div>
+          </div>
+          <div class="voice-timer mono" id="voice-timer">00:00</div>
+        </div>
+
+        <div class="btn-row" id="voice-qa-done-row" style="display:none; margin-top:14px;">
+          <button class="btn btn-secondary" onclick="finishCandidateQA()">That's all my questions</button>
+        </div>
+
+        <details class="pointers" id="voice-notes-card" style="display:none; text-align:left; margin-top:24px;">
+          <summary style="cursor:pointer; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);">Interviewer notes</summary>
+          <ul id="voice-notes-list" style="list-style:none; margin-top:12px;"></ul>
+        </details>
+
+        <div class="btn-row" id="voice-retry-row" style="display:none; margin-top:26px;">
+          <button class="btn btn-secondary" onclick="startVoice()">↻ Retry this session</button>
+          <button class="btn btn-primary" onclick="goToVoiceResults()">View evaluation →</button>
+        </div>
       </div>
     </div>
   </div>
@@ -5511,10 +5531,10 @@
       ScriptsBlocked: { title: "Mocko didn't finish loading", fix: 'Something on your network or a browser extension (an ad blocker, school or work filter, or VPN) is blocking part of the site. Turn it off for mocko.net or try another network, then reload the page.', noRetry: true },
       NoRecording: { title: 'Nothing was recorded', fix: 'Your browser gave us an empty recording. Try again, and if it keeps happening, switch to Chrome or Safari.' },
       NoAudio: { title: "We couldn't hear anything in your recording", fix: "Make sure your microphone isn't muted, the right one is selected in your browser and system settings, and you're speaking close to it. Then record this question again." },
-      SpeechUnsupported: { title: "Your browser can't listen to spoken answers", fix: 'Type your answer below to keep going, or switch to Chrome, Edge or Safari to answer out loud.', noRetry: true },
-      SpeechNotAllowed: { title: 'Microphone access is blocked', fix: "Click the lock icon in your address bar and set Microphone to Allow, then reload to answer out loud. For now, type your answer below.", noRetry: true },
-      SpeechNoMic: { title: "We can't find a working microphone", fix: 'Plug in or enable a microphone, and check it is selected in your system settings. For now, type your answer below.', noRetry: true },
-      SpeechNetwork: { title: "Your browser's speech service can't be reached", fix: 'Check your internet connection (and turn off any VPN or blocker), or type your answer below.', noRetry: true },
+      SpeechUnsupported: { title: "Your browser can't listen to spoken answers", fix: 'Mock Interview needs to hear you. Switch to the latest Chrome, Edge or Safari, then try again.', noRetry: true },
+      SpeechNotAllowed: { title: 'Microphone access is blocked', fix: "Click the lock icon in your address bar, set Microphone to Allow, then reload the page and try again.", noRetry: true },
+      SpeechNoMic: { title: "We can't find a working microphone", fix: 'Plug in or enable a microphone, check it is selected in your system settings, then try again.', noRetry: true },
+      SpeechNetwork: { title: "Your browser's speech service can't be reached", fix: 'Check your internet connection (and turn off any VPN or blocker), then try again.', noRetry: true },
     };
     if (table[name]) return table[name];
     if (name === 'NotAllowedError' || name === 'PermissionDeniedError' || name === 'SecurityError') {
@@ -6850,19 +6870,12 @@
   let voiceSession = null;
   let voiceRecognizer = null;
   let voiceTimerInterval = null;
+  let countdownInterval = null;
   let cachedVoice;
 
   function setVoiceLoading(on) {
     document.getElementById('voice-loader').style.display = on ? 'flex' : 'none';
-    document.getElementById('voice-orb').style.display = on ? 'none' : '';
-  }
-
-  // Toggles the orb pulse and the avatar's mouth-move animation together --
-  // the single source of truth for whether MockBot is currently speaking.
-  function setAiTalking(on) {
-    document.getElementById('voice-orb').className = on ? 'voice-orb ai-talking' : 'voice-orb';
-    const avatar = document.getElementById('voice-avatar');
-    if (avatar) avatar.classList.toggle('talking', on);
+    document.getElementById('voice-content').style.display = on ? 'none' : '';
   }
 
   function resetVoiceUI() {
@@ -6871,19 +6884,76 @@
     document.getElementById('voice-qa-done-row').style.display = 'none';
     clearIpError('voice-error');
     document.getElementById('mic-btn').style.display = 'inline-flex';
-    document.getElementById('mic-btn').innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
+    document.getElementById('mic-btn').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
     document.getElementById('mic-btn').disabled = false;
     document.getElementById('voice-state').textContent = 'Ready';
-    setAiTalking(false);
     document.getElementById('voice-retry-row').style.display = 'none';
     document.getElementById('voice-rec-indicator').style.display = 'none';
-    document.getElementById('voice-text-fallback').style.display = 'none';
     document.getElementById('voice-notes-card').style.display = 'none';
     document.getElementById('voice-notes-list').innerHTML = '';
     document.getElementById('voice-timer').textContent = '00:00';
+    document.getElementById('voice-caption').classList.remove('is-answer');
+    document.getElementById('voice-content').classList.remove('dimmed');
+    document.getElementById('voice-countdown').style.display = 'none';
     clearInterval(voiceTimerInterval);
+    clearInterval(countdownInterval);
+    countdownInterval = null;
     if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} voiceRecognizer = null; }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+
+  // Renders the left-hand "This session" list and the "Question X of Y"
+  // counter from voiceSession's current state. Deliberately never shows the
+  // text of a question that hasn't been reached yet -- only its number --
+  // so nothing gives away what's coming. Answered questions show their
+  // text back (you already answered it) plus its score.
+  function renderVoiceQuestionList() {
+    const listEl = document.getElementById('voice-qlist-items');
+    const progressEl = document.getElementById('voice-progress');
+    if (!voiceSession || !listEl) { if (listEl) listEl.innerHTML = ''; return; }
+
+    const total = voiceSession.questions.length;
+    const isDone = voiceSession.phase === 'done';
+    const resultByIndex = new Map(voiceSession.results.map((r) => [r.question_index, r]));
+    const lockIcon = '<svg class="lock-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
+
+    let html = '';
+    for (let i = 0; i < total; i++) {
+      const result = resultByIndex.get(i);
+      const isCurrent = !isDone && !voiceSession.inQA && i === voiceSession.currentIndex;
+      if (isCurrent) {
+        html += `<div class="qitem current"><div class="qnum current">${i + 1}</div><div class="qtext">Current question</div></div>`;
+      } else if (result) {
+        const score = result.category_scores
+          ? Object.values(result.category_scores).reduce((a, c) => a + c.score, 0)
+          : (result.mini_score || 0);
+        const text = (result.question_text || '').length > 46 ? result.question_text.slice(0, 46) + '…' : result.question_text;
+        html += `<div class="qitem"><div class="qnum done">&#10003;</div><div class="qtext">${escapeHtml(text)}</div><div class="qscore">${Math.round(score)}</div></div>`;
+      } else {
+        html += `<div class="qitem locked"><div class="qnum">${i + 1}</div><div class="qtext">Question ${i + 1}</div>${lockIcon}</div>`;
+      }
+    }
+
+    if (voiceSession.askQuestions) {
+      const qaGraded = isDone && voiceSession.candidateResult && !voiceSession.candidateResult.error;
+      const qaCurrent = !isDone && voiceSession.inQA;
+      if (qaCurrent) {
+        html += `<div class="qitem qa current"><div class="qnum current">?</div><div class="qtext">Ask your own questions</div></div>`;
+      } else if (qaGraded) {
+        html += `<div class="qitem qa"><div class="qnum done">&#10003;</div><div class="qtext">Ask your own questions</div><div class="qscore">${Math.round(voiceSession.candidateResult.overall_score || 0)}</div></div>`;
+      } else if (isDone) {
+        html += `<div class="qitem qa"><div class="qnum done">&#10003;</div><div class="qtext">Ask your own questions</div></div>`;
+      } else {
+        html += `<div class="qitem qa locked"><div class="qnum">?</div><div class="qtext">Ask your own questions</div>${lockIcon}</div>`;
+      }
+    }
+
+    listEl.innerHTML = html;
+    if (progressEl) {
+      progressEl.textContent = isDone ? 'Session complete'
+        : voiceSession.inQA ? 'Your questions'
+        : `Question ${voiceSession.currentIndex + 1} of ${total}`;
+    }
   }
 
   async function startVoice() {
@@ -6970,6 +7040,7 @@
       askQuestions: document.getElementById('voice-ask-toggle').checked, inQA: false, candidateQuestions: [], candidateResult: null,
     };
     document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (state.type || 'Behavioral');
+    renderVoiceQuestionList();
   }
 
   async function exitVoiceSession() {
@@ -7013,6 +7084,7 @@
       document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (state.type || 'Behavioral');
       document.getElementById('voice-caption').textContent = "Welcome back. Tap the mic to pick up where you left off.";
       document.getElementById('mic-btn').disabled = false;
+      renderVoiceQuestionList();
     } catch (err) {
       console.error(err);
       document.getElementById('voice-caption').textContent = "We couldn't load your saved interview.";
@@ -7129,7 +7201,7 @@
       utter.rate = 0.97;
       utter.pitch = 1.0;
       // Some browsers never fire onend (backgrounded tabs, certain voices),
-      // which would leave the interview stuck on "MockBot is speaking".
+      // which would leave the interview stuck reading the same line forever.
       let advanced = false;
       const advance = (delay) => {
         if (advanced) return;
@@ -7151,12 +7223,12 @@
     const token = ++speechToken;
     const finish = () => {
       if (token !== speechToken) return;
-      setAiTalking(false);
       onDone();
     };
+    document.getElementById('voice-content').classList.remove('dimmed');
+    document.getElementById('voice-caption').classList.remove('is-answer');
     document.getElementById('voice-caption').textContent = text;
-    setAiTalking(true);
-    document.getElementById('voice-state').textContent = 'MockBot is speaking';
+    document.getElementById('voice-state').textContent = 'Reading…';
     speakViaAiVoice(text, token).then((result) => {
       if (result === 'superseded' || token !== speechToken) return;
       if (result === 'done') { finish(); return; }
@@ -7169,7 +7241,37 @@
     const q = voiceSession.questions[voiceSession.currentIndex];
     const prefix = voiceSession.pendingTransitionLine ? voiceSession.pendingTransitionLine + ' ' : '';
     voiceSession.pendingTransitionLine = null;
-    speakText(prefix + q.text, enterListenState);
+    renderVoiceQuestionList();
+    speakText(prefix + q.text, beginCountdownThenListen);
+  }
+
+  // A short "get ready" beat between MockBot finishing a line and the mic
+  // opening -- gives you a moment to collect your answer instead of being
+  // dropped straight from listening-to-you-read into listening-for-you.
+  const COUNTDOWN_SECONDS = 3;
+  function beginCountdownThenListen() {
+    if (!voiceSession) return;
+    voiceSession.phase = 'countdown';
+    document.getElementById('voice-state').textContent = 'Get ready…';
+    document.getElementById('voice-content').classList.add('dimmed');
+    const numEl = document.getElementById('voice-countdown-num');
+    const countdownEl = document.getElementById('voice-countdown');
+    let n = COUNTDOWN_SECONDS;
+    numEl.textContent = n;
+    countdownEl.style.display = 'flex';
+    clearInterval(countdownInterval);
+    countdownInterval = setInterval(() => {
+      n--;
+      if (n <= 0) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+        countdownEl.style.display = 'none';
+        document.getElementById('voice-content').classList.remove('dimmed');
+        enterListenState();
+        return;
+      }
+      numEl.textContent = n;
+    }, 1000);
   }
 
   function enterListenState() {
@@ -7186,25 +7288,26 @@
       document.getElementById('voice-timer').textContent = String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
     }, 1000);
 
+    document.getElementById('voice-caption').classList.add('is-answer');
+    document.getElementById('voice-caption').textContent = 'Listening...';
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (voiceSession.sttAvailable && SR) {
-      document.getElementById('voice-caption').textContent = 'Listening...';
       document.getElementById('voice-rec-indicator').style.display = 'flex';
-      document.getElementById('voice-text-fallback').style.display = 'none';
       document.getElementById('mic-btn').style.display = 'inline-flex';
-      document.getElementById('mic-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>';
+      document.getElementById('mic-btn').innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="white" stroke="none"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>';
       startRecognition(SR);
     } else {
-      document.getElementById('voice-caption').textContent = voiceSession.inQA ? 'Type your question below.' : 'Type your answer below.';
-      document.getElementById('voice-state').textContent = voiceSession.inQA ? 'Your turn, type a question' : 'Your turn, type your answer';
-      if (!SR && !voiceSession.sttNotified) {
+      // No typed fallback: this mode is spoken-answer only, so a browser
+      // that can't listen simply can't run it -- tell them plainly and
+      // point at browsers that can, rather than silently degrading.
+      document.getElementById('voice-state').textContent = "Can't listen in this browser";
+      if (!voiceSession.sttNotified) {
         voiceSession.sttNotified = true;
         showIpError('voice-error', { name: 'SpeechUnsupported' });
       }
       document.getElementById('voice-rec-indicator').style.display = 'none';
       document.getElementById('mic-btn').style.display = 'none';
-      document.getElementById('voice-text-fallback').style.display = 'block';
-      document.getElementById('voice-text-input').value = '';
+      clearInterval(voiceTimerInterval);
     }
   }
 
@@ -7259,15 +7362,6 @@
     document.getElementById('mic-btn').style.display = 'none';
     const durationSec = Math.max(1, Math.round((Date.now() - voiceSession.questionStartTs) / 1000));
     processAnswer(voiceSession.transcriptBuffer.trim(), durationSec);
-  }
-
-  function submitTextAnswer() {
-    if (!voiceSession || voiceSession.phase !== 'listening') return;
-    const text = document.getElementById('voice-text-input').value.trim();
-    clearInterval(voiceTimerInterval);
-    document.getElementById('voice-text-fallback').style.display = 'none';
-    const durationSec = Math.max(1, Math.round((Date.now() - voiceSession.questionStartTs) / 1000));
-    processAnswer(text, durationSec);
   }
 
   function appendNote(questionText, note) {
@@ -7336,7 +7430,7 @@
     const bank = q.follow_up_bank || [];
     const line = bank[Math.floor(Math.random() * bank.length)];
     voiceSession.phase = 'asking';
-    speakText(line, enterListenState);
+    speakText(line, beginCountdownThenListen);
   }
 
   async function finishQuestionAndAdvance() {
@@ -7415,7 +7509,8 @@
     voiceSession.candidateQuestions = [];
     voiceSession.phase = 'asking';
     document.getElementById('voice-qa-done-row').style.display = 'flex';
-    speakText("That's everything from me. Now it's your turn. What questions do you have for me?", enterListenState);
+    renderVoiceQuestionList();
+    speakText("That's everything from me. Now it's your turn. What questions do you have for me?", beginCountdownThenListen);
   }
 
   async function handleCandidateQuestion(transcript) {
@@ -7423,7 +7518,7 @@
     clearIpError('voice-error');
     if (!text) {
       voiceSession.phase = 'asking';
-      speakText("Sorry, I didn't catch a question there. Go ahead whenever you're ready, or tap that's all if you're set.", enterListenState);
+      speakText("Sorry, I didn't catch a question there. Go ahead whenever you're ready, or tap that's all if you're set.", beginCountdownThenListen);
       return;
     }
     if (text.split(/\s+/).length <= 8 && QA_DONE_PATTERN.test(text)) {
@@ -7432,7 +7527,7 @@
     }
 
     voiceSession.phase = 'thinking';
-    document.getElementById('voice-state').textContent = 'MockBot is thinking';
+    document.getElementById('voice-state').textContent = 'Thinking…';
     document.getElementById('voice-caption').textContent = 'Thinking...';
     setVoiceLoading(true);
     let replyText;
@@ -7447,7 +7542,7 @@
 
     voiceSession.phase = 'asking';
     if (voiceSession.candidateQuestions.length < MAX_CANDIDATE_QUESTIONS) {
-      speakText(replyText + ' Any other questions?', enterListenState);
+      speakText(replyText + ' Any other questions?', beginCountdownThenListen);
     } else {
       speakText(replyText + " I think that's all the time we have.", () => finishCandidateQA());
     }
@@ -7463,8 +7558,6 @@
     document.getElementById('voice-qa-done-row').style.display = 'none';
     document.getElementById('voice-rec-indicator').style.display = 'none';
     document.getElementById('mic-btn').style.display = 'none';
-    document.getElementById('voice-text-fallback').style.display = 'none';
-    setAiTalking(false);
 
     const asked = voiceSession.candidateQuestions;
     if (!asked.length) {
@@ -7529,13 +7622,14 @@
   async function finishVoiceSession() {
     voiceSession.phase = 'done';
     setVoiceLoading(false);
-    setAiTalking(false);
+    document.getElementById('voice-content').classList.remove('dimmed');
+    document.getElementById('voice-caption').classList.remove('is-answer');
     document.getElementById('voice-caption').textContent = "That's a wrap, nice work.";
     document.getElementById('voice-state').textContent = 'Session complete';
     document.getElementById('mic-btn').style.display = 'none';
-    document.getElementById('voice-text-fallback').style.display = 'none';
     clearInterval(voiceTimerInterval);
     await computeAndPersistAggregate();
+    renderVoiceQuestionList();
     document.getElementById('voice-retry-row').style.display = 'flex';
   }
 
@@ -7624,6 +7718,7 @@
     resetVoiceUI();
     document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (voiceSession.format || 'Behavioral');
     document.getElementById('voice-caption').textContent = "Tap the mic to retry this question.";
+    renderVoiceQuestionList();
   }
 
   // Drills
