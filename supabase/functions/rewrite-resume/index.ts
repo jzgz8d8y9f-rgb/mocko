@@ -82,7 +82,7 @@ ${resumeText.slice(0, 12000)}
 
 First, score how well the ORIGINAL (untailored) resume matches this specific job, 0-100, and explain why in 3 short dimensions. Then produce 2-5 specific edits: for each, quote the exact original phrase and give its tailored replacement plus a one-sentence reason. Then produce the full tailored resume text with those edits applied in place, nothing else changed.
 
-Never use an em dash (the "—" character) anywhere in your response, including inside the tailored resume text. Use a period, comma, or colon instead.
+Use simple, direct, professional language. No slang, jokes, or dramatic wording. Never use an em dash (the "—" character) anywhere in your response, including inside the tailored resume text. Use a period, comma, or colon instead.
 
 Respond with ONLY compact, single-line valid JSON (no markdown fences, no line breaks or indentation inside the JSON, no commentary) matching this exact shape:
 {

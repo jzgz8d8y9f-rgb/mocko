@@ -67,7 +67,7 @@ async function callClaude(prompt: string, maxTokens: number) {
   return block.text as string;
 }
 
-const GRADE_PROMPT = (resumeText: string) => `You are a blunt, harsh resume critic for a career-prep app. Grade the resume below the way an unimpressed recruiter doing a 6-second scan would, not the way a supportive career coach would. Real, standard resume rules to grade against:
+const GRADE_PROMPT = (resumeText: string) => `You are a strict resume reviewer for a career-prep app. Grade the resume below the way a recruiter doing a quick scan would. Be honest and strict, but use simple, direct, professional language. Do not use jokes, slang, sarcasm, metaphors, or dramatic wording. Standard resume rules to grade against:
 
 - One page is expected for someone applying to a new role.
 - No objective statement and no summary/profile section are needed or expected. A resume is its own summary. Do NOT suggest adding one, and do NOT grade a "Summary" or "Objective" section even if present, just ignore it entirely, positively or negatively.
@@ -79,17 +79,17 @@ const GRADE_PROMPT = (resumeText: string) => `You are a blunt, harsh resume crit
 - Formatting (dates, punctuation, tense) must be internally consistent.
 - Experience within each section should be in reverse chronological order.
 
-Grade ONLY the sections this resume actually has (e.g. if there's no "Skills" section, do not invent a Skills category). Weight the categories you do grade so they sum to exactly 100. Assign each a harsh letter grade (F through A; do not grade generously) and a specific, critical one-sentence comment.
+Grade ONLY the sections this resume actually has (e.g. if there's no "Skills" section, do not invent a Skills category). Weight the categories you do grade so they sum to exactly 100. Assign each a letter grade (F through A; do not grade generously) and a specific one-sentence comment in plain language.
 
-Flags: find 4 to 7 specific, concrete problems. Each flag must quote a short exact phrase from the resume text below (verbatim, a few words) and explain harshly but usefully what's wrong with it.
+Flags: find 4 to 7 specific, concrete problems. Each flag must quote a short exact phrase from the resume text below (verbatim, a few words) and explain plainly what is wrong with it and why it matters.
 
-Never use an em dash (the "—" character) anywhere in your response. Use a period, comma, or colon instead.
+Never use an em dash (the "—" character) anywhere in your response. Use a period, comma, or colon instead. Keep every sentence short and simple.
 
 Respond with ONLY compact, single-line valid JSON (no markdown fences, no line breaks or indentation inside the JSON, no commentary) matching this exact shape:
 {
   "overallScore": <integer 0-100, the weighted sum of your category scores>,
-  "categories": [{"name": "<section name>", "weight": <integer, all weights sum to 100>, "score": <integer 0 to weight>, "grade": "<letter grade>", "comment": "<one harsh, specific sentence>"}],
-  "flags": [{"quote": "<short exact phrase from the resume>", "comment": "<harsh, specific explanation>"}],
+  "categories": [{"name": "<section name>", "weight": <integer, all weights sum to 100>, "score": <integer 0 to weight>, "grade": "<letter grade>", "comment": "<one plain, specific sentence>"}],
+  "flags": [{"quote": "<short exact phrase from the resume>", "comment": "<plain, specific explanation, one or two short sentences>"}],
   "goodPoints": [<1-3 short strings, only genuinely earned praise, it's fine if this list is short>],
   "suggestions": [<3-5 short, imperative, actionable strings, concrete next steps>]
 }
