@@ -481,6 +481,7 @@
   @media (max-width: 620px) { .rl-action-grid { grid-template-columns: 1fr; } }
   .rl-flag { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 50%; background: var(--record); color: #fff; font-size: 10px; font-weight: 700; margin-left: 4px; flex-shrink: 0; vertical-align: middle; }
   .rl-edit-badge { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: var(--tag-communication); color: #fff; font-size: 9.5px; font-weight: 700; margin-left: 4px; flex-shrink: 0; vertical-align: middle; }
+  .rl-mark { background: rgba(230,57,70,0.2); border-bottom: 2px solid var(--record); border-radius: 2px; }
   .rl-legend-item { display: flex; gap: 10px; font-size: 13.5px; line-height: 1.55; margin-bottom: 10px; }
   .rl-legend-item:last-child { margin-bottom: 0; }
   .rl-legend-item .rl-flag, .rl-legend-item .rl-edit-badge { margin-left: 0; margin-top: 2px; }
@@ -3029,13 +3030,13 @@
   <div class="screen" id="screen-resume">
     <div class="step-label">Resume Lab</div>
     <div class="hero">
-      <h1 class="display">Sharpen your resume, tailor your pitch</h1>
+      <h1 class="display">Improve your resume</h1>
       <p>Get a scored breakdown of a resume, or generate a cover letter tailored to a specific job, using the resumes you already uploaded.</p>
     </div>
     <div class="rl-action-grid">
       <div class="action-card" onclick="switchTab('resume-grade-setup')">
         <h4>Grade this resume</h4>
-        <p>Graded harshly, section by section, marked up right on your resume. No participation trophies.</p>
+        <p>Get a strict score for each section. Problems are numbered on your resume so you can see where they are.</p>
         <div class="go">Grade &rarr;</div>
       </div>
       <div class="action-card" onclick="switchTab('resume-rewrite-setup')">
@@ -3065,7 +3066,7 @@
         <select class="rl-select" id="grade-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px;"></select>
         <label class="btn btn-secondary" style="display:inline-block; margin-top:10px; cursor:pointer;">+ Upload new resume<input type="file" accept=".pdf" style="display:none;" onchange="handleResumeLabUpload(event, 'grade-resume-select')"></label>
       </div>
-      <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6; margin:0 0 22px;">Scores impact and quantification, clarity, and formatting/ATS details. We'll mark up specific phrases so you see exactly where. Want it scored against a specific job instead? Use <a href="#" onclick="event.preventDefault(); switchTab('resume-rewrite-setup')" style="color:var(--tag-communication); text-decoration:underline;">Rewrite for a role</a>.</p>
+      <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6; margin:0 0 22px;">Scores each section of your resume and marks each problem with a number on your resume. Want it scored against a specific job instead? Use <a href="#" onclick="event.preventDefault(); switchTab('resume-rewrite-setup')" style="color:var(--tag-communication); text-decoration:underline;">Rewrite for a role</a>.</p>
       <div id="grade-setup-error" class="auth-error" style="min-height:0; margin-bottom:10px;"></div>
       <button class="btn btn-primary" id="grade-resume-btn" style="width:100%;" onclick="startResumeGrade()">Grade resume &rarr;</button>
     </div>
@@ -5374,7 +5375,9 @@
     btn.textContent = 'Grading...';
     try {
       const review = await MockoResumeLab.gradeResume(resumeId);
-      renderResumeGrade(review);
+      const resumes = await MockoResume.listResumes();
+      const graded = resumes.find((r) => r.id === resumeId);
+      renderResumeGrade(review, graded ? graded.extracted_text : '');
       switchTab('resume-grade-result');
     } catch (err) {
       console.error(err);
@@ -5387,7 +5390,34 @@
 
   let lastGradeReview = null;
 
-  function renderResumeGrade(review) {
+  // Builds the resume text with each flagged phrase highlighted and numbered
+  // to match the "What we flagged" list.
+  function buildMarkedUpResume(text, flags) {
+    const clean = (text || '').replace(/[ \t]+/g, ' ').replace(/ ?\n ?/g, '\n').trim();
+    const found = [];
+    (flags || []).forEach((f, i) => {
+      const words = String(f.quote || '').trim().split(/\s+/).filter(Boolean);
+      if (!words.length) return;
+      const re = new RegExp(words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+'), 'i');
+      const m = re.exec(clean);
+      if (!m) return;
+      const start = m.index, end = m.index + m[0].length;
+      if (found.some((x) => start < x.end && end > x.start)) return;
+      found.push({ start, end, n: i + 1 });
+    });
+    found.sort((a, b) => a.start - b.start);
+    let html = '';
+    let pos = 0;
+    found.forEach((x) => {
+      html += escapeHtml(clean.slice(pos, x.start));
+      html += `<mark class="rl-mark">${escapeHtml(clean.slice(x.start, x.end))}</mark><span class="rl-flag">${x.n}</span>`;
+      pos = x.end;
+    });
+    html += escapeHtml(clean.slice(pos));
+    return html;
+  }
+
+  function renderResumeGrade(review, resumeText) {
     lastGradeReview = review;
     const score = Math.round(review.overall_score);
     const scoreColor = score < 60 ? 'var(--record)' : score < 80 ? 'var(--warn)' : 'var(--good)';
@@ -5414,15 +5444,18 @@
       <div class="overall-score">
         <div class="num" style="color:${scoreColor};">${score}<span class="of100" style="font-size:22px;">/100</span></div>
         <div class="label">Overall Score</div>
-        ${score < 60 ? '<div style="font-size:13px; color:var(--record); margin-top:10px; font-weight:600;">This would not survive a first-round screen. Graded harshly, on purpose.</div>' : ''}
+        ${score < 60 ? '<div style="font-size:13px; color:var(--record); margin-top:10px; font-weight:600;">This score is low. Many employers would pass on this resume.</div>' : ''}
       </div>
       <div class="cat-row-name" style="display:block; margin-bottom:14px;">Grade by section</div>
       ${catHtml}
+      ${resumeText ? `<div class="cat-row-name" style="display:block; margin:30px 0 6px;">Your resume</div>
+      <div style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">Each number marks a problem. The numbers match the list below.</div>
+      <div class="rl-resume-doc">${buildMarkedUpResume(resumeText, review.flags)}</div>` : ''}
       <div class="pointers work" style="margin-top:30px;">
-        <h4 style="color:var(--record);">What we flagged</h4>
+        <h4 style="color:var(--record);">Problems found</h4>
         ${flagsHtml || '<p style="font-size:13.5px; color:var(--text-muted);">Nothing specific flagged.</p>'}
       </div>
-      ${goodHtml ? `<div class="pointers good"><h4>What's working</h4><ul>${goodHtml}</ul></div>` : ''}
+      ${goodHtml ? `<div class="pointers good"><h4>What is good</h4><ul>${goodHtml}</ul></div>` : ''}
       <div class="pointers" style="margin-bottom:28px;">
         <h4 style="color:var(--tag-communication);">Suggestions</h4>
         <ul>${suggestionsHtml}</ul>

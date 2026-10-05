@@ -11,7 +11,18 @@ async function extractPdfText(file) {
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      text += content.items.map((it) => it.str).join(' ') + '\n';
+      let lastY = null;
+      let line = '';
+      for (const it of content.items) {
+        const y = it.transform ? Math.round(it.transform[5]) : null;
+        if (lastY !== null && y !== null && Math.abs(y - lastY) > 2) {
+          text += line.trim() + '\n';
+          line = '';
+        }
+        line += it.str + ' ';
+        if (y !== null) lastY = y;
+      }
+      text += line.trim() + '\n\n';
     }
     return text.trim();
   } catch (err) {

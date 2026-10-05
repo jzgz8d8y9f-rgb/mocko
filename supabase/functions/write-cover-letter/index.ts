@@ -71,7 +71,7 @@ Resume:
 ${resumeText.slice(0, 12000)}
 """
 ${additionalInfo ? `\nAdditional context the applicant wants included: "${additionalInfo}"\n` : ""}
-Target length: approximately ${targetWords} words. Professional tone, no cliches like "I am writing to express my interest", get to something concrete in the first sentence. Never use an em dash (the "—" character) anywhere in the letter. Use a period, comma, or colon instead.
+Target length: approximately ${targetWords} words. Professional tone, no cliches like "I am writing to express my interest", get to something concrete in the first sentence. Use simple, direct, professional language. No slang, jokes, or dramatic wording. Never use an em dash (the "—" character) anywhere in the letter. Use a period, comma, or colon instead.
 
 Respond with ONLY the letter text itself (starting with "Dear ..." and ending with a signoff and the applicant's name from the resume). No markdown, no commentary, no JSON.`;
 
