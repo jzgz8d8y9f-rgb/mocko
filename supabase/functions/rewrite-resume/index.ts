@@ -57,6 +57,7 @@ async function callClaude(prompt: string, maxTokens: number) {
     body: JSON.stringify({
       model: "claude-sonnet-5",
       max_tokens: maxTokens,
+      thinking: { type: "disabled" },
       messages: [{ role: "user", content: prompt }],
     }),
   });
@@ -80,9 +81,13 @@ Original resume text:
 ${resumeText.slice(0, 12000)}
 """
 
-First, score how well the ORIGINAL (untailored) resume matches this specific job, 0-100, and explain why in 3 short dimensions. Then produce 2-5 specific edits: for each, quote the exact original phrase and give its tailored replacement plus a one-sentence reason. Then produce the full tailored resume text with those edits applied in place, nothing else changed.
+First, score how well the ORIGINAL (untailored) resume matches this specific job, 0-100, and explain why in 3 short dimensions. Then produce 3 to 6 specific edits. The edits will be applied directly inside the original Word file, so these rules are strict:
+- "original" must be copied exactly, character for character, from the resume text, and must come from ONE single line (never span two lines or bullets).
+- "tailored" must NOT be longer than "original" (same number of characters or fewer), so no line wraps onto a new line and the page count does not change.
+- Reword only. Keep every number, name, date and fact. Only use a word from the job description if it truthfully describes what the original line already says. Do not add new activities, claims or skills. If a line cannot be improved honestly, leave it out of the edits.
+- Do not edit names, contact details, dates, job titles, school names, or section headings.
 
-Use simple, direct, professional language. No slang, jokes, or dramatic wording. Never use an em dash (the "—" character) anywhere in your response, including inside the tailored resume text. Use a period, comma, or colon instead.
+Use simple, direct, professional language. No slang, jokes, or dramatic wording. Never use an em dash (the "—" character) anywhere in your response. Use a period, comma, or colon instead.
 
 Respond with ONLY compact, single-line valid JSON (no markdown fences, no line breaks or indentation inside the JSON, no commentary) matching this exact shape:
 {
@@ -92,8 +97,7 @@ Respond with ONLY compact, single-line valid JSON (no markdown fences, no line b
     {"label": "Experience framing", "verdict": "Weak"|"Partial"|"Good", "detail": "<one sentence>"},
     {"label": "Seniority and scope", "verdict": "Weak"|"Partial"|"Good", "detail": "<one sentence>"}
   ],
-  "edits": [{"original": "<exact quoted original phrase>", "tailored": "<rewritten phrase>", "comment": "<why this helps for this job>"}],
-  "tailoredResumeText": "<the full resume text with those edits applied, formatting/line breaks preserved as plain text>"
+  "edits": [{"original": "<exact text from one line of the resume>", "tailored": "<rewritten text, not longer than original>", "comment": "<one plain sentence on why this helps for this job>"}]
 }`;
 
 Deno.serve(async (req) => {
@@ -126,11 +130,18 @@ Deno.serve(async (req) => {
       .single();
     if (resumeErr || !resume) throw new Error(`Could not load resume: ${resumeErr?.message}`);
     if (!resume.extracted_text || resume.extracted_text.trim().length < 40) {
-      throw new Error("Couldn't read text from this resume. Try re-uploading it as a text-based (not scanned-image) PDF.");
+      throw new Error("Couldn't read text from this resume. Try re-uploading it as a text-based (not scanned-image) file.");
     }
 
     const result = extractJson(
-      await callClaude(REWRITE_PROMPT(resume.extracted_text, jobTitle, company || "", jobDescription), 6000),
+      await callClaude(REWRITE_PROMPT(resume.extracted_text, jobTitle, company || "", jobDescription), 3000),
+    );
+
+    // Safety net: only keep edits that are safe to apply in place.
+    result.edits = (Array.isArray(result.edits) ? result.edits : []).filter(
+      (e: { original?: string; tailored?: string }) =>
+        e && e.original && e.tailored && e.tailored.trim() !== e.original.trim() &&
+        e.tailored.length <= e.original.length && !e.tailored.includes("\u2014"),
     );
 
     return new Response(JSON.stringify(result), {

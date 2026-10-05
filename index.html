@@ -481,6 +481,9 @@
   @media (max-width: 620px) { .rl-action-grid { grid-template-columns: 1fr; } }
   .rl-flag { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 50%; background: var(--record); color: #fff; font-size: 10px; font-weight: 700; margin-left: 4px; flex-shrink: 0; vertical-align: middle; }
   .rl-edit-badge { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: var(--tag-communication); color: #fff; font-size: 9.5px; font-weight: 700; margin-left: 4px; flex-shrink: 0; vertical-align: middle; }
+  #rl-docx-preview { background: #fff; border-radius: 10px; overflow-x: auto; margin-bottom: 14px; }
+  #rl-docx-preview .docx-wrapper { background: transparent; padding: 0; }
+  #rl-docx-preview .docx-wrapper > section.docx { box-shadow: none; margin: 0 auto; }
   .rl-mark { background: rgba(230,57,70,0.2); border-bottom: 2px solid var(--record); border-radius: 2px; }
   .rl-legend-item { display: flex; gap: 10px; font-size: 13.5px; line-height: 1.55; margin-bottom: 10px; }
   .rl-legend-item:last-child { margin-bottom: 0; }
@@ -3064,7 +3067,7 @@
       <div class="select-group">
         <div class="select-group-label">Grading</div>
         <select class="rl-select" id="grade-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px;"></select>
-        <label class="btn btn-secondary" style="display:inline-block; margin-top:10px; cursor:pointer;">+ Upload new resume<input type="file" accept=".pdf" style="display:none;" onchange="handleResumeLabUpload(event, 'grade-resume-select')"></label>
+        <label class="btn btn-secondary" style="display:inline-block; margin-top:10px; cursor:pointer;">+ Upload new resume<input type="file" accept=".pdf,.docx" style="display:none;" onchange="handleResumeLabUpload(event, 'grade-resume-select')"></label>
       </div>
       <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6; margin:0 0 22px;">Scores each section of your resume and marks each problem with a number on your resume. Want it scored against a specific job instead? Use <a href="#" onclick="event.preventDefault(); switchTab('resume-rewrite-setup')" style="color:var(--tag-communication); text-decoration:underline;">Rewrite for a role</a>.</p>
       <div id="grade-setup-error" class="auth-error" style="min-height:0; margin-bottom:10px;"></div>
@@ -3088,7 +3091,8 @@
       <div class="select-group">
         <div class="select-group-label">Using resume</div>
         <select id="rewrite-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:10px;"></select>
-        <label class="btn btn-secondary" style="display:inline-block; margin-bottom:16px; cursor:pointer;">+ Upload new resume<input type="file" accept=".pdf" style="display:none;" onchange="handleResumeLabUpload(event, 'rewrite-resume-select')"></label>
+        <label class="btn btn-secondary" style="display:inline-block; margin-bottom:16px; cursor:pointer;">+ Upload Word resume (.docx)<input type="file" accept=".docx" style="display:none;" onchange="handleResumeLabUpload(event, 'rewrite-resume-select')"></label>
+        <div style="font-size:12.5px; color:var(--text-muted); line-height:1.5; margin:-6px 0 16px;">Rewriting needs a Word (.docx) file so your layout stays exactly the same. PDF resumes can still be graded and used for cover letters.</div>
         <div class="select-group-label">Job title</div>
         <input type="text" id="rewrite-job-title" placeholder="e.g. Investment Banking Analyst" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;">
         <div class="select-group-label">Company</div>
@@ -3116,7 +3120,7 @@
       <div class="select-group">
         <div class="select-group-label">Using resume</div>
         <select id="cl-resume-select" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:10px;"></select>
-        <label class="btn btn-secondary" style="display:inline-block; margin-bottom:16px; cursor:pointer;">+ Upload new resume<input type="file" accept=".pdf" style="display:none;" onchange="handleResumeLabUpload(event, 'cl-resume-select')"></label>
+        <label class="btn btn-secondary" style="display:inline-block; margin-bottom:16px; cursor:pointer;">+ Upload new resume<input type="file" accept=".pdf,.docx" style="display:none;" onchange="handleResumeLabUpload(event, 'cl-resume-select')"></label>
         <div class="select-group-label">Job title</div>
         <input type="text" id="cl-job-title" placeholder="e.g. Investment Banking Analyst" style="width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 13px; color:var(--text); font-family:'Work Sans'; font-size:14px; margin-bottom:16px;">
         <div class="select-group-label">Company</div>
@@ -5298,8 +5302,10 @@
     const file = event.target.files[0];
     event.target.value = '';
     if (!file) return;
-    if (file.type !== 'application/pdf') {
-      alert('Please upload a PDF for now.');
+    const docx = MockoResume.isDocx(file);
+    const pdf = file.type === 'application/pdf';
+    if (targetSelectId === 'rewrite-resume-select' ? !docx : !(docx || pdf)) {
+      alert(targetSelectId === 'rewrite-resume-select' ? 'Please upload a Word (.docx) file.' : 'Please upload a PDF or Word (.docx) file.');
       return;
     }
     openResumeUploadModal(file, 'resumelab:' + targetSelectId);
@@ -5311,14 +5317,19 @@
     'cl-resume-select': 'cl-generate-btn',
   };
 
+  const RESUME_SELECT_FILTER = { 'rewrite-resume-select': (r) => /\.docx$/i.test(r.storage_path) };
+
   async function populateResumeSelect(selectId, preferId) {
     const select = document.getElementById(selectId);
     const actionBtn = document.getElementById(RESUME_LAB_ACTION_BTN[selectId]);
     select.innerHTML = '<option>Loading...</option>';
     try {
-      const resumes = await MockoResume.listResumes();
+      let resumes = await MockoResume.listResumes();
+      if (RESUME_SELECT_FILTER[selectId]) resumes = resumes.filter(RESUME_SELECT_FILTER[selectId]);
       if (resumes.length === 0) {
-        select.innerHTML = '<option value="">No resumes yet, upload one below</option>';
+        select.innerHTML = RESUME_SELECT_FILTER[selectId]
+          ? '<option value="">No Word resumes yet, upload one below</option>'
+          : '<option value="">No resumes yet, upload one below</option>';
         select.disabled = true;
         if (actionBtn) actionBtn.disabled = true;
         return;
@@ -5503,9 +5514,19 @@
     btn.disabled = true;
     btn.textContent = 'Tailoring...';
     try {
+      const resumes = await MockoResume.listResumes();
+      const resume = resumes.find((r) => r.id === resumeId);
+      if (!resume || !MockoResume.isDocx(resume.storage_path)) {
+        throw new Error('Rewriting needs a Word (.docx) resume. Upload one below.');
+      }
       const result = await MockoResumeLab.rewriteResume({ resumeId, jobTitle, company, jobDescription });
-      renderResumeRewrite(result, jobTitle, company);
+      const original = await MockoResumeLab.downloadResumeFile(resume.storage_path);
+      const edits = result.edits || [];
+      const preview = await MockoResumeLab.applyDocxEdits(original, edits, true);
+      const clean = await MockoResumeLab.applyDocxEdits(original, edits, false);
+      renderResumeRewrite(result, jobTitle, company, resume.label, preview, clean);
       switchTab('resume-rewrite-result');
+      await MockoResumeLab.renderDocxPreview(preview.blob, document.getElementById('rl-docx-preview'));
     } catch (err) {
       console.error(err);
       errorEl.textContent = err.message || 'Could not tailor this resume.';
@@ -5515,15 +5536,16 @@
     }
   }
 
-  function renderResumeRewrite(result, jobTitle, company) {
-    lastRewriteResult = result;
+  function renderResumeRewrite(result, jobTitle, company, resumeLabel, preview, clean) {
+    lastRewriteResult = { result, resumeLabel, cleanBlob: clean.blob };
     const score = Math.round(result.matchScoreBefore);
     const scoreColor = score < 60 ? 'var(--record)' : score < 80 ? 'var(--warn)' : 'var(--good)';
     const reasonsHtml = (result.matchReasons || []).map((r) =>
       `<div style="margin-bottom:6px;"><span style="font-size:12px; font-weight:700; color:${r.verdict === 'Good' ? 'var(--good)' : 'var(--warn)'};">${escapeHtml(r.label)}: ${escapeHtml(r.verdict)}.</span> <span style="font-size:12.5px; color:var(--text-muted);">${escapeHtml(r.detail)}</span></div>`
     ).join('');
-    const editsHtml = (result.edits || []).map((e, i) =>
-      `<div class="rl-legend-item"><span class="rl-edit-badge">${i + 1}</span><span><i>"${escapeHtml(e.original)}"</i> &rarr; "${escapeHtml(e.tailored)}". ${escapeHtml(e.comment)}</span></div>`
+    const edits = result.edits || [];
+    const editsHtml = edits.map((e, i) =>
+      `<div class="rl-legend-item"><span class="rl-edit-badge">${i + 1}</span><span><i>"${escapeHtml(e.original)}"</i> &rarr; "${escapeHtml(e.tailored)}". ${escapeHtml(e.comment)}${preview.applied[i] ? '' : ' <b>(Could not be placed in the file, so it was not applied.)</b>'}</span></div>`
     ).join('');
 
     document.getElementById('rl-rewrite-result').innerHTML = `
@@ -5533,29 +5555,43 @@
         <div><div class="num" style="color:${scoreColor};">${score}<span style="font-size:15px; color:var(--text-muted); font-weight:400;">/100</span></div><div style="font-size:10.5px; color:var(--text-muted); letter-spacing:0.05em; text-transform:uppercase; margin-top:4px; text-align:center;">Role Fit, before</div></div>
         <div style="flex-grow:1;">${reasonsHtml}</div>
       </div>
-      <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-muted); margin-bottom:22px;">Format preserved. Same one-page layout as the original, only wording changed.</div>
+      <div style="font-size:12.5px; color:var(--text-muted); margin-bottom:22px;">Your layout is unchanged. Only the words listed below were replaced inside your original Word file.</div>
       <div class="pointers" style="margin-bottom:22px;">
         <h4 style="color:var(--tag-communication);">Suggestions</h4>
-        ${editsHtml}
-        <div style="font-size:12px; color:var(--text-muted); margin-top:14px; padding-top:14px; border-top:1px solid var(--line);">Nothing was invented. Every claim and number above is from your original resume, only reworded.</div>
+        ${editsHtml || '<p style="font-size:13.5px; color:var(--text-muted);">No safe edits were found for this job.</p>'}
+        <div style="font-size:12px; color:var(--text-muted); margin-top:14px; padding-top:14px; border-top:1px solid var(--line);">Nothing was invented. Every fact and number comes from your original resume.</div>
       </div>
-      <div style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">The tailored resume below is clean text, ready to copy or download, no markup included.</div>
-      <div class="rl-resume-doc" style="margin-bottom:14px;">${escapeHtml(result.tailoredResumeText)}</div>
+      <div style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">Your resume with the changes highlighted and numbered. The download below has no highlights.</div>
+      <div id="rl-docx-preview"><p style="padding:20px; color:#555;">Loading preview...</p></div>
       <div class="btn-row" style="justify-content:flex-end; flex-wrap:wrap;">
-        <button class="btn btn-secondary" onclick="copyRewrittenResume()">Copy text</button>
-        <button class="btn btn-primary" onclick="downloadRewrittenResume()">Download resume →</button>
+        <button class="btn btn-secondary" onclick="downloadRewriteSuggestions()">Download suggestions</button>
+        <button class="btn btn-primary" onclick="downloadRewrittenResume()">Download resume (.docx) &rarr;</button>
       </div>
     `;
   }
 
   let lastRewriteResult = null;
 
-  function copyRewrittenResume() {
-    if (lastRewriteResult) navigator.clipboard.writeText(lastRewriteResult.tailoredResumeText);
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   function downloadRewrittenResume() {
-    if (lastRewriteResult) triggerTextDownload(lastRewriteResult.tailoredResumeText, 'tailored-resume.txt');
+    if (!lastRewriteResult) return;
+    const base = (lastRewriteResult.resumeLabel || 'resume').replace(/[^\w\- ]+/g, '').trim() || 'resume';
+    downloadBlob(lastRewriteResult.cleanBlob, `${base} (tailored).docx`);
+  }
+
+  function downloadRewriteSuggestions() {
+    if (!lastRewriteResult) return;
+    const lines = [`Role fit before tailoring: ${Math.round(lastRewriteResult.result.matchScoreBefore)}/100`, ''];
+    (lastRewriteResult.result.edits || []).forEach((e, i) => lines.push(`${i + 1}. "${e.original}" to "${e.tailored}". ${e.comment}`));
+    triggerTextDownload(lines.join('\n'), 'resume-suggestions.txt');
   }
 
   let coverLetterLength = 'recommended';
@@ -6779,7 +6815,7 @@
     pendingResumeUploadFile = file;
     pendingResumeUploadContext = context;
     document.getElementById('resume-upload-modal-error').textContent = '';
-    document.getElementById('resume-upload-label').value = file.name.replace(/\.pdf$/i, '');
+    document.getElementById('resume-upload-label').value = file.name.replace(/\.(pdf|docx)$/i, '');
     document.getElementById('resume-upload-primary').checked = false;
     document.getElementById('resume-upload-modal').classList.add('open');
   }
