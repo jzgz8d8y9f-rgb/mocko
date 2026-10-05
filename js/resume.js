@@ -31,11 +31,38 @@ async function extractPdfText(file) {
   }
 }
 
+async function extractDocxText(file) {
+  try {
+    const JSZip = (await import('https://esm.sh/jszip@3.10.1')).default;
+    const zip = await JSZip.loadAsync(await file.arrayBuffer());
+    const xml = await zip.file('word/document.xml').async('string');
+    const doc = new DOMParser().parseFromString(xml, 'application/xml');
+    const lines = [];
+    for (const p of doc.getElementsByTagName('w:p')) {
+      let line = '';
+      for (const el of p.getElementsByTagName('*')) {
+        if (el.localName === 't') line += el.textContent;
+        else if (el.localName === 'tab' || el.localName === 'br') line += ' ';
+      }
+      lines.push(line.trim());
+    }
+    return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  } catch (err) {
+    console.error('DOCX text extraction failed:', err);
+    return null;
+  }
+}
+
+function isDocx(fileOrPath) {
+  const name = typeof fileOrPath === 'string' ? fileOrPath : fileOrPath.name;
+  return /\.docx$/i.test(name || '');
+}
+
 async function uploadResume(file, label) {
   const user = window.MockoAuth.getUser();
   if (!user) throw new Error('Not signed in');
 
-  const extractedText = await extractPdfText(file);
+  const extractedText = isDocx(file) ? await extractDocxText(file) : await extractPdfText(file);
   const path = `${user.id}/${Date.now()}-${file.name}`;
   const { error: uploadErr } = await supabase.storage.from('resumes').upload(path, file);
   if (uploadErr) throw uploadErr;
@@ -96,5 +123,5 @@ async function getResumeUrl(storagePath) {
 
 window.MockoResume = {
   uploadResume, listResumes, getPrimaryResume, setPrimaryResume, deleteResume,
-  extractPdfText, getResumeUrl,
+  extractPdfText, extractDocxText, isDocx, getResumeUrl,
 };
