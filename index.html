@@ -263,19 +263,186 @@
   .select-group-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; }
   .divider { height: 1px; background: var(--line); margin-bottom: 28px; }
 
-  /* Mock Interview setup: an accordion of collapsible rows (Length & Format,
-     Difficulty, Personalize) instead of a fixed wizard -- tap a row to edit
-     it, and its current value stays visible in the header when collapsed. */
-  .acc-row { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-  .acc-row:last-child { margin-bottom: 0; }
-  .acc-row-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; cursor: pointer; }
-  .acc-row-title { font-size: 14.5px; font-weight: 700; margin-bottom: 2px; }
-  .acc-row-value { font-size: 12.5px; color: var(--text-muted); }
-  .acc-row-value.set { color: var(--good); font-weight: 600; }
-  .acc-chevron { color: var(--text-muted); flex-shrink: 0; transition: transform 0.15s; }
-  .acc-row.expanded .acc-chevron { transform: rotate(180deg); }
-  .acc-row-body { display: none; padding: 4px 20px 22px; border-top: 1px solid var(--line); }
-  .acc-row.expanded .acc-row-body { display: block; padding-top: 18px; }
+  /* Mock Interview setup: preset chips, four selects, three "make it yours"
+     rows, and a live "Your session" panel with the one Begin button. Presets,
+     resume and role pickers open as modals. */
+  #screen-setup.voice-mode > .step-label, #screen-setup.voice-mode #setup-sub { display: none; }
+  #screen-setup.voice-mode .hero h1 { font-size: 25px; line-height: 1.2; margin-bottom: 16px; }
+  #screen-setup.voice-mode .hero { margin: 0; }
+  #screen-setup.voice-mode .setup-layout { grid-template-columns: minmax(0, 1fr) 288px; gap: 20px; }
+  #screen-setup.voice-mode .setup-main > .select-panel { display: none; }
+  #setup-voice-ui { display: none; }
+  #screen-setup.voice-mode #setup-voice-ui { display: block; }
+  #screen-setup.voice-mode .setup-side { border-radius: 16px; padding: 18px; }
+  #screen-setup.voice-mode .setup-side-title { font-size: 16px; margin-bottom: 2px; }
+  #screen-setup.voice-mode .setup-side-row { border-top: 1px solid var(--line); border-bottom: none; padding: 8px 0; font-size: 13px; }
+  #screen-setup.voice-mode .setup-side-row span:last-child { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #screen-setup.voice-mode .setup-side-row .yes { color: var(--good); }
+  #screen-setup.voice-mode .setup-side-row .no { color: rgba(146,150,188,0.6); font-weight: 500; }
+  #screen-setup.voice-mode #setup-next { background: var(--good); color: #08211d; font-size: 15px; font-weight: 700; padding: 14px; border-radius: 10px; margin-top: 12px; }
+  #screen-setup.voice-mode #setup-next:hover:not(:disabled) { background: #1fb0a4; }
+  .setup-side .setup-side-from, .setup-side .setup-side-voice { display: none; }
+  #screen-setup.voice-mode .setup-side .setup-side-voice { display: flex; }
+  #screen-setup.voice-mode .setup-side .setup-side-from { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+  .sv-save { display: none; align-items: center; gap: 9px; margin-top: 12px; font-size: 12.5px; color: var(--text-muted); cursor: pointer; }
+  #screen-setup.voice-mode .sv-save { display: flex; }
+  .sv-save-note { display: none; font-size: 12px; color: var(--good); margin-top: 6px; }
+  .sv-switch { width: 36px; height: 21px; border-radius: 100px; background: var(--surface-2); border: 1px solid var(--line); position: relative; flex-shrink: 0; padding: 0; cursor: pointer; }
+  .sv-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%; background: var(--text-muted); transition: all 0.15s; }
+  .sv-switch.on { background: var(--good-dim); border-color: var(--good); }
+  .sv-switch.on::after { left: 17px; background: var(--good); }
+  .sv-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 9px; }
+  .sv-chips { display: flex; gap: 8px; margin-bottom: 20px; position: relative; flex-wrap: nowrap; }
+  .sv-chip { display: inline-flex; align-items: center; gap: 7px; height: 36px; box-sizing: border-box; padding: 0 14px; border-radius: 100px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font-family: 'Work Sans'; font-size: 13px; font-weight: 600; white-space: nowrap; flex-shrink: 0; max-width: 230px; cursor: pointer; }
+  .sv-chip .nm { overflow: hidden; text-overflow: ellipsis; }
+  .sv-chip svg.s { color: var(--cue); flex-shrink: 0; }
+  .sv-chip:hover:not(.sel) { border-color: var(--text-muted); }
+  .sv-chip.sel { border-color: var(--good); background: rgba(39,203,187,0.14); color: var(--good); padding-right: 7px; }
+  .sv-chip .dots { width: 22px; height: 22px; border-radius: 50%; background: rgba(39,203,187,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .sv-chip.more { border-style: dashed; color: var(--text-muted); background: transparent; }
+  .sv-menu { position: absolute; z-index: 30; width: 158px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 5px; box-shadow: 0 14px 36px rgba(0,0,0,0.55); }
+  .sv-mi { padding: 9px 11px; border-radius: 8px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 9px; cursor: pointer; background: none; border: none; width: 100%; color: var(--text); font-family: 'Work Sans'; text-align: left; }
+  .sv-mi:hover { background: rgba(255,255,255,0.06); }
+  .sv-mi.danger { color: #F26B76; }
+  .sv-row4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .sv-sl { font-size: 11.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; display: block; }
+  .sv-selwrap { position: relative; }
+  .sv-selwrap select { appearance: none; -webkit-appearance: none; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 30px 9px 12px; font-family: 'Work Sans'; font-size: 13.5px; font-weight: 600; color: var(--text); cursor: pointer; }
+  .sv-selwrap select:focus { outline: none; border-color: var(--good); }
+  .sv-selwrap svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+  .sv-opt { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+  .sv-opt.on { border-color: var(--good); background: rgba(39,203,187,0.07); }
+  .sv-ico { width: 32px; height: 32px; border-radius: 9px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; color: var(--text-muted); flex-shrink: 0; }
+  .sv-opt.on .sv-ico { background: rgba(39,203,187,0.18); color: var(--good); }
+  .sv-o-main { flex: 1; min-width: 0; }
+  .sv-o-name { font-size: 14px; font-weight: 700; }
+  .sv-o-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 1px; }
+  .sv-pick { display: none; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 7px 11px; font-family: 'Work Sans'; font-size: 12.5px; font-weight: 600; width: 210px; justify-content: space-between; color: var(--text); cursor: pointer; }
+  .sv-pick span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sv-pick small { color: var(--good); font-size: 11.5px; font-weight: 700; flex-shrink: 0; }
+  .sv-opt.on .sv-pick { display: flex; }
+
+  /* Preset / resume / role / save modals */
+  .sv-modal { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 24px 70px rgba(0,0,0,0.6); display: flex; flex-direction: column; max-height: calc(100vh - 40px); width: 100%; }
+  .sv-modal.w-576 { max-width: 576px; }
+  .sv-modal.w-504 { max-width: 504px; }
+  .sv-modal.w-844 { max-width: 844px; }
+  .sv-m-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 22px 26px 14px; flex-shrink: 0; }
+  .sv-m-title { font-family: 'Libre Baskerville', serif; font-size: 21px; font-weight: 700; margin: 0 0 4px; }
+  .sv-m-title span { font-family: 'Work Sans'; font-size: 14px; font-weight: 600; color: var(--text-muted); margin-left: 8px; }
+  .sv-m-sub { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+  .sv-x { width: 30px; height: 30px; border-radius: 50%; background: var(--surface-2); display: flex; align-items: center; justify-content: center; color: var(--text-muted); flex-shrink: 0; border: none; cursor: pointer; }
+  .sv-m-body { padding: 0 26px; flex: 1; overflow-y: auto; min-height: 0; }
+  .sv-m-label { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); display: block; margin: 12px 0 8px; }
+  .sv-m-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 26px 20px; border-top: 1px solid var(--line); margin-top: 12px; flex-shrink: 0; }
+  .sv-keep { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--text-muted); font-weight: 500; cursor: pointer; }
+  .sv-cb { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--line); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .sv-cb.on { background: var(--good); border-color: var(--good); }
+  .sv-btns { display: flex; gap: 10px; align-items: center; }
+  .sv-btn-s { font-family: 'Work Sans'; font-size: 13.5px; font-weight: 600; padding: 10px 18px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer; }
+  .sv-btn-p { font-family: 'Work Sans'; font-size: 13.5px; font-weight: 700; padding: 10px 20px; border-radius: 9px; border: none; background: var(--good); color: #08211d; cursor: pointer; }
+  .sv-btn-p:disabled { opacity: 0.45; cursor: not-allowed; }
+  .sv-m-err { color: var(--record); font-size: 12.5px; min-height: 0; margin-top: 8px; }
+  .sv-res { display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 14px; margin-bottom: 8px; background: var(--bg); cursor: pointer; }
+  .sv-res.on { border-color: var(--good); background: rgba(39,203,187,0.07); }
+  .sv-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .sv-res.on .sv-radio { border-color: var(--good); }
+  .sv-res.on .sv-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--good); }
+  .sv-res-main { flex: 1; min-width: 0; }
+  .sv-res-name { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .sv-res-name span.t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sv-res-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .sv-badge { font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--good); background: rgba(39,203,187,0.14); padding: 2px 7px; border-radius: 100px; flex-shrink: 0; }
+  .sv-used { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+  .sv-drop { border: 1.5px dashed rgba(255,255,255,0.18); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 14px; background: var(--bg); cursor: pointer; }
+  .sv-drop.over { border-color: var(--good); }
+  .sv-drop-ico { width: 38px; height: 38px; border-radius: 10px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; color: var(--good); flex-shrink: 0; }
+  .sv-drop-t { font-size: 14px; font-weight: 600; }
+  .sv-drop-t u { color: var(--good); text-decoration: none; }
+  .sv-drop-s { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .sv-prog { margin-top: 8px; border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; background: var(--bg); display: none; }
+  .sv-prog-top { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px; gap: 10px; }
+  .sv-prog-top span { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .sv-track { height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .sv-fill { height: 100%; width: 40%; background: var(--good); border-radius: 3px; animation: sv-slide 1.1s ease-in-out infinite; }
+  @keyframes sv-slide { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
+  .sv-found { border: 1px solid var(--line); border-radius: 12px; padding: 13px 14px; background: var(--bg); }
+  .sv-found-line { font-size: 12.5px; color: var(--text-muted); }
+  .sv-found-line b { color: var(--text); font-weight: 600; }
+  .sv-found-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 8px; }
+  .sv-fchip { font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 100px; border: 1px solid var(--line); color: var(--text-muted); background: transparent; font-family: 'Work Sans'; cursor: pointer; }
+  .sv-fchip.on { background: var(--cue); border-color: var(--cue); color: var(--bg); }
+  .sv-tabs { display: inline-flex; background: var(--bg); border: 1px solid var(--line); border-radius: 11px; padding: 3px; gap: 3px; margin: 4px 0 14px; }
+  .sv-tabs button { border: none; background: transparent; color: var(--text-muted); font-family: 'Work Sans'; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+  .sv-tabs button.on { background: var(--cue); color: var(--bg); }
+  .sv-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .sv-lab { font-size: 11.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; display: block; }
+  .sv-in { width: 100%; box-sizing: border-box; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 13px; font-size: 13.5px; font-weight: 600; font-family: 'Work Sans'; color: var(--text); }
+  .sv-in:focus, .sv-ta:focus { outline: none; border-color: var(--good); }
+  .sv-in.hl { border-color: var(--good); }
+  .sv-jd-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+  .sv-jd-actions { display: flex; gap: 12px; font-size: 12px; font-weight: 600; color: var(--good); }
+  .sv-jd-actions button { background: none; border: none; color: var(--good); font: inherit; cursor: pointer; padding: 0; }
+  .sv-ta { width: 100%; box-sizing: border-box; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 13px; font-size: 12.5px; color: var(--text); line-height: 1.55; height: 132px; resize: vertical; font-family: 'Work Sans'; }
+  .sv-count { font-size: 11.5px; color: var(--text-muted); text-align: right; margin-top: 5px; }
+  .sv-picked { border: 1px solid var(--line); border-radius: 12px; padding: 13px 14px; background: var(--bg); margin-top: 10px; }
+  .sv-picked-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+  .sv-picked-head b { font-size: 13px; }
+  .sv-auto { font-size: 11.5px; font-weight: 700; color: var(--role, #7C9EF2); background: rgba(124,158,242,0.14); padding: 3px 10px; border-radius: 100px; }
+  .sv-pchips { display: flex; gap: 7px; flex-wrap: wrap; }
+  .sv-pchip { font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 100px; border: 1px solid var(--line); color: var(--text); background: var(--surface-2); }
+  .sv-howmany { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 11px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
+  .sv-hm-t { font-size: 13.5px; font-weight: 600; }
+  .sv-hm-s { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .sv-seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px; padding: 3px; gap: 3px; }
+  .sv-seg button { border: none; background: transparent; color: var(--text-muted); font-family: 'Work Sans'; font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 6px; cursor: pointer; }
+  .sv-seg button.on { background: #7C9EF2; color: #0e1424; }
+  .sv-seg button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .sv-role-item { border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 14px; margin-bottom: 8px; background: var(--bg); cursor: pointer; display: flex; align-items: center; gap: 12px; }
+  .sv-role-item.on { border-color: #7C9EF2; background: rgba(124,158,242,0.1); }
+  .sv-empty { font-size: 13px; color: var(--text-muted); padding: 12px 0 4px; }
+  .sv-pname-in { width: 100%; box-sizing: border-box; background: var(--bg); border: 1px solid var(--good); border-radius: 10px; padding: 11px 13px; font-size: 14px; font-weight: 600; font-family: 'Work Sans'; color: var(--text); margin-bottom: 14px; }
+  .sv-pname-in:focus { outline: none; }
+  .sv-list { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
+  .sv-lrow { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-top: 1px solid var(--line); cursor: pointer; }
+  .sv-lrow:first-child { border-top: none; }
+  .sv-lrow.static { cursor: default; }
+  .sv-lk { font-size: 12px; color: var(--text-muted); width: 92px; flex-shrink: 0; }
+  .sv-lv { font-size: 13.5px; font-weight: 600; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sv-lv.off { color: var(--text-muted); font-weight: 500; }
+  .sv-note { font-size: 12px; color: var(--text-muted); margin-top: 10px; line-height: 1.4; }
+  .sv-search { position: relative; margin-bottom: 10px; }
+  .sv-search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+  .sv-search input { width: 100%; box-sizing: border-box; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px 11px 38px; font-size: 13.5px; font-family: 'Work Sans'; color: var(--text); }
+  .sv-search input:focus { outline: none; border-color: var(--good); }
+  .sv-filters { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .sv-fchips { display: flex; gap: 7px; flex-wrap: wrap; }
+  .sv-sort { font-size: 12.5px; color: var(--text-muted); }
+  .sv-sort b { color: var(--text); font-weight: 600; }
+  .sv-cols, .sv-prow { display: flex; align-items: center; gap: 12px; padding-left: 12px; padding-right: 12px; }
+  .sv-cols { padding-top: 9px; padding-bottom: 7px; font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); border-top: 1px solid var(--line); }
+  .sv-prow { position: relative; padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .sv-prow.sel { background: rgba(39,203,187,0.08); box-shadow: inset 0 0 0 1.5px var(--good); border-radius: 12px; border-bottom-color: transparent; }
+  .sv-c-pin { width: 24px; display: flex; justify-content: center; color: rgba(255,255,255,0.18); flex-shrink: 0; background: none; border: none; padding: 0; cursor: pointer; }
+  .sv-c-pin.on { color: var(--cue); }
+  .sv-c-main { flex: 1; min-width: 0; }
+  .sv-c-res, .sv-c-rol { width: 150px; flex-shrink: 0; min-width: 0; }
+  .sv-c-q { width: 24px; flex-shrink: 0; text-align: center; }
+  .sv-c-used { width: 76px; flex-shrink: 0; text-align: right; }
+  .sv-c-more { width: 28px; flex-shrink: 0; }
+  .sv-pn { font-size: 14.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sv-pm { font-size: 12px; color: var(--text-muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sv-val { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .sv-val.no { color: var(--text-muted); font-weight: 500; }
+  .sv-val.yes { color: var(--good); display: inline-flex; }
+  .sv-dotsbtn { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); background: none; border: none; cursor: pointer; }
+  .sv-dotsbtn.on, .sv-dotsbtn:hover { background: var(--surface-2); color: var(--text); }
+  .sv-plist { overflow-y: auto; padding: 0 12px; flex: 1; min-height: 0; }
+  @media (max-width: 860px) {
+    #screen-setup.voice-mode .setup-layout { grid-template-columns: 1fr; }
+    .sv-row4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sv-pick { width: 150px; }
+  }
 
   /* Settings: sidebar categories instead of one long scrolling form */
   .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
@@ -546,40 +713,50 @@
   .transcript { display: none; font-family: 'Work Sans'; font-size: 13.5px; color: var(--text-muted); line-height: 1.6; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
   .transcript.show { display: block; }
 
-  /* Mock Interview: no side question list, no avatar, no call-style orb.
-     A centered row of question NUMBERS sits above the panel (no text --
-     future questions stay a secret). A question is read aloud and stays
-     on screen with a short countdown underneath it to get ready, then
-     it's replaced by your own transcript while you answer. Listening
-     state lives on the mic button itself (a pulsing ring) instead of a
-     separate duplicate badge. */
-  .voice-progress-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
-  .voice-progress-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700; flex-shrink: 0; background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--line); }
-  .voice-progress-num.done { background: var(--good); color: var(--bg); border-color: var(--good); }
-  .voice-progress-num.current { background: var(--cue); color: var(--bg); border-color: var(--cue); width: 30px; height: 30px; font-size: 12.5px; }
-  .voice-progress-num.qa { margin-left: 6px; border-left: 1px dashed var(--line); padding-left: 16px; }
+  /* Mock Interview, teleprompter layout: tag and Save & exit across the top,
+     a centered row of question NUMBERS (no text -- future questions stay a
+     secret), the question big in the middle with a short countdown ring
+     underneath it, and the mic at the bottom. The mic stays visible but
+     dimmed until it's your turn; while you answer, your transcript replaces
+     the question. */
+  #screen-voice.active { display: flex; flex-direction: column; min-height: calc(100vh - 150px); }
+  .tp-top { display: flex; align-items: center; justify-content: space-between; }
+  .tp-tag { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .tp-exit { background: none; border: none; font-family: 'Work Sans'; font-size: 13.5px; color: var(--text-muted); cursor: pointer; padding: 0; }
+  .tp-exit:hover { color: var(--text); }
+  .voice-progress-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+  .voice-progress-num { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--text-muted); flex-shrink: 0; background: transparent; }
+  .voice-progress-num.done { background: var(--good-dim); border-color: var(--good-dim); color: var(--good); }
+  .voice-progress-num.current { border-color: var(--cue); color: var(--cue); box-shadow: 0 0 0 4px rgba(242,233,220,0.1); }
+  .voice-progress-num.qa { border-style: dashed; margin: 0; padding: 0; }
+  .voice-progress-num.qa.done { border-style: solid; }
 
-  .voice-main { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 32px; max-width: 640px; margin: 0 auto; }
-  .voice-meta-row { display: flex; align-items: center; justify-content: center; margin-bottom: 22px; }
-  .voice-meta-tag { font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
+  .tp-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 28px 24px; }
+  .voice-content { width: 100%; max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+  .voice-caption { font-family: 'Libre Baskerville', serif; font-size: 38px; font-weight: 700; line-height: 1.38; color: var(--text); margin: 0; }
+  .voice-caption.is-answer { font-family: 'Work Sans', sans-serif; font-size: 22px; font-weight: 400; line-height: 1.6; text-align: left; width: 100%; box-sizing: border-box; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px 28px; min-height: 160px; }
+  @media (max-width: 720px) { .voice-caption { font-size: 28px; } .voice-caption.is-answer { font-size: 18px; } }
+  .voice-countdown { display: none; flex-direction: column; align-items: center; gap: 12px; margin-top: 46px; }
+  .tp-ring { position: relative; width: 104px; height: 104px; }
+  .tp-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .tp-ring circle.fg { transition: stroke-dasharray 1s linear; }
+  .voice-countdown-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Libre Baskerville', serif; font-size: 44px; font-weight: 700; color: var(--cue); }
+  .voice-countdown-label { font-size: 14px; color: var(--text-muted); }
 
-  .voice-content { min-height: 130px; margin-bottom: 14px; text-align: center; }
-  .voice-caption { font-size: 20px; font-family: 'Libre Baskerville', serif; font-weight: 700; line-height: 1.4; color: var(--text); }
-  .voice-caption.is-answer { font-size: 16px; font-weight: 400; text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; min-height: 140px; }
-  .voice-countdown { display: none; align-items: center; justify-content: center; gap: 10px; margin: 4px 0 22px; }
-  .voice-countdown-num { font-family: 'Libre Baskerville', serif; font-size: 26px; font-weight: 700; color: var(--good); }
-  .voice-countdown-label { font-size: 12.5px; color: var(--text-muted); }
-
-  .voice-state-label { font-size: 13px; color: var(--text-muted); letter-spacing: 0.02em; }
-  .voice-control-row { display: flex; align-items: center; gap: 14px; border-top: 1px solid var(--line); padding-top: 20px; }
+  .tp-dock { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 8px 0 44px; }
   .mic-btn-wrap { position: relative; flex-shrink: 0; }
-  .mic-btn-ring { position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--record); opacity: 0; }
+  .mic-btn-ring { position: absolute; inset: -8px; border-radius: 50%; border: 2px solid var(--record); opacity: 0; }
   .mic-btn-wrap.listening .mic-btn-ring { opacity: 0.5; animation: mic-ring-pulse 1.4s ease-out infinite; }
   @keyframes mic-ring-pulse { 0% { transform: scale(0.85); opacity: 0.6; } 100% { transform: scale(1.35); opacity: 0; } }
-  .mic-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: var(--record); color: white; font-size: 20px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; position: relative; }
+  .mic-btn { width: 64px; height: 64px; border-radius: 50%; border: none; background: var(--record); color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; position: relative; }
   .mic-btn:hover { background: #d02836; }
-  .voice-control-mid { flex: 1; }
-  .voice-timer { font-size: 13px; color: var(--text-muted); }
+  .mic-btn-wrap.sleep .mic-btn { background: var(--surface-2); border: 1px solid var(--line); cursor: default; }
+  .mic-btn-wrap.sleep .mic-btn svg { stroke: var(--text-muted); }
+  .mic-btn-wrap.sleep .mic-btn:hover { background: var(--surface-2); }
+  .mic-btn-wrap.gone { display: none; }
+  .tp-state { text-align: center; }
+  .voice-state-label { font-size: 13px; color: var(--text-muted); letter-spacing: 0.02em; }
+  .voice-timer { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
 
   /* Stats: interview practice is the hero, drills are a compact strip at the bottom */
   .stats-hero-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px 30px; margin-bottom: 22px; }
@@ -2425,118 +2602,78 @@
 
       </div>
 
-      <!-- MOCK INTERVIEW controls: an accordion instead of a wizard --
-           tap a row to edit it, its current value stays visible when collapsed. -->
-      <div id="setup-voice-block" style="display:none;">
+    </div>
+    <div id="setup-voice-ui">
+      <div id="sv-start-block">
+        <span class="sv-label">Start from</span>
+        <div class="sv-chips" id="sv-chips"></div>
+      </div>
 
-        <div class="acc-row expanded" id="acc-row-basics">
-          <div class="acc-row-head" onclick="toggleAccRow('basics')">
-            <div><div class="acc-row-title">Length &amp; Format</div><div class="acc-row-value" id="acc-value-basics">Not set</div></div>
-            <svg class="acc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
-          </div>
-          <div class="acc-row-body">
-            <div class="select-group">
-              <div class="select-group-label">Length of Session</div>
-              <div class="select-group-sub">Pick how many questions, from a quick warm-up to a full set.</div>
-              <div class="toggle-row toggle-row-3" id="voice-length-row">
-                <div class="toggle-card" data-len="Quick"><h4>Quick Round</h4><p>1 question</p><p class="toggle-card-time">~2 min</p></div>
-                <div class="toggle-card" data-len="Short"><h4>Short Session</h4><p>3 questions</p><p class="toggle-card-time">~5 min</p></div>
-                <div class="toggle-card" data-len="Full"><h4>Full Interview</h4><p>5 questions</p><p class="toggle-card-time">~20 min</p></div>
-              </div>
-            </div>
+      <div class="sv-row4">
+        <div><span class="sv-sl">Industry</span><div class="sv-selwrap"><select id="sv-industry" onchange="svSetIndustry(this.value)" aria-label="Industry">
+          <option value="general">General</option>
+          <optgroup label="Finance">
+            <option value="finance">General Finance</option>
+            <option value="ib">Investment Banking</option>
+            <option value="consulting">Consulting</option>
+            <option value="pe">Private Equity</option>
+            <option value="quant">Quant</option>
+          </optgroup>
+          <optgroup label="Pharma">
+            <option value="pharma-rd">Research &amp; Development</option>
+            <option value="pharma-mfg-quality">Manufacturing / Quality</option>
+          </optgroup>
+          <optgroup label="MedTech">
+            <option value="medtech-rd">Research &amp; Development</option>
+            <option value="medtech-mfg-quality">Manufacturing / Quality</option>
+          </optgroup>
+        </select><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div><span class="sv-sl">Length</span><div class="sv-selwrap"><select id="sv-length" onchange="svSetLength(this.value)" aria-label="Length">
+          <option value="Quick">Quick</option><option value="Short">Short</option><option value="Full">Full</option>
+        </select><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div><span class="sv-sl">Format</span><div class="sv-selwrap"><select id="sv-type" onchange="svSetType(this.value)" aria-label="Format">
+          <option value="Behavioral">Behavioral</option><option value="Technical">Technical</option><option value="Both">Both</option>
+        </select><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 9l6 6 6-6"/></svg></div></div>
+        <div><span class="sv-sl">Difficulty</span><div class="sv-selwrap"><select id="sv-difficulty" onchange="svSetDifficulty(this.value)" aria-label="Difficulty">
+          <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option>
+        </select><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 9l6 6 6-6"/></svg></div></div>
+      </div>
 
-            <div class="divider"></div>
-
-            <div class="select-group" style="margin-bottom:0;">
-              <div class="select-group-label">Format</div>
-              <div class="select-group-sub">You can combine question types within a single session.</div>
-              <div class="pill-row" id="type-row">
-                <button class="pill-btn" data-type="Behavioral">Behavioral only</button>
-                <button class="pill-btn" data-type="Technical">Technical only</button>
-                <button class="pill-btn" data-type="Both">Both</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="acc-row" id="acc-row-difficulty">
-          <div class="acc-row-head" onclick="toggleAccRow('difficulty')">
-            <div><div class="acc-row-title">Difficulty</div><div class="acc-row-value" id="acc-value-difficulty">Not set</div></div>
-            <svg class="acc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
-          </div>
-          <div class="acc-row-body">
-            <div class="select-group" style="margin-bottom:0;">
-              <div class="select-group-sub" style="margin-bottom:14px;">Easy is broader and forgiving. Hard is high-specificity and less room for a generic answer.</div>
-              <div class="pill-row difficulty-pill-row" id="voice-difficulty-row">
-                <button class="pill-btn" data-difficulty="easy">Easy</button>
-                <button class="pill-btn" data-difficulty="medium">Medium</button>
-                <button class="pill-btn" data-difficulty="hard">Hard</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="acc-row" id="acc-row-personalize">
-          <div class="acc-row-head" onclick="toggleAccRow('personalize')">
-            <div><div class="acc-row-title">Personalize</div><div class="acc-row-value" id="acc-value-personalize">Optional</div></div>
-            <svg class="acc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
-          </div>
-          <div class="acc-row-body">
-            <div class="select-group">
-              <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-                <input type="checkbox" id="voice-ask-toggle" onchange="updateSetupSummary()">
-                Let me ask MockBot questions at the end
-              </label>
-              <div class="select-group-sub" style="margin:6px 0 0 26px;">Like a real interview, MockBot turns it over to you. Ask up to 3 questions, get answers, and see how your questions score in your results.</div>
-            </div>
-
-            <div class="divider"></div>
-
-            <div class="select-group">
-              <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-                <input type="checkbox" id="voice-resume-toggle" onchange="toggleVoiceResumePanel()">
-                Tailor a question or two to my resume
-              </label>
-              <div id="voice-resume-panel" style="display:none; margin-top:14px;">
-                <div id="voice-resume-picker-empty" class="resume-picker-empty" style="display:none;">No saved resumes yet. Upload one to tailor questions to it.</div>
-                <select class="resume-select" id="voice-resume-select" style="display:none;"></select>
-                <label class="btn btn-secondary" style="cursor:pointer; display:inline-block; margin-top:10px; font-size:13.5px; padding:8px 14px;">
-                  + Upload new resume
-                  <input type="file" accept=".pdf" id="voice-resume-upload-input" style="display:none;" onchange="handleVoiceResumeUpload(event)">
-                </label>
-                <div id="voice-resume-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
-              </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <div class="select-group" style="margin-bottom:0;">
-              <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14.5px;">
-                <input type="checkbox" id="voice-role-toggle" onchange="toggleVoiceRolePanel()">
-                Tailor a question or two to a specific role
-              </label>
-              <div class="select-group-sub" style="margin:6px 0 0 26px;">Full Interview only. Paste a job description and MockBot will work in a question or two about it.</div>
-              <div id="voice-role-panel" style="display:none; margin-top:14px;">
-                <textarea id="voice-role-textarea" placeholder="Paste the job description here..." maxlength="6000" oninput="handleVoiceRoleInput()" style="width:100%; min-height:110px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'Work Sans'; font-size:13.5px; resize:vertical;"></textarea>
-                <div id="voice-role-status" style="font-size:13px; color:var(--text-muted); margin-top:8px;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <span class="sv-label">Make it yours</span>
+      <div class="sv-opt" id="sv-opt-resume">
+        <span class="sv-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8zM14 3v5h5M9 13h6M9 17h6"/></svg></span>
+        <div class="sv-o-main"><div class="sv-o-name">Your resume</div><div class="sv-o-sub">A question or two from your own experience</div></div>
+        <button class="sv-pick" onclick="svOpenResume()" id="sv-pick-resume"><span id="sv-pick-resume-t"></span><small>Change</small></button>
+        <button class="sv-switch" id="sv-sw-resume" onclick="svToggleOpt('resume')" aria-label="Use my resume"></button>
+      </div>
+      <div class="sv-opt" id="sv-opt-role">
+        <span class="sv-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/></svg></span>
+        <div class="sv-o-main"><div class="sv-o-name">Your role</div><div class="sv-o-sub">Questions about one specific job</div></div>
+        <button class="sv-pick" onclick="svOpenRole()" id="sv-pick-role"><span id="sv-pick-role-t"></span><small>Change</small></button>
+        <button class="sv-switch" id="sv-sw-role" onclick="svToggleOpt('role')" aria-label="Use a specific role"></button>
+      </div>
+      <div class="sv-opt" id="sv-opt-ask">
+        <span class="sv-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
+        <div class="sv-o-main"><div class="sv-o-name">Your questions</div><div class="sv-o-sub">Flip the interview at the end. Ask up to 3 and get scored</div></div>
+        <button class="sv-switch" id="sv-sw-ask" onclick="svToggleOpt('ask')" aria-label="Let me ask questions"></button>
       </div>
     </div>
     </div>
 
     <div class="setup-side">
       <div class="setup-side-title">Your session</div>
+      <div class="setup-side-from" id="setup-side-from"></div>
       <div class="setup-side-row"><span>Industry</span><span id="setup-summary-industry">General</span></div>
       <div class="setup-side-row"><span id="setup-summary-length-label">Length</span><span id="setup-summary-length">—</span></div>
       <div class="setup-side-row" id="setup-summary-type-row" style="display:none;"><span>Format</span><span id="setup-summary-type">—</span></div>
       <div class="setup-side-row"><span>Difficulty</span><span id="setup-summary-difficulty">—</span></div>
-      <div class="setup-side-row" id="setup-summary-ask-row" style="display:none;"><span>Your questions</span><span id="setup-summary-ask">Off</span></div>
+      <div class="setup-side-row setup-side-voice" id="setup-summary-resume-row"><span>Resume</span><span id="setup-summary-resume">None</span></div>
+      <div class="setup-side-row setup-side-voice" id="setup-summary-role-row"><span>Role</span><span id="setup-summary-role">None</span></div>
+      <div class="setup-side-row" id="setup-summary-ask-row" style="display:none;"><span>Ask questions</span><span id="setup-summary-ask">No</span></div>
       <button class="btn btn-primary" id="setup-next" disabled onclick="beginSession()" style="width:100%; margin-top:16px;">Begin →</button>
       <div class="ip-error" id="setup-error" role="alert"><div class="ip-error-title"></div><div class="ip-error-fix"></div><button class="btn btn-secondary ip-error-retry" onclick="retryIpError(this)">Try again</button></div>
+      <div class="sv-save" id="sv-save" onclick="svOpenSavePreset()"><button class="sv-switch" id="sv-save-switch" aria-label="Save as a preset"></button>Save as a preset</div>
+      <div class="sv-save-note" id="sv-save-note"></div>
     </div>
     </div>
   </div>
@@ -2659,16 +2796,15 @@
 
   <!-- VOICE MOCK INTERVIEW -->
   <div class="screen" id="screen-voice">
-    <button class="back-btn" onclick="exitVoiceSession()">← Save &amp; exit</button>
+    <div class="tp-top">
+      <span class="tp-tag" id="voice-role">General &middot; Behavioral</span>
+      <button class="tp-exit" onclick="exitVoiceSession()">Save &amp; exit</button>
+    </div>
 
     <div class="voice-progress-row" id="voice-progress-row"></div>
 
-    <div class="voice-main">
-      <div class="voice-meta-row">
-        <div class="voice-meta-tag" id="voice-role">General &middot; Behavioral</div>
-      </div>
-
-      <div id="voice-loader" style="display:none; height:130px; align-items:center; justify-content:center; margin-bottom:22px;"><div class="mocko-loader" role="status" aria-label="Loading">
+    <div class="tp-center">
+      <div id="voice-loader" style="display:none; height:130px; align-items:center; justify-content:center;"><div class="mocko-loader" role="status" aria-label="Loading">
             <svg viewBox="0 0 100 100" aria-hidden="true">
               <g class="ml-bubble l"><g transform="rotate(-8 40 58)"><path d="M14 40 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-16 l-10 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#27CBBB"/></g></g>
               <g class="ml-bubble r"><g transform="rotate(8 61 42)"><path d="M44 24 h34 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-8 v10 l-10 -10 h-16 a8 8 0 0 1 -8 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#268691"/></g></g>
@@ -2676,35 +2812,38 @@
             <div class="ml-dots"><span></span><span></span><span></span></div>
           </div></div>
 
-      <div class="ip-error" id="voice-error" role="alert" style="margin-bottom:18px;"><div class="ip-error-title"></div><div class="ip-error-fix"></div><button class="btn btn-secondary ip-error-retry" onclick="retryIpError(this)">Try again</button></div>
+      <div class="ip-error" id="voice-error" role="alert" style="margin-bottom:18px; width:100%; max-width:560px;"><div class="ip-error-title"></div><div class="ip-error-fix"></div><button class="btn btn-secondary ip-error-retry" onclick="retryIpError(this)">Try again</button></div>
 
       <div class="voice-content" id="voice-content">
-        <div class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</div>
+        <h1 class="voice-caption" id="voice-caption">Tap the mic when you're ready to begin.</h1>
       </div>
 
       <div class="voice-countdown" id="voice-countdown">
-        <div class="voice-countdown-num" id="voice-countdown-num">3</div>
-        <div class="voice-countdown-label">Get ready&hellip;</div>
+        <div class="tp-ring">
+          <svg width="104" height="104" viewBox="0 0 104 104" fill="none" aria-hidden="true"><circle cx="52" cy="52" r="46" stroke="rgba(255,255,255,0.09)" stroke-width="5"/><circle class="fg" id="voice-countdown-arc" cx="52" cy="52" r="46" stroke="#F2E9DC" stroke-width="5" stroke-linecap="round" stroke-dasharray="289 289"/></svg>
+          <div class="voice-countdown-num" id="voice-countdown-num">3</div>
+        </div>
+        <div class="voice-countdown-label">Get ready to answer</div>
       </div>
 
-      <div class="voice-control-row">
-        <div class="mic-btn-wrap" id="mic-btn-wrap">
-          <div class="mic-btn-ring"></div>
-          <button class="mic-btn" id="mic-btn" onclick="toggleMic()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></button>
-        </div>
-        <div class="voice-control-mid">
-          <div class="voice-state-label" id="voice-state">Ready</div>
-        </div>
-        <div class="voice-timer mono" id="voice-timer">00:00</div>
-      </div>
-
-      <div class="btn-row" id="voice-qa-done-row" style="display:none; margin-top:14px;">
+      <div class="btn-row" id="voice-qa-done-row" style="display:none; margin-top:24px;">
         <button class="btn btn-secondary" onclick="finishCandidateQA()">That's all my questions</button>
       </div>
 
       <div class="btn-row" id="voice-retry-row" style="display:none; margin-top:26px;">
         <button class="btn btn-secondary" onclick="startVoice()">↻ Retry this session</button>
         <button class="btn btn-primary" onclick="goToVoiceResults()">View evaluation →</button>
+      </div>
+    </div>
+
+    <div class="tp-dock">
+      <div class="mic-btn-wrap" id="mic-btn-wrap">
+        <div class="mic-btn-ring"></div>
+        <button class="mic-btn" id="mic-btn" onclick="toggleMic()" aria-label="Microphone"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></button>
+      </div>
+      <div class="tp-state">
+        <div class="voice-state-label" id="voice-state">Ready</div>
+        <div class="voice-timer mono" id="voice-timer">00:00</div>
       </div>
     </div>
   </div>
@@ -3175,6 +3314,107 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="sv-resume-modal" onclick="if (event.target === this) svCloseResume()">
+  <div class="sv-modal w-576" role="dialog" aria-labelledby="sv-resume-title">
+    <div class="sv-m-head">
+      <div><h2 class="sv-m-title" id="sv-resume-title">Your resume</h2><div class="sv-m-sub">We use it to draw a question or two from your own experience.</div></div>
+      <button class="sv-x" onclick="svCloseResume()" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="sv-m-body">
+      <span class="sv-m-label" style="margin-top:2px;">Saved resumes</span>
+      <div id="sv-res-list"></div>
+      <span class="sv-m-label">Upload a new one</span>
+      <label class="sv-drop" id="sv-drop" ondragover="event.preventDefault(); this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="svDropResume(event)">
+        <span class="sv-drop-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg></span>
+        <div><div class="sv-drop-t">Drop a PDF here or <u>browse</u></div><div class="sv-drop-s">PDF only, up to 5 MB</div></div>
+        <input type="file" accept=".pdf,application/pdf" id="sv-res-file" style="display:none;" onchange="svPickResumeFile(event)">
+      </label>
+      <div class="sv-prog" id="sv-res-prog"><div class="sv-prog-top"><b id="sv-prog-name"></b><span>Reading your resume&hellip;</span></div><div class="sv-track"><div class="sv-fill"></div></div></div>
+      <div class="sv-m-err" id="sv-res-err"></div>
+      <div id="sv-found-wrap"></div>
+    </div>
+    <div class="sv-m-foot">
+      <div class="sv-keep" onclick="svToggleKeep()"><span class="sv-cb on" id="sv-keep-cb"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#08211d" stroke-width="3.4"><path d="M20 6L9 17l-5-5"/></svg></span>Keep for next time</div>
+      <div class="sv-btns"><button class="sv-btn-s" onclick="svCloseResume()">Cancel</button><button class="sv-btn-p" id="sv-res-use" onclick="svUseResume()">Use this resume</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="sv-role-modal" onclick="if (event.target === this) svCloseRole()">
+  <div class="sv-modal w-576" role="dialog" aria-labelledby="sv-role-title">
+    <div class="sv-m-head">
+      <div><h2 class="sv-m-title" id="sv-role-title">Your role</h2><div class="sv-m-sub">Paste a job description and get questions about that exact job.</div></div>
+      <button class="sv-x" onclick="svCloseRole()" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="sv-m-body">
+      <div class="sv-tabs"><button id="sv-tab-saved" onclick="svRoleTab('saved')">Saved roles (0)</button><button id="sv-tab-new" class="on" onclick="svRoleTab('new')">New role</button></div>
+      <div id="sv-role-saved" style="display:none;"></div>
+      <div id="sv-role-new">
+        <div class="sv-two">
+          <div><label class="sv-lab" for="sv-role-title-in">Role title</label><input class="sv-in" id="sv-role-title-in" placeholder="Associate" oninput="svRoleInput()"></div>
+          <div><label class="sv-lab" for="sv-role-company-in">Company</label><input class="sv-in" id="sv-role-company-in" placeholder="McKinsey" oninput="svRoleInput()"></div>
+        </div>
+        <div class="sv-jd-top"><label class="sv-lab" for="sv-role-jd" style="margin:0;">Job description</label><span class="sv-jd-actions"><button onclick="svPasteJD()">Paste from clipboard</button><button onclick="document.getElementById('sv-jd-file').click()">Upload PDF</button></span></div>
+        <input type="file" accept=".pdf,application/pdf" id="sv-jd-file" style="display:none;" onchange="svJDFile(event)">
+        <textarea class="sv-ta" id="sv-role-jd" maxlength="6000" placeholder="Paste the job description here..." oninput="svRoleInput()"></textarea>
+        <div class="sv-count" id="sv-jd-count">0 / 6,000</div>
+        <div class="sv-picked" id="sv-role-picked" style="display:none;"></div>
+        <div class="sv-howmany">
+          <div><div class="sv-hm-t">Questions about this role</div><div class="sv-hm-s" id="sv-hm-sub">Full Interview only</div></div>
+          <div class="sv-seg"><button id="sv-cnt-1" onclick="svRoleCount(1)">1</button><button id="sv-cnt-2" class="on" onclick="svRoleCount(2)">2</button></div>
+        </div>
+      </div>
+      <div class="sv-m-err" id="sv-role-err"></div>
+    </div>
+    <div class="sv-m-foot">
+      <div class="sv-keep" id="sv-role-keep" onclick="svToggleKeepRole()"><span class="sv-cb on" id="sv-keeprole-cb"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#08211d" stroke-width="3.4"><path d="M20 6L9 17l-5-5"/></svg></span>Save this role for later</div>
+      <div class="sv-btns"><button class="sv-btn-s" onclick="svCloseRole()">Cancel</button><button class="sv-btn-p" id="sv-role-use" onclick="svUseRole()">Use this role</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="sv-save-modal" onclick="if (event.target === this) svCloseSave()">
+  <div class="sv-modal w-504" role="dialog" aria-labelledby="sv-save-title">
+    <div class="sv-m-head">
+      <div><h2 class="sv-m-title" id="sv-save-title" style="font-size:20px;">Save as preset</h2><div class="sv-m-sub" id="sv-save-sub">Start this exact setup in one tap next time.</div></div>
+      <button class="sv-x" onclick="svCloseSave()" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="sv-m-body" style="padding-bottom:4px;">
+      <label class="sv-lab" for="sv-save-name">Preset name</label>
+      <input class="sv-pname-in" id="sv-save-name" maxlength="60" placeholder="e.g. McKinsey Associate" oninput="svSaveNameInput()">
+      <span class="sv-m-label" style="margin-top:0;">What&rsquo;s included</span>
+      <div class="sv-list" id="sv-save-list"></div>
+      <div class="sv-note">Uploaded files and the job description stay saved to your account, so you never re-upload them.</div>
+      <div class="sv-m-err" id="sv-save-err"></div>
+    </div>
+    <div class="sv-m-foot" style="justify-content:flex-end; border-top:none; margin-top:0;">
+      <button class="sv-btn-s" onclick="svCloseSave()">Cancel</button><button class="sv-btn-p" id="sv-save-btn" onclick="svSavePreset()">Save preset</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="sv-manage-modal" onclick="if (event.target === this) svCloseManage()">
+  <div class="sv-modal w-844" role="dialog" aria-labelledby="sv-manage-title">
+    <div class="sv-m-head" style="align-items:center; padding-bottom:12px;">
+      <h2 class="sv-m-title" id="sv-manage-title" style="margin:0;">Your presets<span id="sv-manage-count">0</span></h2>
+      <button class="sv-x" onclick="svCloseManage()" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div style="padding:0 24px; flex-shrink:0;">
+      <div class="sv-search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg><input id="sv-manage-q" placeholder="Search presets, roles or resumes…" oninput="svRenderManage()"></div>
+      <div class="sv-filters">
+        <div class="sv-fchips" id="sv-manage-filters"></div>
+        <span class="sv-sort">Favorites first, then <b>most recently used</b></span>
+      </div>
+    </div>
+    <div class="sv-cols" style="margin:0 12px;"><span class="sv-c-pin" style="cursor:default;"></span><span class="sv-c-main">Preset</span><span class="sv-c-res">Resume</span><span class="sv-c-rol">Role</span><span class="sv-c-q">?</span><span class="sv-c-used">Used</span><span class="sv-c-more"></span></div>
+    <div class="sv-plist" id="sv-manage-list"></div>
+    <div class="sv-m-foot">
+      <span class="sv-note" style="margin:0;">Pick one to fill in your session. Make a new one with &ldquo;Save as a preset&rdquo; before you begin.</span>
+      <button class="sv-btn-p" id="sv-manage-use" onclick="svManageUse()">Use preset</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="add-friend-overlay">
   <div class="modal-card add-friend-card">
     <h4>Add friend</h4>
@@ -3219,6 +3459,7 @@
 <script type="module" src="js/resume-lab.js"></script>
 <script type="module" src="js/drills.js"></script>
 <script type="module" src="js/voice.js"></script>
+<script type="module" src="js/presets.js"></script>
 <script type="module" src="js/social.js"></script>
 <script type="module" src="js/auth.js"></script>
 <script>
@@ -4565,29 +4806,8 @@
     checkSetupReady();
     updateSetupSummary();
   }));
-  document.querySelectorAll('#voice-length-row .toggle-card').forEach(el => el.addEventListener('click', () => {
-    document.querySelectorAll('#voice-length-row .toggle-card').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    state.length = el.dataset.len;
-    checkSetupReady();
-    updateSetupSummary();
-  }));
-  document.querySelectorAll('#type-row .pill-btn').forEach(el => el.addEventListener('click', () => {
-    document.querySelectorAll('#type-row .pill-btn').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    state.type = el.dataset.type;
-    checkSetupReady();
-    updateSetupSummary();
-  }));
   document.querySelectorAll('#difficulty-row .pill-btn').forEach(el => el.addEventListener('click', () => {
     document.querySelectorAll('#difficulty-row .pill-btn').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    state.difficulty = el.dataset.difficulty;
-    checkSetupReady();
-    updateSetupSummary();
-  }));
-  document.querySelectorAll('#voice-difficulty-row .pill-btn').forEach(el => el.addEventListener('click', () => {
-    document.querySelectorAll('#voice-difficulty-row .pill-btn').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     state.difficulty = el.dataset.difficulty;
     checkSetupReady();
@@ -4599,43 +4819,42 @@
   const LENGTH_CARD_LABELS = { Quick: 'Quick Round', Short: 'Short Session', Full: 'Full Interview' };
   const TYPE_SUMMARY_LABELS = { Behavioral: 'Behavioral only', Technical: 'Technical only', Both: 'Both' };
   function updateSetupSummary() {
+    const isVoice = state.mode === 'voice';
     const isRecord = state.mode === 'record';
+    document.getElementById('screen-setup').classList.toggle('voice-mode', isVoice);
     document.getElementById('setup-summary-industry').textContent = INDUSTRY_LABELS[state.industry] || 'General';
     document.getElementById('setup-summary-length-label').textContent = isRecord ? 'Format' : 'Length';
-    document.getElementById('setup-summary-length').textContent = state.length ? LENGTH_CARD_LABELS[state.length] : '—';
+    const lengthEl = document.getElementById('setup-summary-length');
+    if (isVoice) {
+      const n = SV_LENGTH_COUNT[state.length];
+      lengthEl.textContent = state.length ? `${state.length}, ${n} question${n === 1 ? '' : 's'}` : '—';
+    } else {
+      lengthEl.textContent = state.length ? LENGTH_CARD_LABELS[state.length] : '—';
+    }
     document.getElementById('setup-summary-type-row').style.display = isRecord ? 'none' : '';
     document.getElementById('setup-summary-ask-row').style.display = isRecord ? 'none' : '';
-    document.getElementById('setup-summary-ask').textContent = document.getElementById('voice-ask-toggle').checked ? 'On' : 'Off';
-    if (!isRecord) document.getElementById('setup-summary-type').textContent = TYPE_SUMMARY_LABELS[state.type] || '—';
+    if (isVoice) {
+      document.getElementById('setup-summary-type').textContent = state.type || '—';
+      const resume = svState.resumeOn && svState.resume ? svState.resume.label : null;
+      const role = svState.roleOn && svState.role ? svRoleLabel(svState.role) : null;
+      const setVal = (id, text, cls) => { const el = document.getElementById(id); el.textContent = text; el.className = cls || ''; };
+      setVal('setup-summary-resume', resume || 'None', resume ? '' : 'no');
+      setVal('setup-summary-role', role || 'None', role ? '' : 'no');
+      setVal('setup-summary-ask', svState.ask ? 'Yes' : 'No', svState.ask ? 'yes' : 'no');
+      const from = document.getElementById('setup-side-from');
+      if (svState.presetId === 'last') from.textContent = 'From your last session' + (svState.edited ? ' · edited' : '');
+      else if (svState.presetId) {
+        const p = svState.presets.find((x) => x.id === svState.presetId);
+        from.textContent = p ? 'From ' + p.name + (svState.edited ? ' · edited' : '') : '';
+      } else from.textContent = 'New session';
+    } else if (!isRecord) {
+      document.getElementById('setup-summary-type').textContent = TYPE_SUMMARY_LABELS[state.type] || '—';
+    }
     const diffEl = document.getElementById('setup-summary-difficulty');
     diffEl.textContent = state.difficulty ? state.difficulty[0].toUpperCase() + state.difficulty.slice(1) : '—';
-    diffEl.style.color = { easy: 'var(--good)', medium: 'var(--warn)', hard: 'var(--record)' }[state.difficulty] || '';
-
-    // Mock Interview accordion row headers mirror the same state, so each
-    // row's current value stays visible even while it's collapsed.
-    const accBasics = document.getElementById('acc-value-basics');
-    if (accBasics) {
-      const lenLabel = state.length ? LENGTH_CARD_LABELS[state.length] : null;
-      const fmtLabel = state.type ? TYPE_SUMMARY_LABELS[state.type] : null;
-      const text = [lenLabel, fmtLabel].filter(Boolean).join(' · ');
-      accBasics.textContent = text || 'Not set';
-      accBasics.classList.toggle('set', !!text);
-    }
-    const accDifficulty = document.getElementById('acc-value-difficulty');
-    if (accDifficulty) {
-      accDifficulty.textContent = state.difficulty ? state.difficulty[0].toUpperCase() + state.difficulty.slice(1) : 'Not set';
-      accDifficulty.classList.toggle('set', !!state.difficulty);
-    }
-    const accPersonalize = document.getElementById('acc-value-personalize');
-    if (accPersonalize) {
-      const bits = [];
-      if (document.getElementById('voice-ask-toggle').checked) bits.push('Ask your own questions');
-      if (document.getElementById('voice-resume-toggle').checked) bits.push('Tailored to resume');
-      if (document.getElementById('voice-role-toggle').checked) bits.push('Tailored to a role');
-      accPersonalize.textContent = bits.length ? bits.join(' · ') : 'Optional';
-      accPersonalize.classList.toggle('set', bits.length > 0);
-    }
+    diffEl.style.color = isVoice ? '' : ({ easy: 'var(--good)', medium: 'var(--warn)', hard: 'var(--record)' }[state.difficulty] || '');
   }
+
   // Industry picker: a flat "General" pill plus dropdown pills (Finance,
   // Pharma, MedTech) that each open a dropdown of sub-industries.
   // The interview-mode picker only offers the fixed set above (it maps straight
@@ -4793,10 +5012,7 @@
     updateSetupSummary();
   }
 
-  function selectIndustry(el) {
-    state.industry = el.dataset.industry;
-    syncIndustrySelection();
-    closeAllIndustryDropdowns();
+  function persistIndustryChoice() {
     if (window.MockoProfile && window.MockoAuth.getUser()) {
       MockoProfile.updateProfile({
         username: currentUserProfile ? currentUserProfile.username : undefined,
@@ -4805,6 +5021,13 @@
         industry: state.industry,
       }).then(p => { currentUserProfile = p; }).catch(err => console.error(err));
     }
+  }
+
+  function selectIndustry(el) {
+    state.industry = el.dataset.industry;
+    syncIndustrySelection();
+    closeAllIndustryDropdowns();
+    persistIndustryChoice();
     checkSetupReady();
   }
 
@@ -5763,12 +5986,12 @@
       state.type = null;
       state.difficulty = null;
       document.querySelectorAll(
-        '#length-row .toggle-card, #voice-length-row .toggle-card, #type-row .pill-btn, #difficulty-row .pill-btn, #voice-difficulty-row .pill-btn'
+        '#length-row .toggle-card, #difficulty-row .pill-btn'
       ).forEach(c => c.classList.remove('selected'));
     }
     state.mode = mode;
     document.getElementById('setup-record-block').style.display = mode === 'record' ? 'block' : 'none';
-    document.getElementById('setup-voice-block').style.display = mode === 'voice' ? 'block' : 'none';
+    document.getElementById('screen-setup').classList.toggle('voice-mode', mode === 'voice');
     document.getElementById('setup-sub').textContent = mode === 'record'
       ? "Choose your format and difficulty, then step in front of the camera."
       : "Choose your length and format, then start talking.";
@@ -5783,19 +6006,6 @@
         const resumes = await MockoResume.listResumes();
         if (resumes.some((r) => r.extracted_text)) resumeGroup.style.display = 'block';
       } catch (err) { console.error(err); }
-    } else if (mode === 'voice') {
-      document.getElementById('voice-resume-toggle').checked = false;
-      document.getElementById('voice-resume-panel').style.display = 'none';
-      document.getElementById('voice-resume-status').textContent = '';
-      voiceResumePickerList = [];
-      document.getElementById('voice-role-toggle').checked = false;
-      document.getElementById('voice-role-panel').style.display = 'none';
-      document.getElementById('voice-role-status').textContent = '';
-      try {
-        const savedRole = localStorage.getItem('mocko-role-description');
-        if (savedRole) document.getElementById('voice-role-textarea').value = savedRole;
-      } catch (e) {}
-      resetSetupAccordion();
     }
 
     if (currentUserProfile && currentUserProfile.industry) {
@@ -5803,6 +6013,7 @@
       syncIndustrySelection();
     }
 
+    if (mode === 'voice') svInit();
     checkSetupReady();
     updateSetupSummary();
     const seenField = mode === 'record' ? 'seen_record_tutorial' : 'seen_voice_tutorial';
@@ -5813,83 +6024,718 @@
     }
   }
 
-  // Mock Interview setup is an accordion of rows (Length & Format,
-  // Difficulty, Personalize) -- Begin (in the sidebar) stays enabled and
-  // reachable regardless of which row is open, so nothing here ever blocks
-  // starting; this only controls which row's content is shown.
-  function toggleAccRow(name) {
-    const el = document.getElementById('acc-row-' + name);
-    if (!el) return;
-    const wasExpanded = el.classList.contains('expanded');
-    document.querySelectorAll('#setup-voice-block .acc-row').forEach(r => r.classList.remove('expanded'));
-    if (!wasExpanded) el.classList.add('expanded');
+  // --- Mock Interview setup: preset chips, four selects, three "make it
+  // yours" rows, and the resume / role / save-preset / manage-presets modals.
+  // Presets and saved roles live in the database (js/presets.js); the last
+  // setup lives on the profile so "Last session" can be repeated in one tap.
+  const SV_INDUSTRIES = ['general', 'finance', 'ib', 'consulting', 'pe', 'quant', 'pharma-rd', 'pharma-mfg-quality', 'medtech-rd', 'medtech-mfg-quality'];
+  const SV_LENGTH_COUNT = { Quick: 1, Short: 3, Full: 5 };
+  const SV_STAR = '<svg class="s" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7 7 .6-5.3 4.7 1.6 7.2L12 17.8 5.7 21.5l1.6-7.2L2 9.6 9 9z"/></svg>';
+  const SV_STAR_OUTLINE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l3 7 7 .6-5.3 4.7 1.6 7.2L12 17.8 5.7 21.5l1.6-7.2L2 9.6 9 9z"/></svg>';
+  const SV_STAR_SOLID = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7 7 .6-5.3 4.7 1.6 7.2L12 17.8 5.7 21.5l1.6-7.2L2 9.6 9 9z"/></svg>';
+  const SV_DOTS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
+  const SV_CHECK = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#08211d" stroke-width="3.4"><path d="M20 6L9 17l-5-5"/></svg>';
+  const SV_CHECK_TEAL = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  const SV_FOCUS = ['Work experience', 'Projects', 'Leadership', 'Education'];
+
+  const svState = {
+    presets: [], roles: [], resumes: [], lastSetup: null,
+    presetId: null, edited: false, menuFor: null,
+    resumeOn: false, resume: null, resumeFocus: [],
+    roleOn: false, role: null, roleCount: 2,
+    ask: false,
+  };
+  const svEl = (id) => document.getElementById(id);
+
+  function svRoleLabel(role) {
+    return role ? [role.company, role.title].filter(Boolean).join(', ') : '';
+  }
+  function svFmtDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+  function svAgo(iso) {
+    if (!iso) return '';
+    const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+    if (days <= 0) return 'Today';
+    if (days === 1) return 'Yesterday';
+    if (days < 7) return days + ' days ago';
+    return svFmtDate(iso);
+  }
+  function svPresetResume(p) { return p.resume_id ? svState.resumes.find((r) => r.id === p.resume_id) : null; }
+  function svPresetRole(p) { return p.role_id ? svState.roles.find((r) => r.id === p.role_id) : null; }
+  function svPresetMeta(p) {
+    return [INDUSTRY_LABELS[p.industry] || 'General', p.length, p.type].join(' · ');
   }
 
-  function resetSetupAccordion() {
-    document.querySelectorAll('#setup-voice-block .acc-row').forEach(r => r.classList.remove('expanded'));
-    const basics = document.getElementById('acc-row-basics');
-    if (basics) basics.classList.add('expanded');
+  function svApplyDefaults() {
+    state.industry = SV_INDUSTRIES.includes(state.industry) ? state.industry : 'general';
+    state.length = 'Short'; state.type = 'Behavioral'; state.difficulty = 'easy';
+    Object.assign(svState, { presetId: null, edited: false, resumeOn: false, resume: null, resumeFocus: [], roleOn: false, role: null, roleCount: 2, ask: false });
   }
 
-  async function toggleVoiceResumePanel() {
-    const checked = document.getElementById('voice-resume-toggle').checked;
-    document.getElementById('voice-resume-panel').style.display = checked ? 'block' : 'none';
-    if (checked) await loadVoiceResumePicker();
+  function svApplySetup(s) {
+    state.industry = SV_INDUSTRIES.includes(s.industry) ? s.industry : 'general';
+    state.length = s.length || 'Short';
+    state.type = s.type || 'Behavioral';
+    state.difficulty = s.difficulty || 'easy';
+    const resume = s.resume_id ? svState.resumes.find((r) => r.id === s.resume_id) : null;
+    svState.resume = resume || null;
+    svState.resumeOn = !!resume;
+    svState.resumeFocus = Array.isArray(s.resume_focus) ? s.resume_focus : [];
+    let role = null;
+    if (s.role_id) role = svState.roles.find((r) => r.id === s.role_id) || null;
+    else if (s.role && s.role.description) role = s.role;
+    svState.role = role;
+    svState.roleOn = !!role;
+    svState.roleCount = s.role_question_count || 2;
+    svState.ask = !!s.ask_questions;
+    svEnforceGeneral();
+  }
+
+  // General is behavioral-only for now -- Technical/Both need a real
+  // technical question bank, which only the specific industries have.
+  function svEnforceGeneral() {
+    if (state.industry === 'general' && state.type !== 'Behavioral') state.type = 'Behavioral';
+  }
+
+  function svCurrentSetup() {
+    return {
+      industry: state.industry, length: state.length, type: state.type, difficulty: state.difficulty,
+      resume_id: svState.resumeOn && svState.resume && !svState.resume.temporary ? svState.resume.id : null,
+      resume_focus: svState.resumeFocus,
+      role_id: svState.roleOn && svState.role && svState.role.id ? svState.role.id : null,
+      role: svState.roleOn && svState.role && !svState.role.id
+        ? { title: svState.role.title, company: svState.role.company, description: svState.role.description }
+        : null,
+      role_question_count: svState.roleCount,
+      ask_questions: svState.ask,
+    };
+  }
+
+  async function svInit() {
+    svApplyDefaults();
+    svRenderAll();
+    if (!window.MockoPresets || !window.MockoResume) return;
+    const soft = (p, fallback) => p.catch((err) => { console.warn('Setup data unavailable:', err); return fallback; });
+    const [resumes, presets, roles, last] = await Promise.all([
+      soft(MockoResume.listResumes().then((r) => r.filter((x) => x.extracted_text)), []),
+      soft(MockoPresets.listPresets(), []),
+      soft(MockoPresets.listRoles(), []),
+      soft(MockoPresets.getLastSetup(), null),
+    ]);
+    if (state.mode !== 'voice') return;
+    Object.assign(svState, { resumes, presets, roles, lastSetup: last });
+    if (last) { svApplySetup(last); svState.presetId = 'last'; }
+    svRenderAll();
+  }
+
+  function svRenderAll() {
+    svRenderChips();
+    svRenderControls();
+    checkSetupReady();
     updateSetupSummary();
   }
 
-  function toggleVoiceRolePanel() {
-    const checked = document.getElementById('voice-role-toggle').checked;
-    document.getElementById('voice-role-panel').style.display = checked ? 'block' : 'none';
-    document.getElementById('voice-role-status').textContent = '';
-    updateSetupSummary();
+  function svTouch() {
+    if (svState.presetId) svState.edited = true;
   }
 
-  // Pasted job descriptions are only cached client-side, as a convenience
-  // so people don't have to retype one every session -- never saved to
-  // their profile or the DB.
-  function handleVoiceRoleInput() {
-    try { localStorage.setItem('mocko-role-description', document.getElementById('voice-role-textarea').value); } catch (e) {}
+  function svRenderChips() {
+    const wrap = svEl('sv-chips');
+    const block = svEl('sv-start-block');
+    if (!wrap) return;
+    const hasLast = !!svState.lastSetup;
+    block.style.display = hasLast || svState.presets.length ? '' : 'none';
+    const visible = svState.presets.slice(0, 4);
+    const more = svState.presets.length - visible.length;
+    const chip = (id, name, fav) => {
+      const sel = svState.presetId === id;
+      return `<button class="sv-chip${sel ? ' sel' : ''}" onclick="svSelectPreset('${id}')">${fav ? SV_STAR : ''}<span class="nm">${escapeHtml(name)}</span>${sel && id !== 'last' ? `<span class="dots" onclick="svChipMenu(event, '${id}')" role="button" aria-label="Preset options">${SV_DOTS.replace(/width="16" height="16"/, 'width="13" height="13"')}</span>` : ''}</button>`;
+    };
+    let html = '';
+    if (hasLast) html += chip('last', 'Last session', false);
+    visible.forEach((p) => { html += chip(p.id, p.name, p.is_favorite); });
+    if (more > 0) html += `<button class="sv-chip more" onclick="svOpenManage()">+${more} more</button>`;
+    wrap.innerHTML = html;
+    if (svState.menuFor) svDrawChipMenu();
   }
 
-  // Saved resumes with extracted text, cached here so setupVoiceSession()
-  // can look up the selected dropdown option's text without a re-fetch.
-  let voiceResumePickerList = [];
+  function svChipMenu(e, id) {
+    e.stopPropagation();
+    svState.menuFor = svState.menuFor === id ? null : id;
+    svRenderChips();
+  }
 
-  async function loadVoiceResumePicker(selectId) {
-    const selectEl = document.getElementById('voice-resume-select');
-    const emptyEl = document.getElementById('voice-resume-picker-empty');
-    const statusEl = document.getElementById('voice-resume-status');
-    statusEl.textContent = '';
+  function svDrawChipMenu() {
+    const wrap = svEl('sv-chips');
+    const p = svState.presets.find((x) => x.id === svState.menuFor);
+    const selChip = wrap.querySelector('.sv-chip.sel');
+    if (!p || !selChip) { svState.menuFor = null; return; }
+    const menu = document.createElement('div');
+    menu.className = 'sv-menu';
+    menu.style.top = '40px';
+    menu.style.left = Math.max(0, selChip.offsetLeft + selChip.offsetWidth - 158) + 'px';
+    menu.innerHTML = `
+      <button class="sv-mi" onclick="svFavorite('${p.id}')">${SV_STAR_OUTLINE}${p.is_favorite ? 'Unfavorite' : 'Favorite'}</button>
+      <button class="sv-mi" onclick="svEditPreset('${p.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>Edit</button>
+      <button class="sv-mi danger" onclick="svDeletePreset('${p.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>Delete</button>`;
+    menu.onclick = (e) => e.stopPropagation();
+    wrap.appendChild(menu);
+  }
+  document.addEventListener('click', () => {
+    if (svState.menuFor) { svState.menuFor = null; svRenderChips(); }
+    document.querySelectorAll('.sv-menu.row-menu').forEach((m) => m.remove());
+  });
+
+  function svSelectPreset(id) {
+    if (id === 'last') {
+      if (!svState.lastSetup) return;
+      svApplySetup(svState.lastSetup);
+    } else {
+      const p = svState.presets.find((x) => x.id === id);
+      if (!p) return;
+      svApplySetup(p);
+    }
+    svState.presetId = id;
+    svState.edited = false;
+    svState.menuFor = null;
+    svRenderAll();
+  }
+
+  async function svFavorite(id) {
+    svState.menuFor = null;
+    const p = svState.presets.find((x) => x.id === id);
+    if (!p) return;
     try {
-      voiceResumePickerList = (await MockoResume.listResumes()).filter((r) => r.extracted_text);
-      if (!voiceResumePickerList.length) {
-        selectEl.style.display = 'none';
-        emptyEl.style.display = 'block';
-        return;
+      const updated = await MockoPresets.updatePreset(id, { is_favorite: !p.is_favorite });
+      Object.assign(p, updated);
+      svState.presets = MockoPresets.sortPresets(svState.presets);
+    } catch (err) { console.error(err); }
+    svRenderAll();
+    if (svEl('sv-manage-modal').classList.contains('open')) svRenderManage();
+  }
+
+  async function svDeletePreset(id) {
+    svState.menuFor = null;
+    const p = svState.presets.find((x) => x.id === id);
+    if (!p || !confirm(`Delete the preset "${p.name}"? This can't be undone.`)) { svRenderChips(); return; }
+    try {
+      await MockoPresets.deletePreset(id);
+      svState.presets = svState.presets.filter((x) => x.id !== id);
+      if (svState.presetId === id) { svState.presetId = null; svState.edited = false; }
+    } catch (err) { console.error(err); alert('Could not delete that preset. Try again.'); }
+    svRenderAll();
+    if (svEl('sv-manage-modal').classList.contains('open')) svRenderManage();
+  }
+
+  function svEditPreset(id) {
+    svState.menuFor = null;
+    const p = svState.presets.find((x) => x.id === id);
+    if (!p) return;
+    if (svState.presetId !== id) svSelectPreset(id);
+    svRenderChips();
+    svOpenSavePreset(id);
+  }
+
+  function svRenderControls() {
+    svEl('sv-industry').value = SV_INDUSTRIES.includes(state.industry) ? state.industry : 'general';
+    svEl('sv-length').value = state.length || 'Short';
+    svEl('sv-type').value = state.type || 'Behavioral';
+    svEl('sv-difficulty').value = state.difficulty || 'easy';
+    const generalOnly = state.industry === 'general';
+    [...svEl('sv-type').options].forEach((o) => { o.disabled = generalOnly && o.value !== 'Behavioral'; });
+    svEl('sv-type').title = generalOnly ? 'Pick a specific industry to unlock technical questions' : '';
+
+    const fullOnly = state.length !== 'Full';
+    const setOpt = (key, on, pickText, subDefault, needsFull) => {
+      svEl('sv-opt-' + key).classList.toggle('on', on);
+      svEl('sv-sw-' + key).classList.toggle('on', on);
+      if (svEl('sv-pick-' + key + '-t')) svEl('sv-pick-' + key + '-t').textContent = pickText;
+      const sub = svEl('sv-opt-' + key).querySelector('.sv-o-sub');
+      sub.textContent = on && needsFull && fullOnly ? 'Full interview only. Switch Length to Full to use it' : subDefault;
+    };
+    setOpt('resume', svState.resumeOn && !!svState.resume, svState.resume ? svState.resume.label : '', 'A question or two from your own experience', true);
+    setOpt('role', svState.roleOn && !!svState.role, svRoleLabel(svState.role), 'Questions about one specific job', true);
+    setOpt('ask', svState.ask, '', 'Flip the interview at the end. Ask up to 3 and get scored', false);
+  }
+
+  function svSetIndustry(v) {
+    state.industry = v;
+    persistIndustryChoice();
+    svEnforceGeneral();
+    svTouch();
+    svRenderAll();
+  }
+  function svSetLength(v) { state.length = v; svTouch(); svRenderAll(); }
+  function svSetType(v) { state.type = v; svTouch(); svRenderAll(); }
+  function svSetDifficulty(v) { state.difficulty = v; svTouch(); svRenderAll(); }
+
+  function svToggleOpt(which) {
+    if (which === 'ask') { svState.ask = !svState.ask; }
+    else if (which === 'resume') {
+      if (svState.resumeOn) svState.resumeOn = false;
+      else if (svState.resume) svState.resumeOn = true;
+      else { svOpenResume(); return; }
+    } else if (which === 'role') {
+      if (svState.roleOn) svState.roleOn = false;
+      else if (svState.role) svState.roleOn = true;
+      else { svOpenRole(); return; }
+    }
+    svTouch();
+    svRenderAll();
+  }
+
+  // ---- Resume sub menu ----
+  let svRM = null;
+
+  function svOpenResume() {
+    svRM = {
+      selectedId: svState.resume ? svState.resume.id : (svState.resumes.find((r) => r.is_primary) || svState.resumes[0] || {}).id || null,
+      focus: svState.resumeOn ? [...svState.resumeFocus] : [],
+      keep: true, uploaded: new Set(), busy: false,
+    };
+    svEl('sv-res-err').textContent = '';
+    svEl('sv-res-prog').style.display = 'none';
+    svEl('sv-resume-modal').classList.add('open');
+    svRenderResumeModal();
+  }
+  function svCloseResume() { svEl('sv-resume-modal').classList.remove('open'); svRM = null; }
+
+  function svRenderResumeModal() {
+    if (!svRM) return;
+    const list = svEl('sv-res-list');
+    if (!svState.resumes.length) {
+      list.innerHTML = '<div class="sv-empty">No saved resumes yet. Upload one below to tailor questions to it.</div>';
+    } else {
+      list.innerHTML = svState.resumes.map((r) => {
+        const used = svState.presets.filter((p) => p.resume_id === r.id).length;
+        return `<div class="sv-res${svRM.selectedId === r.id ? ' on' : ''}" onclick="svPickResume('${r.id}')">
+          <span class="sv-radio"></span>
+          <div class="sv-res-main"><div class="sv-res-name"><span class="t">${escapeHtml(r.label)}</span>${r.is_primary ? '<span class="sv-badge">Primary</span>' : ''}</div><div class="sv-res-meta">Uploaded ${svFmtDate(r.created_at)}</div></div>
+          ${used ? `<span class="sv-used">In ${used} preset${used === 1 ? '' : 's'}</span>` : ''}
+        </div>`;
+      }).join('');
+    }
+    const sel = svState.resumes.find((r) => r.id === svRM.selectedId);
+    const wrap = svEl('sv-found-wrap');
+    if (sel) {
+      const words = (sel.extracted_text || '').split(/\s+/).filter(Boolean).length;
+      wrap.innerHTML = `<span class="sv-m-label">What we found in ${escapeHtml(sel.label)}</span>
+        <div class="sv-found">
+          <div class="sv-found-line"><b>${words.toLocaleString()} words</b> read &middot; uploaded ${svFmtDate(sel.created_at)}</div>
+          <div class="sv-found-line" style="margin-top:10px;">Ask me about</div>
+          <div class="sv-found-row">${SV_FOCUS.map((f) => `<button class="sv-fchip${svRM.focus.includes(f) ? ' on' : ''}" onclick="svToggleFocus('${f}')">${f}</button>`).join('')}</div>
+        </div>`;
+    } else wrap.innerHTML = '';
+    svEl('sv-res-use').disabled = !sel || svRM.busy;
+    svEl('sv-keep-cb').classList.toggle('on', svRM.keep);
+    svEl('sv-keep-cb').innerHTML = svRM.keep ? SV_CHECK : '';
+  }
+
+  function svPickResume(id) { if (!svRM) return; svRM.selectedId = id; svRenderResumeModal(); }
+  function svToggleFocus(f) {
+    if (!svRM) return;
+    svRM.focus = svRM.focus.includes(f) ? svRM.focus.filter((x) => x !== f) : [...svRM.focus, f];
+    svRenderResumeModal();
+  }
+  function svToggleKeep() { if (!svRM) return; svRM.keep = !svRM.keep; svRenderResumeModal(); }
+  function svDropResume(e) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('over');
+    const file = e.dataTransfer && e.dataTransfer.files[0];
+    if (file) svHandleResumeFile(file);
+  }
+  function svPickResumeFile(e) {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (file) svHandleResumeFile(file);
+  }
+
+  async function svHandleResumeFile(file) {
+    if (!svRM) return;
+    const err = svEl('sv-res-err');
+    err.textContent = '';
+    if (file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name)) { err.textContent = 'Please upload a PDF.'; return; }
+    if (file.size > 5 * 1024 * 1024) { err.textContent = 'That file is over 5 MB. Try a smaller PDF.'; return; }
+    svRM.busy = true;
+    svEl('sv-prog-name').textContent = file.name;
+    svEl('sv-res-prog').style.display = 'block';
+    svRenderResumeModal();
+    try {
+      const resume = await MockoResume.uploadResume(file, file.name.replace(/\.pdf$/i, ''));
+      if (!resume.extracted_text) {
+        try { await MockoResume.deleteResume(resume.id, resume.storage_path); } catch (e) {}
+        throw new Error("We couldn't read any text in that PDF. Try one that isn't a scan.");
       }
-      emptyEl.style.display = 'none';
-      selectEl.style.display = 'block';
-      selectEl.innerHTML = voiceResumePickerList.map((r) =>
-        `<option value="${r.id}">${r.label}${r.is_primary ? ' (Primary)' : ''}</option>`
-      ).join('');
-      const primary = voiceResumePickerList.find((r) => r.is_primary);
-      selectEl.value = selectId || (primary ? primary.id : voiceResumePickerList[0].id);
-    } catch (err) {
-      console.error(err);
-      statusEl.textContent = 'Could not load your resumes.';
+      if (!svRM) return;
+      svState.resumes.unshift(resume);
+      svRM.selectedId = resume.id;
+      svRM.uploaded.add(resume.id);
+    } catch (e) {
+      console.error(e);
+      if (svRM) err.textContent = e.message || 'Upload failed. Try again.';
+    } finally {
+      if (svRM) { svRM.busy = false; svEl('sv-res-prog').style.display = 'none'; svRenderResumeModal(); }
     }
   }
 
-  function handleVoiceResumeUpload(event) {
-    const file = event.target.files[0];
-    event.target.value = '';
+  function svUseResume() {
+    if (!svRM) return;
+    const sel = svState.resumes.find((r) => r.id === svRM.selectedId);
+    if (!sel) return;
+    const temporary = !svRM.keep && svRM.uploaded.has(sel.id);
+    svState.resume = temporary ? { ...sel, temporary: true } : sel;
+    svState.resumeOn = true;
+    svState.resumeFocus = SV_FOCUS.length === svRM.focus.length ? [] : [...svRM.focus];
+    svTouch();
+    svCloseResume();
+    svRenderAll();
+  }
+
+  // ---- Role sub menu ----
+  let svRL = null;
+
+  const SV_SKILLS = ['Excel', 'SQL', 'Python', 'financial modeling', 'valuation', 'structuring problems', 'stakeholder management', 'client communication', 'presentations', 'project management', 'data analysis', 'research', 'leadership', 'teamwork', 'strategy', 'budgeting', 'forecasting', 'due diligence', 'negotiation', 'problem solving', 'regulatory', 'clinical', 'quality', 'manufacturing', 'product development'];
+  const SV_INDUSTRY_HINTS = {
+    consulting: ['consult', 'client engagement', 'engagement team', 'strategy firm'],
+    ib: ['investment bank', 'm&a', 'capital markets', 'pitch book', 'pitchbook', 'leveraged finance'],
+    pe: ['private equity', 'portfolio compan', 'buyout', 'lbo'],
+    quant: ['quantitative', 'quant ', 'derivatives', 'stochastic', 'trading strateg'],
+    'pharma-rd': ['pharma', 'drug discovery', 'clinical trial', 'preclinical'],
+    'pharma-mfg-quality': ['gmp', 'pharmaceutical manufacturing', 'quality assurance'],
+    'medtech-rd': ['medical device', 'medtech', 'fda 510'],
+    'medtech-mfg-quality': ['iso 13485', 'device manufacturing'],
+    finance: ['financial analyst', 'fp&a', 'corporate finance', 'treasury'],
+  };
+  function svDetectRole(text, title) {
+    const t = ' ' + (text || '').toLowerCase() + ' ';
+    let industry = null, best = 0;
+    Object.entries(SV_INDUSTRY_HINTS).forEach(([key, hints]) => {
+      const score = hints.reduce((n, h) => n + (t.includes(h) ? 1 : 0), 0);
+      if (score > best) { best = score; industry = key; }
+    });
+    // Level comes from the job title only -- a description full of "senior
+    // stakeholders" says nothing about the level of the job itself.
+    const ttl = ' ' + (title || '').toLowerCase() + ' ';
+    let level = null;
+    if (/\bintern(ship)?\b/.test(ttl)) level = 'Internship';
+    else if (/\b(senior|director|principal|vice president|vp|head of|manager|lead)\b/.test(ttl)) level = 'Senior';
+    else if (/\b(associate|analyst|junior|entry|graduate|consultant)\b/.test(ttl)) level = 'Entry to mid';
+    const skills = SV_SKILLS.filter((s) => t.includes(s.toLowerCase())).slice(0, 4);
+    return { industry, level, skills };
+  }
+
+  function svOpenRole() {
+    const cur = svState.role;
+    svRL = {
+      tab: svState.roles.length ? 'saved' : 'new',
+      selectedId: cur && cur.id ? cur.id : (svState.roles[0] || {}).id || null,
+      keep: true, count: svState.roleCount || 2,
+    };
+    if (cur && !cur.id) {
+      svRL.tab = 'new';
+      svEl('sv-role-title-in').value = cur.title || '';
+      svEl('sv-role-company-in').value = cur.company || '';
+      svEl('sv-role-jd').value = cur.description || '';
+    } else {
+      svEl('sv-role-title-in').value = '';
+      svEl('sv-role-company-in').value = '';
+      svEl('sv-role-jd').value = '';
+    }
+    svEl('sv-role-err').textContent = '';
+    svEl('sv-role-modal').classList.add('open');
+    svRenderRoleModal();
+  }
+  function svCloseRole() { svEl('sv-role-modal').classList.remove('open'); svRL = null; }
+  function svRoleTab(tab) { if (!svRL) return; svRL.tab = tab; svRenderRoleModal(); }
+  function svRoleCount(n) { if (!svRL) return; svRL.count = n; svRenderRoleModal(); }
+  function svRoleInput() { if (svRL) svRenderRoleModal(); }
+  function svToggleKeepRole() { if (!svRL) return; svRL.keep = !svRL.keep; svRenderRoleModal(); }
+  function svPickRole(id) { if (!svRL) return; svRL.selectedId = id; svRenderRoleModal(); }
+
+  async function svPasteJD() {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) { svEl('sv-role-jd').value = text.slice(0, 6000); svRoleInput(); }
+    } catch (e) { svEl('sv-role-err').textContent = "Couldn't read the clipboard. Paste into the box instead."; }
+  }
+  async function svJDFile(e) {
+    const file = e.target.files[0];
+    e.target.value = '';
     if (!file) return;
-    if (file.type !== 'application/pdf') {
-      document.getElementById('voice-resume-status').textContent = 'Please upload a PDF.';
+    svEl('sv-role-err').textContent = 'Reading the PDF…';
+    const text = await MockoResume.extractPdfText(file);
+    if (text) { svEl('sv-role-jd').value = text.slice(0, 6000); svEl('sv-role-err').textContent = ''; svRoleInput(); }
+    else svEl('sv-role-err').textContent = "Couldn't read any text in that PDF.";
+  }
+
+  function svRenderRoleModal() {
+    if (!svRL) return;
+    const isNew = svRL.tab === 'new';
+    svEl('sv-tab-saved').textContent = `Saved roles (${svState.roles.length})`;
+    svEl('sv-tab-saved').classList.toggle('on', !isNew);
+    svEl('sv-tab-new').classList.toggle('on', isNew);
+    svEl('sv-role-saved').style.display = isNew ? 'none' : 'block';
+    svEl('sv-role-new').style.display = isNew ? 'block' : 'none';
+    svEl('sv-role-keep').style.display = isNew ? 'flex' : 'none';
+    svEl('sv-keeprole-cb').classList.toggle('on', svRL.keep);
+    svEl('sv-keeprole-cb').innerHTML = svRL.keep ? SV_CHECK : '';
+    const fullNote = state.length === 'Full' ? 'Full Interview only' : 'Full Interview only. Your Length is ' + state.length;
+    svEl('sv-hm-sub').textContent = fullNote;
+    [1, 2].forEach((n) => svEl('sv-cnt-' + n).classList.toggle('on', svRL.count === n));
+
+    if (!isNew) {
+      svEl('sv-role-saved').innerHTML = svState.roles.length ? svState.roles.map((r) => `
+        <div class="sv-role-item${svRL.selectedId === r.id ? ' on' : ''}" onclick="svPickRole('${r.id}')">
+          <div class="sv-res-main"><div class="sv-res-name"><span class="t">${escapeHtml(svRoleLabel(r))}</span></div><div class="sv-res-meta">${r.industry ? escapeHtml(INDUSTRY_LABELS[r.industry] || '') + ' · ' : ''}Saved ${svFmtDate(r.created_at)}</div></div>
+          <button class="sv-dotsbtn" title="Delete role" onclick="event.stopPropagation(); svDeleteRole('${r.id}')" aria-label="Delete role"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
+        </div>`).join('') : '<div class="sv-empty">No saved roles yet. Add one on the New role tab.</div>';
+      svEl('sv-role-use').disabled = !svRL.selectedId;
       return;
     }
-    openResumeUploadModal(file, 'voice');
+
+    const jd = svEl('sv-role-jd').value;
+    svEl('sv-jd-count').textContent = `${jd.length.toLocaleString()} / 6,000`;
+    const det = svDetectRole(jd, svEl('sv-role-title-in').value);
+    const picked = svEl('sv-role-picked');
+    if (jd.trim() && (det.industry || det.level || det.skills.length)) {
+      picked.style.display = 'block';
+      picked.innerHTML = `<div class="sv-picked-head"><b>What we picked up</b>${det.industry ? `<span class="sv-auto">Industry set to ${escapeHtml(INDUSTRY_LABELS[det.industry])}</span>` : ''}</div>
+        ${det.level ? `<div class="sv-found-line" style="margin-bottom:7px;">Level: <b>${det.level}</b></div>` : ''}
+        ${det.skills.length ? `<div class="sv-pchips">${det.skills.map((s) => `<span class="sv-pchip">${escapeHtml(s)}</span>`).join('')}</div>` : ''}`;
+    } else picked.style.display = 'none';
+    svEl('sv-role-title-in').classList.toggle('hl', !!svEl('sv-role-title-in').value);
+    svEl('sv-role-use').disabled = !(svEl('sv-role-title-in').value.trim() && jd.trim());
+  }
+
+  async function svDeleteRole(id) {
+    const r = svState.roles.find((x) => x.id === id);
+    if (!r || !confirm(`Delete the saved role "${svRoleLabel(r)}"?`)) return;
+    try {
+      await MockoPresets.deleteRole(id);
+      svState.roles = svState.roles.filter((x) => x.id !== id);
+      if (svState.role && svState.role.id === id) { svState.role = null; svState.roleOn = false; }
+      if (svRL && svRL.selectedId === id) svRL.selectedId = (svState.roles[0] || {}).id || null;
+      svRenderRoleModal();
+      svRenderAll();
+    } catch (err) { console.error(err); svEl('sv-role-err').textContent = 'Could not delete that role.'; }
+  }
+
+  async function svUseRole() {
+    if (!svRL) return;
+    const err = svEl('sv-role-err');
+    err.textContent = '';
+    let role = null;
+    if (svRL.tab === 'saved') {
+      role = svState.roles.find((r) => r.id === svRL.selectedId);
+    } else {
+      const title = svEl('sv-role-title-in').value.trim();
+      const company = svEl('sv-role-company-in').value.trim();
+      const description = svEl('sv-role-jd').value.trim();
+      if (description.split(/\s+/).filter(Boolean).length < 25) {
+        err.textContent = 'A bit more detail helps. Paste more of the description.';
+        return;
+      }
+      const industry = svDetectRole(description, title).industry;
+      role = { title, company, description, industry };
+      if (svRL.keep) {
+        const btn = svEl('sv-role-use');
+        btn.disabled = true;
+        try {
+          role = await MockoPresets.createRole(role);
+          svState.roles.unshift(role);
+        } catch (e) {
+          console.error(e);
+          err.textContent = "Couldn't save that role, so it will only be used for this session.";
+        } finally { btn.disabled = false; }
+      }
+    }
+    if (!role) return;
+    svState.role = role;
+    svState.roleOn = true;
+    svState.roleCount = svRL.count;
+    if (role.industry && SV_INDUSTRIES.includes(role.industry) && role.industry !== state.industry) {
+      state.industry = role.industry;
+      svEnforceGeneral();
+    }
+    svTouch();
+    svCloseRole();
+    svRenderAll();
+  }
+
+  // ---- Save / edit preset ----
+  let svSP = null;
+
+  function svOpenSavePreset(editId) {
+    if (!window.MockoPresets) return;
+    const edit = editId ? svState.presets.find((p) => p.id === editId) : null;
+    const role = svState.roleOn ? svState.role : null;
+    const suggested = role ? svRoleLabel(role).replace(/, /, ' ') : `${INDUSTRY_LABELS[state.industry] || 'General'} ${state.length}`;
+    svSP = {
+      editId: edit ? edit.id : null,
+      name: edit ? edit.name : suggested,
+      resume: svState.resumeOn && !!svState.resume,
+      role: svState.roleOn && !!svState.role,
+      ask: svState.ask,
+      busy: false,
+    };
+    svEl('sv-save-title').textContent = edit ? 'Edit preset' : 'Save as preset';
+    svEl('sv-save-sub').textContent = edit ? 'Update the name and what this preset includes.' : 'Start this exact setup in one tap next time.';
+    svEl('sv-save-btn').textContent = edit ? 'Save changes' : 'Save preset';
+    svEl('sv-save-name').value = svSP.name;
+    svEl('sv-save-err').textContent = '';
+    svEl('sv-save-modal').classList.add('open');
+    svRenderSaveModal();
+    setTimeout(() => svEl('sv-save-name').focus(), 50);
+  }
+  function svCloseSave() { svEl('sv-save-modal').classList.remove('open'); svSP = null; }
+  function svSaveNameInput() { if (svSP) { svSP.name = svEl('sv-save-name').value; svEl('sv-save-btn').disabled = !svSP.name.trim(); } }
+  function svSaveToggle(k) { if (!svSP) return; svSP[k] = !svSP[k]; svRenderSaveModal(); }
+
+  function svRenderSaveModal() {
+    if (!svSP) return;
+    const cb = (on, key, canToggle) => `<span class="sv-cb${on ? ' on' : ''}"${canToggle ? ` onclick="svSaveToggle('${key}')" style="cursor:pointer;"` : ''}>${on ? SV_CHECK : ''}</span>`;
+    const rows = [];
+    rows.push(`<div class="sv-lrow static"><span class="sv-cb on">${SV_CHECK}</span><span class="sv-lk">Session</span><span class="sv-lv">${escapeHtml([INDUSTRY_LABELS[state.industry] || 'General', state.length, state.type, state.difficulty[0].toUpperCase() + state.difficulty.slice(1)].join(' · '))}</span></div>`);
+    if (svState.resumeOn && svState.resume) rows.push(`<div class="sv-lrow static">${cb(svSP.resume, 'resume', true)}<span class="sv-lk">Resume</span><span class="sv-lv">${escapeHtml(svState.resume.label)}</span></div>`);
+    if (svState.roleOn && svState.role) rows.push(`<div class="sv-lrow static">${cb(svSP.role, 'role', true)}<span class="sv-lk">Role</span><span class="sv-lv">${escapeHtml(svRoleLabel(svState.role))}</span></div>`);
+    rows.push(`<div class="sv-lrow static">${cb(svState.ask && svSP.ask, 'ask', svState.ask)}<span class="sv-lk">Your questions</span><span class="sv-lv${svState.ask ? '' : ' off'}">${svState.ask ? 'On for this setup' : 'Off for this setup'}</span></div>`);
+    svEl('sv-save-list').innerHTML = rows.join('');
+    svEl('sv-save-btn').disabled = !svSP.name.trim() || svSP.busy;
+  }
+
+  async function svSavePreset() {
+    if (!svSP || !svSP.name.trim()) return;
+    const err = svEl('sv-save-err');
+    err.textContent = '';
+    svSP.busy = true;
+    svEl('sv-save-btn').disabled = true;
+    try {
+      let roleId = null;
+      if (svSP.role && svState.roleOn && svState.role) {
+        if (svState.role.id) roleId = svState.role.id;
+        else {
+          const created = await MockoPresets.createRole({ ...svState.role });
+          svState.roles.unshift(created);
+          svState.role = created;
+          roleId = created.id;
+        }
+      }
+      let resumeId = null;
+      if (svSP.resume && svState.resumeOn && svState.resume) {
+        resumeId = svState.resume.id;
+        if (svState.resume.temporary) svState.resume = { ...svState.resume, temporary: false };
+      }
+      const fields = {
+        name: svSP.name.trim(),
+        industry: state.industry, length: state.length, type: state.type, difficulty: state.difficulty,
+        resume_id: resumeId, resume_focus: resumeId ? svState.resumeFocus : [],
+        role_id: roleId, role_question_count: svState.roleCount,
+        ask_questions: svState.ask && svSP.ask,
+      };
+      let saved;
+      if (svSP.editId) {
+        saved = await MockoPresets.updatePreset(svSP.editId, fields);
+        svState.presets = svState.presets.map((p) => (p.id === saved.id ? saved : p));
+      } else {
+        saved = await MockoPresets.createPreset(fields);
+        svState.presets.push(saved);
+      }
+      svState.presets = MockoPresets.sortPresets(svState.presets);
+      svApplySetup(saved);
+      svState.presetId = saved.id;
+      svState.edited = false;
+      svCloseSave();
+      svRenderAll();
+      const note = svEl('sv-save-note');
+      note.textContent = `${svSP && svSP.editId ? 'Updated' : 'Saved'} "${saved.name}"`;
+      note.style.display = 'block';
+      setTimeout(() => { note.style.display = 'none'; }, 3500);
+    } catch (e) {
+      console.error(e);
+      err.textContent = "Couldn't save that preset. Try again.";
+      if (svSP) { svSP.busy = false; svEl('sv-save-btn').disabled = false; }
+    }
+  }
+
+  // ---- Manage presets sheet ----
+  let svMG = null;
+
+  function svOpenManage() {
+    svMG = { filter: 'all', sel: svState.presetId && svState.presetId !== 'last' ? svState.presetId : null, menuFor: null };
+    svEl('sv-manage-q').value = '';
+    svEl('sv-manage-modal').classList.add('open');
+    svRenderManage();
+  }
+  function svCloseManage() { svEl('sv-manage-modal').classList.remove('open'); svMG = null; }
+  function svManageFilter(f) { if (!svMG) return; svMG.filter = f; svRenderManage(); }
+  function svManageSel(id) { if (!svMG) return; svMG.sel = id; svMG.menuFor = null; svRenderManage(); }
+  function svManageMenu(e, id) { e.stopPropagation(); if (!svMG) return; svMG.menuFor = svMG.menuFor === id ? null : id; svRenderManage(); }
+  function svManageUse() {
+    if (!svMG || !svMG.sel) return;
+    const id = svMG.sel;
+    svCloseManage();
+    svSelectPreset(id);
+  }
+
+  function svRenderManage() {
+    if (!svMG) return;
+    const q = svEl('sv-manage-q').value.trim().toLowerCase();
+    const filters = [['all', 'All'], ['fav', 'Favorites'], ['role', 'Has a role'], ['resume', 'Has a resume']];
+    svEl('sv-manage-filters').innerHTML = filters.map(([k, label]) => `<button class="sv-fchip${svMG.filter === k ? ' on' : ''}" onclick="svManageFilter('${k}')">${label}</button>`).join('');
+    svEl('sv-manage-count').textContent = svState.presets.length;
+    const rows = svState.presets.filter((p) => {
+      if (svMG.filter === 'fav' && !p.is_favorite) return false;
+      if (svMG.filter === 'role' && !p.role_id) return false;
+      if (svMG.filter === 'resume' && !p.resume_id) return false;
+      if (!q) return true;
+      const res = svPresetResume(p), role = svPresetRole(p);
+      return [p.name, res && res.label, role && svRoleLabel(role)].some((s) => s && s.toLowerCase().includes(q));
+    });
+    svEl('sv-manage-list').innerHTML = rows.length ? rows.map((p) => {
+      const res = svPresetResume(p), role = svPresetRole(p);
+      const menu = svMG.menuFor === p.id ? `<div class="sv-menu row-menu" style="right:12px; top:42px;" onclick="event.stopPropagation()">
+          <button class="sv-mi" onclick="svFavorite('${p.id}')">${SV_STAR_OUTLINE}${p.is_favorite ? 'Unfavorite' : 'Favorite'}</button>
+          <button class="sv-mi" onclick="svManageEdit('${p.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>Edit</button>
+          <button class="sv-mi danger" onclick="svDeletePreset('${p.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>Delete</button>
+        </div>` : '';
+      return `<div class="sv-prow${svMG.sel === p.id ? ' sel' : ''}" onclick="svManageSel('${p.id}')">
+        <button class="sv-c-pin${p.is_favorite ? ' on' : ''}" onclick="event.stopPropagation(); svFavorite('${p.id}')" aria-label="Favorite">${p.is_favorite ? SV_STAR_SOLID : SV_STAR_OUTLINE.replace('width="14" height="14"', 'width="15" height="15"')}</button>
+        <div class="sv-c-main"><div class="sv-pn">${escapeHtml(p.name)}</div><div class="sv-pm">${escapeHtml(svPresetMeta(p))}</div></div>
+        <span class="sv-c-res"><span class="sv-val${res ? '' : ' no'}">${res ? escapeHtml(res.label) : '✕'}</span></span>
+        <span class="sv-c-rol"><span class="sv-val${role ? '' : ' no'}">${role ? escapeHtml(svRoleLabel(role)) : '✕'}</span></span>
+        <span class="sv-c-q">${p.ask_questions ? `<span class="sv-val yes">${SV_CHECK_TEAL}</span>` : '<span class="sv-val no">✕</span>'}</span>
+        <span class="sv-c-used"><span class="sv-pm" style="margin:0;">${p.last_used_at ? svAgo(p.last_used_at) : 'Never'}</span></span>
+        <span class="sv-c-more"><button class="sv-dotsbtn${svMG.menuFor === p.id ? ' on' : ''}" onclick="svManageMenu(event, '${p.id}')" aria-label="Preset options">${SV_DOTS}</button></span>
+        ${menu}
+      </div>`;
+    }).join('') : '<div class="sv-empty" style="padding:18px 12px;">No presets match.</div>';
+    const sel = svState.presets.find((p) => p.id === svMG.sel);
+    const btn = svEl('sv-manage-use');
+    btn.disabled = !sel;
+    btn.textContent = sel ? `Use ${sel.name}` : 'Use preset';
+  }
+
+  function svManageEdit(id) {
+    svCloseManage();
+    svEditPreset(id);
+  }
+
+  // Called when Begin is pressed on a Mock Interview: remembers this setup
+  // as "Last session" and stamps the preset it came from as just used.
+  function svOnBegin() {
+    if (!window.MockoPresets) return;
+    MockoPresets.saveLastSetup(svCurrentSetup()).then(() => {
+      svState.lastSetup = svCurrentSetup();
+    }).catch((err) => console.warn('Could not remember this setup:', err));
+    const id = svState.presetId;
+    if (id && id !== 'last') {
+      MockoPresets.markPresetUsed(id).catch((err) => console.warn('Could not stamp preset use:', err));
+      const p = svState.presets.find((x) => x.id === id);
+      if (p) p.last_used_at = new Date().toISOString();
+    }
   }
 
   async function toggleResumePicker() {
@@ -5962,6 +6808,7 @@
         btn.textContent = 'Begin →';
       }
     } else {
+      svOnBegin();
       startVoice();
     }
   }
@@ -6845,7 +7692,6 @@
       closeResumeUploadModal();
       if (context === 'settings') await loadResumes();
       else if (context === 'onair') await loadResumePicker();
-      else if (context === 'voice') await loadVoiceResumePicker(resume.id);
       else if (context && context.startsWith('resumelab:')) await populateResumeSelect(context.split(':')[1], resume.id);
     } catch (err) {
       console.error(err);
@@ -7441,12 +8287,9 @@
     stopAiVoice();
     document.getElementById('voice-qa-done-row').style.display = 'none';
     clearIpError('voice-error');
-    document.getElementById('mic-btn').style.display = 'inline-flex';
-    document.getElementById('mic-btn').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
-    document.getElementById('mic-btn').disabled = false;
+    setMic('ready');
     document.getElementById('voice-state').textContent = 'Ready';
     document.getElementById('voice-retry-row').style.display = 'none';
-    document.getElementById('mic-btn-wrap').classList.remove('listening');
     document.getElementById('voice-timer').textContent = '00:00';
     document.getElementById('voice-caption').classList.remove('is-answer');
     document.getElementById('voice-countdown').style.display = 'none';
@@ -7495,15 +8338,13 @@
     goTo('voice');
     resetVoiceUI();
     document.getElementById('voice-caption').textContent = 'Setting up your interview...';
-    document.getElementById('mic-btn').disabled = true;
-    document.getElementById('mic-btn').style.display = 'none';
+    setMic('sleep');
     setVoiceLoading(true);
     try {
       if (!window.MockoQuestions || !window.MockoVoiceSession) throw Object.assign(new Error('Scripts missing'), { name: 'ScriptsBlocked' });
       await setupVoiceSession();
       document.getElementById('voice-caption').textContent = "Tap the mic when you're ready to begin.";
-      document.getElementById('mic-btn').disabled = false;
-      document.getElementById('mic-btn').style.display = 'inline-flex';
+      setMic('ready');
     } catch (err) {
       console.error(err);
       document.getElementById('voice-caption').textContent = "We couldn't start your interview.";
@@ -7518,13 +8359,12 @@
     const isFull = state.length === 'Full';
     const tailoringTasks = [];
 
-    const selectedResumeId = document.getElementById('voice-resume-toggle').checked
-      ? document.getElementById('voice-resume-select').value
-      : null;
-    const selectedResume = selectedResumeId && voiceResumePickerList.find((r) => r.id === selectedResumeId);
+    const selectedResume = svState.resumeOn ? svState.resume : null;
     if (isFull && selectedResume) {
-      const resumeText = selectedResume.extracted_text.trim();
-      if (resumeText.split(/\s+/).filter(Boolean).length >= 50) {
+      const resumeBase = selectedResume.extracted_text.trim();
+      if (resumeBase.split(/\s+/).filter(Boolean).length >= 50) {
+        const focus = svState.resumeFocus;
+        const resumeText = focus.length ? `Draw the questions mainly from the candidate's: ${focus.join(', ')}.\n\n${resumeBase}` : resumeBase;
         tailoringTasks.push(
           MockoVoiceSession.tailorResumeQuestions({ resumeText, difficulty: state.difficulty, industry: state.industry })
             .then((r) => (r.questions || []).map((q) => ({ ...q, source: 'resume' })))
@@ -7533,26 +8373,27 @@
       }
     }
 
-    const roleDescription = document.getElementById('voice-role-toggle').checked
-      ? document.getElementById('voice-role-textarea').value.trim()
-      : '';
-    if (isFull && roleDescription) {
-      if (roleDescription.split(/\s+/).filter(Boolean).length >= 25) {
-        tailoringTasks.push(
-          MockoVoiceSession.tailorRoleQuestions({ roleDescription, difficulty: state.difficulty, industry: state.industry, category })
-            .then((r) => (r.questions || []).map((q) => ({ ...q, source: 'role' })))
-            .catch((err) => {
-              console.error('Role tailoring failed, falling back to guide questions:', err);
-              document.getElementById('voice-role-status').textContent = "Couldn't tailor from that description -- using standard questions instead.";
-              return [];
-            })
-        );
-      } else {
-        document.getElementById('voice-role-status').textContent = 'A bit more detail helps -- paste more of the description.';
-      }
+    const role = svState.roleOn ? svState.role : null;
+    const roleDescription = role ? role.description.trim() : '';
+    if (isFull && roleDescription && roleDescription.split(/\s+/).filter(Boolean).length >= 25) {
+      tailoringTasks.push(
+        MockoVoiceSession.tailorRoleQuestions({ roleDescription, difficulty: state.difficulty, industry: state.industry, category })
+          .then((r) => (r.questions || []).slice(0, svState.roleCount).map((q) => ({ ...q, source: 'role' })))
+          .catch((err) => { console.error('Role tailoring failed, falling back to guide questions:', err); return []; })
+      );
     }
 
     const tailoredQuestions = (await Promise.all(tailoringTasks)).flat();
+
+    // A resume added for just this session ("Keep for next time" off) is
+    // removed again now that its questions have been built.
+    if (svState.resume && svState.resume.temporary) {
+      const temp = svState.resume;
+      svState.resumes = svState.resumes.filter((r) => r.id !== temp.id);
+      svState.resume = null;
+      svState.resumeOn = false;
+      MockoResume.deleteResume(temp.id, temp.storage_path).catch((err) => console.warn('Could not remove the temporary resume:', err));
+    }
 
     const questions = isFull
       ? await MockoQuestions.buildFullInterviewSet({ difficulty: state.difficulty, category, industry: state.industry, tailoredQuestions })
@@ -7572,7 +8413,7 @@
       followUpCountThisQuestion: 0, followUpCountSession: 0, inFollowUp: false,
       mainTranscript: null, mainDuration: 0, followUpTranscript: null, followUpDuration: 0,
       pendingNote: null, pendingTransitionLine: null, results: [], finalOverallScore: 0, toughestId: null,
-      askQuestions: document.getElementById('voice-ask-toggle').checked, inQA: false, candidateQuestions: [], candidateResult: null,
+      askQuestions: svState.ask, inQA: false, candidateQuestions: [], candidateResult: null,
     };
     document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (state.type || 'Behavioral');
     renderVoiceQuestionList();
@@ -7600,7 +8441,7 @@
     goTo('voice');
     resetVoiceUI();
     document.getElementById('voice-caption').textContent = 'Loading your interview...';
-    document.getElementById('mic-btn').disabled = true;
+    setMic('sleep');
     setVoiceLoading(true);
     try {
       const results = await MockoVoiceSession.fetchSessionQuestions(row.id);
@@ -7618,7 +8459,7 @@
       };
       document.getElementById('voice-role').textContent = (INDUSTRY_LABELS[state.industry] || 'General') + ' · ' + (state.type || 'Behavioral');
       document.getElementById('voice-caption').textContent = "Welcome back. Tap the mic to pick up where you left off.";
-      document.getElementById('mic-btn').disabled = false;
+      setMic('ready');
       renderVoiceQuestionList();
     } catch (err) {
       console.error(err);
@@ -7629,11 +8470,28 @@
     }
   }
 
+  // The mic stays on screen the whole interview: tappable ('ready'),
+  // dimmed while the question is read, the countdown runs or an answer is
+  // being graded ('sleep'), red and pulsing while it's listening
+  // ('listening'), or hidden when this browser can't listen at all ('gone').
+  const MIC_ICON = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
+  const STOP_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>';
+  function setMic(mode) {
+    const wrap = document.getElementById('mic-btn-wrap');
+    const btn = document.getElementById('mic-btn');
+    wrap.classList.toggle('sleep', mode === 'sleep');
+    wrap.classList.toggle('listening', mode === 'listening');
+    wrap.classList.toggle('gone', mode === 'gone');
+    btn.disabled = mode === 'sleep';
+    btn.innerHTML = mode === 'listening' ? STOP_ICON : MIC_ICON;
+    document.getElementById('voice-timer').style.visibility = mode === 'listening' ? 'visible' : 'hidden';
+  }
+
   function toggleMic() {
     if (!voiceSession) return;
     if (voiceSession.phase === 'idle') {
       primeAiAudio();
-      document.getElementById('mic-btn').style.display = 'none';
+      setMic('sleep');
       askCurrentQuestion();
     } else if (voiceSession.phase === 'listening') {
       finalizeAnswer();
@@ -7786,11 +8644,17 @@
   function beginCountdownThenListen() {
     if (!voiceSession) return;
     voiceSession.phase = 'countdown';
-    document.getElementById('voice-state').textContent = 'Get ready…';
+    document.getElementById('voice-state').textContent = 'The mic opens when the countdown ends';
     const numEl = document.getElementById('voice-countdown-num');
     const countdownEl = document.getElementById('voice-countdown');
+    const arc = document.getElementById('voice-countdown-arc');
+    const setArc = (k) => { arc.style.strokeDasharray = Math.round(289 * k / COUNTDOWN_SECONDS) + ' 289'; };
     let n = COUNTDOWN_SECONDS;
     numEl.textContent = n;
+    arc.style.transition = 'none';
+    setArc(n);
+    void arc.getBoundingClientRect();
+    arc.style.transition = '';
     countdownEl.style.display = 'flex';
     clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
@@ -7803,6 +8667,7 @@
         return;
       }
       numEl.textContent = n;
+      setArc(n);
     }, 1000);
   }
 
@@ -7824,9 +8689,7 @@
     document.getElementById('voice-caption').textContent = 'Listening...';
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (voiceSession.sttAvailable && SR) {
-      document.getElementById('mic-btn-wrap').classList.add('listening');
-      document.getElementById('mic-btn').style.display = 'inline-flex';
-      document.getElementById('mic-btn').innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="white" stroke="none"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>';
+      setMic('listening');
       startRecognition(SR);
     } else {
       // No typed fallback: this mode is spoken-answer only, so a browser
@@ -7837,8 +8700,7 @@
         voiceSession.sttNotified = true;
         showIpError('voice-error', { name: 'SpeechUnsupported' });
       }
-      document.getElementById('mic-btn-wrap').classList.remove('listening');
-      document.getElementById('mic-btn').style.display = 'none';
+      setMic('gone');
       clearInterval(voiceTimerInterval);
     }
   }
@@ -7890,8 +8752,7 @@
     voiceSession.manualStop = true;
     if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} }
     clearInterval(voiceTimerInterval);
-    document.getElementById('mic-btn-wrap').classList.remove('listening');
-    document.getElementById('mic-btn').style.display = 'none';
+    setMic('sleep');
     const durationSec = Math.max(1, Math.round((Date.now() - voiceSession.questionStartTs) / 1000));
     processAnswer(voiceSession.transcriptBuffer.trim(), durationSec);
   }
@@ -8078,8 +8939,7 @@
     if (voiceRecognizer) { try { voiceRecognizer.stop(); } catch (e) {} }
     clearInterval(voiceTimerInterval);
     document.getElementById('voice-qa-done-row').style.display = 'none';
-    document.getElementById('mic-btn-wrap').classList.remove('listening');
-    document.getElementById('mic-btn').style.display = 'none';
+    setMic('sleep');
 
     const asked = voiceSession.candidateQuestions;
     if (!asked.length) {
@@ -8147,8 +9007,7 @@
     document.getElementById('voice-caption').classList.remove('is-answer');
     document.getElementById('voice-caption').textContent = "That's a wrap, nice work.";
     document.getElementById('voice-state').textContent = 'Session complete';
-    document.getElementById('mic-btn').style.display = 'none';
-    document.getElementById('mic-btn-wrap').classList.remove('listening');
+    setMic('sleep');
     clearInterval(voiceTimerInterval);
     await computeAndPersistAggregate();
     renderVoiceQuestionList();
