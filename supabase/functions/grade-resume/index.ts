@@ -75,14 +75,15 @@ const GRADE_PROMPT = (resumeText: string) => `You are a strict resume reviewer f
 - GPA and coursework are optional filler once there is real experience to lead with. Do not treat their absence as a flaw, and note if they're taking up space that could go to something stronger.
 - No high school listed once there is education beyond it.
 - Paid work experience and unpaid school/club leadership belong in SEPARATE sections ("Experience" vs "Leadership & Activities"). If they're mixed together in one section, flag it specifically.
-- Bullets should be past tense, accomplishment-focused, quantified with real numbers wherever possible, and must not read like a copy-pasted job description.
+- Bullets should be accomplishment-focused, quantified with real numbers wherever possible, and must not read like a copy-pasted job description.
+- Verb tense: bullets for past roles use past tense (led, built, managed, increased). Bullets for a role the person currently holds may use present tense (lead, build, manage). Check each verb before you comment on tense. A verb like "led", "built", "ran" or any verb ending in "-ed" IS past tense. Only flag tense when you can quote a specific verb in the wrong tense for that role, and name the verb. Never say a resume is in "future tense" unless a bullet literally uses "will" or "going to". If the tense is correct, do not mention tense at all.
 - No references on a resume.
 - Formatting (dates, punctuation, tense) must be internally consistent.
 - Experience within each section should be in reverse chronological order.
 
 Grade ONLY the sections this resume actually has (e.g. if there's no "Skills" section, do not invent a Skills category). Weight the categories you do grade so they sum to exactly 100. Assign each a letter grade (F through A; do not grade generously) and a specific one-sentence comment in plain language.
 
-Flags: find 4 to 7 specific, concrete problems. Each flag must quote a short exact phrase from the resume text below (verbatim, a few words) and explain plainly what is wrong with it and why it matters.
+Flags: find 4 to 7 specific, concrete problems. Each flag must quote a short exact phrase from the resume text below (verbatim, a few words) and explain plainly what is wrong with it and why it matters. Every flag must be a real problem the person should fix. Never write a flag that praises something or says something is correct, fine or consistent. Put praise in goodPoints instead. If you find fewer than 4 real problems, give fewer flags.
 
 Never use an em dash (the "—" character) anywhere in your response. Use a period, comma, or colon instead. Keep every sentence short and simple.
 
@@ -132,6 +133,16 @@ Deno.serve(async (req) => {
     }
 
     const graded = extractJson(await callClaude(GRADE_PROMPT(resume.extracted_text), 4096));
+
+    // Safety net: keep only flags that quote text really on the resume, and
+    // drop tense claims that the quoted text does not support.
+    const squash = (t: string) => String(t || "").toLowerCase().replace(/\s+/g, "");
+    const haystack = squash(resume.extracted_text);
+    graded.flags = (Array.isArray(graded.flags) ? graded.flags : []).filter(
+      (f: { quote?: string; comment?: string }) =>
+        f && f.quote && f.comment && haystack.includes(squash(f.quote)) &&
+        !(/future tense/i.test(f.comment) && !/\bwill\b|\bgoing to\b/i.test(f.quote)),
+    );
 
     const { data: review, error: insertErr } = await supabase
       .from("resume_reviews")
